@@ -1,6 +1,10 @@
-export default function LoginForm() {
+'use client';
+
+import { signInAction } from '@/lib/auth-actions';
+
+export default function SignInForm() {
   return (
-    <form>
+    <form action={signInAction}>
       <h5 className="pb-3 font-semibold">Inicia sesión para continuar</h5>
       <input
         type="email"
