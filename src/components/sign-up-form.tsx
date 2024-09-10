@@ -1,7 +1,8 @@
 'use client';
 
-import { signUpAction } from '@/lib/auth-actions';
+import { signUpAction, SignUpState } from '@/lib/auth-actions';
 import { useState } from 'react';
+import { useFormState } from 'react-dom';
 
 export default function SignUpForm() {
   const [user, setUser] = useState({
@@ -10,6 +11,9 @@ export default function SignUpForm() {
     password: '',
   });
   const [isGeneratedUser, setIsGeneratedUser] = useState(false);
+  const initialState: SignUpState = { message: null, errors: {} };
+  const [state, formAction] = useFormState(signUpAction, initialState);
+
   const TOTAL_POKEMONS = 600;
 
   const generateRandomUser = async () => {
@@ -26,24 +30,26 @@ export default function SignUpForm() {
     setIsGeneratedUser(true);
   };
 
+  const formErrors = state.errors ? Object.values(state.errors).flat() : [];
+
   return (
     <>
-      <form action={signUpAction}>
+      <form action={formAction}>
         <h5 className="pb-3 font-semibold">Registrate para continuar</h5>
         <input
+          className="mb-2 block h-4 w-full rounded border border-gray-500 px-2 py-5 text-sm outline-secondary"
           type="text"
           name="name"
           placeholder="Introduce tu nombre"
           value={user.name}
-          onChange={e => setUser({ ...user, name: e.target.value })}
-          className="mb-2 block h-4 w-full rounded border border-gray-500 px-2 py-5 text-sm outline-secondary"></input>
+          onChange={e => setUser({ ...user, name: e.target.value })}></input>
         <input
+          className="mb-2 block h-4 w-full rounded border border-gray-500 px-2 py-5 text-sm outline-secondary"
           type="email"
           name="email"
           placeholder="Introduce tu correo electrónico"
           value={user.email}
-          onChange={e => setUser({ ...user, email: e.target.value })}
-          className="mb-2 block h-4 w-full rounded border border-gray-500 px-2 py-5 text-sm outline-secondary"></input>
+          onChange={e => setUser({ ...user, email: e.target.value })}></input>
         <input
           type={isGeneratedUser ? 'text' : 'password'}
           name="password"
@@ -54,6 +60,13 @@ export default function SignUpForm() {
             setIsGeneratedUser(false);
           }}
           className="mb-2 block h-4 w-full rounded border border-gray-500 px-2 py-5 text-sm outline-secondary"></input>
+        <div id="password-error" aria-live="polite" aria-atomic="true">
+          {formErrors.map((error: string) => (
+            <p className="mb-2 text-sm text-red-500" key={error}>
+              {error}
+            </p>
+          ))}
+        </div>
         <button
           type="submit"
           className="block w-full rounded bg-secondary py-2 text-sm font-semibold text-white hover:bg-[#0055cc]">
