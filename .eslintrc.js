@@ -1,7 +1,7 @@
 /**
  * @type {import("eslint").Linter.Config}
  */
- module.exports = {
+module.exports = {
   extends: ['airbnb', 'airbnb-typescript', 'eslint-config-prettier', 'next/core-web-vitals'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -26,5 +26,6 @@
       },
     ],
     'import/prefer-default-export': 'off',
+    'jsx-a11y/anchor-is-valid': 'off',
   },
 };

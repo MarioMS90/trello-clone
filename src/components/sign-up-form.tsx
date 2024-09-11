@@ -35,25 +35,25 @@ export default function SignUpForm() {
   return (
     <>
       <form action={formAction}>
-        <h5 className="pb-3 font-semibold">Registrate para continuar</h5>
+        <h5 className="pb-3 font-semibold">Sign up to continue</h5>
         <input
           className="mb-2 block h-4 w-full rounded border border-gray-500 px-2 py-5 text-sm outline-secondary"
           type="text"
           name="name"
-          placeholder="Introduce tu nombre"
+          placeholder="Enter your name"
           value={user.name}
           onChange={e => setUser({ ...user, name: e.target.value })}></input>
         <input
           className="mb-2 block h-4 w-full rounded border border-gray-500 px-2 py-5 text-sm outline-secondary"
           type="email"
           name="email"
-          placeholder="Introduce tu correo electrónico"
+          placeholder="Enter your email"
           value={user.email}
           onChange={e => setUser({ ...user, email: e.target.value })}></input>
         <input
           type={isGeneratedUser ? 'text' : 'password'}
           name="password"
-          placeholder="Introduce tu contraseña"
+          placeholder="Enter your password"
           value={user.password}
           onChange={e => {
             setUser({ ...user, password: e.target.value });
@@ -69,15 +69,15 @@ export default function SignUpForm() {
         </div>
         <button
           type="submit"
-          className="block w-full rounded bg-secondary py-2 text-sm font-semibold text-white hover:bg-[#0055cc]">
-          Registrarse
+          className="block w-full rounded bg-secondary py-2 text-sm font-medium text-white hover:bg-[#0055cc]">
+          Sign Up
         </button>
       </form>
       <button
         type="button"
         onClick={generateRandomUser}
-        className="my-2 block w-full rounded bg-primary py-2 text-sm font-semibold text-white hover:opacity-90">
-        Generar usuario
+        className="my-2 block w-full rounded bg-primary py-2 text-sm font-medium text-white hover:opacity-90">
+        Generate User
       </button>
     </>
   );

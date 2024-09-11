@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import './globals.css';
+import './login.css';
 import TrelloIcon from '@/components/icons/trello';
 import AtlassianIcon from '@/components/icons/atlassian';
 import Link from 'next/link';
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: 'Login',
 };
 
-export default function RootLayout({
+export default function Layout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -24,15 +24,14 @@ export default function RootLayout({
         <footer className="mt-4 flex flex-col border-t border-gray-300 pt-6 text-xs [&>*>a]:text-secondary">
           <AtlassianIcon height="24px" />
           <p className="py-2">
-            Una cuenta para Trello, Jira, Confluence y <Link href="/">más</Link>.
+            One account for Trello, Jira, Confluence, and <Link href="#">more</Link>.
           </p>
           <div className="flex items-center justify-center gap-2">
-            <Link href="/">Política de privacidad</Link>•<Link href="/">Aviso de usuario</Link>
+            <Link href="#">Privacy Policy</Link>•<Link href="#">User Notice</Link>
           </div>
           <p className="py-2">
-            Este sitio está protegido por reCAPTCHA, y se aplican la{' '}
-            <Link href="/">política de privacidad</Link> y las
-            <Link href="/">condiciones de servicio</Link> de Google.
+            This site is protected by reCAPTCHA, and the <Link href="#">privacy policy</Link> and
+            <Link href="#">terms of service</Link> of Google apply.
           </p>
         </footer>
       </section>

@@ -10,8 +10,8 @@ export default function SignUpPage() {
       <Link
         type="button"
         href="/sign-in"
-        className="my-1 py-2 text-sm font-semibold text-secondary underline">
-        Iniciar sesión
+        className="my-1 py-2 text-sm font-medium text-secondary hover:underline">
+        Sign In
       </Link>
     </>
   );
