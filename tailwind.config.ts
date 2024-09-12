@@ -11,8 +11,13 @@ const config: Config = {
       colors: {
         primary: 'var(--color-primary)',
         secondary: 'var(--color-secondary)',
-        'primary-background': 'var(--color-primary-background)',
-        'secondary-background': 'var(--color-secondary-background)',
+        'main-background': 'var(--main-background)',
+        'sidenav-background': 'var(--sidenav-background)',
+        'header-background': 'var(--header-background)',
+        'button-hovered-background': 'var(--button-hovered-background)',
+      },
+      boxShadow: {
+        'custom-light': '1px 0px 0px 0px hsl(0deg 0% 100% / 14%)',
       },
     },
   },

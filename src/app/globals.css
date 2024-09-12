@@ -5,8 +5,10 @@
 :root {
   --color-primary: #172b4d;
   --color-secondary: #0c66e4;
-  --color-primary-background: #3fa495;
-  --color-secondary-background: #14553a;
+  --main-background: #3fa495;
+  --sidenav-background: #196a48e6;
+  --header-background: #14553a;
+  --button-hovered-background: #196a48e6;
 }
 
 body {

@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import AppsIcon from './icons/apps';
-import TrelloIcon from './icons/trello';
 import ArrowDownIcon from './icons/arrow-down';
 import SearchIcon from './icons/search';
 import Avatar from './ui/avatar';
@@ -8,21 +7,21 @@ import TrelloWhiteIcon from './icons/trello-white';
 
 export default function Header() {
   return (
-    <header className="flex items-center justify-between border border-b-gray-300 p-1.5 text-white">
+    <header className="bg-header-background flex h-12 items-center justify-between border-b border-b-white border-opacity-30 p-1.5 text-white">
       <nav
         className={`
-          flex
-          items-center
-          text-sm 
+          [&>a:hover]:bg-button-hovered-background
+          [&>div:hover]:bg-button-hovered-background
+          flex 
+          items-center 
+          text-sm
           font-medium 
-          [&>a:hover]:bg-gray-200 
           [&>a]:rounded 
           [&>a]:p-1.5 
-          [&>div:hover]:bg-gray-200 
           [&>div]:flex 
           [&>div]:cursor-pointer 
           [&>div]:items-center 
-          [&>div]:gap-2 
+          [&>div]:gap-2
           [&>div]:rounded 
           [&>div]:px-3 
           [&>div]:py-1.5 
@@ -42,7 +41,7 @@ export default function Header() {
           <ArrowDownIcon height="16px" />
         </div>
         <button
-          className="ml-3 rounded bg-secondary px-3 py-1.5 text-white hover:opacity-90"
+          className="ml-3 rounded bg-white bg-opacity-20 px-3 py-1.5 text-white hover:bg-opacity-30"
           type="button">
           Create board
         </button>
@@ -53,7 +52,7 @@ export default function Header() {
             <SearchIcon height="17px" />
           </span>
           <input
-            className="h-full w-full rounded border border-gray-400 pl-8 text-sm"
+            className="h-full w-full rounded border border-gray-400 bg-white bg-opacity-20 pl-8 text-sm text-white placeholder-white outline-none hover:bg-opacity-30 focus-visible:border-secondary"
             type="text"
             placeholder="Search"></input>
         </div>

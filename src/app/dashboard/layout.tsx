@@ -7,12 +7,12 @@ export default function Layout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="bg-primary-background flex h-full flex-col">
+    <>
       <Header />
-      <div className="flex h-full">
+      <div className="flex h-[calc(100%-48px)]">
         <SideNav />
-        <main className="pl-4">{children}</main>
+        <main className="bg-main-background grow pl-4">{children}</main>
       </div>
-    </div>
+    </>
   );
 }
