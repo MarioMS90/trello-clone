@@ -5,7 +5,8 @@
 :root {
   --color-primary: #172b4d;
   --color-secondary: #0c66e4;
-  --color-grey: #44546f;
+  --color-primary-background: #3fa495;
+  --color-secondary-background: #14553a;
 }
 
 body {

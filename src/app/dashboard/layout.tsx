@@ -7,11 +7,11 @@ export default function Layout({
   children: React.ReactNode;
 }>) {
   return (
-    <div id="dashboard">
+    <div className="bg-primary-background flex h-full flex-col">
       <Header />
-      <div className="flex">
+      <div className="flex h-full">
         <SideNav />
-        {children}
+        <main className="pl-4">{children}</main>
       </div>
     </div>
   );
