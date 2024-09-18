@@ -44,7 +44,7 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
   if (user && isOnLoginPage) {
-    url.pathname = '/dashboard';
+    url.pathname = '/dashboard/boards';
     return NextResponse.redirect(url);
   }
 
