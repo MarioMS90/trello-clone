@@ -35,16 +35,16 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const isOnDashboard = request.nextUrl.pathname.startsWith('/dashboard');
+  const isOnWorkspacePage = request.nextUrl.pathname.startsWith('/workspaces');
   const isOnLoginPage = request.nextUrl.pathname.startsWith('/sign');
 
   const url = request.nextUrl.clone();
-  if (!user && isOnDashboard) {
+  if (!user && isOnWorkspacePage) {
     url.pathname = '/sign-in';
     return NextResponse.redirect(url);
   }
   if (user && isOnLoginPage) {
-    url.pathname = '/dashboard/boards';
+    url.pathname = '/workspaces/a0a3a1c4-ac37-4409-8017-6b50bf664a45';
     return NextResponse.redirect(url);
   }
 

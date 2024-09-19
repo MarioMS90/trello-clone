@@ -11,7 +11,7 @@ export default function Layout({
       <Header />
       <div className="flex h-[calc(100%-48px)]">
         <SideNav />
-        <main className="bg-main-background grow pl-4">{children}</main>
+        <main className="grow bg-main-background pl-4 pt-4">{children}</main>
       </div>
     </>
   );
