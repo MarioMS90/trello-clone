@@ -8,7 +8,8 @@
   --main-background: #3fa495;
   --sidenav-background: #196a48e6;
   --header-background: #14553a;
-  --button-hovered-background: #196a48e6;
+  --button-hovered-background: #ffffff3c;
+  --button-selected-background: #ffffff3c;
 }
 
 body {

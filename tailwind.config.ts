@@ -15,6 +15,7 @@ const config: Config = {
         'sidenav-background': 'var(--sidenav-background)',
         'header-background': 'var(--header-background)',
         'button-hovered-background': 'var(--button-hovered-background)',
+        'button-selected-background': 'var(--button-selected-background)',
       },
       boxShadow: {
         'custom-light': '1px 0px 0px 0px hsl(0deg 0% 100% / 14%)',
