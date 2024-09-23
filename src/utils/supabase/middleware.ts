@@ -44,7 +44,7 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
   if (user && isOnLoginPage) {
-    url.pathname = '/workspaces/a0a3a1c4-ac37-4409-8017-6b50bf664a45';
+    url.pathname = '/workspaces';
     return NextResponse.redirect(url);
   }
 

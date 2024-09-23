@@ -1,4 +1,7 @@
+'use client';
+
 import Link from 'next/link';
+import { useWorkspacesStore } from '@/providers/workspaces-store-provider';
 import ArrowDownIcon from './icons/arrow-down';
 import BoardsIcon from './icons/boards';
 import StarIcon from './icons/star';
@@ -6,6 +9,7 @@ import UserIcon from './icons/user';
 import WorkspaceLogo from './ui/workspace-logo';
 
 export default function SideNav() {
+  const { workspaces } = useWorkspacesStore(state => state);
   const workspace = false;
 
   return (
@@ -69,7 +73,7 @@ export default function SideNav() {
         </>
       ) : (
         <Link href="/workspaces">
-          <div className="bg-button-selected-background mt-4 py-2">
+          <div className="mt-4 bg-button-selected-background py-2">
             <span className="flex items-center gap-3 px-4">
               <BoardsIcon height="16px" /> Workspaces
             </span>

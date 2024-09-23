@@ -1,0 +1,16 @@
+import { SVGProps } from 'react';
+
+export default function StarFillIcon({ width, height, className }: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      className={className}
+      width={width}
+      height={height}
+      stroke-linejoin="round"
+      viewBox="0 0 16 16">
+      <path
+        d="M7.99999 0.489502L10.5734 5.20807L15.8562 6.19736L12.1638 10.1029L12.8554 15.4329L7.99999 13.1281L3.1446 15.4329L3.83621 10.1029L0.143799 6.19736L5.42663 5.20807L7.99999 0.489502Z"
+        fill="currentColor"></path>
+    </svg>
+  );
+}
