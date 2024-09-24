@@ -4,11 +4,16 @@ export interface Task {
   description?: string;
 }
 
+export interface TaskList {
+  id: string;
+  name: string;
+}
+
 export interface Board {
   id: string;
   name: string;
   marked: boolean;
-  tasks: Task[];
+  task_list?: TaskList[];
 }
 
 export interface Workspace {
