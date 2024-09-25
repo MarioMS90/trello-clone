@@ -8,7 +8,8 @@ import {
 } from '@/lib/placeholder-data';
 import { createClient } from '@/utils/supabase/server';
 
-async function seedWorkspaces(supabase) {
+async function seedWorkspaces() {
+  const supabase = createClient();
   const { data, error } = await supabase.from('workspace').upsert(workspaces).select();
 
   if (error) {
@@ -18,7 +19,8 @@ async function seedWorkspaces(supabase) {
   return data;
 }
 
-async function seedUserWorkspaces(supabase) {
+async function seedUserWorkspaces() {
+  const supabase = createClient();
   const { data, error } = await supabase.from('user_workspace').upsert(userWorkspace).select();
 
   if (error) {
@@ -28,7 +30,8 @@ async function seedUserWorkspaces(supabase) {
   return data;
 }
 
-async function seedBoards(supabase) {
+async function seedBoards() {
+  const supabase = createClient();
   const { data, error } = await supabase.from('board').upsert(boards).select();
 
   if (error) {
@@ -38,7 +41,8 @@ async function seedBoards(supabase) {
   return data;
 }
 
-async function seedTaskLists(supabase) {
+async function seedTaskLists() {
+  const supabase = createClient();
   const { data, error } = await supabase.from('task_list').upsert(taskLists).select();
 
   if (error) {
@@ -48,7 +52,8 @@ async function seedTaskLists(supabase) {
   return data;
 }
 
-async function seedTasks(supabase) {
+async function seedTasks() {
+  const supabase = createClient();
   const { data, error } = await supabase.from('task').upsert(taks).select();
 
   if (error) {
@@ -58,7 +63,8 @@ async function seedTasks(supabase) {
   return data;
 }
 
-async function seedComments(supabase) {
+async function seedComments() {
+  const supabase = createClient();
   const { data, error } = await supabase.from('comment').upsert(comments).select();
 
   if (error) {
@@ -70,14 +76,12 @@ async function seedComments(supabase) {
 
 export async function GET() {
   try {
-    const supabase = createClient();
-
-    await seedWorkspaces(supabase);
-    await seedUserWorkspaces(supabase);
-    await seedBoards(supabase);
-    await seedTaskLists(supabase);
-    await seedTasks(supabase);
-    await seedComments(supabase);
+    await seedWorkspaces();
+    await seedUserWorkspaces();
+    await seedBoards();
+    await seedTaskLists();
+    await seedTasks();
+    await seedComments();
 
     return Response.json({ message: 'Database seeded successfully' });
   } catch (error: any) {

@@ -1,14 +1,14 @@
-import { Workspace } from '@/types/workspaces';
+import { UserWorkspace } from '@/types/types';
 import { createStore } from 'zustand';
 
 export interface WorkspacesStore {
-  workspaces: Workspace[];
+  workspaces: UserWorkspace[];
   selectedWorkspaceId?: string;
-  addWorkspace: (workspace: Workspace) => void;
+  addWorkspace: (workspace: UserWorkspace) => void;
   setSelectedWorkspaceId: (id: string) => void;
 }
 
-export const createWorkspacesStore = (workspaces: Workspace[]) =>
+export const createWorkspacesStore = (workspaces: UserWorkspace[]) =>
   createStore<WorkspacesStore>()(set => ({
     workspaces,
     addWorkspace: workspace => set(state => ({ workspaces: [...state.workspaces, workspace] })),

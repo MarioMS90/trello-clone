@@ -1,49 +1,17 @@
 import Header from '@/components/header';
 import SideNav from '@/components/sidenav';
+import { fetchUserWorkspaces } from '@/lib/data';
 import { WorkspacesStoreProvider } from '@/providers/workspaces-store-provider';
 
-const workspacesTest = [
-  {
-    id: 'a0a3a1c4-ac37-4409-8017-6b50bf664a45',
-    name: 'Mario workspace',
-    boards: [
-      {
-        id: '1',
-        name: 'My board',
-        marked: true,
-      },
-      {
-        id: '2',
-        name: 'Another board',
-        marked: false,
-      },
-    ],
-  },
-  {
-    id: '2',
-    name: 'Work',
-    boards: [
-      {
-        id: '3',
-        name: 'Work board',
-        marked: false,
-      },
-      {
-        id: '4',
-        name: 'Another work board',
-        marked: true,
-      },
-    ],
-  },
-];
-
-export default function Layout({
+export default async function Layout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const workspaces = await fetchUserWorkspaces();
+
   return (
-    <WorkspacesStoreProvider workspaces={workspacesTest}>
+    <WorkspacesStoreProvider workspaces={workspaces}>
       <Header />
       <div className="flex h-[calc(100%-48px)]">
         <SideNav />

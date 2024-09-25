@@ -3,7 +3,7 @@
 import { type ReactNode, createContext, useRef, useContext } from 'react';
 import { useStore } from 'zustand';
 import { WorkspacesStore, createWorkspacesStore } from '@/stores/workspaces-store';
-import { Workspace } from '@/types/workspaces';
+import { UserWorkspace } from '@/types/types';
 
 export type WorkspacesStoreApi = ReturnType<typeof createWorkspacesStore>;
 
@@ -14,7 +14,7 @@ export function WorkspacesStoreProvider({
   workspaces,
 }: {
   children: ReactNode;
-  workspaces: Workspace[];
+  workspaces: UserWorkspace[];
 }) {
   const storeRef = useRef<WorkspacesStoreApi>();
   if (!storeRef.current) {
