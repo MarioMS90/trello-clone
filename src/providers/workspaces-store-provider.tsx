@@ -3,7 +3,7 @@
 import { type ReactNode, createContext, useRef, useContext } from 'react';
 import { useStore } from 'zustand';
 import { WorkspacesStore, createWorkspacesStore } from '@/stores/workspaces-store';
-import { UserWorkspace } from '@/types/types';
+import { UserWorkspace } from '@/types/app-types';
 
 export type WorkspacesStoreApi = ReturnType<typeof createWorkspacesStore>;
 

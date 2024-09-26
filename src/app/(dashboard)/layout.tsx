@@ -1,5 +1,5 @@
-import Header from '@/components/header';
-import SideNav from '@/components/sidenav';
+import Header from '@/components/dashboard/header';
+import SideNav from '@/components/dashboard/sidenav';
 import { fetchUserWorkspaces } from '@/lib/data';
 import { WorkspacesStoreProvider } from '@/providers/workspaces-store-provider';
 

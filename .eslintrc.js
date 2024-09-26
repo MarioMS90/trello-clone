@@ -27,5 +27,6 @@ module.exports = {
     ],
     'import/prefer-default-export': 'off',
     'jsx-a11y/anchor-is-valid': 'off',
+    'react/require-default-props': 'off',
   },
 };

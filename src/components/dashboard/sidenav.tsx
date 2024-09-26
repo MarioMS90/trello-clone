@@ -2,18 +2,26 @@
 
 import Link from 'next/link';
 import { useWorkspacesStore } from '@/providers/workspaces-store-provider';
-import ArrowDownIcon from './icons/arrow-down';
-import BoardsIcon from './icons/boards';
-import StarIcon from './icons/star';
-import UserIcon from './icons/user';
-import WorkspaceLogo from './ui/workspace-logo';
+import ArrowDownIcon from '../icons/arrow-down';
+import BoardsIcon from '../icons/boards';
+import StarIcon from '../icons/star';
+import UserIcon from '../icons/user';
+import WorkspaceLogo from '../ui/workspace-logo';
 
 export default function SideNav() {
   const { workspaces } = useWorkspacesStore(state => state);
   const workspace = false;
 
   return (
-    <nav className="w-[260px] border-r border-r-white border-opacity-30 bg-sidenav-background text-white">
+    <nav
+      className={`
+      w-[260px] 
+      border-r 
+      border-r-white 
+      border-opacity-30 
+      bg-sidenav-background 
+      text-white
+    `}>
       {workspace ? (
         <>
           <div className="border-b border-b-white border-opacity-20 p-4">
@@ -22,7 +30,16 @@ export default function SideNav() {
                 <WorkspaceLogo />
                 <h2 className="pr-4 text-sm font-bold">Mario workspace</h2>
               </div>
-              <div className="rotate-90 cursor-pointer rounded bg-white bg-opacity-10 p-1.5 hover:bg-opacity-20">
+              <div
+                className={`
+                  rotate-90 
+                  cursor-pointer 
+                  rounded 
+                  bg-white 
+                  bg-opacity-10 
+                  p-1.5 
+                  hover:bg-opacity-20
+                `}>
                 <ArrowDownIcon height="15px" />
               </div>
             </div>

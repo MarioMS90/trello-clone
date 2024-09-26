@@ -1,22 +1,22 @@
-import SignUpForm from '@/components/sign-up-form';
+import SignInForm from '@/components/auth/sign-in-form';
 import { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Sign Up',
+  title: 'Sign In',
 };
 
-export default function SignUpPage() {
+export default function SignInPage() {
   return (
     <>
       <div className="my-2">
-        <SignUpForm />
+        <SignInForm />
       </div>
       <Link
         type="button"
-        href="/sign-in"
+        href="/sign-up"
         className="my-1 py-2 text-sm font-medium text-secondary hover:underline">
-        Sign In
+        Sign Up
       </Link>
     </>
   );

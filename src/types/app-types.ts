@@ -1,4 +1,4 @@
-import { Tables } from './database.types';
+import { Tables } from './database-types';
 
 export type UserWorkspace = Workspace & Pick<Tables<'user_workspace'>, 'role'>;
 
