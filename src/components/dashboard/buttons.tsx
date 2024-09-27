@@ -1,6 +1,6 @@
 'use client';
 
-import { useWorkspacesStore } from '@/providers/workspaces-store-provider';
+import { useWorkspacesStore } from '@/stores/workspaces-store';
 
 function Button({ text, handler }: { text: string; handler: () => void }) {
   return (
@@ -25,7 +25,7 @@ function Button({ text, handler }: { text: string; handler: () => void }) {
 }
 
 export function ButtonCreateWorkspace() {
-  const { addWorkspace } = useWorkspacesStore(state => state);
+  const { addWorkspace } = useWorkspacesStore();
 
   const handleCreateWorkspace = () => {
     // addWorkspace();
@@ -37,7 +37,7 @@ export function ButtonCreateWorkspace() {
 export function ButtonCreateBoard() {
   'use client';
 
-  // const { addBoard } = useWorkspacesStore(state => state);
+  // const { addBoard } = useWorkspacesStore();
 
   const handleCreateBoard = () => {
     // addBoard();

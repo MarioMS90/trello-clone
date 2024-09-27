@@ -1,14 +1,14 @@
-import { useWorkspacesStore } from '@/providers/workspaces-store-provider';
+import { useWorkspacesStore } from '@/stores/workspaces-store';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Boards',
 };
 
-export default function Page({ params }: { params: { id: string } }) {
-  const { workspaces, setSelectedWorkspaceId } = useWorkspacesStore(state => state);
+export default function BoardPage({ params }: { params: { id: string } }) {
+  const { workspaces, setSelectedWorkspace } = useWorkspacesStore();
   const selectedWorkspaceId = workspaces.find(workspace => )
-  setSelectedWorkspaceId(workspaces.f)
+  setSelectedWorkspaceId(workspaces)
 
   return <div>My Board: {params.id}</div>;
 }

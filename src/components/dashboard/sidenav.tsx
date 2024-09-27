@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { useWorkspacesStore } from '@/providers/workspaces-store-provider';
+import { useWorkspacesStore } from '@/stores/workspaces-store';
+import { useParams, usePathname } from 'next/navigation';
 import ArrowDownIcon from '../icons/arrow-down';
 import BoardsIcon from '../icons/boards';
 import StarIcon from '../icons/star';
@@ -9,8 +10,11 @@ import UserIcon from '../icons/user';
 import WorkspaceLogo from '../ui/workspace-logo';
 
 export default function SideNav() {
-  const { workspaces } = useWorkspacesStore(state => state);
-  const workspace = false;
+  const pathname = usePathname();
+  const { id } = useParams();
+  const { selectedWorkspace } = useWorkspacesStore();
+
+  const isWorkspacePage = pathname.startsWith('/workspaces/') && id;
 
   return (
     <nav
@@ -22,7 +26,7 @@ export default function SideNav() {
       bg-sidenav-background 
       text-white
     `}>
-      {workspace ? (
+      {isWorkspacePage ? (
         <>
           <div className="border-b border-b-white border-opacity-20 p-4">
             <div className="flex items-center justify-between">

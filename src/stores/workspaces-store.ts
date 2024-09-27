@@ -1,17 +1,18 @@
 import { UserWorkspace } from '@/types/app-types';
-import { createStore } from 'zustand';
+import { create } from 'zustand';
 
-export interface WorkspacesStore {
+type WorkspacesStore = {
   workspaces: UserWorkspace[];
   selectedWorkspace: UserWorkspace | null;
+  setWorkspaces: (workspaces: UserWorkspace[]) => void;
   setSelectedWorkspace: (workspace: UserWorkspace) => void;
   addWorkspace: (workspace: UserWorkspace) => void;
-}
+};
 
-export const createWorkspacesStore = (workspaces: UserWorkspace[]) =>
-  createStore<WorkspacesStore>()(set => ({
-    workspaces,
-    selectedWorkspace: null,
-    setSelectedWorkspace: workspace => set({ selectedWorkspace: workspace }),
-    addWorkspace: workspace => set(state => ({ workspaces: [...state.workspaces, workspace] })),
-  }));
+export const useWorkspacesStore = create<WorkspacesStore>()(set => ({
+  workspaces: [],
+  selectedWorkspace: null,
+  setWorkspaces: workspaces => set({ workspaces }),
+  setSelectedWorkspace: workspace => set({ selectedWorkspace: workspace }),
+  addWorkspace: workspace => set(state => ({ workspaces: [...state.workspaces, workspace] })),
+}));

@@ -28,5 +28,6 @@ module.exports = {
     'import/prefer-default-export': 'off',
     'jsx-a11y/anchor-is-valid': 'off',
     'react/require-default-props': 'off',
+    '@typescript-eslint/no-use-before-define': ['error', { functions: false }],
   },
 };

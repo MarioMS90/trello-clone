@@ -1,6 +1,5 @@
 import { UserWorkspace } from '@/types/app-types';
 import { createClient } from '@/utils/supabase/server';
-import { QueryData } from '@supabase/supabase-js';
 
 export async function fetchUserWorkspaces(): Promise<UserWorkspace[]> {
   const supabase = createClient();
@@ -11,7 +10,7 @@ export async function fetchUserWorkspaces(): Promise<UserWorkspace[]> {
 
   if (!user) throw new Error('User not logged in');
 
-  const workspacesQuery = supabase
+  const query = supabase
     .from('workspace')
     .select(
       `
@@ -26,24 +25,24 @@ export async function fetchUserWorkspaces(): Promise<UserWorkspace[]> {
     )
     .eq('user_workspace.user_id', user.id);
 
-  type Workspaces = QueryData<typeof workspacesQuery>;
-  const { data, error } = await workspacesQuery;
+  console.log('Fetching data...');
+  await new Promise(resolve => setTimeout(resolve, 3000));
+
+  const { data, error } = await query;
+
+  console.log('Data fetch completed after 3 seconds.');
 
   if (error) throw new Error(error.message);
 
-  const workspaces: Workspaces = data;
+  const workspaces = data.map(({ id, name, boards, user_workspace: [{ role }], created_at }) => ({
+    id,
+    name,
+    role,
+    boards,
+    created_at,
+  }));
 
-  const proccessedWorkspaces = workspaces.map(
-    ({ id, name, boards, user_workspace: [{ role }], created_at }) => ({
-      id,
-      name,
-      role,
-      boards,
-      created_at,
-    }),
-  );
-
-  return proccessedWorkspaces;
+  return workspaces;
 }
 
 export async function fetchWorkspaceWithTasks(idWorkspace: string): Promise<UserWorkspace> {
@@ -55,7 +54,7 @@ export async function fetchWorkspaceWithTasks(idWorkspace: string): Promise<User
 
   if (!user) throw new Error('User not logged in');
 
-  const workspaceQuery = supabase
+  const query = supabase
     .from('workspace')
     .select(
       `
@@ -64,38 +63,39 @@ export async function fetchWorkspaceWithTasks(idWorkspace: string): Promise<User
       role
     ),
     boards: board(
-      *
-    ),
-    task_lists: task_list(
-      *
-    ),
-    tasks: task(
-      *
-    ),
-    comments: comment(
-      *
+      *,
+      task_lists: task_list(
+        *,
+        tasks: task(
+          *, 
+          comments: comment(
+            *, 
+            user: user(name)
+          )
+        )
+      )
     )
     `,
     )
     .eq('user_workspace.user_id', user.id)
-    .eq('workspace.id', idWorkspace);
+    .eq('id', idWorkspace);
 
-  type Workspace = QueryData<typeof workspaceQuery>;
-  const { data, error } = await workspaceQuery;
+  console.log('Fetching data...');
+  await new Promise(resolve => setTimeout(resolve, 3000));
+
+  const { data, error } = await query;
+
+  console.log('Data fetch completed after 3 seconds.');
 
   if (error) throw new Error(error.message);
 
-  const workspaces: Workspace = data;
+  const workspace = data.map(({ id, name, boards, user_workspace: [{ role }], created_at }) => ({
+    id,
+    name,
+    role,
+    boards,
+    created_at,
+  }))[0];
 
-  const proccessedWorkspace = workspaces.map(
-    ({ id, name, boards, user_workspace: [{ role }], created_at }) => ({
-      id,
-      name,
-      role,
-      boards,
-      created_at,
-    }),
-  )[0];
-
-  return proccessedWorkspace;
+  return workspace;
 }

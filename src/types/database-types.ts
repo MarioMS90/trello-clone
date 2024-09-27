@@ -7,28 +7,28 @@ export type Database = {
         Row: {
           created_at: string;
           id: string;
-          id_workspace: string;
+          workspace_id: string;
           marked: boolean;
           name: string;
         };
         Insert: {
           created_at?: string;
           id?: string;
-          id_workspace: string;
+          workspace_id: string;
           marked?: boolean;
           name: string;
         };
         Update: {
           created_at?: string;
           id?: string;
-          id_workspace?: string;
+          workspace_id?: string;
           marked?: boolean;
           name?: string;
         };
         Relationships: [
           {
-            foreignKeyName: 'board_id_workspace_fkey';
-            columns: ['id_workspace'];
+            foreignKeyName: 'board_workspace_id_fkey';
+            columns: ['workspace_id'];
             isOneToOne: false;
             referencedRelation: 'workspace';
             referencedColumns: ['id'];

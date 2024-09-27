@@ -3,13 +3,19 @@
 import UserIcon from '@/components/icons/user';
 import WorkspaceLogo from '@/components/ui/workspace-logo';
 import Link from 'next/link';
-import { useWorkspacesStore } from '@/providers/workspaces-store-provider';
+import { useWorkspacesStore } from '@/stores/workspaces-store';
 import BoardsIcon from '@/components/icons/boards';
 import { ButtonCreateBoard } from '@/components/dashboard/buttons';
-import { Boards } from './boards';
+import { UserWorkspace } from '@/types/app-types';
+import { useEffect } from 'react';
+import { BoardList } from './boards';
 
-export function Workspaces() {
-  const { workspaces } = useWorkspacesStore(state => state);
+export function WorkspacesList({ workspaces }: { workspaces: UserWorkspace[] }) {
+  const { setWorkspaces } = useWorkspacesStore();
+
+  useEffect(() => {
+    setWorkspaces(workspaces);
+  }, [workspaces, setWorkspaces]);
 
   return (
     <ul className="mt-6 space-y-12">
@@ -59,7 +65,7 @@ export function Workspaces() {
               </li>
             </ul>
           </div>
-          <Boards className="mt-6" boards={workspace.boards} extraItem={<ButtonCreateBoard />} />
+          <BoardList className="mt-6" boards={workspace.boards} extraItem={<ButtonCreateBoard />} />
         </li>
       ))}
     </ul>
