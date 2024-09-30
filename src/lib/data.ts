@@ -1,7 +1,7 @@
 import { UserWorkspace } from '@/types/app-types';
 import { createClient } from '@/utils/supabase/server';
 
-export async function fetchUserWorkspaces(): Promise<UserWorkspace[]> {
+export async function fetchWorkspaces(): Promise<UserWorkspace[]> {
   const supabase = createClient();
 
   const {
@@ -25,12 +25,7 @@ export async function fetchUserWorkspaces(): Promise<UserWorkspace[]> {
     )
     .eq('user_workspace.user_id', user.id);
 
-  console.log('Fetching data...');
-  await new Promise(resolve => setTimeout(resolve, 3000));
-
   const { data, error } = await query;
-
-  console.log('Data fetch completed after 3 seconds.');
 
   if (error) throw new Error(error.message);
 
@@ -80,12 +75,7 @@ export async function fetchWorkspaceWithTasks(idWorkspace: string): Promise<User
     .eq('user_workspace.user_id', user.id)
     .eq('id', idWorkspace);
 
-  console.log('Fetching data...');
-  await new Promise(resolve => setTimeout(resolve, 3000));
-
   const { data, error } = await query;
-
-  console.log('Data fetch completed after 3 seconds.');
 
   if (error) throw new Error(error.message);
 

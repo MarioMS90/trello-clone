@@ -4,6 +4,6 @@ export const metadata: Metadata = {
   title: 'Members',
 };
 
-export default function MembersPage({ params }: { params: { id: string } }) {
+export default function MembersPage() {
   return 'Members page, coming soon! 🚀';
 }

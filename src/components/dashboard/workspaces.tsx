@@ -3,19 +3,13 @@
 import UserIcon from '@/components/icons/user';
 import WorkspaceLogo from '@/components/ui/workspace-logo';
 import Link from 'next/link';
-import { useWorkspacesStore } from '@/stores/workspaces-store';
 import BoardsIcon from '@/components/icons/boards';
 import { ButtonCreateBoard } from '@/components/dashboard/buttons';
-import { UserWorkspace } from '@/types/app-types';
-import { useEffect } from 'react';
+import { useWorkspacesStore } from '@/providers/workspaces-store-provider';
 import { BoardList } from './boards';
 
-export function WorkspacesList({ workspaces }: { workspaces: UserWorkspace[] }) {
-  const { setWorkspaces } = useWorkspacesStore();
-
-  useEffect(() => {
-    setWorkspaces(workspaces);
-  }, [workspaces, setWorkspaces]);
+export function Workspaces() {
+  const { workspaces } = useWorkspacesStore(store => store);
 
   return (
     <ul className="mt-6 space-y-12">

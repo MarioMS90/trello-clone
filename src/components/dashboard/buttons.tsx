@@ -1,6 +1,6 @@
 'use client';
 
-import { useWorkspacesStore } from '@/stores/workspaces-store';
+import { useWorkspacesStore } from '@/providers/workspaces-store-provider';
 
 function Button({ text, handler }: { text: string; handler: () => void }) {
   return (
@@ -25,7 +25,7 @@ function Button({ text, handler }: { text: string; handler: () => void }) {
 }
 
 export function ButtonCreateWorkspace() {
-  const { addWorkspace } = useWorkspacesStore();
+  const { addWorkspace } = useWorkspacesStore;
 
   const handleCreateWorkspace = () => {
     // addWorkspace();

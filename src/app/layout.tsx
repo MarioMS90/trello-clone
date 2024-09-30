@@ -6,7 +6,7 @@ export const metadata: Metadata = {
     template: '%s | Trello clone',
     default: 'Trello clone',
   },
-  description: 'Developed with next js',
+  description: 'Developed with Next.js and Supabase',
 };
 
 export default function RootLayout({

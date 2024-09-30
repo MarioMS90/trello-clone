@@ -40,7 +40,7 @@ export default function Header() {
         <Link href="#">
           <AppsIcon height="20px" />
         </Link>
-        <Link href="/">
+        <Link href="/workspaces">
           <TrelloWhiteIcon height="25px" />
         </Link>
         <div>

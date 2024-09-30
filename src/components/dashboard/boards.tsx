@@ -1,33 +1,34 @@
 'use client';
 
-import { useWorkspacesStore } from '@/stores/workspaces-store';
-import { Board, UserWorkspace } from '@/types/app-types';
+import { Board } from '@/types/app-types';
 import Link from 'next/link';
-import { useEffect } from 'react';
+import { useWorkspacesStore } from '@/providers/workspaces-store-provider';
+import { useSelectedWorkspace } from '@/hooks/useSelectedWorkspace';
 import StarFillIcon from '../icons/star-fill';
 import StarIcon from '../icons/star';
+import { ButtonCreateBoard } from './buttons';
+
+export function SelectedBoards() {
+  const selectedWorkspace = useSelectedWorkspace();
+
+  return (
+    <BoardList
+      className="mt-6"
+      boards={selectedWorkspace?.boards ?? []}
+      extraItem={<ButtonCreateBoard />}
+    />
+  );
+}
 
 export function BoardList({
   className,
-  selectedWorkspace,
   boards,
   extraItem,
 }: {
   className?: string;
-  selectedWorkspace?: UserWorkspace;
-  boards?: Board[];
+  boards: Board[];
   extraItem?: React.ReactNode;
 }) {
-  const { setSelectedWorkspace } = useWorkspacesStore();
-
-  useEffect(() => {
-    if (!selectedWorkspace) {
-      return;
-    }
-
-    setSelectedWorkspace(selectedWorkspace);
-  }, [selectedWorkspace, setSelectedWorkspace]);
-
   return (
     <ul className={`mt-4 flex flex-wrap gap-4 ${className}`}>
       {boards &&
@@ -70,7 +71,7 @@ export function BoardList({
 }
 
 export function MarkedBoards() {
-  const { workspaces } = useWorkspacesStore();
+  const { workspaces } = useWorkspacesStore(store => store);
 
   const getMarkedBoards = () =>
     workspaces.flatMap(workspace => workspace.boards.filter(board => board.marked));
