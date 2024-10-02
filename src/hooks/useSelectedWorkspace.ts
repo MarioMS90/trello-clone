@@ -32,8 +32,8 @@ export function useSelectedWorkspace(): UserWorkspace | null {
     notFound();
   }
 
-  setSelectedWorkspaceId(selectedWorkspace?.id ?? null);
-  return selectedWorkspace ?? null;
+  setSelectedWorkspaceId(selectedWorkspace.id);
+  return selectedWorkspace;
 }
 
 function getWorkspaceIdFromBoard(workspaces: UserWorkspace[], boardId: string): string | null {
