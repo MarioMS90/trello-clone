@@ -9,8 +9,7 @@ import StarIcon from '../icons/star';
 import { ButtonCreateBoard } from './buttons';
 
 export function SelectedBoards() {
-  // const selectedWorkspace = useSelectedWorkspace();
-  const selectedWorkspace = null;
+  const selectedWorkspace = useSelectedWorkspace();
 
   return (
     <BoardList

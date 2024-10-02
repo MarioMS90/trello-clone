@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { useSelectedWorkspace } from '@/hooks/useSelectedWorkspace';
 import { useWorkspacesStore } from '@/providers/workspaces-store-provider';
 import AppsIcon from '../icons/apps';
 import ArrowDownIcon from '../icons/arrow-down';
