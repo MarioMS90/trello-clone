@@ -27,7 +27,7 @@ export default function SideNav() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <WorkspaceLogo />
-                <h2 className="pr-4 text-sm font-bold">Mario workspace</h2>
+                <h2 className="pr-4 text-sm font-bold">{selectedWorkspace.name}</h2>
               </div>
               <div
                 className={`

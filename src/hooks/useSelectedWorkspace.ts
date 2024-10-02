@@ -1,33 +1,38 @@
 import { useWorkspacesStore } from '@/providers/workspaces-store-provider';
 import { UserWorkspace } from '@/types/app-types';
 import { notFound, useParams, usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 export function useSelectedWorkspace(): UserWorkspace | null {
   const pathname = usePathname();
   const { id } = useParams<{ id: string }>();
-  const { workspaces } = useWorkspacesStore(store => store);
-  const [selectedWorkspaceId, setSelectedWorkspaceId] = useState<string | null>(null);
-
+  const { workspaces, selectedWorkspaceId, setSelectedWorkspaceId } = useWorkspacesStore(
+    store => store,
+  );
   const isWorkspacePage = pathname.startsWith('/workspaces/') && id;
   const isBoardPage = pathname.startsWith('/boards/') && id;
 
   useEffect(() => {
     if (!isWorkspacePage && !isBoardPage) {
-      return;
+      setSelectedWorkspaceId(null);
     }
+  }, [isWorkspacePage, isBoardPage]);
 
-    const workspaceIdParam = isBoardPage ? getWorkspaceIdFromBoard(workspaces, id) : id;
-    const selectedWorkspace = workspaces.find(workspace => workspace.id === workspaceIdParam);
+  if (selectedWorkspaceId) {
+    console.log('test1');
+    return workspaces.find(workspace => workspace.id === selectedWorkspaceId) ?? null;
+  }
 
-    if (!selectedWorkspace) {
-      notFound();
-    }
+  const workspaceId = isBoardPage ? getWorkspaceIdFromBoard(workspaces, id) : id;
+  const selectedWorkspace = workspaces.find(workspace => workspace.id === workspaceId);
 
-    setSelectedWorkspaceId(workspaceIdParam);
-  }, [workspaces, isWorkspacePage, isBoardPage, id]);
+  if (workspaceId && !selectedWorkspace) {
+    notFound();
+  }
 
-  return workspaces.find(workspace => workspace.id === selectedWorkspaceId) ?? null;
+  setSelectedWorkspaceId(selectedWorkspace?.id ?? null);
+
+  return selectedWorkspace ?? null;
 }
 
 function getWorkspaceIdFromBoard(workspaces: UserWorkspace[], boardId: string): string | null {
