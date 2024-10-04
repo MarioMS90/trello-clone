@@ -1,23 +1,18 @@
-'use client';
-
 import { Board } from '@/types/app-types';
 import Link from 'next/link';
-import { useWorkspacesStore } from '@/providers/workspaces-store-provider';
-import { useSelectedWorkspace } from '@/hooks/useSelectedWorkspace';
+import { fetchWorkspaces, getWorkspace } from '@/lib/data';
+import { notFound } from 'next/navigation';
 import StarFillIcon from '../icons/star-fill';
 import StarIcon from '../icons/star';
-import { ButtonCreateBoard } from './buttons';
 
-export function SelectedBoards() {
-  const selectedWorkspace = useSelectedWorkspace();
+export async function Boards({ workspaceId }: { workspaceId: string }) {
+  const workspace = await getWorkspace({ workspaceId });
 
-  return (
-    <BoardList
-      className="mt-6"
-      boards={selectedWorkspace?.boards ?? []}
-      extraItem={<ButtonCreateBoard />}
-    />
-  );
+  if (!workspace) {
+    notFound();
+  }
+
+  return <BoardList boards={workspace.boards} />;
 }
 
 export function BoardList({
@@ -33,7 +28,7 @@ export function BoardList({
     <ul className={`mt-4 flex flex-wrap gap-4 ${className}`}>
       {boards &&
         boards.map(({ id, name, marked }) => (
-          <li className="board" key={id}>
+          <li key={id}>
             <Link href={`/boards/${id}`}>
               <div
                 className={`
@@ -70,8 +65,8 @@ export function BoardList({
   );
 }
 
-export function MarkedBoards() {
-  const { workspaces } = useWorkspacesStore(store => store);
+export async function MarkedBoards() {
+  const workspaces = await fetchWorkspaces();
 
   const getMarkedBoards = () =>
     workspaces.flatMap(workspace => workspace.boards.filter(board => board.marked));

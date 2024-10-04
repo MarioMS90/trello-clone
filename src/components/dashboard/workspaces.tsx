@@ -1,15 +1,13 @@
-'use client';
-
 import UserIcon from '@/components/icons/user';
 import WorkspaceLogo from '@/components/ui/workspace-logo';
 import Link from 'next/link';
 import BoardsIcon from '@/components/icons/boards';
 import { ButtonCreateBoard } from '@/components/dashboard/buttons';
-import { useWorkspacesStore } from '@/providers/workspaces-store-provider';
+import { fetchWorkspaces } from '@/lib/data';
 import { BoardList } from './boards';
 
-export function Workspaces() {
-  const { workspaces } = useWorkspacesStore(store => store);
+export async function Workspaces() {
+  const workspaces = await fetchWorkspaces();
 
   return (
     <ul className="mt-6 space-y-12">

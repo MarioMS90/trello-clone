@@ -1,7 +1,4 @@
-'use client';
-
 import Link from 'next/link';
-import { useWorkspacesStore } from '@/providers/workspaces-store-provider';
 import AppsIcon from '../icons/apps';
 import ArrowDownIcon from '../icons/arrow-down';
 import SearchIcon from '../icons/search';
@@ -9,8 +6,6 @@ import Avatar from '../ui/avatar';
 import TrelloWhiteIcon from '../icons/trello-white';
 
 export default function Header() {
-  const { workspaces } = useWorkspacesStore(store => store);
-
   return (
     <header
       className={`

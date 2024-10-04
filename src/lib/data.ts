@@ -1,5 +1,22 @@
-import { UserWorkspace } from '@/types/app-types';
-import { createClient } from '@/utils/supabase/server';
+import { TaskList, UserWorkspace } from '@/types/app-types';
+import { createClient } from '@/lib/supabase/server';
+import { getWorkspaceIdFromBoard } from './utils';
+
+export async function getWorkspace({
+  workspaceId,
+  boardId,
+}: {
+  workspaceId?: string;
+  boardId?: string;
+}): Promise<UserWorkspace | undefined> {
+  const workspaces = await fetchWorkspaces();
+
+  const targetWorkspaceId = boardId ? getWorkspaceIdFromBoard(workspaces, boardId) : workspaceId;
+
+  const workspace = workspaces.find(_workspace => _workspace.id === targetWorkspaceId);
+
+  return workspace;
+}
 
 export async function fetchWorkspaces(): Promise<UserWorkspace[]> {
   const supabase = createClient();
@@ -10,22 +27,20 @@ export async function fetchWorkspaces(): Promise<UserWorkspace[]> {
 
   if (!user) throw new Error('User not logged in');
 
-  const query = supabase
+  const { data, error } = await supabase
     .from('workspace')
     .select(
       `
-    *,
-    user_workspace!inner(
-      role
-    ),
-    boards: board(
-      *
-    )
+      *,
+      user_workspace!inner(
+        role
+      ),
+      boards: board(
+        *
+      )
     `,
     )
     .eq('user_workspace.user_id', user.id);
-
-  const { data, error } = await query;
 
   if (error) throw new Error(error.message);
 
@@ -40,7 +55,7 @@ export async function fetchWorkspaces(): Promise<UserWorkspace[]> {
   return workspaces;
 }
 
-export async function fetchWorkspaceWithTasks(idWorkspace: string): Promise<UserWorkspace> {
+export async function fetchTaskLists(boardId: string): Promise<TaskList[]> {
   const supabase = createClient();
 
   const {
@@ -49,43 +64,33 @@ export async function fetchWorkspaceWithTasks(idWorkspace: string): Promise<User
 
   if (!user) throw new Error('User not logged in');
 
-  const query = supabase
-    .from('workspace')
+  const { data, error } = await supabase
+    .from('task_list')
     .select(
-      `
-    *,
-    user_workspace!inner(
-      role
-    ),
-    boards: board(
+      ` 
       *,
-      task_lists: task_list(
-        *,
-        tasks: task(
+      ...board(...workspace(user_workspace(user_id))),
+      tasks: task(
+        *, 
+        comments: comment(
           *, 
-          comments: comment(
-            *, 
-            user: user(name)
-          )
+          user: user(name)
         )
       )
-    )
     `,
     )
-    .eq('user_workspace.user_id', user.id)
-    .eq('id', idWorkspace);
+    .eq('board.workspace.user_workspace.user_id', user.id)
+    .eq('board.id', boardId);
 
-  const { data, error } = await query;
+  console.log('data', data);
 
   if (error) throw new Error(error.message);
 
-  const workspace = data.map(({ id, name, boards, user_workspace: [{ role }], created_at }) => ({
+  return data.map(({ created_at, id, name, board_id, tasks }) => ({
+    created_at,
     id,
     name,
-    role,
-    boards,
-    created_at,
-  }))[0];
-
-  return workspace;
+    board_id,
+    tasks,
+  }));
 }

@@ -1,13 +1,19 @@
-import { useWorkspacesStore } from '@/providers/workspaces-store-provider';
+import { fetchTaskLists } from '@/lib/data';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Boards',
+  title: 'Board',
 };
 
-export default function BoardPage() {
-  const { workspaces, selectedWorkspaceId } = useWorkspacesStore(store => store);
-  const selectedWorkspace = workspaces.find(workspace => workspace.id === selectedWorkspaceId);
+export default async function BoardPage({ params }: { params: { id: string } }) {
+  const taskLists = await fetchTaskLists(params.id);
 
-  return <div>My Board</div>;
+  return (
+    <>
+      <h2 className="font-bold">Tasks lists</h2>
+      {taskLists.map(taskList => (
+        <div key={taskList.id}>{taskList.name}</div>
+      ))}
+    </>
+  );
 }

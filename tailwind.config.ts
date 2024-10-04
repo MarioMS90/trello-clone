@@ -21,6 +21,13 @@ const config: Config = {
         'custom-light': '1px 0px 0px 0px hsl(0deg 0% 100% / 14%)',
       },
     },
+    keyframes: {
+      shimmer: {
+        '100%': {
+          transform: 'translateX(100%)',
+        },
+      },
+    },
   },
   plugins: [],
 };
