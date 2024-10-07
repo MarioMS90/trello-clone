@@ -6,7 +6,7 @@ import {
   taks,
   comments,
 } from '@/lib/placeholder-data';
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@/lib/supabase/server';
 
 async function seedWorkspaces() {
   const supabase = createClient();

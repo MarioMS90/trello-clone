@@ -12,7 +12,7 @@ export default function WorkspacesPage() {
         <section>
           <div className="flex items-center gap-3 font-bold">
             <StarIcon height="20px" />
-            <h2>Marked boards</h2>
+            <h2>Marked boards </h2>
           </div>
           <Suspense fallback={<BoardsSkeleton />}>
             <MarkedBoards />

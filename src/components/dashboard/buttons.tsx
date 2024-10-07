@@ -1,6 +1,9 @@
 'use client';
 
-import { useWorkspacesStore } from '@/providers/workspaces-store-provider';
+import { testAction } from '@/lib/actions';
+import { useState } from 'react';
+import { useFormState } from 'react-dom';
+import { set } from 'zod';
 
 function Button({ text, handler }: { text: string; handler: () => void }) {
   return (
@@ -17,7 +20,7 @@ function Button({ text, handler }: { text: string; handler: () => void }) {
           text-primary 
           hover:opacity-90
         `}
-      type="button"
+      type="submit"
       onClick={handler}>
       <p>{text}</p>
     </button>
@@ -25,18 +28,23 @@ function Button({ text, handler }: { text: string; handler: () => void }) {
 }
 
 export function ButtonCreateWorkspace() {
-  const { addWorkspace } = useWorkspacesStore;
+  // const [errorMessage, formAction] = useFormState(testAction, undefined);
+  const [isPending, setIsPending] = useState(false);
 
   const handleCreateWorkspace = () => {
-    // addWorkspace();
+    setIsPending(true);
+    testAction();
   };
 
-  return <Button text="Create a new workspace" handler={handleCreateWorkspace} />;
+  return (
+    <>
+      {isPending ? <p>Creating workspace...</p> : <p>Not creating</p>}
+      <Button text="Create a new workspace" handler={handleCreateWorkspace} />
+    </>
+  );
 }
 
 export function ButtonCreateBoard() {
-  'use client';
-
   // const { addBoard } = useWorkspacesStore();
 
   const handleCreateBoard = () => {

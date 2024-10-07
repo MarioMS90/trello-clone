@@ -15,3 +15,8 @@ export type TaskList = Tables<'task_list'>;
 export type Task = Tables<'task'>;
 
 export type Comment = Tables<'comment'>;
+
+export enum Role {
+  Admin = 'admin',
+  Member = 'member',
+}

@@ -1,4 +1,5 @@
 import { Boards } from '@/components/dashboard/boards';
+
 import { BoardsSkeleton } from '@/components/dashboard/skeletons';
 import { Metadata } from 'next';
 import { Suspense } from 'react';

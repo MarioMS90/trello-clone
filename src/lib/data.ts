@@ -27,6 +27,9 @@ export async function fetchWorkspaces(): Promise<UserWorkspace[]> {
 
   if (!user) throw new Error('User not logged in');
 
+  console.log('Fetching revenue data...');
+  await new Promise(resolve => setTimeout(resolve, 3000));
+
   const { data, error } = await supabase
     .from('workspace')
     .select(
@@ -69,28 +72,17 @@ export async function fetchTaskLists(boardId: string): Promise<TaskList[]> {
     .select(
       ` 
       *,
-      ...board(...workspace(user_workspace(user_id))),
+      ...board!inner(id),
       tasks: task(
-        *, 
-        comments: comment(
-          *, 
-          user: user(name)
-        )
+        id,
+        name,
+        created_at
       )
     `,
     )
-    .eq('board.workspace.user_workspace.user_id', user.id)
     .eq('board.id', boardId);
-
-  console.log('data', data);
 
   if (error) throw new Error(error.message);
 
-  return data.map(({ created_at, id, name, board_id, tasks }) => ({
-    created_at,
-    id,
-    name,
-    board_id,
-    tasks,
-  }));
+  return data;
 }

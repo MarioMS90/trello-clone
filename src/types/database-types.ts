@@ -223,7 +223,7 @@ export type Database = {
       [_ in never]: never;
     };
     Enums: {
-      role: 'admin' | 'user';
+      role: 'admin' | 'member';
     };
     CompositeTypes: {
       [_ in never]: never;
