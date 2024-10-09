@@ -1,16 +1,41 @@
+import Link from 'next/link';
 import { getWorkspace } from '@/lib/data';
 import { notFound } from 'next/navigation';
-import Link from 'next/link';
+import BoardsIcon from '../icons/boards';
 import ArrowDownIcon from '../icons/arrow-down';
 import WorkspaceLogo from '../ui/workspace-logo';
 import { WorkspaceLinks, BoardsLinks } from './nav-links';
 
+export function MainSideNav() {
+  return (
+    <nav
+      className={`
+w-[260px] 
+border-r 
+border-r-white 
+border-opacity-30 
+bg-sidenav-background 
+text-white
+`}>
+      <Link href="/workspaces">
+        <div className="mt-4 bg-button-selected-background py-2">
+          <span className="flex items-center gap-3 px-4">
+            <BoardsIcon height="16px" /> Workspaces
+          </span>
+        </div>
+      </Link>
+    </nav>
+  );
+}
+
 export async function WorkspaceSideNav({
   boardId,
   workspaceId,
+  actualPageName,
 }: {
   boardId?: string;
   workspaceId?: string;
+  actualPageName?: string;
 }) {
   // const pathname = usePathname();
   const workspace = await getWorkspace({ workspaceId, boardId });
@@ -49,9 +74,9 @@ export async function WorkspaceSideNav({
         </div>
       </div>
       <div className="text-sm">
-        <WorkspaceLinks workspace={workspace} />
+        <WorkspaceLinks workspace={workspace} actualPageName={actualPageName} />
         <h3 className="mb-3 mt-4 px-4 font-bold">Your boards</h3>
-        <BoardsLinks boards={workspace.boards} />
+        <BoardsLinks boards={workspace.boards} selectedBoardId={boardId} />
         <Link href="/workspaces/6c171c01-12ce-42a4-896a-0a0aaf2a6e96">test1</Link>
         <Link href="/boards/64ac3b47-2fcd-490a-a346-5fd5273b60d5">test2</Link>
       </div>

@@ -1,16 +1,16 @@
-import { WorkspaceSideNav } from '@/components/dashboard/workspace-sidenav';
+import { SideNavSkeleton } from '@/components/dashboard/skeletons';
+import { Suspense } from 'react';
 
 export default function SpecificWorkspaceLayout({
   children,
-  params,
+  sidenav,
 }: Readonly<{
   children: React.ReactNode;
-  params: { id: string };
+  sidenav: React.ReactNode;
 }>) {
   return (
     <>
-      <WorkspaceSideNav workspaceId={params.id} />
-
+      <Suspense fallback={<SideNavSkeleton />}>{sidenav}</Suspense>
       <main className="grow bg-main-background pl-8 pt-6 text-white">{children}</main>
     </>
   );

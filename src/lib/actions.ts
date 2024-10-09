@@ -12,7 +12,7 @@ export type ActionState = {
   message?: string | null;
 };
 
-export async function createWorkspace(prevState: State, formData: FormData) {
+export async function createWorkspace(prevState: ActionState, formData: FormData) {
   revalidatePath('/workspaces');
   redirect('/workspaces');
 }
@@ -37,8 +37,6 @@ export async function testAction() {
     .from('user_workspace')
     .insert({ user_id: user.id, workspace_id: data[0].id, role: Role.Admin })
     .select();
-
-  console.log('Nuevo workspace', data2);
 
   revalidatePath('/workspaces');
   return redirect('/workspaces');

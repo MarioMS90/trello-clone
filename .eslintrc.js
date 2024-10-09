@@ -30,5 +30,6 @@ module.exports = {
     'react/require-default-props': 'off',
     '@typescript-eslint/no-use-before-define': ['error', { functions: false }],
     'react/jsx-no-useless-fragment': 'off',
+    //'@typescript-eslint/no-unused-vars': 'off',
   },
 };

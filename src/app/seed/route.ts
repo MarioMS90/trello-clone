@@ -30,16 +30,16 @@ async function seedUserWorkspaces() {
   return data;
 }
 
-async function seedBoards() {
-  const supabase = createClient();
-  const { data, error } = await supabase.from('board').upsert(boards).select();
+// async function seedBoards() {
+//   const supabase = createClient();
+//   const { data, error } = await supabase.from('board').upsert(boards).select();
 
-  if (error) {
-    throw new Error(error.message);
-  }
+//   if (error) {
+//     throw new Error(error.message);
+//   }
 
-  return data;
-}
+//   return data;
+// }
 
 async function seedTaskLists() {
   const supabase = createClient();
@@ -78,7 +78,7 @@ export async function GET() {
   try {
     await seedWorkspaces();
     await seedUserWorkspaces();
-    await seedBoards();
+    // await seedBoards();
     await seedTaskLists();
     await seedTasks();
     await seedComments();

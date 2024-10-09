@@ -4,7 +4,7 @@ import { ButtonCreateWorkspace } from '@/components/dashboard/buttons';
 import { Workspaces } from '@/components/dashboard/workspaces';
 import { Suspense } from 'react';
 import { BoardsSkeleton } from '@/components/dashboard/skeletons';
-import { MainSideNav } from '@/components/dashboard/main-sidenav';
+import { MainSideNav } from '@/components/dashboard/sidenavs';
 
 export default function WorkspacesPage() {
   return (

@@ -27,6 +27,7 @@ const boards = [
     marked: true,
     id_workspace: workspaces[0].id,
   },
+
   {
     id: '9082c91b-a212-4757-8793-be3bd94e02ec',
     name: 'Another board',
