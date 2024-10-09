@@ -12,6 +12,7 @@
     "@supabase/postgrest-js": "^1.16.1",
     "@supabase/ssr": "0.5.1",
     "@supabase/supabase-js": "2.45.3",
+    "clsx": "^2.1.1",
     "next": "14.2.7",
     "react": "18",
     "react-dom": "18",

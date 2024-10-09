@@ -27,9 +27,6 @@ export async function fetchWorkspaces(): Promise<UserWorkspace[]> {
 
   if (!user) throw new Error('User not logged in');
 
-  console.log('Fetching revenue data...');
-  await new Promise(resolve => setTimeout(resolve, 3000));
-
   const { data, error } = await supabase
     .from('workspace')
     .select(
@@ -72,7 +69,7 @@ export async function fetchTaskLists(boardId: string): Promise<TaskList[]> {
     .select(
       ` 
       *,
-      ...board!inner(id),
+      board!inner(id),
       tasks: task(
         id,
         name,

@@ -1,6 +1,6 @@
 import { WorkspaceSideNav } from '@/components/dashboard/workspace-sidenav';
 
-export default function SpecificBoardLayout({
+export default function SpecificWorkspaceLayout({
   children,
   params,
 }: Readonly<{
@@ -9,7 +9,7 @@ export default function SpecificBoardLayout({
 }>) {
   return (
     <>
-      <WorkspaceSideNav boardId={params.id} />
+      <WorkspaceSideNav workspaceId={params.id} />
 
       <main className="grow bg-main-background pl-8 pt-6 text-white">{children}</main>
     </>

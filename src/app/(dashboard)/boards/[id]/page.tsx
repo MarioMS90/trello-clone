@@ -11,9 +11,11 @@ export default async function BoardPage({ params }: { params: { id: string } }) 
   return (
     <>
       <h2 className="font-bold">Tasks lists</h2>
-      {taskLists.map(taskList => (
-        <div key={taskList.id}>{taskList.name}</div>
-      ))}
+      <div>
+        {taskLists.map(taskList => (
+          <div key={taskList.id}>{taskList.name}</div>
+        ))}
+      </div>
     </>
   );
 }
