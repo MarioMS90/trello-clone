@@ -4,6 +4,7 @@ import { fetchWorkspaces, getWorkspace } from '@/lib/data';
 import { notFound } from 'next/navigation';
 import StarFillIcon from '../icons/star-fill';
 import StarIcon from '../icons/star';
+import { CreateBoardPopover } from './buttons';
 
 export async function Boards({ workspaceId }: { workspaceId: string }) {
   const workspace = await getWorkspace({ workspaceId });
@@ -12,7 +13,12 @@ export async function Boards({ workspaceId }: { workspaceId: string }) {
     notFound();
   }
 
-  return <BoardList boards={workspace.boards} />;
+  return (
+    <BoardList
+      boards={workspace.boards}
+      extraItem={<CreateBoardPopover workspaceId={workspaceId} />}
+    />
+  );
 }
 
 export function BoardList({

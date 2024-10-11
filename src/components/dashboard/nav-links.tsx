@@ -29,7 +29,7 @@ export function WorkspaceLinks({
         <Link key={link.name} href={link.href}>
           <div
             className={clsx('py-2 hover:bg-button-hovered-background', {
-              'bg-button-hovered-background': actualPageName === link.name,
+              'bg-button-selected-background': actualPageName === link.name,
             })}>
             <span className="flex items-center gap-3 px-4">
               <link.icon height="16px" />

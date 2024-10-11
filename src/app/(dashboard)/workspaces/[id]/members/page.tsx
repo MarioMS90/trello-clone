@@ -1,6 +1,5 @@
 import { getWorkspace } from '@/lib/data';
 import { Metadata } from 'next';
-import { notFound } from 'next/navigation';
 
 export const metadata: Metadata = {
   title: 'Members',

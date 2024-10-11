@@ -10,13 +10,13 @@ export function MainSideNav() {
   return (
     <nav
       className={`
-w-[260px] 
-border-r 
-border-r-white 
-border-opacity-30 
-bg-sidenav-background 
-text-white
-`}>
+        w-[260px] 
+        border-r 
+        border-r-white 
+        border-opacity-30 
+        bg-sidenav-background 
+        text-white
+      `}>
       <Link href="/workspaces">
         <div className="mt-4 bg-button-selected-background py-2">
           <span className="flex items-center gap-3 px-4">
@@ -37,10 +37,9 @@ export async function WorkspaceSideNav({
   workspaceId?: string;
   actualPageName?: string;
 }) {
-  // const pathname = usePathname();
   const workspace = await getWorkspace({ workspaceId, boardId });
   if (!workspace) {
-    return notFound();
+    notFound();
   }
 
   return (

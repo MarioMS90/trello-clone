@@ -1,55 +1,49 @@
 'use client';
 
-import { testAction } from '@/lib/actions';
 import { useState } from 'react';
-import { useFormState } from 'react-dom';
-import { set } from 'zod';
+import Popover from '../ui/popover';
 
-function Button({ text, handler }: { text: string; handler: () => void }) {
+export function CreateWorkspacePopover() {
   return (
-    <button
-      className={`
-          flex 
-          h-20 
-          w-44 
-          items-center 
-          justify-center 
-          rounded 
-          bg-gray-300 
-          text-sm 
-          text-primary 
-          hover:opacity-90
-        `}
-      type="submit"
-      onClick={handler}>
-      <p>{text}</p>
-    </button>
+    <Popover text="Create a new workspace">
+      <div className="flex flex-col items-center">
+        <h2 className="text-sm">Create workspace</h2>
+        <form>
+          <label htmlFor="board-title">
+            Workspace title
+            <input id="board-title" type="text" />
+          </label>
+
+          <button type="submit">Create</button>
+        </form>
+      </div>
+    </Popover>
   );
 }
 
-export function ButtonCreateWorkspace() {
-  // const [errorMessage, formAction] = useFormState(testAction, undefined);
-  const [isPending, setIsPending] = useState(false);
+export function CreateBoardPopover({ workspaceId }: { workspaceId: string }) {
+  const [test, setTest] = useState(1);
 
-  const handleCreateWorkspace = () => {
-    setIsPending(true);
-    testAction();
-  };
+  function handleClick() {
+    setTest(prevState => prevState + 1);
+  }
 
   return (
-    <>
-      {isPending ? <p>Creating workspace...</p> : <p>Not creating</p>}
-      <Button text="Create a new workspace" handler={handleCreateWorkspace} />
-    </>
+    <Popover text="Create a new board">
+      {test} {workspaceId}
+      <div className="flex flex-col items-center">
+        <h2 className="text-sm">Create board</h2>
+        <form>
+          <label htmlFor="board-title">
+            Board title
+            <input id="board-title" type="text" />
+          </label>
+
+          <button type="submit" onClick={handleClick}>
+            Create
+          </button>
+        </form>
+      </div>
+    </Popover>
   );
-}
-
-export function ButtonCreateBoard() {
-  // const { addBoard } = useWorkspacesStore();
-
-  const handleCreateBoard = () => {
-    // addBoard();
-  };
-
-  return <Button text="Create a new board" handler={handleCreateBoard} />;
 }
