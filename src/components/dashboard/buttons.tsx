@@ -30,7 +30,6 @@ export function CreateBoardPopover({ workspaceId }: { workspaceId: string }) {
 
   return (
     <Popover text="Create a new board">
-      {test} {workspaceId}
       <div className="flex flex-col items-center">
         <h2 className="text-sm">Create board</h2>
         <form>

@@ -7,9 +7,7 @@ import { fetchWorkspaces } from '@/lib/data';
 import { BoardList } from './boards';
 
 export async function Workspaces() {
-  const workspaces2 = await fetchWorkspaces();
-
-  const workspaces = [...workspaces2, ...workspaces2, ...workspaces2];
+  const workspaces = await fetchWorkspaces();
 
   return (
     <ul className="mt-6 space-y-12">
