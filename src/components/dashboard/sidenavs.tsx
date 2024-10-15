@@ -76,8 +76,6 @@ export async function WorkspaceSideNav({
         <WorkspaceLinks workspace={workspace} actualPageName={actualPageName} />
         <h3 className="mb-3 mt-4 px-4 font-bold">Your boards</h3>
         <BoardsLinks boards={workspace.boards} selectedBoardId={boardId} />
-        <Link href="/workspaces/6c171c01-12ce-42a4-896a-0a0aaf2a6e96">test1</Link>
-        <Link href="/boards/64ac3b47-2fcd-490a-a346-5fd5273b60d5">test2</Link>
       </div>
     </nav>
   );

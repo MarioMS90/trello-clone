@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import CloseIcon from '../icons/close';
 
 export default function Popover({
@@ -14,9 +14,12 @@ export default function Popover({
 
   useEffect(() => {
     const closePopover = (event: MouseEvent) => {
-      console.log('test1 event.target.closest', event.target);
-      if (!event.target || !(event.target as HTMLElement).closest('.popover-wrapper')) {
-        console.log('test2 event.target.closest', event.target.closest('.popover-wrapper'));
+      const target = event.target as HTMLElement;
+
+      if (
+        !target ||
+        (!target.closest('.popover-wrapper') && !target.classList.contains('close-popover'))
+      ) {
         setIsPopoverOpen(false);
       }
     };
@@ -26,7 +29,7 @@ export default function Popover({
     return () => {
       document.removeEventListener('click', closePopover);
     };
-  }, []);
+  }, [isPopoverOpen]);
 
   return (
     <div className="popover-wrapper relative inline-block">
@@ -48,11 +51,14 @@ export default function Popover({
         {text}
       </button>
       {isPopoverOpen && (
-        <div className="center-y absolute left-[calc(100%+10px)] flex w-80 flex-col rounded-lg bg-white px-4 py-6 text-primary">
+        <div className="center-y absolute left-[calc(100%+10px)] flex w-80 flex-col rounded-lg bg-white px-4 py-4 text-primary">
           <button
-            className="absolute right-2 top-2 flex size-7 items-center justify-center rounded-md hover:bg-gray-300"
+            className="close-popover absolute right-2 top-2 flex size-7 items-center justify-center rounded-md hover:bg-gray-300"
             type="button"
-            onClick={() => setIsPopoverOpen(false)}>
+            onClick={event => {
+              event.stopPropagation(); // Detiene la propagación del evento
+              setIsPopoverOpen(false);
+            }}>
             <span className="pointer-events-none">
               <CloseIcon height="16px" />
             </span>
