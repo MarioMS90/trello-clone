@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { getWorkspace } from '@/lib/data';
-import { notFound } from 'next/navigation';
 import BoardsIcon from '../icons/boards';
 import ArrowDownIcon from '../icons/arrow-down';
 import WorkspaceLogo from '../ui/workspace-logo';
@@ -38,9 +37,6 @@ export async function WorkspaceSideNav({
   actualPageName?: string;
 }) {
   const workspace = await getWorkspace({ workspaceId, boardId });
-  if (!workspace) {
-    notFound();
-  }
 
   return (
     <nav

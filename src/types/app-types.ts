@@ -20,3 +20,13 @@ export enum Role {
   Admin = 'admin',
   Member = 'member',
 }
+
+export type ActionState = {
+  success?: boolean;
+  errors?: {
+    name?: string[];
+  };
+  message?: string | null;
+};
+
+export const initialState: ActionState = { success: false, message: null, errors: {} };

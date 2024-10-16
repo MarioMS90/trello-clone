@@ -1,5 +1,6 @@
 import { TaskList, UserWorkspace } from '@/types/app-types';
 import { createClient } from '@/lib/supabase/server';
+import { notFound } from 'next/navigation';
 import { getWorkspaceIdFromBoard } from './utils';
 
 export async function getWorkspace({
@@ -8,12 +9,16 @@ export async function getWorkspace({
 }: {
   workspaceId?: string;
   boardId?: string;
-}): Promise<UserWorkspace | undefined> {
+}): Promise<UserWorkspace> {
   const workspaces = await fetchWorkspaces();
 
   const targetWorkspaceId = boardId ? getWorkspaceIdFromBoard(workspaces, boardId) : workspaceId;
 
   const workspace = workspaces.find(_workspace => _workspace.id === targetWorkspaceId);
+
+  if (!workspace) {
+    notFound();
+  }
 
   return workspace;
 }
