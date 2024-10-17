@@ -1,11 +1,14 @@
 import Link from 'next/link';
+import { fetchWorkspaces } from '@/lib/data';
 import AppsIcon from '../icons/apps';
-import ArrowDownIcon from '../icons/arrow-down';
 import SearchIcon from '../icons/search';
 import Avatar from '../ui/avatar';
 import TrelloWhiteIcon from '../icons/trello-white';
+import { HeaderButtons } from './header-buttons';
 
-export default function Header() {
+export default async function Header() {
+  const workspaces = await fetchWorkspaces();
+
   return (
     <header
       className={`
@@ -19,52 +22,14 @@ export default function Header() {
       p-1.5 
       text-white
     `}>
-      <nav
-        className={`
-          flex
-          items-center
-          text-sm 
-          font-medium 
-          [&>a:hover]:bg-button-hovered-background
-          [&>a]:rounded 
-          [&>a]:p-1.5 
-          [&>div:hover]:bg-button-hovered-background 
-          [&>div]:flex 
-          [&>div]:cursor-pointer 
-          [&>div]:items-center 
-          [&>div]:gap-2
-          [&>div]:rounded 
-          [&>div]:px-3 
-          [&>div]:py-1.5 
-        `}>
-        <Link href="#">
+      <nav className="flex items-center text-sm font-medium [&>a:hover]:bg-button-hovered-background [&>a]:rounded [&>a]:p-1.5">
+        <Link href="/workspaces">
           <AppsIcon height="20px" />
         </Link>
         <Link href="/workspaces">
           <TrelloWhiteIcon height="25px" />
         </Link>
-        <div>
-          Workspaces
-          <ArrowDownIcon height="16px" />
-        </div>
-        <div>
-          Marked
-          <ArrowDownIcon height="16px" />
-        </div>
-        <button
-          className={`
-              ml-3 
-              rounded 
-              bg-white 
-              bg-opacity-20 
-              px-3 
-              py-1.5 
-              text-white 
-              hover:bg-opacity-30
-            `}
-          type="button">
-          Create board
-        </button>
+        <HeaderButtons />
       </nav>
       <div className="flex items-center gap-4">
         <div className="relative h-7 w-72">

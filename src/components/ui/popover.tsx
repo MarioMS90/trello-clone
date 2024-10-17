@@ -1,20 +1,37 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import CloseIcon from '../icons/close';
 
 export default function Popover({
   text,
+  triggerClassName,
+  popoverClassName,
   children: popoverContent,
-  open,
+  open = false,
   onOpenChange,
+  addCloseButton,
 }: {
-  text: string;
+  text: React.ReactNode;
+  triggerClassName?: string;
+  popoverClassName?: string;
   children: React.ReactNode;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  addCloseButton?: boolean;
 }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(open);
+
+  const handleOpenChange = useCallback(
+    (state: boolean) => {
+      setIsOpen(state);
+
+      if (onOpenChange) {
+        onOpenChange(state);
+      }
+    },
+    [onOpenChange],
+  );
 
   useEffect(() => {
     const closePopover = (event: MouseEvent) => {
@@ -24,7 +41,7 @@ export default function Popover({
         !target ||
         (!target.closest('.popover-wrapper') && !target.classList.contains('close-popover'))
       ) {
-        setIsOpen(false);
+        handleOpenChange(false);
       }
     };
 
@@ -33,56 +50,68 @@ export default function Popover({
     return () => {
       document.removeEventListener('click', closePopover);
     };
-  }, [isOpen]);
+  }, [handleOpenChange]);
 
   useEffect(() => {
-    if (open === undefined) {
-      return;
-    }
-
     setIsOpen(open);
   }, [open]);
-
-  useEffect(() => {
-    if (!onOpenChange) {
-      return;
-    }
-
-    onOpenChange(isOpen);
-  }, [onOpenChange, isOpen]);
 
   return (
     <div className="popover-wrapper relative inline-block">
       <button
         className={`
           flex 
-          h-20 
-          w-44 
+          cursor-pointer 
           items-center 
-          justify-center 
-          rounded 
-          bg-gray-300 
-          text-sm 
-          text-primary 
-          hover:opacity-90
+          gap-2 
+          rounded
+          px-3 
+          py-1.5 
+          hover:bg-button-hovered-background 
+          ${triggerClassName}
         `}
         type="button"
-        onClick={() => setIsOpen(prevState => !prevState)}>
+        onClick={() => handleOpenChange(!isOpen)}>
         {text}
       </button>
       {isOpen && (
-        <div className="center-y absolute left-[calc(100%+10px)] flex w-80 flex-col rounded-lg bg-white p-4 text-primary">
-          <button
-            className="close-popover absolute right-2 top-2 flex size-7 items-center justify-center rounded-md hover:bg-gray-300"
-            type="button"
-            onClick={event => {
-              event.stopPropagation(); // Detiene la propagación del evento
-              setIsOpen(false);
-            }}>
-            <span className="pointer-events-none">
-              <CloseIcon height="16px" />
-            </span>
-          </button>
+        <div
+          className={` 
+            absolute 
+            left-0 
+            top-[calc(100%+5px)]
+            z-10 
+            flex 
+            w-72 
+            flex-col 
+            rounded-lg 
+            bg-white 
+            p-4 
+            text-primary 
+            shadow-lg
+            ${popoverClassName}
+          `}>
+          {addCloseButton && (
+            <button
+              className="
+                close-popover 
+                absolute 
+                right-2 
+                top-2 
+                flex 
+                size-7 
+                items-center 
+                justify-center 
+                rounded-md 
+                hover:bg-gray-300
+              "
+              type="button"
+              onClick={() => handleOpenChange(false)}>
+              <span className="pointer-events-none">
+                <CloseIcon height="16px" />
+              </span>
+            </button>
+          )}
           {popoverContent}
         </div>
       )}

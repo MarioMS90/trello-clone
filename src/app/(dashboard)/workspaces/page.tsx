@@ -1,6 +1,6 @@
 import StarIcon from '@/components/icons/star';
 import { MarkedBoards } from '@/components/dashboard/boards';
-import { CreateWorkspacePopover } from '@/components/dashboard/buttons';
+import { CreateWorkspaceButton } from '@/components/dashboard/buttons';
 import { Workspaces } from '@/components/dashboard/workspaces';
 import { Suspense } from 'react';
 import { BoardsSkeleton } from '@/components/ui/skeletons';
@@ -27,7 +27,7 @@ export default function WorkspacesPage() {
           </Suspense>
         </section>
       </div>
-      <CreateWorkspacePopover />
+      <CreateWorkspaceButton />
     </>
   );
 }
