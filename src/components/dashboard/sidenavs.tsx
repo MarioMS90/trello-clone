@@ -51,7 +51,7 @@ export async function WorkspaceSideNav({
       <div className="border-b border-b-white border-opacity-20 p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <WorkspaceLogo />
+            <WorkspaceLogo workspaceName={workspace.name} />
             <h2 className="pr-4 text-sm font-bold">{workspace.name}</h2>
           </div>
           <div

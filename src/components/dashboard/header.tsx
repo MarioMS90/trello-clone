@@ -22,14 +22,14 @@ export default async function Header() {
       p-1.5 
       text-white
     `}>
-      <nav className="flex items-center text-sm font-medium [&>a:hover]:bg-button-hovered-background [&>a]:rounded [&>a]:p-1.5">
+      <nav className="flex items-center text-sm [&>a:hover]:bg-button-hovered-background [&>a]:rounded [&>a]:p-1.5">
         <Link href="/workspaces">
           <AppsIcon height="20px" />
         </Link>
         <Link href="/workspaces">
           <TrelloWhiteIcon height="25px" />
         </Link>
-        <HeaderButtons />
+        <HeaderButtons workspaces={workspaces} />
       </nav>
       <div className="flex items-center gap-4">
         <div className="relative h-7 w-72">

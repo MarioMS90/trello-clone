@@ -1,7 +1,25 @@
-export default function WorkspaceLogo() {
+export default function WorkspaceLogo({
+  className,
+  workspaceName,
+}: {
+  className?: string;
+  workspaceName: string;
+}) {
   return (
-    <div className="flex size-8 items-center justify-center rounded bg-secondary text-xl font-bold text-white">
-      E
+    <div
+      className={`
+        flex 
+        size-8 
+        items-center 
+        justify-center 
+        rounded 
+        bg-secondary 
+        text-xl 
+        font-bold 
+        text-white 
+        ${className}
+      `}>
+      {workspaceName[0].toUpperCase()}
     </div>
   );
 }

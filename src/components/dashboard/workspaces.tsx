@@ -15,7 +15,7 @@ export async function Workspaces() {
         <li key={id}>
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2">
-              <WorkspaceLogo />
+              <WorkspaceLogo workspaceName={name} />
               <h3 className="font-bold">{name}</h3>
             </div>
             <ul className="flex items-center gap-4 text-sm">

@@ -19,9 +19,7 @@ export default function WorkspacesPage() {
           </Suspense>
         </section>
         <section>
-          <div className="flex items-center gap-3 font-bold">
-            <h2>Your workspaces</h2>
-          </div>
+          <h2 className="font-bold">Your workspaces</h2>
           <Suspense fallback={<BoardsSkeleton />}>
             <Workspaces />
           </Suspense>
