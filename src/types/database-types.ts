@@ -8,21 +8,21 @@ export type Database = {
           created_at: string;
           id: string;
           workspace_id: string;
-          marked: boolean;
+          starred: boolean;
           name: string;
         };
         Insert: {
           created_at?: string;
           id?: string;
           workspace_id: string;
-          marked?: boolean;
+          starred?: boolean;
           name: string;
         };
         Update: {
           created_at?: string;
           id?: string;
           workspace_id?: string;
-          marked?: boolean;
+          starred?: boolean;
           name?: string;
         };
         Relationships: [

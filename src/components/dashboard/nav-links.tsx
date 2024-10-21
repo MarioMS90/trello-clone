@@ -51,7 +51,7 @@ export function BoardsLinks({
 }) {
   return (
     <ul>
-      {boards.map(({ id, name, marked }) => (
+      {boards.map(({ id, name, starred }) => (
         <li key={id}>
           <Link href={`/boards/${id}`}>
             <div
@@ -59,7 +59,7 @@ export function BoardsLinks({
                 'bg-button-hovered-background': selectedBoardId === id,
               })}>
               <span className="flex items-center justify-between gap-3 px-4">
-                {name} {marked ? <StarFillIcon height="18px" /> : <StarIcon height="18px" />}
+                {name} {starred ? <StarFillIcon height="18px" /> : <StarIcon height="18px" />}
               </span>
             </div>
           </Link>

@@ -4,7 +4,7 @@ import { fetchWorkspaces, getWorkspace } from '@/lib/data';
 import { notFound } from 'next/navigation';
 import StarFillIcon from '../icons/star-fill';
 import StarIcon from '../icons/star';
-import { CreateBoardButton } from './buttons';
+import { CreateBoardPopover } from './popovers';
 
 export async function Boards({ workspaceId }: { workspaceId: string }) {
   const workspace = await getWorkspace({ workspaceId });
@@ -16,7 +16,7 @@ export async function Boards({ workspaceId }: { workspaceId: string }) {
   return (
     <BoardList
       boards={workspace.boards}
-      extraItem={<CreateBoardButton workspaceId={workspaceId} />}
+      extraItem={<CreateBoardPopover workspaceId={workspaceId} />}
     />
   );
 }
@@ -33,34 +33,31 @@ export function BoardList({
   return (
     <ul className={`mt-4 flex flex-wrap gap-4 ${className}`}>
       {boards &&
-        boards.map(({ id, name, marked }) => (
+        boards.map(({ id, name, starred }) => (
           <li key={id}>
             <Link href={`/boards/${id}`}>
               <div
                 className={`
-                relative 
-                h-20 
-                w-44 
-                rounded 
-                bg-white 
-                pl-4 
-                pt-2 
-                text-sm 
-                font-bold 
-                text-primary 
-                hover:opacity-90
-              `}>
+                  relative 
+                  h-20 
+                  w-44 
+                  rounded
+                  bg-white 
+                  pl-4 
+                  pt-2 
+                  text-sm 
+                  font-bold 
+                  text-primary 
+                  hover:opacity-95
+                `}>
                 {name}
-                {marked ? (
+                {starred ? (
                   <StarFillIcon
-                    className="absolute bottom-2 right-3 z-10 text-yellow-400 hover:scale-125"
+                    className="absolute bottom-2 right-3 text-yellow-400 hover:scale-125"
                     height="16px"
                   />
                 ) : (
-                  <StarIcon
-                    className="absolute bottom-2 right-3 z-10 hover:scale-125"
-                    height="16px"
-                  />
+                  <StarIcon className="absolute bottom-2 right-3 hover:scale-125" height="16px" />
                 )}
               </div>
             </Link>
@@ -71,11 +68,11 @@ export function BoardList({
   );
 }
 
-export async function MarkedBoards() {
+export async function StarredBoards() {
   const workspaces = await fetchWorkspaces();
 
-  const getMarkedBoards = () =>
-    workspaces.flatMap(workspace => workspace.boards.filter(board => board.marked));
+  const getStarredBoards = () =>
+    workspaces.flatMap(workspace => workspace.boards.filter(board => board.starred));
 
-  return <BoardList boards={getMarkedBoards()} />;
+  return <BoardList boards={getStarredBoards()} />;
 }

@@ -15,10 +15,10 @@ const BoardSchema = z.object({
     invalid_type_error: 'Name must be a string.',
     required_error: 'Name is required.',
   }),
-  marked: z.boolean(),
+  starred: z.boolean(),
   workspaceId: z.string(),
   createdAt: z.string(),
 });
 
 export const CreateWorkspaceSchema = WorkspaceSchema.omit({ id: true, createdAt: true });
-export const CreateBoardSchema = BoardSchema.omit({ id: true, marked: true, createdAt: true });
+export const CreateBoardSchema = BoardSchema.omit({ id: true, starred: true, createdAt: true });

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import CloseIcon from '../icons/close';
 
 export default function Popover({
-  text,
+  buttonText,
   triggerClassName,
   popoverClassName,
   children: popoverContent,
@@ -12,7 +12,7 @@ export default function Popover({
   onOpenChange,
   addCloseButton,
 }: {
-  text: React.ReactNode;
+  buttonText: React.ReactNode;
   triggerClassName?: string;
   popoverClassName?: string;
   children: React.ReactNode;
@@ -57,7 +57,7 @@ export default function Popover({
   }, [open]);
 
   return (
-    <div className="popover-wrapper relative inline-block">
+    <div className="popover-wrapper relative">
       <button
         className={`
           flex 
@@ -72,12 +72,12 @@ export default function Popover({
         `}
         type="button"
         onClick={() => handleOpenChange(!isOpen)}>
-        {text}
+        {buttonText}
       </button>
       {isOpen && (
         <div
           className={` 
-            absolute 
+            absolute
             left-0 
             top-[calc(100%+5px)]
             z-10 
@@ -86,8 +86,8 @@ export default function Popover({
             flex-col 
             rounded-lg 
             bg-white 
-            p-4 
-            text-primary 
+            p-3 
+            text-primary
             shadow-lg
             ${popoverClassName}
           `}>

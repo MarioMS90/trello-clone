@@ -1,6 +1,6 @@
 import StarIcon from '@/components/icons/star';
-import { MarkedBoards } from '@/components/dashboard/boards';
-import { CreateWorkspaceButton } from '@/components/dashboard/buttons';
+import { StarredBoards } from '@/components/dashboard/boards';
+import { CreateWorkspacePopover } from '@/components/dashboard/popovers';
 import { Workspaces } from '@/components/dashboard/workspaces';
 import { Suspense } from 'react';
 import { BoardsSkeleton } from '@/components/ui/skeletons';
@@ -12,10 +12,10 @@ export default function WorkspacesPage() {
         <section>
           <div className="flex items-center gap-3 font-bold">
             <StarIcon height="20px" />
-            <h2>Marked boards </h2>
+            <h2>Starred boards </h2>
           </div>
           <Suspense fallback={<BoardsSkeleton />}>
-            <MarkedBoards />
+            <StarredBoards />
           </Suspense>
         </section>
         <section>
@@ -25,7 +25,7 @@ export default function WorkspacesPage() {
           </Suspense>
         </section>
       </div>
-      <CreateWorkspaceButton />
+      <CreateWorkspacePopover />
     </>
   );
 }

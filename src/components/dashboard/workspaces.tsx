@@ -2,7 +2,7 @@ import UserIcon from '@/components/icons/user';
 import WorkspaceLogo from '@/components/ui/workspace-logo';
 import Link from 'next/link';
 import BoardsIcon from '@/components/icons/boards';
-import { CreateBoardButton } from '@/components/dashboard/buttons';
+import { CreateBoardPopover } from '@/components/dashboard/popovers';
 import { fetchWorkspaces } from '@/lib/data';
 import { BoardList } from './boards';
 
@@ -60,7 +60,7 @@ export async function Workspaces() {
           <BoardList
             className="mt-6"
             boards={boards}
-            extraItem={<CreateBoardButton workspaceId={id} />}
+            extraItem={<CreateBoardPopover workspaceId={id} />}
           />
         </li>
       ))}

@@ -7,17 +7,17 @@ import Popover from '../ui/popover';
 import ArrowDownIcon from '../icons/arrow-down';
 import WorkspaceLogo from '../ui/workspace-logo';
 import StarFillIcon from '../icons/star-fill';
-import { CreateBoardButton } from './buttons';
+import { CreateBoardForm } from './create-forms';
 
 export function HeaderButtons({ workspaces }: { workspaces: UserWorkspace[] }) {
   const [selectedButton, setSelectedButton] = useState<string | null>(null);
 
   const workspacesContent = (
-    <ul className="space-y-4">
+    <ul className="space-y-1">
       {workspaces.map(({ id, name }) => (
         <li key={id}>
           <Link href={`/workspaces/${id}`}>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 rounded-md px-2 py-1.5 hover:bg-gray-200">
               <WorkspaceLogo className="size-10" workspaceName={name} />
               <h3 className="font-medium">{name}</h3>
             </div>
@@ -27,15 +27,15 @@ export function HeaderButtons({ workspaces }: { workspaces: UserWorkspace[] }) {
     </ul>
   );
 
-  const markedBoardsContent = (
-    <ul className="space-y-4">
+  const starredBoardsContent = (
+    <ul className="space-y-1">
       {workspaces.map(({ name: workspaceName, boards }) =>
         boards
-          .filter(({ marked }) => marked)
+          .filter(({ starred }) => starred)
           .map(({ id, name }) => (
             <li key={id}>
               <Link href={`/boards/${id}`}>
-                <div className="flex items-center justify-between gap-6">
+                <div className="flex items-center justify-between gap-6 rounded-md px-2 py-1.5 hover:bg-gray-200">
                   <div>
                     <h3 className="font-medium">{name}</h3>
                     <p className=" text-gray-500">{workspaceName}</p>
@@ -62,21 +62,23 @@ export function HeaderButtons({ workspaces }: { workspaces: UserWorkspace[] }) {
       triggerClassName: `font-medium`,
     },
     {
-      id: 'marked',
+      id: 'Starred',
       text: (
         <>
-          Marked
+          Starred
           <ArrowDownIcon height="16px" />
         </>
       ),
-      popoverContent: markedBoardsContent,
-      triggerClassName: `font-medium`,
+      popoverContent: starredBoardsContent,
+      triggerClassName: `font-medium mr-3`,
     },
     {
       id: 'create-board',
       text: 'Create board',
-      popoverContent: <CreateBoardButton workspaceId="test" />,
-      triggerClassName: `font-medium ml-3 bg-white bg-opacity-20 px-3 py-1.5 text-white hover:bg-opacity-30`,
+      popoverContent: (
+        <CreateBoardForm workspaces={workspaces} onSubmitSuccess={() => setSelectedButton(null)} />
+      ),
+      triggerClassName: `font-medium bg-white bg-opacity-20 px-3 py-1.5 text-white hover:bg-opacity-30`,
     },
   ];
 
@@ -86,7 +88,7 @@ export function HeaderButtons({ workspaces }: { workspaces: UserWorkspace[] }) {
         <Popover
           key={id}
           triggerClassName={triggerClassName}
-          text={text}
+          buttonText={text}
           open={selectedButton === id}
           onOpenChange={isOpen => isOpen && setSelectedButton(id)}>
           {popoverContent}

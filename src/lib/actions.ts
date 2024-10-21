@@ -51,7 +51,7 @@ export async function createWorkspace(prevState: ActionState, formData: FormData
 }
 
 export async function createBoard(
-  workspaceIdParam: string,
+  workspaceIdParam: string | undefined,
   prevState: ActionState,
   formData: FormData | null,
 ) {
@@ -60,7 +60,7 @@ export async function createBoard(
   }
 
   const validatedFields = CreateBoardSchema.safeParse({
-    workspaceId: workspaceIdParam,
+    workspaceId: workspaceIdParam ?? formData.get('workspace-id'),
     name: formData.get('name'),
   });
 
