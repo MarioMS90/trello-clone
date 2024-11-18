@@ -52,7 +52,7 @@ export async function signInAction(
     };
   }
 
-  return redirect('/dashboard');
+  return redirect('/workspaces');
 }
 
 export async function signUpAction(
@@ -95,7 +95,7 @@ export async function signUpAction(
     };
   }
 
-  return redirect('/dashboard');
+  return redirect('/workspaces');
 }
 
 export const signOutAction = async () => {

@@ -1,12 +1,7 @@
-import type { Metadata } from 'next';
 import './login.css';
 import TrelloIcon from '@/components/icons/trello';
 import AtlassianIcon from '@/components/icons/atlassian';
 import Link from 'next/link';
-
-export const metadata: Metadata = {
-  title: 'Login',
-};
 
 export default function Layout({
   children,
