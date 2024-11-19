@@ -10,7 +10,9 @@ export type Board = Tables<'board'> & {
   task_lists?: TaskList[];
 };
 
-export type TaskList = Tables<'task_list'>;
+export type TaskList = Tables<'task_list'> & {
+  tasks?: Pick<Task, 'id' | 'name' | 'created_at'>[];
+};
 
 export type Task = Tables<'task'>;
 
