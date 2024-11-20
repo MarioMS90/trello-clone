@@ -1,11 +1,11 @@
 'use client';
 
 import { signInAction, SignInState } from '@/lib/auth-actions';
-import { useFormState } from 'react-dom';
+import { useActionState } from 'react';
 
 export default function SignInForm() {
   const initialState: SignInState = { error: false, message: '' };
-  const [state, formAction] = useFormState(signInAction, initialState);
+  const [state, formAction, isPending] = useActionState(signInAction, initialState);
 
   return (
     <form action={formAction}>
@@ -24,8 +24,10 @@ export default function SignInForm() {
         {state.error && <p className="mb-2 text-sm text-red-500">{state.message}</p>}
       </div>
       <button
+        className="block w-full rounded bg-secondary py-2 text-sm font-medium text-white hover:bg-[#0055cc]"
         type="submit"
-        className="block w-full rounded bg-secondary py-2 text-sm font-medium text-white hover:bg-[#0055cc]">
+        aria-disabled={isPending}
+        disabled={isPending}>
         Sign In
       </button>
     </form>

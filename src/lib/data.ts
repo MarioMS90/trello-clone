@@ -24,7 +24,7 @@ export async function getWorkspace({
 }
 
 export async function fetchWorkspaces(): Promise<UserWorkspace[]> {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const {
     data: { user },
@@ -61,7 +61,7 @@ export async function fetchWorkspaces(): Promise<UserWorkspace[]> {
 }
 
 export async function fetchTaskLists(boardId: string): Promise<TaskList[]> {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const {
     data: { user },

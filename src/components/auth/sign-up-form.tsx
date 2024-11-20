@@ -1,8 +1,7 @@
 'use client';
 
 import { signUpAction, SignUpState } from '@/lib/auth-actions';
-import { useState } from 'react';
-import { useFormState } from 'react-dom';
+import { useState, useActionState } from 'react';
 
 export default function SignUpForm() {
   const [user, setUser] = useState({
@@ -12,7 +11,7 @@ export default function SignUpForm() {
   });
   const [isGeneratedUser, setIsGeneratedUser] = useState(false);
   const initialState: SignUpState = { message: null, errors: {} };
-  const [state, formAction] = useFormState(signUpAction, initialState);
+  const [state, formAction, isPending] = useActionState(signUpAction, initialState);
 
   const TOTAL_POKEMONS = 600;
 
@@ -74,9 +73,11 @@ export default function SignUpForm() {
         </button>
       </form>
       <button
+        className="my-2 block w-full rounded bg-primary py-2 text-sm font-medium text-white hover:opacity-90"
         type="button"
         onClick={generateRandomUser}
-        className="my-2 block w-full rounded bg-primary py-2 text-sm font-medium text-white hover:opacity-90">
+        aria-disabled={isPending}
+        disabled={isPending}>
         Generate User
       </button>
     </>

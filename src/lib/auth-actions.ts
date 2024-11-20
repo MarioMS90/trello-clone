@@ -36,7 +36,7 @@ export async function signInAction(
     };
   }
 
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const data = {
     email: validatedFields.data.email,
@@ -72,7 +72,7 @@ export async function signUpAction(
     };
   }
 
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const data = {
     email: validatedFields.data.email,
@@ -99,7 +99,7 @@ export async function signUpAction(
 }
 
 export const signOutAction = async () => {
-  const supabase = createClient();
+  const supabase = await createClient();
   await supabase.auth.signOut();
   return redirect('/');
 };

@@ -5,8 +5,9 @@ export const metadata: Metadata = {
   title: 'Members',
 };
 
-export default async function MembersPage({ params }: { params: { id: string } }) {
-  const workspace = await getWorkspace({ workspaceId: params.id });
+export default async function MembersPage({ params }: { params: Promise<{ id: string }> }) {
+  // const { id } = await params;
+  // const workspace = await getWorkspace({ workspaceId: id });
 
   return <div>Members page, coming soon! 🚀</div>;
 }

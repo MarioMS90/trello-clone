@@ -1,10 +1,8 @@
 'use client';
 
+import { useActionState, useEffect, useState } from 'react';
 import { createBoard, createWorkspace } from '@/lib/actions';
-import { useFormState } from 'react-dom';
 import { initialState, UserWorkspace } from '@/types/app-types';
-import { useEffect, useState } from 'react';
-import { SubmitButton } from './buttons';
 
 export function CreateBoardForm({
   workspaceId,
@@ -16,7 +14,7 @@ export function CreateBoardForm({
   onSubmitSuccess?: () => void;
 }) {
   const createBoardWithId = createBoard.bind(null, workspaceId);
-  const [formState, formAction] = useFormState(createBoardWithId, initialState);
+  const [formState, formAction, isPending] = useActionState(createBoardWithId, initialState);
   const [isValidForm, setIsValidForm] = useState(false);
 
   useEffect(() => {
@@ -63,14 +61,32 @@ export function CreateBoardForm({
           />
         </label>
         {formState?.errors?.name && <p className="text-xs text-red-500">{formState.errors.name}</p>}
-        <SubmitButton isValidForm={isValidForm} />
+        <button
+          className="
+            mt-3 
+            w-full 
+            rounded 
+            bg-secondary 
+            px-3 
+            py-2 
+            text-sm 
+            font-medium 
+            text-white 
+            disabled:cursor-not-allowed 
+            disabled:bg-gray-200 
+            disabled:text-gray-400
+          "
+          type="submit"
+          disabled={!isValidForm || isPending}>
+          Create
+        </button>
       </form>
     </div>
   );
 }
 
 export function CreateWorkspaceForm({ onSubmitSuccess }: { onSubmitSuccess?: () => void }) {
-  const [formState, formAction] = useFormState(createWorkspace, initialState);
+  const [formState, formAction, isPending] = useActionState(createWorkspace, initialState);
   const [isValidForm, setIsValidForm] = useState<boolean>(false);
 
   useEffect(() => {
@@ -98,7 +114,25 @@ export function CreateWorkspaceForm({ onSubmitSuccess }: { onSubmitSuccess?: () 
           />
         </label>
         {formState.errors?.name && <p className="text-xs text-red-500">{formState.errors.name}</p>}
-        <SubmitButton isValidForm={isValidForm} />
+        <button
+          className="
+            mt-3 
+            w-full 
+            rounded 
+            bg-secondary 
+            px-3 
+            py-2 
+            text-sm 
+            font-medium 
+            text-white 
+            disabled:cursor-not-allowed 
+            disabled:bg-gray-200 
+            disabled:text-gray-400
+          "
+          type="submit"
+          disabled={!isValidForm || isPending}>
+          Create
+        </button>
       </form>
     </div>
   );

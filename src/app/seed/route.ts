@@ -9,7 +9,7 @@ import {
 import { createClient } from '@/lib/supabase/server';
 
 async function seedWorkspaces() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data, error } = await supabase.from('workspace').upsert(workspaces).select();
 
   if (error) {
@@ -20,7 +20,7 @@ async function seedWorkspaces() {
 }
 
 async function seedUserWorkspaces() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data, error } = await supabase.from('user_workspace').upsert(userWorkspace).select();
 
   if (error) {
@@ -30,19 +30,19 @@ async function seedUserWorkspaces() {
   return data;
 }
 
-// async function seedBoards() {
-//   const supabase = createClient();
-//   const { data, error } = await supabase.from('board').upsert(boards).select();
+async function seedBoards() {
+  const supabase = createClient();
+  const { data, error } = await supabase.from('board').upsert(boards).select();
 
-//   if (error) {
-//     throw new Error(error.message);
-//   }
+  if (error) {
+    throw new Error(error.message);
+  }
 
-//   return data;
-// }
+  return data;
+}
 
 async function seedTaskLists() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data, error } = await supabase.from('task_list').upsert(taskLists).select();
 
   if (error) {
@@ -53,7 +53,7 @@ async function seedTaskLists() {
 }
 
 async function seedTasks() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data, error } = await supabase.from('task').upsert(taks).select();
 
   if (error) {
@@ -64,7 +64,7 @@ async function seedTasks() {
 }
 
 async function seedComments() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data, error } = await supabase.from('comment').upsert(comments).select();
 
   if (error) {
@@ -78,7 +78,7 @@ export async function GET() {
   try {
     await seedWorkspaces();
     await seedUserWorkspaces();
-    // await seedBoards();
+    await seedBoards();
     await seedTaskLists();
     await seedTasks();
     await seedComments();

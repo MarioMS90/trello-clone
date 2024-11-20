@@ -21,7 +21,7 @@ export async function createWorkspace(prevState: ActionState, formData: FormData
     };
   }
 
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const {
     data: { user },
@@ -71,7 +71,7 @@ export async function createBoard(
     };
   }
 
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const {
     data: { user },
