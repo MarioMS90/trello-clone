@@ -25,20 +25,20 @@ const boards = [
     id: '0591635f-4e17-4359-9fd4-efd9f503dd10',
     name: 'My board',
     starred: true,
-    id_workspace: workspaces[0].id,
+    workspace_id: workspaces[0].id,
   },
 
   {
     id: '9082c91b-a212-4757-8793-be3bd94e02ec',
     name: 'Another board',
     starred: false,
-    id_workspace: workspaces[0].id,
+    workspace_id: workspaces[0].id,
   },
   {
     id: '64ac3b47-2fcd-490a-a346-5fd5273b60d5',
     name: 'Work board',
     starred: false,
-    id_workspace: workspaces[1].id,
+    workspace_id: workspaces[1].id,
   },
 ];
 

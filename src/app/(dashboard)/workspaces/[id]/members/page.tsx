@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { getWorkspace } from '@/lib/data';
 import { Metadata } from 'next';
 

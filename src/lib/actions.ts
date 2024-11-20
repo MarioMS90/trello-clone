@@ -5,7 +5,7 @@ import { ActionState, initialState, Role } from '@/types/app-types';
 import { CreateBoardSchema, CreateWorkspaceSchema } from '@/schemas/workspace-schemas';
 import { createClient } from './supabase/server';
 
-export async function createWorkspace(prevState: ActionState, formData: FormData | null) {
+export async function createWorkspace(prevState: ActionState, formData: FormData) {
   if (!formData) {
     return initialState;
   }
@@ -53,7 +53,7 @@ export async function createWorkspace(prevState: ActionState, formData: FormData
 export async function createBoard(
   workspaceIdParam: string | undefined,
   prevState: ActionState,
-  formData: FormData | null,
+  formData: FormData,
 ) {
   if (!formData) {
     return initialState;

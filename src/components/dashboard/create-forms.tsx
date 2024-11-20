@@ -20,10 +20,9 @@ export function CreateBoardForm({
   useEffect(() => {
     if (formState.success) {
       setIsValidForm(false);
-      formAction(null);
       onSubmitSuccess?.();
     }
-  }, [formState.success, formAction, onSubmitSuccess]);
+  }, [formState.success, onSubmitSuccess]);
 
   return (
     <div className="flex flex-col text-sm text-gray-700">
@@ -92,10 +91,9 @@ export function CreateWorkspaceForm({ onSubmitSuccess }: { onSubmitSuccess?: () 
   useEffect(() => {
     if (formState.success) {
       setIsValidForm(false);
-      formAction(null);
       onSubmitSuccess?.();
     }
-  }, [formState.success, formAction, onSubmitSuccess]);
+  }, [formState.success, onSubmitSuccess]);
 
   return (
     <div className="flex flex-col text-sm text-gray-700">

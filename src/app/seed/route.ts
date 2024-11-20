@@ -10,6 +10,7 @@ import { createClient } from '@/lib/supabase/server';
 
 async function seedWorkspaces() {
   const supabase = await createClient();
+  await supabase.from('workspace').delete().neq('id', '00000000-0000-0000-0000-000000000000');
   const { data, error } = await supabase.from('workspace').upsert(workspaces).select();
 
   if (error) {
@@ -31,7 +32,7 @@ async function seedUserWorkspaces() {
 }
 
 async function seedBoards() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data, error } = await supabase.from('board').upsert(boards).select();
 
   if (error) {
