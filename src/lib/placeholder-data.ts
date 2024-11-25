@@ -1,10 +1,10 @@
 const workspaces = [
   {
-    id: 'a0a3a1c4-ac37-4409-8017-6b50bf664a45',
+    id: crypto.randomUUID(),
     name: 'Mario workspace',
   },
   {
-    id: '6c171c01-12ce-42a4-896a-0a0aaf2a6e96',
+    id: crypto.randomUUID(),
     name: 'Work',
   },
 ];
@@ -22,20 +22,19 @@ const userWorkspace = [
 
 const boards = [
   {
-    id: '0591635f-4e17-4359-9fd4-efd9f503dd10',
+    id: crypto.randomUUID(),
     name: 'My board',
     starred: true,
     workspace_id: workspaces[0].id,
   },
-
   {
-    id: '9082c91b-a212-4757-8793-be3bd94e02ec',
+    id: crypto.randomUUID(),
     name: 'Another board',
     starred: false,
     workspace_id: workspaces[0].id,
   },
   {
-    id: '64ac3b47-2fcd-490a-a346-5fd5273b60d5',
+    id: crypto.randomUUID(),
     name: 'Work board',
     starred: false,
     workspace_id: workspaces[1].id,
@@ -44,50 +43,62 @@ const boards = [
 
 const taskLists = [
   {
-    id: 'd3359f1a-b494-43aa-89e6-7a0f77cd8191',
+    id: crypto.randomUUID(),
     name: 'To do',
     board_id: boards[0].id,
   },
   {
-    id: 'a049c5b1-5d8f-4668-ae3c-06257cdd3ef2',
+    id: crypto.randomUUID(),
     name: 'In progress',
     board_id: boards[0].id,
   },
   {
-    id: '20a94cb7-1a9b-4462-8376-6e5638de5bf4',
+    id: crypto.randomUUID(),
     name: 'Done',
     board_id: boards[0].id,
   },
 ];
 
-const taks = [
+const tasks = [
   {
-    id: '9491da5d-7687-4b54-a189-82cf4586e86b',
+    id: crypto.randomUUID(),
     name: 'Task 1',
     description: 'This is the first task',
     task_list_id: taskLists[0].id,
   },
   {
-    id: '2e52591b-4102-4db7-9746-1f638dfc178f',
+    id: crypto.randomUUID(),
     name: 'Task 2',
     description: 'This is the second task',
+    task_list_id: taskLists[0].id,
+  },
+  {
+    id: crypto.randomUUID(),
+    name: 'Task 3',
+    description: 'This is the third task',
+    task_list_id: taskLists[0].id,
+  },
+  {
+    id: crypto.randomUUID(),
+    name: 'Task 1',
+    description: 'This is the first task in progress',
     task_list_id: taskLists[1].id,
   },
 ];
 
 const comments = [
   {
-    id: 'b15248d1-c3c7-4147-90df-70880a005596',
+    id: crypto.randomUUID(),
     content: 'This is a comment',
     user_id: '746a5280-bcc3-4a23-842f-be2ec0334e90',
-    task_id: taks[0].id,
+    task_id: tasks[0].id,
   },
   {
-    id: '5be9ed47-c9bc-4223-90cc-0324f8ccf868',
+    id: crypto.randomUUID(),
     content: 'This is the second comment',
     user_id: '746a5280-bcc3-4a23-842f-be2ec0334e90',
-    task_id: taks[0].id,
+    task_id: tasks[0].id,
   },
 ];
 
-export { workspaces, userWorkspace, boards, taskLists, taks, comments };
+export { workspaces, userWorkspace, boards, taskLists, tasks, comments };

@@ -11,7 +11,7 @@ export type Board = Tables<'board'> & {
 };
 
 export type TaskList = Tables<'task_list'> & {
-  tasks?: Pick<Task, 'id' | 'name' | 'created_at'>[];
+  tasks: Task[];
 };
 
 export type Task = Tables<'task'>;

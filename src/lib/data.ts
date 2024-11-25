@@ -74,11 +74,11 @@ export async function fetchTaskLists(boardId: string): Promise<TaskList[]> {
     .select(
       ` 
       *,
-      board!inner(id),
+      board!inner(
+        id
+      ),
       tasks: task(
-        id,
-        name,
-        created_at
+        *
       )
     `,
     )

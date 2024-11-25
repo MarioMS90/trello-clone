@@ -14,7 +14,7 @@ export default function DashboardLayout({
       <Header />
       <div className="flex grow overflow-y-auto">
         <Suspense fallback={<SideNavSkeleton />}>{sidenav}</Suspense>
-        <main className="grow overflow-y-auto bg-main-background pb-20 pl-8 pt-6 text-white">
+        <main className="grow overflow-y-auto bg-main-background pb-20 pl-4 pt-4 text-white">
           {children}
         </main>
       </div>

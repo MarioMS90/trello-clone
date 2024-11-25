@@ -15,7 +15,11 @@ export function WorkspaceLinks({
   actualPageName?: string;
 }) {
   const links = [
-    { name: WorkspacePageNames.BOARDS, href: `/workspaces/${workspace?.id}`, icon: BoardsIcon },
+    {
+      name: WorkspacePageNames.BOARDS,
+      href: `/workspaces/${workspace?.id}`,
+      icon: BoardsIcon,
+    },
     {
       name: WorkspacePageNames.MEMBERS,
       href: `/workspaces/${workspace?.id}/members`,
@@ -26,17 +30,19 @@ export function WorkspaceLinks({
   return (
     <ul className="pt-4">
       {links.map(link => (
-        <Link key={link.name} href={link.href}>
-          <div
-            className={clsx('py-2 hover:bg-button-hovered-background', {
-              'bg-button-selected-background': actualPageName === link.name,
-            })}>
-            <span className="flex items-center gap-3 px-4">
-              <link.icon height="16px" />
-              {link.name}
-            </span>
-          </div>
-        </Link>
+        <li key={link.name}>
+          <Link key={link.name} href={link.href}>
+            <div
+              className={clsx('py-2 hover:bg-button-hovered-background', {
+                'bg-button-selected-background': actualPageName === link.name,
+              })}>
+              <span className="flex items-center gap-3 px-4">
+                <link.icon height="16px" />
+                {link.name}
+              </span>
+            </div>
+          </Link>
+        </li>
       ))}
     </ul>
   );

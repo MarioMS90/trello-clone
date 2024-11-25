@@ -3,7 +3,7 @@ import {
   userWorkspace,
   boards,
   taskLists,
-  taks,
+  tasks,
   comments,
 } from '@/lib/placeholder-data';
 import { createClient } from '@/lib/supabase/server';
@@ -55,7 +55,7 @@ async function seedTaskLists() {
 
 async function seedTasks() {
   const supabase = await createClient();
-  const { data, error } = await supabase.from('task').upsert(taks).select();
+  const { data, error } = await supabase.from('task').upsert(tasks).select();
 
   if (error) {
     throw new Error(error.message);

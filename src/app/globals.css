@@ -2,6 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .center-xy {
+    @apply absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform;
+  }
+
+  .center-x {
+    @apply absolute left-1/2 -translate-x-1/2 transform;
+  }
+
+  .center-y {
+    @apply absolute top-1/2 -translate-y-1/2 transform;
+  }
+}
+
 :root {
   --color-primary: #172b4d;
   --color-secondary: #0c66e4;
@@ -23,19 +37,5 @@ body {
 @media (prefers-reduced-motion: reduce) {
   body {
     scroll-behavior: auto;
-  }
-}
-
-@layer components {
-  .center-xy {
-    @apply absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform;
-  }
-
-  .center-x {
-    @apply absolute left-1/2 -translate-x-1/2 transform;
-  }
-
-  .center-y {
-    @apply absolute top-1/2 -translate-y-1/2 transform;
   }
 }

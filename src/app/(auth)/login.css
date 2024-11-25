@@ -5,8 +5,7 @@
   height: 100%;
   z-index: -1;
   background-color: rgb(250, 251, 252);
-  background-image: url('https://id-frontend.prod-east.frontend.public.atl-paas.net/assets/trello-left.4f52d13c.svg'),
-    url('https://id-frontend.prod-east.frontend.public.atl-paas.net/assets/trello-right.e6e102c7.svg');
+  background-image: url('/trello-left.svg'), url('/trello-right.svg');
   background-repeat: no-repeat, no-repeat;
   background-attachment: fixed, fixed;
   background-size: 368px, 368px;
