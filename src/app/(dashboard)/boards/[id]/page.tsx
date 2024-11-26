@@ -11,7 +11,7 @@ export default async function BoardPage({ params }: { params: Promise<{ id: stri
   const taskLists = await fetchTaskLists(boardId);
 
   return (
-    <ul className="flex gap-3">
+    <ul className="flex gap-4">
       {taskLists.map(({ id, name, tasks }) => (
         <li key={id}>
           <TaskList listName={name} tasks={tasks} />
