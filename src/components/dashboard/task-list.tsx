@@ -16,22 +16,24 @@ export function TaskList({ listName, tasks }: { listName: string; tasks: Task[] 
           </span>
         </span>
       </div>
-      <ul className="mt-3 flex flex-col gap-2">
-        {tasks.map(({ id, name }) => (
-          <li
-            className="cursor-pointer rounded-lg border border-gray-300 bg-white px-2 py-2.5 shadow-sm hover:[&>span]:block"
-            key={id}>
-            <div className="flex items-center justify-between px-2">
-              <h2>{name}</h2>
-              <span className="relative hidden size-7 cursor-pointer rounded-full hover:bg-gray-200">
-                <span className="center-xy">
-                  <PencilIcon width={11} height={11} />
+      {!!tasks.length && (
+        <ul className="flex flex-col gap-2 pt-3">
+          {tasks.map(({ id, name }) => (
+            <li
+              className="cursor-pointer rounded-lg border border-gray-300 bg-white px-2 py-2.5 shadow-sm hover:[&>span]:block"
+              key={id}>
+              <div className="flex items-center justify-between px-2">
+                <h2>{name}</h2>
+                <span className="relative hidden size-7 cursor-pointer rounded-full hover:bg-gray-200">
+                  <span className="center-xy">
+                    <PencilIcon width={11} height={11} />
+                  </span>
                 </span>
-              </span>
-            </div>
-          </li>
-        ))}
-      </ul>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
       <div>
         <button
           type="button"
