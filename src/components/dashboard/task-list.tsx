@@ -8,8 +8,11 @@ import PencilIcon from '../icons/pencil';
 export function TaskList({ listName, tasks }: { listName: string; tasks: Task[] }) {
   return (
     <div className="w-[272px] rounded-xl bg-gray-200 p-2 text-sm text-primary">
-      <div className="flex cursor-pointer items-center justify-between px-2">
-        <h2 className="cursor-pointer font-semibold">{listName}</h2>
+      <div className="flex cursor-pointer items-center justify-between">
+        <textarea
+          className="grow cursor-pointer resize-none overflow-hidden rounded-lg bg-transparent px-2.5 py-1.5 font-semibold outline-secondary focus-visible:bg-white"
+          style={{ height: '32px' }}
+          value={listName}></textarea>
         <span className="relative flex size-8 cursor-pointer rounded-lg hover:bg-gray-300">
           <span className="center-xy">
             <DotsIcon width={16} height={16} />
@@ -17,14 +20,14 @@ export function TaskList({ listName, tasks }: { listName: string; tasks: Task[] 
         </span>
       </div>
       {!!tasks.length && (
-        <ul className="flex flex-col gap-1.5 pt-3">
+        <ul className="flex flex-col gap-2 pt-2">
           {tasks.map(({ id, name }) => (
             <li
-              className="cursor-pointer rounded-lg border border-gray-300 bg-white px-2 py-2.5 shadow-sm hover:[&>span]:block"
+              className="group cursor-pointer rounded-lg border border-gray-300 bg-white px-1 py-2 shadow-sm outline-2 outline-secondary hover:outline"
               key={id}>
-              <div className="flex items-center justify-between px-2">
+              <div className="relative justify-between px-2">
                 <h2>{name}</h2>
-                <span className="relative hidden size-7 cursor-pointer rounded-full hover:bg-gray-200">
+                <span className="center-y absolute right-0 hidden size-7 cursor-pointer rounded-full hover:bg-gray-200 group-hover:block">
                   <span className="center-xy">
                     <PencilIcon width={11} height={11} />
                   </span>

@@ -13,7 +13,7 @@ export default async function BoardPage({ params }: { params: Promise<{ id: stri
 
   return (
     <div className="relative h-full">
-      <ul className="scrollbar-transparent absolute bottom-0 left-0 right-0 top-0 mb-2 flex gap-4 overflow-x-auto px-4 pb-2 pt-4">
+      <ul className="scrollbar-transparent absolute bottom-0 left-0 right-0 top-0 mb-2 flex gap-4 overflow-x-auto p-3">
         {taskLists.map(({ id, name, tasks }) => (
           <li className="h-full" key={id}>
             <TaskList listName={name} tasks={tasks} />
