@@ -10,11 +10,11 @@ export const metadata: Metadata = {
 export default function BoardPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   return (
-    <>
+    <div className="main-container">
       <h2 className="font-bold">Boards</h2>
       <Suspense fallback={<BoardsSkeleton />}>
         <Boards workspaceId={id} />
       </Suspense>
-    </>
+    </div>
   );
 }

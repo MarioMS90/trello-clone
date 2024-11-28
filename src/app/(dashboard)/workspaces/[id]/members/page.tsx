@@ -10,5 +10,5 @@ export default async function MembersPage({ params }: { params: Promise<{ id: st
   // const { id } = await params;
   // const workspace = await getWorkspace({ workspaceId: id });
 
-  return <div>Members page, coming soon! 🚀</div>;
+  return <div className="main-container">Members page, coming soon! 🚀</div>;
 }

@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer components {
+  .main-container {
+    @apply px-4 pb-20 pt-4;
+  }
+
   .center-xy {
     @apply absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform;
   }
@@ -13,6 +17,12 @@
 
   .center-y {
     @apply absolute top-1/2 -translate-y-1/2 transform;
+  }
+}
+
+@layer utilities {
+  .scrollbar-transparent {
+    scrollbar-color: #fff6 #00000026;
   }
 }
 
@@ -27,8 +37,6 @@
 }
 
 body {
-  width: 100vw;
-  height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Noto Sans', 'Ubuntu',
     'Droid Sans', 'Helvetica Neue', sans-serif;
   color: var(--color-primary);

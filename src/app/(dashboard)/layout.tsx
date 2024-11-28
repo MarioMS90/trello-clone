@@ -10,13 +10,11 @@ export default function DashboardLayout({
   sidenav: React.ReactNode;
 }>) {
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-dvh w-screen flex-col">
       <Header />
-      <div className="flex grow overflow-y-auto">
+      <div className="flex flex-1">
         <Suspense fallback={<SideNavSkeleton />}>{sidenav}</Suspense>
-        <main className="grow overflow-y-auto bg-main-background pb-20 pl-4 pt-4 text-white">
-          {children}
-        </main>
+        <main className="flex-1 overflow-hidden bg-main-background text-white">{children}</main>
       </div>
     </div>
   );

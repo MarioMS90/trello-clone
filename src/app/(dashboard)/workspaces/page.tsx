@@ -7,7 +7,7 @@ import { BoardsSkeleton } from '@/components/ui/skeletons';
 
 export default function WorkspacesPage() {
   return (
-    <>
+    <div className="main-container">
       <div className="mb-16 space-y-12">
         <section>
           <div className="flex items-center gap-3 font-bold">
@@ -26,6 +26,6 @@ export default function WorkspacesPage() {
         </section>
       </div>
       <CreateWorkspacePopover />
-    </>
+    </div>
   );
 }

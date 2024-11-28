@@ -8,7 +8,7 @@ import PencilIcon from '../icons/pencil';
 export function TaskList({ listName, tasks }: { listName: string; tasks: Task[] }) {
   return (
     <div className="w-[272px] rounded-xl bg-gray-200 p-2 text-sm text-primary">
-      <div className="flex items-center justify-between px-2">
+      <div className="flex cursor-pointer items-center justify-between px-2">
         <h2 className="cursor-pointer font-semibold">{listName}</h2>
         <span className="relative flex size-8 cursor-pointer rounded-lg hover:bg-gray-300">
           <span className="center-xy">
@@ -17,7 +17,7 @@ export function TaskList({ listName, tasks }: { listName: string; tasks: Task[] 
         </span>
       </div>
       {!!tasks.length && (
-        <ul className="flex flex-col gap-2 pt-3">
+        <ul className="flex flex-col gap-1.5 pt-3">
           {tasks.map(({ id, name }) => (
             <li
               className="cursor-pointer rounded-lg border border-gray-300 bg-white px-2 py-2.5 shadow-sm hover:[&>span]:block"
