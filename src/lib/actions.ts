@@ -88,3 +88,20 @@ export async function createBoard(
   revalidatePath('/(dashboard)', 'layout');
   return { success: true };
 }
+
+export async function starToggleAction(boardId: string, starred: boolean) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) throw new Error('User not logged in');
+
+  const { error } = await supabase.from('board').update({ starred }).eq('id', boardId);
+
+  if (error) throw new Error(error.message);
+
+  revalidatePath('/(dashboard)', 'layout');
+  return { success: true };
+}

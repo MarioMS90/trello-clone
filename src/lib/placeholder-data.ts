@@ -7,6 +7,10 @@ const workspaces = [
     id: crypto.randomUUID(),
     name: 'Work',
   },
+  {
+    id: crypto.randomUUID(),
+    name: 'Not Mario workspace',
+  },
 ];
 
 const userWorkspace = [
@@ -18,6 +22,10 @@ const userWorkspace = [
     user_id: '746a5280-bcc3-4a23-842f-be2ec0334e90',
     workspace_id: workspaces[1].id,
   },
+  {
+    user_id: 'ebd8b7ae-b4ee-4ba5-b80c-f46a4a495840',
+    workspace_id: workspaces[2].id,
+  },
 ];
 
 const boards = [
@@ -26,18 +34,28 @@ const boards = [
     name: 'My board',
     starred: true,
     workspace_id: workspaces[0].id,
+    created_at: new Date(),
   },
   {
     id: crypto.randomUUID(),
     name: 'Another board',
     starred: false,
     workspace_id: workspaces[0].id,
+    created_at: new Date(new Date().getTime() + 1000),
   },
   {
     id: crypto.randomUUID(),
     name: 'Work board',
     starred: false,
     workspace_id: workspaces[1].id,
+    created_at: new Date(new Date().getTime() + 2000),
+  },
+  {
+    id: crypto.randomUUID(),
+    name: 'Not my board',
+    starred: false,
+    workspace_id: workspaces[2].id,
+    created_at: new Date(new Date().getTime() + 3000),
   },
 ];
 

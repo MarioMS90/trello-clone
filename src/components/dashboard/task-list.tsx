@@ -10,7 +10,7 @@ export function TaskList({ listName, tasks }: { listName: string; tasks: Task[] 
     <div className="w-[272px] rounded-xl bg-gray-200 p-2 text-sm text-primary">
       <div className="flex cursor-pointer items-center justify-between">
         <textarea
-          className="grow cursor-pointer resize-none overflow-hidden rounded-lg bg-transparent px-2.5 py-1.5 font-semibold outline-secondary focus-visible:bg-white"
+          className="grow cursor-pointer resize-none overflow-hidden rounded-lg bg-transparent px-2.5 py-1.5 font-semibold outline-secondary focus-within:cursor-text focus-visible:bg-white"
           style={{ height: '32px' }}
           value={listName}></textarea>
         <span className="relative flex size-8 cursor-pointer rounded-lg hover:bg-gray-300">

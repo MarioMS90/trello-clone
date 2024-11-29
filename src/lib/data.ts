@@ -1,24 +1,11 @@
 import { TaskList, UserWorkspace } from '@/types/app-types';
 import { createClient } from '@/lib/supabase/server';
-import { notFound } from 'next/navigation';
-import { getWorkspaceIdFromBoard } from './utils';
 
-export async function getWorkspace({
-  workspaceId,
-  boardId,
-}: {
-  workspaceId?: string;
-  boardId?: string;
-}): Promise<UserWorkspace> {
+export async function getWorkspace(
+  workspaceId: string | undefined,
+): Promise<UserWorkspace | undefined> {
   const workspaces = await fetchWorkspaces();
-
-  const targetWorkspaceId = boardId ? getWorkspaceIdFromBoard(workspaces, boardId) : workspaceId;
-
-  const workspace = workspaces.find(_workspace => _workspace.id === targetWorkspaceId);
-
-  if (!workspace) {
-    notFound();
-  }
+  const workspace = workspaces.find(_workspace => _workspace.id === workspaceId);
 
   return workspace;
 }
@@ -45,7 +32,8 @@ export async function fetchWorkspaces(): Promise<UserWorkspace[]> {
       )
     `,
     )
-    .eq('user_workspace.user_id', user.id);
+    .eq('user_workspace.user_id', user.id)
+    .order('created_at', { referencedTable: 'board' });
 
   if (error) throw new Error(error.message);
 
@@ -82,7 +70,8 @@ export async function fetchTaskLists(boardId: string): Promise<TaskList[]> {
       )
     `,
     )
-    .eq('board.id', boardId);
+    .eq('board.id', boardId)
+    .order('created_at');
 
   if (error) throw new Error(error.message);
 

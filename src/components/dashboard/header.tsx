@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { fetchWorkspaces } from '@/lib/data';
+import { getStarredBoards } from '@/lib/utils';
 import AppsIcon from '../icons/apps';
 import SearchIcon from '../icons/search';
 import Avatar from '../ui/avatar';
@@ -8,6 +9,7 @@ import { HeaderButtons } from './header-buttons';
 
 export default async function Header() {
   const workspaces = await fetchWorkspaces();
+  const starredBoards = await getStarredBoards();
 
   return (
     <header
@@ -29,7 +31,7 @@ export default async function Header() {
         <Link href="/workspaces">
           <TrelloWhiteIcon height="25px" />
         </Link>
-        <HeaderButtons workspaces={workspaces} />
+        <HeaderButtons workspaces={workspaces} starredBoards={starredBoards} />
       </nav>
       <div className="flex items-center gap-4">
         <div className="relative h-7 w-72">

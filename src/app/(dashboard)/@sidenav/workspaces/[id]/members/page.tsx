@@ -7,6 +7,6 @@ export default function WorkspaceSidenavPageBoardSidenavPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = use(params);
-  return <WorkspaceSideNav workspaceId={id} actualPageName={WorkspacePageNames.MEMBERS} />;
+  const { id: workspaceId } = use(params);
+  return <WorkspaceSideNav workspaceId={workspaceId} actualPageName={WorkspacePageNames.MEMBERS} />;
 }

@@ -1,15 +1,21 @@
 'use client';
 
 import { useState } from 'react';
-import { UserWorkspace } from '@/types/app-types';
+import { Board, UserWorkspace } from '@/types/app-types';
 import Link from 'next/link';
 import Popover from '../ui/popover';
 import ArrowDownIcon from '../icons/arrow-down';
 import WorkspaceLogo from '../ui/workspace-logo';
-import StarFillIcon from '../icons/star-fill';
 import { CreateBoardForm } from './create-forms';
+import { StarToggle } from './star-toggle';
 
-export function HeaderButtons({ workspaces }: { workspaces: UserWorkspace[] }) {
+export function HeaderButtons({
+  workspaces,
+  starredBoards,
+}: {
+  workspaces: UserWorkspace[];
+  starredBoards: Board[];
+}) {
   const [selectedButton, setSelectedButton] = useState<string | null>(null);
 
   const workspacesContent = (
@@ -27,27 +33,22 @@ export function HeaderButtons({ workspaces }: { workspaces: UserWorkspace[] }) {
     </ul>
   );
 
-  const starredBoardsContent = (
-    <ul className="space-y-1">
-      {workspaces.map(({ name: workspaceName, boards }) =>
-        boards
-          .filter(({ starred }) => starred)
-          .map(({ id, name }) => (
-            <li key={id}>
-              <Link href={`/boards/${id}`}>
-                <div className="flex items-center justify-between gap-6 rounded-md px-2 py-1.5 hover:bg-gray-200">
-                  <div>
-                    <h3 className="font-medium">{name}</h3>
-                    <p className=" text-gray-500">{workspaceName}</p>
-                  </div>
-                  <StarFillIcon className="text-yellow-400 hover:scale-125" height="16px" />
-                </div>
-              </Link>
-            </li>
-          )),
-      )}
-    </ul>
-  );
+  const starredBoardsContent =
+    starredBoards.length === 0 ? (
+      <p className="text-center">No starred boards</p>
+    ) : (
+      <ul className="space-y-1">
+        {starredBoards.map(({ id, name, workspaceName }) => (
+          <li className="relative rounded-md px-2 py-1 hover:bg-gray-200" key={id}>
+            <Link className="" href={`/boards/${id}`}>
+              <h3 className="font-medium">{name}</h3>
+              <p className="text-gray-500">{workspaceName}</p>
+            </Link>
+            <StarToggle className="[&]:right-1.5" boardId={id} starred />
+          </li>
+        ))}
+      </ul>
+    );
 
   const buttons = [
     {

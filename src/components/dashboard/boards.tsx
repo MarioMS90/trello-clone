@@ -1,13 +1,14 @@
 import { Board } from '@/types/app-types';
 import Link from 'next/link';
-import { fetchWorkspaces, getWorkspace } from '@/lib/data';
+import { getWorkspace } from '@/lib/data';
 import { notFound } from 'next/navigation';
-import StarFillIcon from '../icons/star-fill';
-import StarIcon from '../icons/star';
+import { getStarredBoards } from '@/lib/utils';
 import { CreateBoardPopover } from './popovers';
+import { StarToggle } from './star-toggle';
+import StarIcon from '../icons/star';
 
 export async function Boards({ workspaceId }: { workspaceId: string }) {
-  const workspace = await getWorkspace({ workspaceId });
+  const workspace = await getWorkspace(workspaceId);
 
   if (!workspace) {
     notFound();
@@ -34,33 +35,27 @@ export function BoardList({
     <ul className={`mt-4 flex flex-wrap gap-4 ${className}`}>
       {boards &&
         boards.map(({ id, name, starred }) => (
-          <li key={id}>
-            <Link href={`/boards/${id}`}>
-              <div
-                className={`
-                  relative 
-                  h-20 
-                  w-44 
-                  rounded
-                  bg-white 
-                  pl-4 
-                  pt-2 
-                  text-sm 
-                  font-bold 
-                  text-primary 
-                  hover:opacity-95
-                `}>
-                {name}
-                {starred ? (
-                  <StarFillIcon
-                    className="absolute bottom-2 right-3 text-yellow-400 hover:scale-125"
-                    height="16px"
-                  />
-                ) : (
-                  <StarIcon className="absolute bottom-2 right-3 hover:scale-125" height="16px" />
-                )}
-              </div>
+          <li
+            className="
+              relative 
+              h-20 
+              w-44 
+              rounded 
+              bg-white
+              text-primary 
+              hover:bg-opacity-95
+            "
+            key={id}>
+            <Link
+              className="block h-full w-full pl-4 pt-2 text-sm font-bold"
+              href={`/boards/${id}`}>
+              {name}
             </Link>
+            <StarToggle
+              className="bottom-3 top-[unset] transform-none"
+              boardId={id}
+              starred={starred}
+            />
           </li>
         ))}
       {extraItem && <li>{extraItem}</li>}
@@ -69,10 +64,20 @@ export function BoardList({
 }
 
 export async function StarredBoards() {
-  const workspaces = await fetchWorkspaces();
+  const starredBoards = await getStarredBoards();
 
-  const getStarredBoards = () =>
-    workspaces.flatMap(workspace => workspace.boards.filter(board => board.starred));
+  if (!starredBoards.length) {
+    return null;
+  }
 
-  return <BoardList boards={getStarredBoards()} />;
+  return (
+    <section>
+      <div className="flex items-center gap-3 font-bold">
+        <StarIcon height="20px" />
+        <h2>Starred boards </h2>
+      </div>
+
+      <BoardList boards={starredBoards} />
+    </section>
+  );
 }

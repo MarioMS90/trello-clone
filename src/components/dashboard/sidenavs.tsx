@@ -1,9 +1,13 @@
 import Link from 'next/link';
 import { getWorkspace } from '@/lib/data';
+import { getWorkspaceIdFromBoard } from '@/lib/utils';
+import { notFound } from 'next/navigation';
 import BoardsIcon from '../icons/boards';
 import ArrowDownIcon from '../icons/arrow-down';
 import WorkspaceLogo from '../ui/workspace-logo';
 import { WorkspaceLinks, BoardsLinks } from './nav-links';
+import PlusIcon from '../icons/plus';
+import { CreateBoardPopover } from './popovers';
 
 export function MainSideNav() {
   return (
@@ -36,7 +40,12 @@ export async function WorkspaceSideNav({
   workspaceId?: string;
   actualPageName?: string;
 }) {
-  const workspace = await getWorkspace({ workspaceId, boardId });
+  const targetWorkspaceId = boardId ? await getWorkspaceIdFromBoard(boardId) : workspaceId;
+  const workspace = await getWorkspace(targetWorkspaceId);
+
+  if (!workspace) {
+    notFound();
+  }
 
   return (
     <nav
@@ -55,7 +64,7 @@ export async function WorkspaceSideNav({
             <h2 className="pr-4 text-sm font-bold">{workspace.name}</h2>
           </div>
           <div
-            className={`
+            className="
                   rotate-90 
                   cursor-pointer 
                   rounded 
@@ -63,14 +72,21 @@ export async function WorkspaceSideNav({
                   bg-opacity-10 
                   p-1.5 
                   hover:bg-opacity-20
-                `}>
+                ">
             <ArrowDownIcon height="15px" />
           </div>
         </div>
       </div>
       <div className="text-sm">
         <WorkspaceLinks workspace={workspace} actualPageName={actualPageName} />
-        <h3 className="mb-3 mt-4 px-4 font-bold">Your boards</h3>
+        <div className="flex items-center justify-between pl-4 pr-2.5">
+          <h3 className="mb-3 mt-4 font-bold">Your boards</h3>
+          <CreateBoardPopover
+            workspaceId={workspace.id}
+            triggerClassName="px-1.5"
+            buttonText={<PlusIcon height="16px" />}
+          />
+        </div>
         <BoardsLinks boards={workspace.boards} selectedBoardId={boardId} />
       </div>
     </nav>

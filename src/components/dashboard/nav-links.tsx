@@ -4,8 +4,7 @@ import { Board, UserWorkspace } from '@/types/app-types';
 import { WorkspacePageNames } from '@/constants/constants';
 import BoardsIcon from '../icons/boards';
 import UserIcon from '../icons/user';
-import StarIcon from '../icons/star';
-import StarFillIcon from '../icons/star-fill';
+import { StarToggle } from './star-toggle';
 
 export function WorkspaceLinks({
   workspace,
@@ -58,17 +57,13 @@ export function BoardsLinks({
   return (
     <ul>
       {boards.map(({ id, name, starred }) => (
-        <li key={id}>
-          <Link href={`/boards/${id}`}>
-            <div
-              className={clsx('py-2 hover:bg-button-hovered-background', {
-                'bg-button-hovered-background': selectedBoardId === id,
-              })}>
-              <span className="flex items-center justify-between gap-3 px-4">
-                {name} {starred ? <StarFillIcon height="18px" /> : <StarIcon height="18px" />}
-              </span>
-            </div>
-          </Link>
+        <li
+          className={clsx('relative px-4 py-2 hover:bg-button-hovered-background', {
+            'bg-button-hovered-background': selectedBoardId === id,
+          })}
+          key={id}>
+          <Link href={`/boards/${id}`}>{name}</Link>
+          <StarToggle boardId={id} starred={starred} />
         </li>
       ))}
     </ul>

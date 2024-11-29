@@ -8,6 +8,7 @@ export type Workspace = Tables<'workspace'> & {
 
 export type Board = Tables<'board'> & {
   task_lists?: TaskList[];
+  workspaceName?: string;
 };
 
 export type TaskList = Tables<'task_list'> & {
