@@ -12,7 +12,10 @@ export function TaskList({ listName, tasks }: { listName: string; tasks: Task[] 
         <textarea
           className="grow cursor-pointer resize-none overflow-hidden rounded-lg bg-transparent px-2.5 py-1.5 font-semibold outline-secondary focus-within:cursor-text focus-visible:bg-white"
           style={{ height: '32px' }}
-          value={listName}></textarea>
+          value={listName}
+          onChange={() => {
+            ('');
+          }}></textarea>
         <span className="relative flex size-8 cursor-pointer rounded-lg hover:bg-gray-300">
           <span className="center-xy">
             <DotsIcon width={16} height={16} />

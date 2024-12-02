@@ -29,17 +29,17 @@ export default async function Header() {
     `}>
       <nav className="flex items-center text-sm [&>a:hover]:bg-button-hovered-background [&>a]:rounded [&>a]:p-1.5">
         <Link href="/workspaces">
-          <AppsIcon height="20px" />
+          <AppsIcon height={20} />
         </Link>
         <Link href="/workspaces">
-          <TrelloWhiteIcon height="25px" />
+          <TrelloWhiteIcon height={25} />
         </Link>
         <HeaderButtons workspaces={workspaces} starredBoards={starredBoards} />
       </nav>
       <div className="flex items-center gap-4">
         <div className="relative h-7 w-72">
           <span className="absolute left-2 top-1/2 -translate-y-1/2 transform">
-            <SearchIcon height="17px" />
+            <SearchIcon height={17} />
           </span>
           <input
             className={`
@@ -63,16 +63,16 @@ export default async function Header() {
         </div>
         <Popover
           triggerContent={<Avatar userName={user.name} />}
-          triggerClassName="[&]:text-left rounded-full [&]:p-1"
+          triggerClassName="rounded-full [&]:p-1"
           popoverClassName="right-0 left-auto px-0">
           <button
             className="px-3 py-2 text-left text-sm hover:bg-gray-200"
+            type="button"
             onClick={async () => {
               'use server';
 
               await signOutAction();
-            }}
-            type="button">
+            }}>
             Log out
           </button>
         </Popover>

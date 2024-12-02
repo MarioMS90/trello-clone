@@ -4,9 +4,10 @@ import { notFound } from 'next/navigation';
 import BoardsIcon from '../icons/boards';
 import ArrowDownIcon from '../icons/arrow-down';
 import WorkspaceLogo from '../ui/workspace-logo';
-import { WorkspaceLinks, BoardsLinks } from './nav-links';
+import { WorkspaceLinks } from './workspace-links';
 import PlusIcon from '../icons/plus';
 import { CreateBoardPopover } from './popovers';
+import { BoardLinks } from './board-links';
 
 export function MainSideNav() {
   return (
@@ -22,7 +23,7 @@ export function MainSideNav() {
       <Link href="/workspaces">
         <div className="mt-4 bg-button-selected-background py-2">
           <span className="flex items-center gap-3 px-4">
-            <BoardsIcon height="16px" /> Workspaces
+            <BoardsIcon height={16} /> Workspaces
           </span>
         </div>
       </Link>
@@ -72,7 +73,7 @@ export async function WorkspaceSideNav({
                   p-1.5 
                   hover:bg-opacity-20
                 ">
-            <ArrowDownIcon height="15px" />
+            <ArrowDownIcon height={15} />
           </div>
         </div>
       </div>
@@ -83,10 +84,10 @@ export async function WorkspaceSideNav({
           <CreateBoardPopover
             workspaceId={workspace.id}
             triggerClassName="px-1.5"
-            buttonText={<PlusIcon height="16px" />}
+            buttonText={<PlusIcon height={16} />}
           />
         </div>
-        <BoardsLinks boards={workspace.boards} selectedBoardId={boardId} />
+        <BoardLinks boards={workspace.boards} selectedBoardId={boardId} />
       </div>
     </nav>
   );

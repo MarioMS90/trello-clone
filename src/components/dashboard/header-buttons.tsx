@@ -56,7 +56,7 @@ export function HeaderButtons({
       text: (
         <>
           Workspaces
-          <ArrowDownIcon height="16px" />
+          <ArrowDownIcon height={16} />
         </>
       ),
       popoverContent: workspacesContent,
@@ -67,7 +67,7 @@ export function HeaderButtons({
       text: (
         <>
           Starred
-          <ArrowDownIcon height="16px" />
+          <ArrowDownIcon height={16} />
         </>
       ),
       popoverContent: starredBoardsContent,

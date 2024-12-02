@@ -33,7 +33,7 @@ export async function Workspaces() {
                       text-primary 
                       hover:bg-opacity-90
                     `}>
-                    <BoardsIcon height="16px" /> Boards
+                    <BoardsIcon height={16} /> Boards
                   </div>
                 </Link>
               </li>
@@ -51,7 +51,7 @@ export async function Workspaces() {
                       text-primary 
                       hover:bg-opacity-90
                     `}>
-                    <UserIcon height="16px" /> Members
+                    <UserIcon height={16} /> Members
                   </div>
                 </Link>
               </li>

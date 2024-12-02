@@ -14,10 +14,10 @@ export default function Layout({
       <section
         role="main"
         className="flex w-[400px] flex-col rounded bg-white p-7 text-center shadow-md">
-        <TrelloIcon height="40px" />
+        <TrelloIcon height={40} />
         {children}
         <footer className="mt-4 flex flex-col border-t border-gray-300 pt-6 text-xs [&>*>a]:text-secondary">
-          <AtlassianIcon height="24px" />
+          <AtlassianIcon height={24} />
           <p className="py-2">
             One account for Trello, Jira, Confluence, and <Link href="#">more</Link>.
           </p>

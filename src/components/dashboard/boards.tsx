@@ -75,7 +75,7 @@ export async function StarredBoards() {
   return (
     <section>
       <div className="flex items-center gap-3 font-bold">
-        <StarIcon height="20px" />
+        <StarIcon height={20} />
         <h2>Starred boards </h2>
       </div>
 

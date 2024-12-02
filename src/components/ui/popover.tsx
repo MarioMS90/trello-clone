@@ -77,6 +77,7 @@ export default function Popover({
       {isOpen && (
         <div
           className={` 
+            popover
             absolute
             left-0 
             top-[calc(100%+5px)]
@@ -108,7 +109,7 @@ export default function Popover({
               type="button"
               onClick={() => handleOpenChange(false)}>
               <span className="pointer-events-none">
-                <CloseIcon height="16px" />
+                <CloseIcon height={16} />
               </span>
             </button>
           )}

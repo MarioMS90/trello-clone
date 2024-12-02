@@ -27,9 +27,9 @@ export function StarToggle({
       type="button"
       onClick={handleStarToggle}>
       {isStarred ? (
-        <StarFillIcon className="text-yellow-400 hover:scale-125" height="16px" />
+        <StarFillIcon className="text-yellow-400 hover:scale-125" height={16} />
       ) : (
-        <StarIcon className="hover:scale-125" height="16px" />
+        <StarIcon className="hover:scale-125" height={16} />
       )}
     </button>
   );

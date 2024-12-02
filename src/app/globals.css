@@ -41,9 +41,3 @@ body {
     'Droid Sans', 'Helvetica Neue', sans-serif;
   color: var(--color-primary);
 }
-
-@media (prefers-reduced-motion: reduce) {
-  body {
-    scroll-behavior: auto;
-  }
-}
