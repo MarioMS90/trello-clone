@@ -1,8 +1,19 @@
-import { Board } from '@/types/app-types';
+import { Board, UserWorkspace } from '@/types/app-types';
 import { fetchWorkspaces } from './data';
+
+export async function getWorkspace(
+  workspaceId: string | undefined,
+): Promise<UserWorkspace | undefined> {
+  const workspaces = await fetchWorkspaces();
+
+  const workspace = workspaces.find(_workspace => _workspace.id === workspaceId);
+
+  return workspace;
+}
 
 export async function getWorkspaceIdFromBoard(boardId: string): Promise<string | undefined> {
   const workspaces = await fetchWorkspaces();
+
   const boards = workspaces.flatMap(workspace => workspace.boards);
   const board = boards.find(_board => _board.id === boardId);
 

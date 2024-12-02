@@ -63,7 +63,9 @@ export function BoardsLinks({
           })}
           key={id}>
           <Link href={`/boards/${id}`}>{name}</Link>
-          <StarToggle boardId={id} starred={starred} />
+
+          {/* The key prop is used to force the client component to re-render when the starred prop changes */}
+          <StarToggle key={String(starred)} boardId={id} starred={starred} />
         </li>
       ))}
     </ul>

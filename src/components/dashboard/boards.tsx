@@ -1,8 +1,7 @@
 import { Board } from '@/types/app-types';
 import Link from 'next/link';
-import { getWorkspace } from '@/lib/data';
 import { notFound } from 'next/navigation';
-import { getStarredBoards } from '@/lib/utils';
+import { getWorkspace, getStarredBoards } from '@/lib/utils';
 import { CreateBoardPopover } from './popovers';
 import { StarToggle } from './star-toggle';
 import StarIcon from '../icons/star';
@@ -51,7 +50,10 @@ export function BoardList({
               href={`/boards/${id}`}>
               {name}
             </Link>
+
+            {/* The key prop is used to force the client component to re-render when the starred prop changes */}
             <StarToggle
+              key={String(starred)}
               className="bottom-3 top-[unset] transform-none"
               boardId={id}
               starred={starred}

@@ -1,13 +1,27 @@
-import { TaskList, UserWorkspace } from '@/types/app-types';
+import { TaskList, User, UserWorkspace } from '@/types/app-types';
 import { createClient } from '@/lib/supabase/server';
 
-export async function getWorkspace(
-  workspaceId: string | undefined,
-): Promise<UserWorkspace | undefined> {
-  const workspaces = await fetchWorkspaces();
-  const workspace = workspaces.find(_workspace => _workspace.id === workspaceId);
+export async function fetchUser(): Promise<User> {
+  const supabase = await createClient();
 
-  return workspace;
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) throw new Error('User not logged in');
+
+  const { data, error } = await supabase
+    .from('user')
+    .select(
+      `
+      *
+    `,
+    )
+    .eq('id', user.id);
+
+  if (error) throw new Error(error.message);
+
+  return data[0];
 }
 
 export async function fetchWorkspaces(): Promise<UserWorkspace[]> {

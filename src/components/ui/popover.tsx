@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import CloseIcon from '../icons/close';
 
 export default function Popover({
-  buttonText,
+  triggerContent,
   triggerClassName,
   popoverClassName,
   children: popoverContent,
@@ -12,7 +12,7 @@ export default function Popover({
   onOpenChange,
   addCloseButton,
 }: {
-  buttonText: React.ReactNode;
+  triggerContent: React.ReactNode;
   triggerClassName?: string;
   popoverClassName?: string;
   children: React.ReactNode;
@@ -72,7 +72,7 @@ export default function Popover({
         `}
         type="button"
         onClick={() => handleOpenChange(!isOpen)}>
-        {buttonText}
+        {triggerContent}
       </button>
       {isOpen && (
         <div

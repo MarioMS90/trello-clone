@@ -6,7 +6,7 @@ import StarIcon from '../icons/star';
 import StarFillIcon from '../icons/star-fill';
 
 export function StarToggle({
-  className,
+  className = '',
   boardId,
   starred,
 }: {
@@ -23,7 +23,7 @@ export function StarToggle({
 
   return (
     <button
-      className={`center-y absolute right-3 ${className ?? ''}`}
+      className={`center-y absolute right-3 ${className}`}
       type="button"
       onClick={handleStarToggle}>
       {isStarred ? (

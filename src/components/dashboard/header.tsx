@@ -1,15 +1,18 @@
 import Link from 'next/link';
-import { fetchWorkspaces } from '@/lib/data';
+import { fetchUser, fetchWorkspaces } from '@/lib/data';
 import { getStarredBoards } from '@/lib/utils';
+import { signOutAction } from '@/lib/auth-actions';
 import AppsIcon from '../icons/apps';
 import SearchIcon from '../icons/search';
 import Avatar from '../ui/avatar';
 import TrelloWhiteIcon from '../icons/trello-white';
 import { HeaderButtons } from './header-buttons';
+import Popover from '../ui/popover';
 
 export default async function Header() {
   const workspaces = await fetchWorkspaces();
   const starredBoards = await getStarredBoards();
+  const user = await fetchUser();
 
   return (
     <header
@@ -58,7 +61,21 @@ export default async function Header() {
             type="text"
             placeholder="Search"></input>
         </div>
-        <Avatar />
+        <Popover
+          triggerContent={<Avatar userName={user.name} />}
+          triggerClassName="[&]:text-left rounded-full [&]:p-1"
+          popoverClassName="right-0 left-auto px-0">
+          <button
+            className="px-3 py-2 text-left text-sm hover:bg-gray-200"
+            onClick={async () => {
+              'use server';
+
+              await signOutAction();
+            }}
+            type="button">
+            Log out
+          </button>
+        </Popover>
       </div>
     </header>
   );

@@ -89,7 +89,7 @@ export function HeaderButtons({
         <Popover
           key={id}
           triggerClassName={triggerClassName}
-          buttonText={text}
+          triggerContent={text}
           open={selectedButton === id}
           onOpenChange={isOpen => isOpen && setSelectedButton(id)}>
           {popoverContent}

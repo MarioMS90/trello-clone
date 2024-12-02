@@ -24,7 +24,7 @@ export function CreateWorkspacePopover() {
           hover:opacity-90 
           hover:bg-gray-300 
         "
-        buttonText="Create a new workspace"
+        triggerContent="Create a new workspace"
         open={popoverOpen}
         onOpenChange={setPopoverOpen}
         addCloseButton>
@@ -65,7 +65,7 @@ export function CreateBoardPopover({
             hover:bg-gray-300 
           `
         }
-        buttonText={buttonText || 'Create a new board'}
+        triggerContent={buttonText || 'Create a new board'}
         open={popoverOpen}
         onOpenChange={setPopoverOpen}
         addCloseButton>

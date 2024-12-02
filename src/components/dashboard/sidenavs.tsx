@@ -1,6 +1,5 @@
 import Link from 'next/link';
-import { getWorkspace } from '@/lib/data';
-import { getWorkspaceIdFromBoard } from '@/lib/utils';
+import { getWorkspace, getWorkspaceIdFromBoard } from '@/lib/utils';
 import { notFound } from 'next/navigation';
 import BoardsIcon from '../icons/boards';
 import ArrowDownIcon from '../icons/arrow-down';
