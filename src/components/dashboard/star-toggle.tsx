@@ -1,7 +1,7 @@
 'use client';
 
 import { starToggleAction } from '@/lib/actions';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import StarIcon from '../icons/star';
 import StarFillIcon from '../icons/star-fill';
 
@@ -15,6 +15,10 @@ export function StarToggle({
   starred: boolean;
 }) {
   const [isStarred, setIsStarred] = useState(starred);
+
+  useEffect(() => {
+    setIsStarred(starred);
+  }, [starred]);
 
   const handleStarToggle = async () => {
     setIsStarred(prev => !prev);

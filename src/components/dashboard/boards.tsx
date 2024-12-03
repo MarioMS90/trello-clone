@@ -51,9 +51,7 @@ export function BoardList({
               {name}
             </Link>
 
-            {/* The key prop is used to force the client component to re-render when the starred prop changes */}
             <StarToggle
-              key={String(starred)}
               className="bottom-3 top-[unset] transform-none"
               boardId={id}
               starred={starred}

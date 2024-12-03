@@ -4,58 +4,68 @@ import Link from 'next/link';
 import clsx from 'clsx';
 import { Board } from '@/types/app-types';
 import { useEffect, useRef, useState } from 'react';
+import { deleteBoardAction, renameBoardAction } from '@/lib/actions';
 import { StarToggle } from './star-toggle';
 import DotsIcon from '../icons/dots';
 import Popover from '../ui/popover';
 
 export function BoardLinks({
-  boards,
+  boardList,
   selectedBoardId,
 }: {
-  boards: Board[];
+  boardList: Board[];
   selectedBoardId?: string;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [editingBoardId, setEditingBoardId] = useState<string | null>(null);
-  const [editedBoardId, setEditedBoardId] = useState<string | null>(null);
-  const [newBoardName, setNewBoardName] = useState('');
+  const [boards, setBoards] = useState<(Board & { editing?: boolean })[]>(boardList);
   const [selectedButton, setSelectedButton] = useState<string | null>(null);
+  const isEditing = boards.some(board => board.editing);
 
   useEffect(() => {
-    if (editingBoardId && inputRef.current) {
+    setBoards(boardList);
+  }, [boardList]);
+
+  useEffect(() => {
+    if (isEditing && inputRef.current) {
       inputRef.current.focus();
     }
-  }, [editingBoardId]);
+  }, [isEditing]);
+
+  const handleRenameBoard = async (boardId: string, boardIndex: number) => {
+    setBoards(boards.with(boardIndex, { ...boards[boardIndex], editing: false }));
+    await renameBoardAction(boardId, boards[boardIndex].name);
+  };
+
+  const handleDeleteBoard = async (boardId: string) => {
+    await deleteBoardAction(boardId);
+  };
 
   return (
     <ul>
-      {boards.map(({ id, name, starred }) => (
+      {boards.map(({ id, name, starred, editing }, index) => (
         <li className="group relative" key={id}>
-          {editingBoardId === id ? (
-            <div className="px-4">
+          {editing ? (
+            <div className="pl-4 pr-[70px]">
               <input
                 type="text"
-                className="rounded-lg p-2 font-semibold text-primary outline-secondary"
+                className="w-full rounded-lg border-none p-2 font-semibold text-primary outline-offset-0 outline-secondary"
                 style={{ height: '32px' }}
-                value={newBoardName}
+                value={name}
                 ref={inputRef}
-                onBlur={() => {
-                  setEditedBoardId(id);
-                  setEditingBoardId(null);
-                  console.log('Save new board name:', newBoardName);
-                  // modify name
-                }}
-                onChange={e => setNewBoardName(e.target.value)}
+                onBlur={() => handleRenameBoard(id, index)}
+                onChange={e =>
+                  setBoards(boards.with(index, { ...boards[index], name: e.target.value }))
+                }
               />
             </div>
           ) : (
             <>
               <Link
-                className={clsx('block px-4 py-2 hover:bg-button-hovered-background', {
+                className={clsx('block py-2 pl-4 pr-[70px] hover:bg-button-hovered-background', {
                   'bg-button-hovered-background': selectedBoardId === id,
                 })}
                 href={`/boards/${id}`}>
-                {editedBoardId === id ? newBoardName : name}
+                {name}
               </Link>
 
               <div className="center-y absolute right-11 z-10 hidden group-hover:block has-[.popover-wrapper>.popover]:block">
@@ -70,18 +80,13 @@ export function BoardLinks({
                       <button
                         type="button"
                         onClick={() => {
-                          setEditingBoardId(id);
-                          setNewBoardName(name);
+                          setBoards(boards.with(index, { ...boards[index], editing: true }));
                         }}>
                         Rename board
                       </button>
                     </li>
                     <li>
-                      <button
-                        type="button"
-                        onClick={async () => {
-                          ('');
-                        }}>
+                      <button type="button" onClick={() => handleDeleteBoard(id)}>
                         Delete board
                       </button>
                     </li>
@@ -89,12 +94,10 @@ export function BoardLinks({
                 </Popover>
               </div>
 
-              {/* The key prop is used to force the client component to re-render when the starred prop changes in another place */}
               <StarToggle
                 className={clsx('hidden group-hover:block', {
                   '[&]:block': starred,
                 })}
-                key={String(starred)}
                 boardId={id}
                 starred={starred}
               />

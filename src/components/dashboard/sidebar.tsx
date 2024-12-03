@@ -9,7 +9,7 @@ import PlusIcon from '../icons/plus';
 import { CreateBoardPopover } from './popovers';
 import { BoardLinks } from './board-links';
 
-export function MainSideNav() {
+export function MainSidebar() {
   return (
     <nav
       className={`
@@ -31,7 +31,7 @@ export function MainSideNav() {
   );
 }
 
-export async function WorkspaceSideNav({
+export async function WorkspaceSidebar({
   boardId,
   workspaceId,
   actualPageName,
@@ -87,7 +87,7 @@ export async function WorkspaceSideNav({
             buttonText={<PlusIcon height={16} />}
           />
         </div>
-        <BoardLinks boards={workspace.boards} selectedBoardId={boardId} />
+        <BoardLinks boardList={workspace.boards} selectedBoardId={boardId} />
       </div>
     </nav>
   );

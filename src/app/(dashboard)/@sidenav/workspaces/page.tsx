@@ -1,5 +1,5 @@
-import { MainSideNav } from '@/components/dashboard/sidenavs';
+import { MainSidebar } from '@/components/dashboard/sidebar';
 
 export default function WorkspaceSidenavPage() {
-  return <MainSideNav />;
+  return <MainSidebar />;
 }

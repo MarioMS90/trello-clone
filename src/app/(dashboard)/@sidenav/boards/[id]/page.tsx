@@ -1,7 +1,7 @@
 import { use } from 'react';
-import { WorkspaceSideNav } from '@/components/dashboard/sidenavs';
+import { WorkspaceSidebar } from '@/components/dashboard/sidebar';
 
 export default function BoardSidenavPage({ params }: { params: Promise<{ id: string }> }) {
   const { id: boardId } = use(params);
-  return <WorkspaceSideNav boardId={boardId} />;
+  return <WorkspaceSidebar boardId={boardId} />;
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { useActionState, useEffect, useState } from 'react';
-import { createBoard, createWorkspace } from '@/lib/actions';
+import { createBoardAction, createWorkspaceAction } from '@/lib/actions';
 import { initialState, UserWorkspace } from '@/types/app-types';
 
 export function CreateBoardForm({
@@ -13,7 +13,7 @@ export function CreateBoardForm({
   workspaces?: UserWorkspace[];
   onSubmitSuccess?: () => void;
 }) {
-  const createBoardWithId = createBoard.bind(null, workspaceId);
+  const createBoardWithId = createBoardAction.bind(null, workspaceId);
   const [formState, formAction, isPending] = useActionState(createBoardWithId, initialState);
   const [isValidForm, setIsValidForm] = useState(false);
 
@@ -85,7 +85,7 @@ export function CreateBoardForm({
 }
 
 export function CreateWorkspaceForm({ onSubmitSuccess }: { onSubmitSuccess?: () => void }) {
-  const [formState, formAction, isPending] = useActionState(createWorkspace, initialState);
+  const [formState, formAction, isPending] = useActionState(createWorkspaceAction, initialState);
   const [isValidForm, setIsValidForm] = useState<boolean>(false);
 
   useEffect(() => {

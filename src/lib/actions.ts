@@ -5,7 +5,7 @@ import { ActionState, initialState, Role } from '@/types/app-types';
 import { CreateBoardSchema, CreateWorkspaceSchema } from '@/schemas/workspace-schemas';
 import { createClient } from './supabase/server';
 
-export async function createWorkspace(prevState: ActionState, formData: FormData) {
+export async function createWorkspaceAction(prevState: ActionState, formData: FormData) {
   if (!formData) {
     return initialState;
   }
@@ -50,7 +50,7 @@ export async function createWorkspace(prevState: ActionState, formData: FormData
   return { success: true };
 }
 
-export async function createBoard(
+export async function createBoardAction(
   workspaceIdParam: string | undefined,
   prevState: ActionState,
   formData: FormData,
@@ -82,6 +82,40 @@ export async function createBoard(
   const { error } = await supabase
     .from('board')
     .insert({ name: validatedFields.data.name, workspace_id: validatedFields.data.workspaceId });
+
+  if (error) throw new Error(error.message);
+
+  revalidatePath('/(dashboard)', 'layout');
+  return { success: true };
+}
+
+export async function renameBoardAction(boardId: string, newName: string) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) throw new Error('User not logged in');
+
+  const { error } = await supabase.from('board').update({ name: newName }).eq('id', boardId);
+
+  if (error) throw new Error(error.message);
+
+  revalidatePath('/(dashboard)', 'layout');
+  return { success: true };
+}
+
+export async function deleteBoardAction(boardId: string) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) throw new Error('User not logged in');
+
+  const { error } = await supabase.from('board').delete().eq('id', boardId);
 
   if (error) throw new Error(error.message);
 
