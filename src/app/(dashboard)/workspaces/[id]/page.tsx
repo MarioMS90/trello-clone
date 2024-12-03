@@ -1,4 +1,4 @@
-import { use, Suspense } from 'react';
+import { Suspense } from 'react';
 import { Boards } from '@/components/dashboard/boards';
 import { BoardsSkeleton } from '@/components/ui/skeletons';
 import { Metadata } from 'next';
@@ -7,8 +7,8 @@ export const metadata: Metadata = {
   title: 'Board',
 };
 
-export default function BoardPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id: workspaceId } = use(params);
+export default async function BoardPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id: workspaceId } = await params;
 
   return (
     <div className="main-container">

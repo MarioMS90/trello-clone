@@ -1,11 +1,8 @@
-import { SVGProps } from 'react';
-
-export default function TrelloWhiteIcon({ width, height }: SVGProps<SVGSVGElement>) {
+export default function TrelloWhiteIcon() {
   return (
     <svg
-      viewBox="0 0 94 32"
-      width={width}
-      height={height}
+      viewBox="0 -1 94 32"
+      height="25"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       focusable="false"

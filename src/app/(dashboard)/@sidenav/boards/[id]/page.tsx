@@ -1,7 +1,13 @@
-import { use } from 'react';
 import { WorkspaceSidebar } from '@/components/dashboard/sidebar';
+import { SidebarSkeleton } from '@/components/ui/skeletons';
+import { Suspense } from 'react';
 
-export default function BoardSidenavPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id: boardId } = use(params);
-  return <WorkspaceSidebar boardId={boardId} />;
+export default async function BoardSidenavPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id: boardId } = await params;
+
+  return (
+    <Suspense fallback={<SidebarSkeleton />}>
+      <WorkspaceSidebar boardId={boardId} />
+    </Suspense>
+  );
 }

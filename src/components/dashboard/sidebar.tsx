@@ -65,14 +65,14 @@ export async function WorkspaceSidebar({
           </div>
           <div
             className="
-                  rotate-90 
-                  cursor-pointer 
-                  rounded 
-                  bg-white 
-                  bg-opacity-10 
-                  p-1.5 
-                  hover:bg-opacity-20
-                ">
+              rotate-90 
+              cursor-pointer 
+              rounded 
+              bg-white 
+              bg-opacity-10 
+              p-1.5 
+              hover:bg-opacity-20
+            ">
             <ArrowDownIcon height={15} />
           </div>
         </div>

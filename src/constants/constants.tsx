@@ -1,4 +1,4 @@
 export enum WorkspacePageNames {
-  BOARDS = 'Boards',
-  MEMBERS = 'Members',
+  BOARDS = 'boards',
+  MEMBERS = 'members',
 }

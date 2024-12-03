@@ -1,10 +1,7 @@
-import { SVGProps } from 'react';
-
-export default function AppsIcon({ width, height }: SVGProps<SVGSVGElement>) {
+export default function AppsIcon() {
   return (
     <svg
-      width={width}
-      height={height}
+      height="20"
       role="presentation"
       focusable="false"
       viewBox="0 0 24 24"

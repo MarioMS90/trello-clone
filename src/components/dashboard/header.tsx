@@ -16,23 +16,28 @@ export default async function Header() {
 
   return (
     <header
-      className={`
-      flex h-12 
-      items-center 
-      justify-between 
-      border-b 
-      border-b-white 
-      border-opacity-30 
-      bg-header-background 
-      p-1.5 
-      text-white
-    `}>
-      <nav className="flex items-center text-sm [&>a:hover]:bg-button-hovered-background [&>a]:rounded [&>a]:p-1.5">
-        <Link href="/workspaces">
-          <AppsIcon height={20} />
+      className="
+        flex 
+        h-12 
+        items-center 
+        justify-between 
+        border-b 
+        border-b-white 
+        border-opacity-30 
+        bg-header-background 
+        p-1.5 
+        text-white
+      ">
+      <nav className="flex items-center text-sm [&>a:hover]:bg-button-hovered-background [&>a]:relative [&>a]:h-[32px] [&>a]:rounded">
+        <Link className="w-[32px]" href="/workspaces">
+          <span className="center-xy">
+            <AppsIcon />
+          </span>
         </Link>
-        <Link href="/workspaces">
-          <TrelloWhiteIcon height={25} />
+        <Link className="w-[91px]" href="/workspaces">
+          <span className="center-xy">
+            <TrelloWhiteIcon />
+          </span>
         </Link>
         <HeaderButtons workspaces={workspaces} starredBoards={starredBoards} />
       </nav>
@@ -42,22 +47,22 @@ export default async function Header() {
             <SearchIcon height={17} />
           </span>
           <input
-            className={`
-                h-full 
-                w-full 
-                rounded 
-                border 
-                border-gray-400 
-                bg-white 
-                bg-opacity-20 
-                pl-8 
-                text-sm 
-                text-white 
-                placeholder-white 
-                outline-none 
-                hover:bg-opacity-30 
-                focus-visible:border-secondary
-              `}
+            className="
+              h-full 
+              w-full 
+              rounded 
+              border 
+              border-gray-400 
+              bg-white 
+              bg-opacity-20 
+              pl-8 
+              text-sm 
+              text-white 
+              placeholder-white 
+              outline-none 
+              hover:bg-opacity-30 
+              focus-visible:border-secondary
+            "
             type="text"
             placeholder="Search"></input>
         </div>

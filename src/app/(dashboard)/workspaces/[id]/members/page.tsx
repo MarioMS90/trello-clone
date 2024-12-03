@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { getWorkspace } from '@/lib/data';
+import { getWorkspace } from '@/lib/utils';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 

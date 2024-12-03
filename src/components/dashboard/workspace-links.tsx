@@ -15,12 +15,12 @@ export function WorkspaceLinks({
   const links = [
     {
       name: WorkspacePageNames.BOARDS,
-      href: `/workspaces/${workspace?.id}`,
+      href: `/workspaces/${workspace.id}`,
       icon: BoardsIcon,
     },
     {
       name: WorkspacePageNames.MEMBERS,
-      href: `/workspaces/${workspace?.id}/members`,
+      href: `/workspaces/${workspace.id}/members`,
       icon: UserIcon,
     },
   ];
