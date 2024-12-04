@@ -61,7 +61,6 @@ export default function Popover({
       <button
         className={`
           flex 
-          cursor-pointer 
           items-center 
           gap-2 
           rounded

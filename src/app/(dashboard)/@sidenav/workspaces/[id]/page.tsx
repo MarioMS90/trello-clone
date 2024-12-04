@@ -1,7 +1,7 @@
 import { WorkspacePageNames } from '@/constants/constants';
-import { WorkspaceSidebar } from '@/components/dashboard/sidebar';
 import { SidebarSkeleton } from '@/components/ui/skeletons';
 import { Suspense } from 'react';
+import { WorkspaceSidebar } from '@/components/dashboard/sidebar/sidebar';
 
 export default async function WorkspaceSidenavPage({
   params,

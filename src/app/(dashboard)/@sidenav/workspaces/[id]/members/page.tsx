@@ -1,5 +1,5 @@
 import { WorkspacePageNames } from '@/constants/constants';
-import { WorkspaceSidebar } from '@/components/dashboard/sidebar';
+import { WorkspaceSidebar } from '@/components/dashboard/sidebar/sidebar';
 import { Suspense } from 'react';
 import { SidebarSkeleton } from '@/components/ui/skeletons';
 

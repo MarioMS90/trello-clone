@@ -89,6 +89,43 @@ export async function createBoardAction(
   return { success: true };
 }
 
+export async function renameWorkspaceAction(workspaceId: string, newName: string) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) throw new Error('User not logged in');
+
+  const { error } = await supabase
+    .from('workspace')
+    .update({ name: newName })
+    .eq('id', workspaceId);
+
+  if (error) throw new Error(error.message);
+
+  revalidatePath('/(dashboard)', 'layout');
+  return { success: true };
+}
+
+export async function deleteWorkspaceAction(workspaceId: string) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) throw new Error('User not logged in');
+
+  const { error } = await supabase.from('workspace').delete().eq('id', workspaceId);
+
+  if (error) throw new Error(error.message);
+
+  revalidatePath('/(dashboard)', 'layout');
+  return { success: true };
+}
+
 export async function renameBoardAction(boardId: string, newName: string) {
   const supabase = await createClient();
 

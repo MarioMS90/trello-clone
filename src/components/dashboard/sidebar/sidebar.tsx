@@ -1,13 +1,13 @@
 import Link from 'next/link';
 import { getWorkspace, getWorkspaceIdFromBoard } from '@/lib/utils';
 import { notFound } from 'next/navigation';
-import BoardsIcon from '../icons/boards';
-import ArrowDownIcon from '../icons/arrow-down';
-import WorkspaceLogo from '../ui/workspace-logo';
-import { WorkspaceLinks } from './workspace-links';
-import PlusIcon from '../icons/plus';
-import { CreateBoardPopover } from './popovers';
-import { BoardLinks } from './board-links';
+import BoardsIcon from '@/components/icons/boards';
+import ArrowDownIcon from '@/components/icons/arrow-down';
+import WorkspaceLogo from '@/components/ui/workspace-logo';
+import PlusIcon from '@/components/icons/plus';
+import { CreateBoardPopover } from '@/components/dashboard/popovers';
+import { SidebarLinks } from '@/components/dashboard/sidebar/sidebar-links';
+import { SidebarBoards } from '@/components/dashboard/sidebar/sidebar-boards';
 
 export function MainSidebar() {
   return (
@@ -78,7 +78,7 @@ export async function WorkspaceSidebar({
         </div>
       </div>
       <div className="text-sm">
-        <WorkspaceLinks workspace={workspace} actualPageName={actualPageName} />
+        <SidebarLinks workspace={workspace} actualPageName={actualPageName} />
         <div className="flex items-center justify-between pl-4 pr-2.5">
           <h3 className="mb-3 mt-4 font-bold">Your boards</h3>
           <CreateBoardPopover
@@ -87,7 +87,7 @@ export async function WorkspaceSidebar({
             buttonText={<PlusIcon height={16} />}
           />
         </div>
-        <BoardLinks boardList={workspace.boards} selectedBoardId={boardId} />
+        <SidebarBoards boards={workspace.boards} selectedBoardId={boardId} />
       </div>
     </nav>
   );

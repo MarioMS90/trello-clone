@@ -2,12 +2,12 @@ import Link from 'next/link';
 import { fetchUser, fetchWorkspaces } from '@/lib/data';
 import { getStarredBoards } from '@/lib/utils';
 import { signOutAction } from '@/lib/auth-actions';
-import AppsIcon from '../icons/apps';
-import SearchIcon from '../icons/search';
-import Avatar from '../ui/avatar';
-import TrelloWhiteIcon from '../icons/trello-white';
+import AppsIcon from '../../icons/apps';
+import SearchIcon from '../../icons/search';
+import Avatar from '../../ui/avatar';
+import TrelloWhiteIcon from '../../icons/trello-white';
 import { HeaderButtons } from './header-buttons';
-import Popover from '../ui/popover';
+import Popover from '../../ui/popover';
 
 export default async function Header() {
   const workspaces = await fetchWorkspaces();
@@ -69,7 +69,7 @@ export default async function Header() {
         <Popover
           triggerContent={<Avatar userName={user.name} />}
           triggerClassName="rounded-full [&]:p-1"
-          popoverClassName="right-0 left-auto px-0">
+          popoverClassName="right-0 left-auto px-0 w-40">
           <button
             className="px-3 py-2 text-left text-sm hover:bg-gray-200"
             type="button"

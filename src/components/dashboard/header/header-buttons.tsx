@@ -3,11 +3,11 @@
 import { useState } from 'react';
 import { Board, UserWorkspace } from '@/types/app-types';
 import Link from 'next/link';
-import Popover from '../ui/popover';
-import ArrowDownIcon from '../icons/arrow-down';
-import WorkspaceLogo from '../ui/workspace-logo';
-import { CreateBoardForm } from './create-forms';
-import { StarToggle } from './star-toggle';
+import Popover from '../../ui/popover';
+import ArrowDownIcon from '../../icons/arrow-down';
+import WorkspaceLogo from '../../ui/workspace-logo';
+import { CreateBoardForm } from '../create-forms';
+import { StarToggle } from '../star-toggle';
 
 export function HeaderButtons({
   workspaces,

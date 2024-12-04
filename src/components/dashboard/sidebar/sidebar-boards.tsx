@@ -5,35 +5,35 @@ import clsx from 'clsx';
 import { Board } from '@/types/app-types';
 import { useEffect, useRef, useState } from 'react';
 import { deleteBoardAction, renameBoardAction } from '@/lib/actions';
-import { StarToggle } from './star-toggle';
-import DotsIcon from '../icons/dots';
-import Popover from '../ui/popover';
+import { StarToggle } from '../star-toggle';
+import DotsIcon from '../../icons/dots';
+import Popover from '../../ui/popover';
 
-export function BoardLinks({
-  boardList,
+export function SidebarBoards({
+  boards,
   selectedBoardId,
 }: {
-  boardList: Board[];
+  boards: Board[];
   selectedBoardId?: string;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [boards, setBoards] = useState<(Board & { editing?: boolean })[]>(boardList);
   const [selectedButton, setSelectedButton] = useState<string | null>(null);
-  const isEditing = boards.some(board => board.editing);
+  const [editedBoard, setEditedBoard] = useState<{ id: string; name: string; isEditing: boolean }>({
+    id: '',
+    name: '',
+    isEditing: false,
+  });
 
   useEffect(() => {
-    setBoards(boardList);
-  }, [boardList]);
-
-  useEffect(() => {
-    if (isEditing && inputRef.current) {
+    if (editedBoard.isEditing && inputRef.current) {
       inputRef.current.focus();
+      setSelectedButton(null);
     }
-  }, [isEditing]);
+  }, [editedBoard.isEditing]);
 
-  const handleRenameBoard = async (boardId: string, boardIndex: number) => {
-    setBoards(boards.with(boardIndex, { ...boards[boardIndex], editing: false }));
-    await renameBoardAction(boardId, boards[boardIndex].name);
+  const handleRenameBoard = async (boardId: string) => {
+    setEditedBoard({ ...editedBoard, isEditing: false });
+    await renameBoardAction(boardId, editedBoard.name);
   };
 
   const handleDeleteBoard = async (boardId: string) => {
@@ -42,20 +42,18 @@ export function BoardLinks({
 
   return (
     <ul>
-      {boards.map(({ id, name, starred, editing }, index) => (
+      {boards.map(({ id, name, starred }) => (
         <li className="group relative" key={id}>
-          {editing ? (
+          {editedBoard.id === id && editedBoard.isEditing ? (
             <div className="pl-4 pr-[70px]">
               <input
                 type="text"
                 className="w-full rounded-lg border-none p-2 font-semibold text-primary outline-offset-0 outline-secondary"
                 style={{ height: '32px' }}
-                value={name}
+                value={editedBoard.name}
                 ref={inputRef}
-                onBlur={() => handleRenameBoard(id, index)}
-                onChange={e =>
-                  setBoards(boards.with(index, { ...boards[index], name: e.target.value }))
-                }
+                onBlur={() => handleRenameBoard(id)}
+                onChange={e => setEditedBoard({ ...editedBoard, name: e.target.value })}
               />
             </div>
           ) : (
@@ -65,14 +63,14 @@ export function BoardLinks({
                   'bg-button-hovered-background': selectedBoardId === id,
                 })}
                 href={`/boards/${id}`}>
-                {name}
+                {editedBoard.id === id ? editedBoard.name : name}
               </Link>
 
               <div className="center-y absolute right-11 z-10 hidden group-hover:block has-[.popover-wrapper>.popover]:block">
                 <Popover
                   triggerContent={<DotsIcon height={16} />}
                   triggerClassName="[&]:p-1"
-                  popoverClassName="px-0"
+                  popoverClassName="px-0 w-40"
                   open={selectedButton === id}
                   onOpenChange={isOpen => isOpen && setSelectedButton(id)}>
                   <ul className="text-sm [&>li>button:hover]:bg-gray-200 [&>li>button]:w-full [&>li>button]:px-3 [&>li>button]:py-2 [&>li>button]:text-left">
@@ -80,7 +78,7 @@ export function BoardLinks({
                       <button
                         type="button"
                         onClick={() => {
-                          setBoards(boards.with(index, { ...boards[index], editing: true }));
+                          setEditedBoard({ id, name, isEditing: true });
                         }}>
                         Rename board
                       </button>

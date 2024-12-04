@@ -2,10 +2,10 @@ import Link from 'next/link';
 import clsx from 'clsx';
 import { UserWorkspace } from '@/types/app-types';
 import { WorkspacePageNames } from '@/constants/constants';
-import BoardsIcon from '../icons/boards';
-import UserIcon from '../icons/user';
+import BoardsIcon from '../../icons/boards';
+import UserIcon from '../../icons/user';
 
-export function WorkspaceLinks({
+export function SidebarLinks({
   workspace,
   actualPageName,
 }: {

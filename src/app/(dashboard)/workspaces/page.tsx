@@ -1,5 +1,5 @@
 import { CreateWorkspacePopover } from '@/components/dashboard/popovers';
-import { Workspaces } from '@/components/dashboard/workspaces';
+import { Workspaces } from '@/components/dashboard/workspaces/workspaces';
 import { Suspense } from 'react';
 import { BoardsSkeleton } from '@/components/ui/skeletons';
 import { StarredBoards } from '@/components/dashboard/boards';

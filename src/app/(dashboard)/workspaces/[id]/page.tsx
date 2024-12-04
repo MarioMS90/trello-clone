@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: 'Board',
 };
 
-export default async function BoardPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function BoardsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id: workspaceId } = await params;
 
   return (

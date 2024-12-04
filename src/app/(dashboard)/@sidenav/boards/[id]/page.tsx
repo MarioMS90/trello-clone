@@ -1,4 +1,4 @@
-import { WorkspaceSidebar } from '@/components/dashboard/sidebar';
+import { WorkspaceSidebar } from '@/components/dashboard/sidebar/sidebar';
 import { SidebarSkeleton } from '@/components/ui/skeletons';
 import { Suspense } from 'react';
 

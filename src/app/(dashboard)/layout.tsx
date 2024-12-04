@@ -1,4 +1,4 @@
-import Header from '@/components/dashboard/header';
+import Header from '@/components/dashboard/header/header';
 import { HeaderSkeleton } from '@/components/ui/skeletons';
 import { Suspense } from 'react';
 
