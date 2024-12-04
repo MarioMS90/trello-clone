@@ -8,7 +8,6 @@ import WorkspaceLogo from '@/components/ui/workspace-logo';
 import { deleteWorkspaceAction, renameWorkspaceAction } from '@/lib/actions';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
-import { set } from 'zod';
 
 export function WorkspaceButtons({
   workspaceId,
