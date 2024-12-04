@@ -2,11 +2,11 @@ import Link from 'next/link';
 import { fetchUser, fetchWorkspaces } from '@/lib/data';
 import { getStarredBoards } from '@/lib/utils';
 import { signOutAction } from '@/lib/auth-actions';
-import AppsIcon from '../../icons/apps';
-import SearchIcon from '../../icons/search';
-import Avatar from '../../ui/avatar';
-import TrelloWhiteIcon from '../../icons/trello-white';
-import { HeaderButtons } from './header-buttons';
+import AppsIcon from '@/components/icons/apps';
+import Avatar from '@/components/ui/avatar';
+import TrelloWhiteIcon from '@/components/icons/trello-white';
+import HeaderButtons from '@/components/dashboard/header/header-buttons';
+import HeaderSearch from '@/components/dashboard/header/header-search';
 import Popover from '../../ui/popover';
 
 export default async function Header() {
@@ -41,31 +41,8 @@ export default async function Header() {
         </Link>
         <HeaderButtons workspaces={workspaces} starredBoards={starredBoards} />
       </nav>
-      <div className="flex items-center gap-4">
-        <div className="relative h-7 w-72">
-          <span className="absolute left-2 top-1/2 -translate-y-1/2 transform">
-            <SearchIcon height={17} />
-          </span>
-          <input
-            className="
-              h-full 
-              w-full 
-              rounded 
-              border 
-              border-gray-400 
-              bg-white 
-              bg-opacity-20 
-              pl-8 
-              text-sm 
-              text-white 
-              placeholder-white 
-              outline-none 
-              hover:bg-opacity-30 
-              focus-visible:border-secondary
-            "
-            type="text"
-            placeholder="Search"></input>
-        </div>
+      <div className="flex flex-1 items-center justify-end gap-4">
+        <HeaderSearch placeholder="Search Trello" />
         <Popover
           triggerContent={<Avatar userName={user.name} />}
           triggerClassName="rounded-full [&]:p-1"

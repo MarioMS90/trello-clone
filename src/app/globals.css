@@ -24,6 +24,10 @@
   .scrollbar-transparent {
     scrollbar-color: #fff6 #00000026;
   }
+
+  .search-box-shadow {
+    box-shadow: -12px 0 24px 0 hsla(0, 0%, 100%, 0.16);
+  }
 }
 
 :root {

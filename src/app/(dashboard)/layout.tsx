@@ -1,5 +1,5 @@
 import Header from '@/components/dashboard/header/header';
-import { HeaderSkeleton } from '@/components/ui/skeletons';
+import { HeaderSkeleton, SidebarSkeleton } from '@/components/ui/skeletons';
 import { Suspense } from 'react';
 
 export default function DashboardLayout({
@@ -15,7 +15,7 @@ export default function DashboardLayout({
         <Header />
       </Suspense>
       <div className="flex flex-1">
-        {sidenav}
+        <Suspense fallback={<SidebarSkeleton />}>{sidenav}</Suspense>
         <main className="flex-1 overflow-hidden bg-main-background text-white">{children}</main>
       </div>
     </div>

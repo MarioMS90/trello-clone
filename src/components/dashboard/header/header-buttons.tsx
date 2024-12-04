@@ -9,7 +9,7 @@ import WorkspaceLogo from '../../ui/workspace-logo';
 import { CreateBoardForm } from '../create-forms';
 import { StarToggle } from '../star-toggle';
 
-export function HeaderButtons({
+export default function HeaderButtons({
   workspaces,
   starredBoards,
 }: {
