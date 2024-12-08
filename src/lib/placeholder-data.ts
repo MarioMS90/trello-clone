@@ -78,6 +78,11 @@ const taskLists = [
     name: 'Done',
     board_id: boards[0].id,
   },
+  {
+    id: crypto.randomUUID(),
+    name: 'Not my task list',
+    board_id: boards[3].id,
+  },
 ];
 
 const tasks = [

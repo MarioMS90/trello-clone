@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "gen_db_types": "dotenv -e .env.local -- sh -c 'supabase gen types typescript --project-id $NEXT_PUBLIC_SUPABASE_PROJECT_ID > ./src/types/database-types.ts && prettier --write ./src/types/database-types.ts'"
   },
   "dependencies": {
     "@atlaskit/pragmatic-drag-and-drop": "^1.4.0",
@@ -26,6 +27,7 @@
     "@types/react-dom": "^18.3.1",
     "@typescript-eslint/eslint-plugin": "7.0.0",
     "@typescript-eslint/parser": "7.0.0",
+    "dotenv-cli": "^7.4.4",
     "eslint": "8.57.0",
     "eslint-config-airbnb": "19.0.4",
     "eslint-config-airbnb-typescript": "18.0.0",

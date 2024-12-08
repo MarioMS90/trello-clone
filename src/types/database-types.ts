@@ -7,23 +7,23 @@ export type Database = {
         Row: {
           created_at: string;
           id: string;
-          workspace_id: string;
-          starred: boolean;
           name: string;
+          starred: boolean;
+          workspace_id: string;
         };
         Insert: {
           created_at?: string;
           id?: string;
-          workspace_id: string;
-          starred?: boolean;
           name: string;
+          starred?: boolean;
+          workspace_id: string;
         };
         Update: {
           created_at?: string;
           id?: string;
-          workspace_id?: string;
-          starred?: boolean;
           name?: string;
+          starred?: boolean;
+          workspace_id?: string;
         };
         Relationships: [
           {
@@ -154,15 +154,7 @@ export type Database = {
           id?: string;
           name?: string;
         };
-        Relationships: [
-          {
-            foreignKeyName: 'user_id_fkey';
-            columns: ['id'];
-            isOneToOne: true;
-            referencedRelation: 'users';
-            referencedColumns: ['id'];
-          },
-        ];
+        Relationships: [];
       };
       user_workspace: {
         Row: {
@@ -220,7 +212,17 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      search_workspaces_boards_tasks: {
+        Args: {
+          user_id_param: string;
+          search_term: string;
+        };
+        Returns: {
+          type: string;
+          id: string;
+          name: string;
+        }[];
+      };
     };
     Enums: {
       role: 'admin' | 'member';
@@ -231,7 +233,7 @@ export type Database = {
   };
 };
 
-export type PublicSchema = Database[Extract<keyof Database, 'public'>];
+type PublicSchema = Database[Extract<keyof Database, 'public'>];
 
 export type Tables<
   PublicTableNameOrOptions extends
@@ -303,4 +305,19 @@ export type Enums<
   ? Database[PublicEnumNameOrOptions['schema']]['Enums'][EnumName]
   : PublicEnumNameOrOptions extends keyof PublicSchema['Enums']
     ? PublicSchema['Enums'][PublicEnumNameOrOptions]
+    : never;
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof PublicSchema['CompositeTypes']
+    | { schema: keyof Database },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof Database;
+  }
+    ? keyof Database[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes']
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes'][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema['CompositeTypes']
+    ? PublicSchema['CompositeTypes'][PublicCompositeTypeNameOrOptions]
     : never;

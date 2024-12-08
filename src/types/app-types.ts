@@ -1,4 +1,4 @@
-import { Tables } from './database-types';
+import { Database, Tables } from './database-types';
 
 export type User = Tables<'user'>;
 
@@ -25,6 +25,9 @@ export enum Role {
   Admin = 'admin',
   Member = 'member',
 }
+
+export type SearchResults =
+  Database['public']['Functions']['search_workspaces_boards_tasks']['Returns'];
 
 export type ActionState = {
   success?: boolean;

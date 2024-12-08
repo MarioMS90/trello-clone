@@ -70,7 +70,7 @@ export function SidebarBoards({
                 <Popover
                   triggerContent={<DotsIcon height={16} />}
                   triggerClassName="[&]:p-1"
-                  popoverClassName="px-0 w-40"
+                  popoverClassName="px-0 [&]:w-40"
                   open={selectedButton === id}
                   onOpenChange={isOpen => isOpen && setSelectedButton(id)}>
                   <ul className="text-sm [&>li>button:hover]:bg-gray-200 [&>li>button]:w-full [&>li>button]:px-3 [&>li>button]:py-2 [&>li>button]:text-left">

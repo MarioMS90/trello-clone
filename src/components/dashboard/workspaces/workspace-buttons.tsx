@@ -72,7 +72,7 @@ export function WorkspaceButtons({
               </>
             }
             triggerClassName={btnClassName}
-            popoverClassName="px-0 w-40"
+            popoverClassName="px-0 [&]:w-48"
             open={isPopoverOpen}
             onOpenChange={isOpen => setIsPopoverOpen(isOpen)}>
             <ul className="text-sm [&>li>button:hover]:bg-gray-200 [&>li>button]:w-full [&>li>button]:px-3 [&>li>button]:py-2 [&>li>button]:text-left">

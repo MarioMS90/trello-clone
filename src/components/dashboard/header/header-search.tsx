@@ -1,14 +1,19 @@
 'use client';
 
+import NoSearchResultsIcon from '@/components/icons/no-search-results';
 import SearchIcon from '@/components/icons/search';
+import { globalSearchAction } from '@/lib/actions';
+import { SearchResults } from '@/types/app-types';
 import { useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 
 export default function HeaderSearch({ placeholder }: { placeholder: string }) {
-  const [isInputFocused, setIsInputFocused] = useState(false);
+  const [isInputFocused, setIsInputFocused] = useState<boolean>(false);
+  const [searchResults, setSearchResults] = useState<SearchResults | null>(null);
 
-  const handleSearch = useDebouncedCallback(term => {
-    console.log(`Searching... ${term}`);
+  const handleSearch = useDebouncedCallback(async term => {
+    const results = await globalSearchAction(term);
+    setSearchResults(results);
   }, 300);
 
   return (
@@ -40,8 +45,39 @@ export default function HeaderSearch({ placeholder }: { placeholder: string }) {
         onBlur={() => setIsInputFocused(false)}
         onFocus={() => setIsInputFocused(true)}></input>
       {isInputFocused && (
-        <div className="column absolute inset-x-0 top-[calc(100%+10px)] flex w-full rounded bg-white px-4 py-2 text-primary shadow-md">
-          Hola
+        <div
+          className="
+            column 
+            absolute 
+            inset-x-0 
+            top-[calc(100%+10px)] 
+            flex 
+            w-full
+            flex-col 
+            rounded 
+            bg-white 
+            px-4 
+            pb-3 
+            pt-2 
+            text-primary 
+            shadow-xl
+          ">
+          {searchResults?.map(result => (
+            <div key={result.id} className="flex gap-2">
+              <span>{result.name}</span>
+              <span>{result.type}</span>
+            </div>
+          ))}
+
+          {searchResults?.length === 0 && (
+            <div className="flex w-full flex-col items-center text-center">
+              <NoSearchResultsIcon width={124} height={124} />
+              <p className="pb-1 font-medium">
+                We couldn&apos;t find anything matching your search.
+              </p>
+              <p className="pb-2">Try again with a different term</p>
+            </div>
+          )}
         </div>
       )}
     </div>

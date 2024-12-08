@@ -20,5 +20,5 @@ const BoardSchema = z.object({
   createdAt: z.string(),
 });
 
-export const CreateWorkspaceSchema = WorkspaceSchema.omit({ id: true, createdAt: true });
-export const CreateBoardSchema = BoardSchema.omit({ id: true, starred: true, createdAt: true });
+export const CreateWorkspaceSchema = WorkspaceSchema.pick({ name: true });
+export const CreateBoardSchema = BoardSchema.pick({ name: true, workspaceId: true });

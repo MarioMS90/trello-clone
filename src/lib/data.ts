@@ -25,7 +25,6 @@ export async function fetchUser(): Promise<User> {
 }
 
 export async function fetchWorkspaces(): Promise<UserWorkspace[]> {
-  // await new Promise(resolve => setTimeout(resolve, 1000));
   const supabase = await createClient();
 
   const {
@@ -65,7 +64,6 @@ export async function fetchWorkspaces(): Promise<UserWorkspace[]> {
 }
 
 export async function fetchTaskLists(boardId: string): Promise<TaskList[]> {
-  // await new Promise(resolve => setTimeout(resolve, 2000));
   const supabase = await createClient();
 
   const {

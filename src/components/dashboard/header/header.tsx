@@ -46,7 +46,7 @@ export default async function Header() {
         <Popover
           triggerContent={<Avatar userName={user.name} />}
           triggerClassName="rounded-full [&]:p-1"
-          popoverClassName="right-0 left-auto px-0 w-40">
+          popoverClassName="right-0 left-auto px-0 [&]:w-40">
           <button
             className="px-3 py-2 text-left text-sm hover:bg-gray-200"
             type="button"

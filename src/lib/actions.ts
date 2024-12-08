@@ -1,11 +1,14 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { ActionState, initialState, Role } from '@/types/app-types';
+import { ActionState, initialState, Role, SearchResults } from '@/types/app-types';
 import { CreateBoardSchema, CreateWorkspaceSchema } from '@/schemas/workspace-schemas';
 import { createClient } from './supabase/server';
 
-export async function createWorkspaceAction(prevState: ActionState, formData: FormData) {
+export async function createWorkspaceAction(
+  prevState: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
   if (!formData) {
     return initialState;
   }
@@ -54,7 +57,7 @@ export async function createBoardAction(
   workspaceIdParam: string | undefined,
   prevState: ActionState,
   formData: FormData,
-) {
+): Promise<ActionState> {
   if (!formData) {
     return initialState;
   }
@@ -89,7 +92,29 @@ export async function createBoardAction(
   return { success: true };
 }
 
-export async function renameWorkspaceAction(workspaceId: string, newName: string) {
+export async function globalSearchAction(term: string): Promise<SearchResults> {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) throw new Error('User not logged in');
+
+  const { data, error } = await supabase.rpc('search_workspaces_boards_tasks', {
+    user_id_param: user.id,
+    search_term: term,
+  });
+
+  if (error) throw new Error(error.message);
+
+  return data;
+}
+
+export async function renameWorkspaceAction(
+  workspaceId: string,
+  newName: string,
+): Promise<ActionState> {
   const supabase = await createClient();
 
   const {
@@ -109,7 +134,7 @@ export async function renameWorkspaceAction(workspaceId: string, newName: string
   return { success: true };
 }
 
-export async function deleteWorkspaceAction(workspaceId: string) {
+export async function deleteWorkspaceAction(workspaceId: string): Promise<ActionState> {
   const supabase = await createClient();
 
   const {
@@ -126,7 +151,7 @@ export async function deleteWorkspaceAction(workspaceId: string) {
   return { success: true };
 }
 
-export async function renameBoardAction(boardId: string, newName: string) {
+export async function renameBoardAction(boardId: string, newName: string): Promise<ActionState> {
   const supabase = await createClient();
 
   const {
@@ -143,7 +168,7 @@ export async function renameBoardAction(boardId: string, newName: string) {
   return { success: true };
 }
 
-export async function deleteBoardAction(boardId: string) {
+export async function deleteBoardAction(boardId: string): Promise<ActionState> {
   const supabase = await createClient();
 
   const {
@@ -160,7 +185,7 @@ export async function deleteBoardAction(boardId: string) {
   return { success: true };
 }
 
-export async function starToggleAction(boardId: string, starred: boolean) {
+export async function starToggleAction(boardId: string, starred: boolean): Promise<ActionState> {
   const supabase = await createClient();
 
   const {
