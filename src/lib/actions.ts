@@ -1,8 +1,9 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { ActionState, initialState, Role, SearchResults } from '@/types/app-types';
+import { ActionState, initialState, Role } from '@/types/app-types';
 import { CreateBoardSchema, CreateWorkspaceSchema } from '@/schemas/workspace-schemas';
+import { SearchResults } from '@/types/search-types';
 import { createClient } from './supabase/server';
 
 export async function createWorkspaceAction(
@@ -102,8 +103,8 @@ export async function globalSearchAction(term: string): Promise<SearchResults> {
   if (!user) throw new Error('User not logged in');
 
   const { data, error } = await supabase.rpc('search_workspaces_boards_tasks', {
-    user_id_param: user.id,
     search_term: term,
+    user_id_param: user.id,
   });
 
   if (error) throw new Error(error.message);

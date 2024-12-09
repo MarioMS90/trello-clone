@@ -48,6 +48,13 @@ const boards = [
   },
   {
     id: crypto.randomUUID(),
+    name: 'Mario',
+    starred: false,
+    workspace_id: workspaces[0].id,
+    created_at: new Date(new Date().getTime() - 1000),
+  },
+  {
+    id: crypto.randomUUID(),
     name: 'Work board',
     starred: false,
     workspace_id: workspaces[1].id,
@@ -100,7 +107,7 @@ const tasks = [
   },
   {
     id: crypto.randomUUID(),
-    name: 'Task 3',
+    name: 'Mario',
     description: 'This is the third task',
     task_list_id: taskLists[0].id,
   },

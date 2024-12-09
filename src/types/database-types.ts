@@ -214,17 +214,21 @@ export type Database = {
     Functions: {
       search_workspaces_boards_tasks: {
         Args: {
-          user_id_param: string;
           search_term: string;
+          user_id_param: string;
         };
         Returns: {
-          type: string;
+          kind: Database['public']['Enums']['kind_search'];
           id: string;
           name: string;
+          workspace: string;
+          board: string;
+          task_list: string;
         }[];
       };
     };
     Enums: {
+      kind_search: 'workspace' | 'board' | 'task';
       role: 'admin' | 'member';
     };
     CompositeTypes: {
