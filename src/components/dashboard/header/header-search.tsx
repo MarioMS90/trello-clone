@@ -16,6 +16,11 @@ export default function HeaderSearch({ placeholder }: { placeholder: string }) {
   const [searchResults, setSearchResults] = useState<SearchResults | null>(null);
 
   const handleSearch = useDebouncedCallback(async term => {
+    if (term === '') {
+      setSearchResults(null);
+      return;
+    }
+
     const results = await globalSearchAction(term);
     setSearchResults(results);
   }, 300);
@@ -55,14 +60,15 @@ export default function HeaderSearch({ placeholder }: { placeholder: string }) {
             absolute 
             inset-x-0 
             top-[calc(100%+10px)] 
-            flex 
-            w-full
+            z-10 
+            flex
+            w-full 
             flex-col 
             rounded 
             bg-white 
             pb-3 
             pt-2 
-            text-primary 
+            text-primary
             shadow-xl
           ">
           <SearchResultsContent searchResults={searchResults} />
@@ -83,18 +89,18 @@ function SearchResultsContent({ searchResults }: { searchResults: SearchResults 
     );
   }
 
-  const getFilteredSearchResults = (kind: SearchResult['kind']): JSX.Element | null => {
+  const getRenderedContent = (kind: SearchResult['kind']): JSX.Element | null => {
     const resultsToRender = searchResults.filter(result => result.kind === kind);
     if (resultsToRender.length === 0) {
       return null;
     }
 
     return (
-      <ul>
-        {resultsToRender.map(searchResult => (
-          <li key={searchResult.id}>{getSearchContent(searchResult)}</li>
+      <>
+        {resultsToRender.map(elem => (
+          <div key={elem.id}>{getRenderedElement(elem)}</div>
         ))}
-      </ul>
+      </>
     );
   };
 
@@ -102,18 +108,18 @@ function SearchResultsContent({ searchResults }: { searchResults: SearchResults 
     title: string;
     content: JSX.Element | null;
   }[] = [
-    { title: 'Cards', content: getFilteredSearchResults('task') },
-    { title: 'Boards', content: getFilteredSearchResults('board') },
-    { title: 'Workspace', content: getFilteredSearchResults('workspace') },
+    { title: 'Cards', content: getRenderedContent('task') },
+    { title: 'Boards', content: getRenderedContent('board') },
+    { title: 'Workspace', content: getRenderedContent('workspace') },
   ];
 
   return (
     <ul>
       {resultSections.map(
         ({ title, content }) =>
-          content ?? (
-            <li key={title}>
-              <h2 className="mb-2 px-4 text-[11px] font-semibold uppercase text-gray-500">
+          content && (
+            <li className="mb-4" key={title}>
+              <h2 className="mb-1 px-4 text-[11px] font-semibold uppercase text-gray-500">
                 {title}
               </h2>
               {content}
@@ -124,7 +130,7 @@ function SearchResultsContent({ searchResults }: { searchResults: SearchResults 
   );
 }
 
-function getSearchContent(searchResult: SearchResult): JSX.Element {
+const getRenderedElement = (element: SearchResult): JSX.Element => {
   const renderMethods: {
     [K in SearchResult['kind']]: (elem: Extract<SearchResult, { kind: K }>) => JSX.Element;
   } = {
@@ -144,7 +150,7 @@ function getSearchContent(searchResult: SearchResult): JSX.Element {
     board: ({ id, name, workspace }) => (
       <Link className="hover:bg-gray-200" href={`/boards/${id}`}>
         <div className="flex items-center gap-2 px-4 py-1">
-          <BoardsIcon height={19} />
+          <BoardsIcon height={24} />
           <div>
             <h3 className="text-sm leading-4">{name}</h3>
             <p className="text-[11px] text-gray-500">{workspace}</p>
@@ -155,7 +161,7 @@ function getSearchContent(searchResult: SearchResult): JSX.Element {
     workspace: ({ id, name }) => (
       <Link className="hover:bg-gray-200" href={`/workspaces/${id}`}>
         <div className="flex items-center gap-2 px-4 py-1">
-          <WorkspaceLogo className="" workspaceName={name} />
+          <WorkspaceLogo className="[&]:size-6 [&]:text-sm" workspaceName={name} />
           <div>
             <h3 className="text-sm leading-4">{name}</h3>
           </div>
@@ -164,5 +170,5 @@ function getSearchContent(searchResult: SearchResult): JSX.Element {
     ),
   };
 
-  return renderMethods[searchResult.kind](searchResult);
-}
+  return renderMethods[element.kind](element as any);
+};
