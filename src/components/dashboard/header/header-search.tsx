@@ -89,18 +89,18 @@ function SearchResultsContent({ searchResults }: { searchResults: SearchResults 
     );
   }
 
-  const getRenderedContent = (kind: SearchResult['kind']): JSX.Element | null => {
+  const generateSearchResultByKind = (kind: SearchResult['kind']): JSX.Element | null => {
     const resultsToRender = searchResults.filter(result => result.kind === kind);
     if (resultsToRender.length === 0) {
       return null;
     }
 
     return (
-      <>
-        {resultsToRender.map(elem => (
-          <div key={elem.id}>{getRenderedElement(elem)}</div>
+      <ul>
+        {searchResults.map(elem => (
+          <li key={elem.id}>{generateSearchResult(elem)}</li>
         ))}
-      </>
+      </ul>
     );
   };
 
@@ -108,9 +108,9 @@ function SearchResultsContent({ searchResults }: { searchResults: SearchResults 
     title: string;
     content: JSX.Element | null;
   }[] = [
-    { title: 'Cards', content: getRenderedContent('task') },
-    { title: 'Boards', content: getRenderedContent('board') },
-    { title: 'Workspace', content: getRenderedContent('workspace') },
+    { title: 'Cards', content: generateSearchResultByKind('task') },
+    { title: 'Boards', content: generateSearchResultByKind('board') },
+    { title: 'Workspace', content: generateSearchResultByKind('workspace') },
   ];
 
   return (
@@ -130,8 +130,10 @@ function SearchResultsContent({ searchResults }: { searchResults: SearchResults 
   );
 }
 
-const getRenderedElement = (element: SearchResult): JSX.Element => {
-  const renderMethods: {
+const generateSearchResult = <K extends SearchResult['kind']>(
+  searchResult: Extract<SearchResult, { kind: K }>,
+): JSX.Element => {
+  const searchResultRenderers: {
     [K in SearchResult['kind']]: (elem: Extract<SearchResult, { kind: K }>) => JSX.Element;
   } = {
     task: ({ id, name, board, task_list }) => (
@@ -170,5 +172,5 @@ const getRenderedElement = (element: SearchResult): JSX.Element => {
     ),
   };
 
-  return renderMethods[element.kind](element as any);
+  return searchResultRenderers[searchResult.kind](searchResult);
 };
