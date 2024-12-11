@@ -1,5 +1,9 @@
 'use client';
 
+import { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useDebouncedCallback } from 'use-debounce';
 import BoardsIcon from '@/components/icons/boards';
 import CardIcon from '@/components/icons/card';
 import Loading from '@/components/ui/loading';
@@ -8,10 +12,6 @@ import SearchIcon from '@/components/icons/search';
 import WorkspaceLogo from '@/components/ui/workspace-logo';
 import { globalSearchAction } from '@/lib/actions';
 import { SearchResult, SearchResults } from '@/types/search-types';
-import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
-import { useDebouncedCallback } from 'use-debounce';
-import { usePathname } from 'next/navigation';
 
 export default function HeaderSearch({ placeholder }: { placeholder: string }) {
   const [isInputFocused, setIsInputFocused] = useState(false);
@@ -115,7 +115,7 @@ function SearchResultsContent({ searchResults }: { searchResults: SearchResults 
     );
   }
 
-  const generateSearchResultByKind = (kind: SearchResult['kind']): JSX.Element | null => {
+  const generateSearchResults = (kind: SearchResult['kind']): JSX.Element | null => {
     const resultsToRender = searchResults.filter(result => result.kind === kind);
     if (resultsToRender.length === 0) {
       return null;
@@ -134,9 +134,9 @@ function SearchResultsContent({ searchResults }: { searchResults: SearchResults 
     title: string;
     content: JSX.Element | null;
   }[] = [
-    { title: 'Cards', content: generateSearchResultByKind('task') },
-    { title: 'Boards', content: generateSearchResultByKind('board') },
-    { title: 'Workspace', content: generateSearchResultByKind('workspace') },
+    { title: 'Cards', content: generateSearchResults('task') },
+    { title: 'Boards', content: generateSearchResults('board') },
+    { title: 'Workspace', content: generateSearchResults('workspace') },
   ];
 
   return (
