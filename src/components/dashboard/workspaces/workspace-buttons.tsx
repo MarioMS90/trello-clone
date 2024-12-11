@@ -17,7 +17,7 @@ export function WorkspaceButtons({
   workspaceName: string;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [editedWorkspace, setEditedWorkspace] = useState<{
     name: string;
     isEditing: boolean;

@@ -2,31 +2,51 @@
 
 import BoardsIcon from '@/components/icons/boards';
 import CardIcon from '@/components/icons/card';
+import Loading from '@/components/ui/loading';
 import NoSearchResultsIcon from '@/components/icons/no-search-results';
 import SearchIcon from '@/components/icons/search';
 import WorkspaceLogo from '@/components/ui/workspace-logo';
 import { globalSearchAction } from '@/lib/actions';
 import { SearchResult, SearchResults } from '@/types/search-types';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
+import { usePathname } from 'next/navigation';
 
 export default function HeaderSearch({ placeholder }: { placeholder: string }) {
-  const [isInputFocused, setIsInputFocused] = useState<boolean>(false);
+  const [isInputFocused, setIsInputFocused] = useState(false);
   const [searchResults, setSearchResults] = useState<SearchResults | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const pathname = usePathname();
 
-  const handleSearch = useDebouncedCallback(async term => {
+  useEffect(() => {
+    if (!inputRef.current) {
+      return;
+    }
+
+    setSearchResults(null);
+    inputRef.current.value = '';
+  }, [pathname]);
+
+  const handleSearch = (term: string) => {
     if (term === '') {
       setSearchResults(null);
       return;
     }
 
+    setIsLoading(true);
+    doSearch(term);
+  };
+
+  const doSearch = useDebouncedCallback(async term => {
     const results = await globalSearchAction(term);
     setSearchResults(results);
+    setIsLoading(false);
   }, 300);
 
   return (
-    <div className={`relative h-7 ${isInputFocused ? 'w-2/4' : 'w-72'}`}>
+    <div className={`relative h-7 ${isInputFocused || searchResults ? 'w-2/4' : 'w-72'}`}>
       <span className="absolute left-2 top-1/2 -translate-y-1/2 transform">
         <SearchIcon height={17} />
       </span>
@@ -44,7 +64,7 @@ export default function HeaderSearch({ placeholder }: { placeholder: string }) {
           placeholder-white 
           outline-none 
           hover:bg-opacity-30 
-          ${isInputFocused ? 'search-box-shadow' : ''}
+          ${isInputFocused || searchResults ? 'search-box-shadow' : ''}
         `}
         type="text"
         placeholder={placeholder}
@@ -52,26 +72,32 @@ export default function HeaderSearch({ placeholder }: { placeholder: string }) {
           handleSearch(e.target.value);
         }}
         onBlur={() => setIsInputFocused(false)}
-        onFocus={() => setIsInputFocused(true)}></input>
-      {searchResults && (
+        onFocus={() => setIsInputFocused(true)}
+        ref={inputRef}></input>
+      {(searchResults || isLoading) && (
         <div
           className="
             column 
-            absolute 
-            inset-x-0 
+            absolute
+            inset-x-0
             top-[calc(100%+10px)] 
             z-10 
-            flex
-            w-full 
+            flex 
+            min-h-24 
             flex-col 
             rounded 
             bg-white 
             pb-3 
-            pt-2 
+            pt-2
             text-primary
             shadow-xl
           ">
-          <SearchResultsContent searchResults={searchResults} />
+          {isLoading && (
+            <div className="flex flex-1 items-center justify-center">
+              <Loading />
+            </div>
+          )}
+          {searchResults && !isLoading && <SearchResultsContent searchResults={searchResults} />}
         </div>
       )}
     </div>
@@ -97,8 +123,8 @@ function SearchResultsContent({ searchResults }: { searchResults: SearchResults 
 
     return (
       <ul>
-        {searchResults.map(elem => (
-          <li key={elem.id}>{generateSearchResult(elem)}</li>
+        {resultsToRender.map(searchResult => (
+          <li key={searchResult.id}>{generateSearchResult(searchResult)}</li>
         ))}
       </ul>
     );
@@ -130,14 +156,14 @@ function SearchResultsContent({ searchResults }: { searchResults: SearchResults 
   );
 }
 
-const generateSearchResult = <K extends SearchResult['kind']>(
-  searchResult: Extract<SearchResult, { kind: K }>,
+const generateSearchResult = <T extends SearchResult['kind']>(
+  searchResult: Extract<SearchResult, { kind: T }>,
 ): JSX.Element => {
   const searchResultRenderers: {
     [K in SearchResult['kind']]: (elem: Extract<SearchResult, { kind: K }>) => JSX.Element;
   } = {
     task: ({ id, name, board, task_list }) => (
-      <Link className="hover:bg-gray-200" href={`/cards/${id}`}>
+      <Link className="block hover:bg-gray-200" href={`/cards/${id}`}>
         <div className="flex items-center gap-2 px-4 py-1">
           <CardIcon height={19} />
           <div>
@@ -150,7 +176,7 @@ const generateSearchResult = <K extends SearchResult['kind']>(
       </Link>
     ),
     board: ({ id, name, workspace }) => (
-      <Link className="hover:bg-gray-200" href={`/boards/${id}`}>
+      <Link className="block hover:bg-gray-200" href={`/boards/${id}`}>
         <div className="flex items-center gap-2 px-4 py-1">
           <BoardsIcon height={24} />
           <div>
@@ -161,8 +187,8 @@ const generateSearchResult = <K extends SearchResult['kind']>(
       </Link>
     ),
     workspace: ({ id, name }) => (
-      <Link className="hover:bg-gray-200" href={`/workspaces/${id}`}>
-        <div className="flex items-center gap-2 px-4 py-1">
+      <Link className="block hover:bg-gray-200" href={`/workspaces/${id}`}>
+        <div className="flex items-center gap-2 px-4 py-1.5">
           <WorkspaceLogo className="[&]:size-6 [&]:text-sm" workspaceName={name} />
           <div>
             <h3 className="text-sm leading-4">{name}</h3>

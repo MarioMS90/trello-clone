@@ -20,7 +20,7 @@ export default function Popover({
   onOpenChange?: (open: boolean) => void;
   addCloseButton?: boolean;
 }) {
-  const [isOpen, setIsOpen] = useState<boolean>(open);
+  const [isOpen, setIsOpen] = useState(open);
 
   const handleOpenChange = useCallback(
     (state: boolean) => {

@@ -86,7 +86,7 @@ export function CreateBoardForm({
 
 export function CreateWorkspaceForm({ onSubmitSuccess }: { onSubmitSuccess?: () => void }) {
   const [formState, formAction, isPending] = useActionState(createWorkspaceAction, initialState);
-  const [isValidForm, setIsValidForm] = useState<boolean>(false);
+  const [isValidForm, setIsValidForm] = useState(false);
 
   useEffect(() => {
     if (formState.success) {

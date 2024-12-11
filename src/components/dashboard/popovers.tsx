@@ -5,7 +5,7 @@ import Popover from '../ui/popover';
 import { CreateBoardForm, CreateWorkspaceForm } from './create-forms';
 
 export function CreateWorkspacePopover() {
-  const [popoverOpen, setPopoverOpen] = useState<boolean>(false);
+  const [popoverOpen, setPopoverOpen] = useState(false);
 
   return (
     <div className="inline-block">
