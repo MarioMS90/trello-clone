@@ -2,17 +2,17 @@ const workspaces = [
   {
     id: crypto.randomUUID(),
     name: 'Mario workspace',
-    created_at: new Date(new Date().getTime() - 2000),
+    created_at: new Date(new Date().getTime() - 2000).toISOString(),
   },
   {
     id: crypto.randomUUID(),
     name: 'Work',
-    created_at: new Date(new Date().getTime() - 1000),
+    created_at: new Date(new Date().getTime() - 1000).toISOString(),
   },
   {
     id: crypto.randomUUID(),
     name: 'Not Mario workspace',
-    created_at: new Date(),
+    created_at: new Date().toISOString(),
   },
 ];
 
@@ -37,35 +37,35 @@ const boards = [
     name: 'My board',
     starred: true,
     workspace_id: workspaces[0].id,
-    created_at: new Date(new Date().getTime() - 3000),
+    created_at: new Date(new Date().getTime() - 3000).toISOString(),
   },
   {
     id: crypto.randomUUID(),
     name: 'Another board',
     starred: false,
     workspace_id: workspaces[0].id,
-    created_at: new Date(new Date().getTime() - 2000),
+    created_at: new Date(new Date().getTime() - 2000).toISOString(),
   },
   {
     id: crypto.randomUUID(),
     name: 'Mario',
     starred: false,
     workspace_id: workspaces[0].id,
-    created_at: new Date(new Date().getTime() - 1000),
+    created_at: new Date(new Date().getTime() - 1000).toISOString(),
   },
   {
     id: crypto.randomUUID(),
     name: 'Work board',
     starred: false,
     workspace_id: workspaces[1].id,
-    created_at: new Date(new Date().getTime() - 1000),
+    created_at: new Date(new Date().getTime() - 1000).toISOString(),
   },
   {
     id: crypto.randomUUID(),
     name: 'Not my board',
     starred: false,
     workspace_id: workspaces[2].id,
-    created_at: new Date(new Date().getTime() - 3000),
+    created_at: new Date(new Date().getTime() - 3000).toISOString(),
   },
 ];
 

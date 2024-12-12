@@ -212,10 +212,15 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      get_workspace_id: {
+        Args: {
+          board_id_param: string;
+        };
+        Returns: string;
+      };
       search_workspaces_boards_tasks: {
         Args: {
           search_term: string;
-          user_id_param: string;
         };
         Returns: {
           kind: Database['public']['Enums']['kind_search'];
@@ -225,6 +230,12 @@ export type Database = {
           board: string;
           task_list: string;
         }[];
+      };
+      user_has_workspace_access: {
+        Args: {
+          workspace_id_param: string;
+        };
+        Returns: boolean;
       };
     };
     Enums: {

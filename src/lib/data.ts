@@ -10,14 +10,7 @@ export async function fetchUser(): Promise<User> {
 
   if (!user) throw new Error('User not logged in');
 
-  const { data, error } = await supabase
-    .from('user')
-    .select(
-      `
-      *
-    `,
-    )
-    .eq('id', user.id);
+  const { data, error } = await supabase.from('user').select('*').eq('id', user.id);
 
   if (error) throw new Error(error.message);
 
@@ -26,12 +19,6 @@ export async function fetchUser(): Promise<User> {
 
 export async function fetchWorkspaces(): Promise<UserWorkspace[]> {
   const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) throw new Error('User not logged in');
 
   const { data, error } = await supabase
     .from('workspace')
@@ -46,7 +33,6 @@ export async function fetchWorkspaces(): Promise<UserWorkspace[]> {
       )
     `,
     )
-    .eq('user_workspace.user_id', user.id)
     .order('created_at', { referencedTable: 'board' })
     .order('created_at');
 
@@ -65,12 +51,6 @@ export async function fetchWorkspaces(): Promise<UserWorkspace[]> {
 
 export async function fetchTaskLists(boardId: string): Promise<TaskList[]> {
   const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) throw new Error('User not logged in');
 
   const { data, error } = await supabase
     .from('task_list')

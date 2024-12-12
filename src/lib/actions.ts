@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { ActionState, initialState, Role } from '@/types/app-types';
+import { ActionState, initialState } from '@/types/app-types';
 import { CreateBoardSchema, CreateWorkspaceSchema } from '@/schemas/workspace-schemas';
 import { SearchResults } from '@/types/search-types';
 import { createClient } from './supabase/server';
@@ -36,17 +36,18 @@ export async function createWorkspaceAction(
   const { data, error: workspaceError } = await supabase
     .from('workspace')
     .insert({ name: validatedFields.data.name })
-    .select();
+    .select('id')
+    .single();
 
   if (workspaceError) throw new Error(workspaceError.message);
 
   const { error: userWorkspaceError } = await supabase
     .from('user_workspace')
-    .insert({ user_id: user.id, workspace_id: data[0].id, role: Role.Admin })
+    .insert({ user_id: user.id, workspace_id: data.id })
     .select();
 
   if (userWorkspaceError) {
-    await supabase.from('workspace').delete().eq('id', data[0].id);
+    await supabase.from('workspace').delete().eq('id', data.id);
     throw new Error(userWorkspaceError.message);
   }
 
@@ -77,12 +78,6 @@ export async function createBoardAction(
 
   const supabase = await createClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) throw new Error('User not logged in');
-
   const { error } = await supabase
     .from('board')
     .insert({ name: validatedFields.data.name, workspace_id: validatedFields.data.workspaceId });
@@ -93,36 +88,11 @@ export async function createBoardAction(
   return { success: true };
 }
 
-export async function globalSearchAction(term: string): Promise<SearchResults> {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) throw new Error('User not logged in');
-
-  const { data, error } = await supabase.rpc('search_workspaces_boards_tasks', {
-    search_term: term,
-    user_id_param: user.id,
-  });
-
-  if (error) throw new Error(error.message);
-
-  return data;
-}
-
 export async function renameWorkspaceAction(
   workspaceId: string,
   newName: string,
 ): Promise<ActionState> {
   const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) throw new Error('User not logged in');
 
   const { error } = await supabase
     .from('workspace')
@@ -138,12 +108,6 @@ export async function renameWorkspaceAction(
 export async function deleteWorkspaceAction(workspaceId: string): Promise<ActionState> {
   const supabase = await createClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) throw new Error('User not logged in');
-
   const { error } = await supabase.from('workspace').delete().eq('id', workspaceId);
 
   if (error) throw new Error(error.message);
@@ -154,12 +118,6 @@ export async function deleteWorkspaceAction(workspaceId: string): Promise<Action
 
 export async function renameBoardAction(boardId: string, newName: string): Promise<ActionState> {
   const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) throw new Error('User not logged in');
 
   const { error } = await supabase.from('board').update({ name: newName }).eq('id', boardId);
 
@@ -172,12 +130,6 @@ export async function renameBoardAction(boardId: string, newName: string): Promi
 export async function deleteBoardAction(boardId: string): Promise<ActionState> {
   const supabase = await createClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) throw new Error('User not logged in');
-
   const { error } = await supabase.from('board').delete().eq('id', boardId);
 
   if (error) throw new Error(error.message);
@@ -189,16 +141,22 @@ export async function deleteBoardAction(boardId: string): Promise<ActionState> {
 export async function starToggleAction(boardId: string, starred: boolean): Promise<ActionState> {
   const supabase = await createClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) throw new Error('User not logged in');
-
   const { error } = await supabase.from('board').update({ starred }).eq('id', boardId);
 
   if (error) throw new Error(error.message);
 
   revalidatePath('/(dashboard)', 'layout');
   return { success: true };
+}
+
+export async function globalSearchAction(term: string): Promise<SearchResults> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.rpc('search_workspaces_boards_tasks', {
+    search_term: term,
+  });
+
+  if (error) throw new Error(error.message);
+
+  return data;
 }
