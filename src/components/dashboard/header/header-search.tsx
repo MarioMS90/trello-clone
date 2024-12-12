@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useDebouncedCallback } from 'use-debounce';
 import BoardsIcon from '@/components/icons/boards';
 import CardIcon from '@/components/icons/card';
 import Loading from '@/components/ui/loading';
@@ -12,13 +11,24 @@ import SearchIcon from '@/components/icons/search';
 import WorkspaceLogo from '@/components/ui/workspace-logo';
 import { globalSearchAction } from '@/lib/actions';
 import { SearchResult, SearchResults } from '@/types/search-types';
+import { useClickAway, useDebounce } from '@uidotdev/usehooks';
 
 export default function HeaderSearch({ placeholder }: { placeholder: string }) {
   const [isInputFocused, setIsInputFocused] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState<SearchResults | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
   const pathname = usePathname();
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const clickAwayRef = useClickAway<HTMLDivElement>(() => {
+    if (!inputRef.current) {
+      return;
+    }
+
+    setSearchResults(null);
+    inputRef.current.value = '';
+  });
 
   useEffect(() => {
     if (!inputRef.current) {
@@ -29,24 +39,36 @@ export default function HeaderSearch({ placeholder }: { placeholder: string }) {
     inputRef.current.value = '';
   }, [pathname]);
 
+  useEffect(() => {
+    const performSearch = async () => {
+      if (!debouncedSearchTerm) {
+        setIsLoading(false);
+        return;
+      }
+
+      const results = await globalSearchAction(debouncedSearchTerm);
+      setSearchResults(results);
+      setIsLoading(false);
+    };
+
+    performSearch();
+  }, [debouncedSearchTerm]);
+
   const handleSearch = (term: string) => {
     if (term === '') {
       setSearchResults(null);
+      setIsLoading(false);
       return;
     }
 
     setIsLoading(true);
-    doSearch(term);
+    setSearchTerm(term);
   };
 
-  const doSearch = useDebouncedCallback(async term => {
-    const results = await globalSearchAction(term);
-    setSearchResults(results);
-    setIsLoading(false);
-  }, 300);
-
   return (
-    <div className={`relative h-7 ${isInputFocused || searchResults ? 'w-2/4' : 'w-72'}`}>
+    <div
+      className={`relative h-7 ${searchResults || isInputFocused ? 'w-2/4' : 'w-72'}`}
+      ref={clickAwayRef}>
       <span className="absolute left-2 top-1/2 -translate-y-1/2 transform">
         <SearchIcon height={17} />
       </span>
@@ -64,7 +86,7 @@ export default function HeaderSearch({ placeholder }: { placeholder: string }) {
           placeholder-white 
           outline-none 
           hover:bg-opacity-30 
-          ${isInputFocused || searchResults ? 'search-box-shadow' : ''}
+          ${searchResults || isInputFocused ? 'search-box-shadow' : ''}
         `}
         type="text"
         placeholder={placeholder}

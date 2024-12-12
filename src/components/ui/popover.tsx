@@ -1,6 +1,7 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useClickAway } from '@uidotdev/usehooks';
 import CloseIcon from '../icons/close';
 
 export default function Popover({
@@ -21,36 +22,24 @@ export default function Popover({
   addCloseButton?: boolean;
 }) {
   const [isOpen, setIsOpen] = useState(open);
+  const clickAwayRef = useClickAway<HTMLDialogElement>(event => {
+    const target = event.target as HTMLElement;
 
-  const handleOpenChange = useCallback(
-    (state: boolean) => {
-      setIsOpen(state);
+    if (
+      !target ||
+      (!target.closest('.popover-wrapper') && !target.classList.contains('close-popover'))
+    ) {
+      handleOpenChange(false);
+    }
+  });
 
-      if (onOpenChange) {
-        onOpenChange(state);
-      }
-    },
-    [onOpenChange],
-  );
+  const handleOpenChange = (state: boolean) => {
+    setIsOpen(state);
 
-  useEffect(() => {
-    const closePopover = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-
-      if (
-        !target ||
-        (!target.closest('.popover-wrapper') && !target.classList.contains('close-popover'))
-      ) {
-        handleOpenChange(false);
-      }
-    };
-
-    document.addEventListener('click', closePopover);
-
-    return () => {
-      document.removeEventListener('click', closePopover);
-    };
-  }, [handleOpenChange]);
+    if (onOpenChange) {
+      onOpenChange(state);
+    }
+  };
 
   useEffect(() => {
     setIsOpen(open);
@@ -74,7 +63,7 @@ export default function Popover({
         {triggerContent}
       </button>
       {isOpen && (
-        <div
+        <dialog
           className={` 
             popover
             absolute
@@ -90,7 +79,8 @@ export default function Popover({
             text-primary
             shadow-lg
             ${popoverClassName}
-          `}>
+          `}
+          ref={clickAwayRef}>
           {addCloseButton && (
             <button
               className="
@@ -113,7 +103,7 @@ export default function Popover({
             </button>
           )}
           {popoverContent}
-        </div>
+        </dialog>
       )}
     </div>
   );
