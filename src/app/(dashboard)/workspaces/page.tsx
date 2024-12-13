@@ -7,7 +7,7 @@ import { StarredBoards } from '@/components/dashboard/boards';
 export default function WorkspacesPage() {
   return (
     <div className="main-container">
-      <div className="mb-16 space-y-12">
+      <div className="space-y-12">
         <Suspense fallback={<BoardsSkeleton />}>
           <StarredBoards />
         </Suspense>

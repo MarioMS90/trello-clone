@@ -1,4 +1,7 @@
-import { Tables } from './database-types';
+import { SupabaseClient } from '@supabase/supabase-js';
+import { Database, Tables } from './database-types';
+
+export type DBClient = SupabaseClient<Database>;
 
 export type User = Tables<'user'>;
 

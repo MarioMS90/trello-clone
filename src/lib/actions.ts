@@ -33,21 +33,20 @@ export async function createWorkspaceAction(
 
   if (!user) throw new Error('User not logged in');
 
-  const { data, error: workspaceError } = await supabase
+  const newId = crypto.randomUUID();
+  const { error: workspaceError } = await supabase
     .from('workspace')
-    .insert({ name: validatedFields.data.name })
-    .select('id')
-    .single();
+    .insert({ id: newId, name: validatedFields.data.name });
 
   if (workspaceError) throw new Error(workspaceError.message);
 
   const { error: userWorkspaceError } = await supabase
     .from('user_workspace')
-    .insert({ user_id: user.id, workspace_id: data.id })
+    .insert({ user_id: user.id, workspace_id: newId })
     .select();
 
   if (userWorkspaceError) {
-    await supabase.from('workspace').delete().eq('id', data.id);
+    await supabase.from('workspace').delete().eq('id', newId);
     throw new Error(userWorkspaceError.message);
   }
 

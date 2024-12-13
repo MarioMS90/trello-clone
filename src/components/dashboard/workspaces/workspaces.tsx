@@ -7,7 +7,7 @@ export async function Workspaces() {
   const workspaces = await fetchWorkspaces();
 
   return (
-    <ul className="mt-6 space-y-12">
+    <ul className={`mt-6 space-y-12 ${workspaces.length ? 'mb-16' : ''}`}>
       {workspaces.map(({ id, name, boards }) => (
         <li key={id}>
           <WorkspaceButtons workspaceId={id} workspaceName={name} />

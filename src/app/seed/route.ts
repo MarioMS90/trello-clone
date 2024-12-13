@@ -1,3 +1,4 @@
+import { createClient } from '@supabase/supabase-js';
 import {
   workspaces,
   userWorkspace,
@@ -6,10 +7,10 @@ import {
   tasks,
   comments,
 } from '@/lib/placeholder-data';
-import { createClient } from '@/lib/supabase/server';
+import { DBClient } from '@/types/app-types';
+import { Database } from '@/types/database-types';
 
-async function seedWorkspaces() {
-  const supabase = await createClient();
+async function seedWorkspaces(supabase: DBClient) {
   await supabase.from('workspace').delete().neq('id', '00000000-0000-0000-0000-000000000000');
   const { data, error } = await supabase.from('workspace').upsert(workspaces).select();
 
@@ -20,8 +21,7 @@ async function seedWorkspaces() {
   return data;
 }
 
-async function seedUserWorkspaces() {
-  const supabase = await createClient();
+async function seedUserWorkspaces(supabase: DBClient) {
   const { data, error } = await supabase.from('user_workspace').upsert(userWorkspace).select();
 
   if (error) {
@@ -31,8 +31,7 @@ async function seedUserWorkspaces() {
   return data;
 }
 
-async function seedBoards() {
-  const supabase = await createClient();
+async function seedBoards(supabase: DBClient) {
   const { data, error } = await supabase.from('board').upsert(boards).select();
 
   if (error) {
@@ -42,8 +41,7 @@ async function seedBoards() {
   return data;
 }
 
-async function seedTaskLists() {
-  const supabase = await createClient();
+async function seedTaskLists(supabase: DBClient) {
   const { data, error } = await supabase.from('task_list').upsert(taskLists).select();
 
   if (error) {
@@ -53,8 +51,7 @@ async function seedTaskLists() {
   return data;
 }
 
-async function seedTasks() {
-  const supabase = await createClient();
+async function seedTasks(supabase: DBClient) {
   const { data, error } = await supabase.from('task').upsert(tasks).select();
 
   if (error) {
@@ -64,8 +61,7 @@ async function seedTasks() {
   return data;
 }
 
-async function seedComments() {
-  const supabase = await createClient();
+async function seedComments(supabase: DBClient) {
   const { data, error } = await supabase.from('comment').upsert(comments).select();
 
   if (error) {
@@ -76,13 +72,19 @@ async function seedComments() {
 }
 
 export async function GET() {
+  // This user can bypass RLS policies
+  const supabase = createClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY!,
+  );
+
   try {
-    await seedWorkspaces();
-    await seedUserWorkspaces();
-    await seedBoards();
-    await seedTaskLists();
-    await seedTasks();
-    await seedComments();
+    await seedWorkspaces(supabase);
+    await seedUserWorkspaces(supabase);
+    await seedBoards(supabase);
+    await seedTaskLists(supabase);
+    await seedTasks(supabase);
+    await seedComments(supabase);
 
     return Response.json({ message: 'Database seeded successfully' });
   } catch (error: any) {
