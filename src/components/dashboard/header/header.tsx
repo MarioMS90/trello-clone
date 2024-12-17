@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { fetchUser, fetchWorkspaces } from '@/lib/data';
-import { getStarredBoards } from '@/lib/utils';
+import { getStarredBoards } from '@/lib/server-utils';
 import { signOutAction } from '@/lib/auth-actions';
 import AppsIcon from '@/components/icons/apps';
 import Avatar from '@/components/ui/avatar';

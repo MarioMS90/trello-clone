@@ -12,7 +12,7 @@ export default async function BoardPage({ params }: { params: Promise<{ id: stri
   const taskLists = await fetchTaskLists(boardId);
 
   return (
-    <ul className="scrollbar-transparent flex h-[calc(100%-8px)] gap-4 overflow-x-auto p-3">
+    <ul className="scrollbar-transparent flex h-[calc(100%-8px)] gap-4 overflow-x-auto">
       {taskLists.map(({ id, name, tasks }) => (
         <li className="h-full" key={id}>
           <TaskList listName={name} tasks={tasks} />
@@ -21,7 +21,21 @@ export default async function BoardPage({ params }: { params: Promise<{ id: stri
       <li>
         <button
           type="button"
-          className="flex w-[272px] items-center gap-2 rounded-xl bg-white bg-opacity-10 p-3 text-sm text-primary text-white shadow hover:bg-opacity-15">
+          className="
+            flex 
+            w-[272px] 
+            items-center 
+            gap-2 
+            rounded-xl 
+            bg-white 
+            bg-opacity-10 
+            p-3 
+            text-sm 
+            text-primary 
+            text-white 
+            shadow 
+            hover:bg-opacity-15
+          ">
           <PlusIcon width={16} height={16} />
           {taskLists.length ? 'Add another list' : 'Add a list'}
         </button>

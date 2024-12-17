@@ -9,13 +9,7 @@ import { StarToggle } from '../star-toggle';
 import DotsIcon from '../../icons/dots';
 import Popover from '../../ui/popover';
 
-export function SidebarBoards({
-  boards,
-  selectedBoardId,
-}: {
-  boards: Board[];
-  selectedBoardId?: string;
-}) {
+export function SidebarBoards({ boards, boardId }: { boards: Board[]; boardId?: string }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [selectedButton, setSelectedButton] = useState<string | null>(null);
   const [editedBoard, setEditedBoard] = useState<{ id: string; name: string; isEditing: boolean }>({
@@ -31,13 +25,13 @@ export function SidebarBoards({
     }
   }, [editedBoard.isEditing]);
 
-  const handleRenameBoard = async (boardId: string) => {
+  const handleRenameBoard = async (id: string) => {
     setEditedBoard({ ...editedBoard, isEditing: false });
-    await renameBoardAction(boardId, editedBoard.name);
+    await renameBoardAction(id, editedBoard.name);
   };
 
-  const handleDeleteBoard = async (boardId: string) => {
-    await deleteBoardAction(boardId);
+  const handleDeleteBoard = async (id: string) => {
+    await deleteBoardAction(id);
   };
 
   return (
@@ -60,7 +54,7 @@ export function SidebarBoards({
             <>
               <Link
                 className={clsx('block py-2 pl-4 pr-[70px] hover:bg-button-hovered-background', {
-                  'bg-button-hovered-background': selectedBoardId === id,
+                  'bg-button-hovered-background': boardId === id,
                 })}
                 href={`/boards/${id}`}>
                 {editedBoard.id === id ? editedBoard.name : name}

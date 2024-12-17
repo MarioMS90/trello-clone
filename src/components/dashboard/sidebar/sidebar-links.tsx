@@ -1,25 +1,23 @@
+'use client';
+
 import Link from 'next/link';
 import clsx from 'clsx';
 import { UserWorkspace } from '@/types/app-types';
-import { WorkspacePageNames } from '@/constants/constants';
+import { usePathname } from 'next/navigation';
 import BoardsIcon from '../../icons/boards';
 import UserIcon from '../../icons/user';
 
-export function SidebarLinks({
-  workspace,
-  actualPageName,
-}: {
-  workspace: UserWorkspace;
-  actualPageName?: string;
-}) {
+export function SidebarLinks({ workspace }: { workspace: UserWorkspace }) {
+  const pathname = usePathname();
+
   const links = [
     {
-      name: WorkspacePageNames.BOARDS,
+      name: 'Boards',
       href: `/workspaces/${workspace.id}`,
       icon: BoardsIcon,
     },
     {
-      name: WorkspacePageNames.MEMBERS,
+      name: 'Members',
       href: `/workspaces/${workspace.id}/members`,
       icon: UserIcon,
     },
@@ -32,7 +30,7 @@ export function SidebarLinks({
           <Link key={link.name} href={link.href}>
             <div
               className={clsx('py-2 hover:bg-button-hovered-background', {
-                'bg-button-selected-background': actualPageName === link.name,
+                'bg-button-selected-background': pathname === link.href,
               })}>
               <span className="flex items-center gap-3 px-4">
                 <link.icon height={16} />

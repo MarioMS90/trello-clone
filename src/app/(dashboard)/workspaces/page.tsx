@@ -6,7 +6,7 @@ import { StarredBoards } from '@/components/dashboard/boards';
 
 export default function WorkspacesPage() {
   return (
-    <div className="main-container">
+    <>
       <div className="space-y-12">
         <Suspense fallback={<BoardsSkeleton />}>
           <StarredBoards />
@@ -20,6 +20,6 @@ export default function WorkspacesPage() {
         </section>
       </div>
       <CreateWorkspacePopover />
-    </div>
+    </>
   );
 }

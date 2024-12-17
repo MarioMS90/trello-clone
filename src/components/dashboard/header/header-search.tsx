@@ -105,11 +105,11 @@ export default function HeaderSearch({ placeholder }: { placeholder: string }) {
             top-[calc(100%+10px)] 
             z-10 
             flex 
-            min-h-24 
+            min-h-20 
             flex-col 
             rounded 
             bg-white 
-            pb-3 
+            pb-4
             pt-2
             text-primary
             shadow-xl
@@ -162,11 +162,11 @@ function SearchResultsContent({ searchResults }: { searchResults: SearchResults 
   ];
 
   return (
-    <ul>
+    <ul className="space-y-4">
       {resultSections.map(
         ({ title, content }) =>
           content && (
-            <li className="mb-4" key={title}>
+            <li key={title}>
               <h2 className="mb-1 px-4 text-[11px] font-semibold uppercase text-gray-500">
                 {title}
               </h2>

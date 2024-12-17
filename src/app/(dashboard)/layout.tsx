@@ -4,10 +4,10 @@ import { Suspense } from 'react';
 
 export default function DashboardLayout({
   children,
-  sidenav,
+  sidebar,
 }: Readonly<{
   children: React.ReactNode;
-  sidenav: React.ReactNode;
+  sidebar: React.ReactNode;
 }>) {
   return (
     <div className="flex h-dvh w-screen flex-col">
@@ -15,8 +15,10 @@ export default function DashboardLayout({
         <Header />
       </Suspense>
       <div className="flex flex-1">
-        <Suspense fallback={<SidebarSkeleton />}>{sidenav}</Suspense>
-        <main className="flex-1 overflow-hidden bg-main-background text-white">{children}</main>
+        <Suspense fallback={<SidebarSkeleton />}>{sidebar}</Suspense>
+        <main className="flex-1 overflow-hidden bg-main-background p-5 pb-20 text-white">
+          {children}
+        </main>
       </div>
     </div>
   );
