@@ -16,11 +16,11 @@ export function MainSidebar() {
   return (
     <nav
       className={`
+        bg-secondary-background 
         w-[260px] 
         border-r 
         border-r-white 
         border-opacity-30 
-        bg-sidenav-background 
         text-white
       `}>
       <Link href="/workspaces">
@@ -45,15 +45,22 @@ export function WorkspaceSidebar({
 
   return (
     <nav
-      className={cn(
-        'relative w-[260px] border-r border-r-white border-opacity-30 bg-sidenav-background text-white',
-        {
-          'w-6': !sidebarExpanded,
-        },
-      )}>
+      className={cn('bg-secondary-background relative w-[260px] text-white transition-all', {
+        'w-6': !sidebarExpanded,
+      })}>
+      {!sidebarExpanded && (
+        <button
+          className="bg-secondary-background hover:bg-primary-background group absolute inset-0 border-r border-r-white border-opacity-30 transition-colors"
+          type="button"
+          onClick={() => setSidebarExpanded(true)}>
+          <span className="bg-secondary-background group-hover:bg-primary-background absolute top-4 -rotate-90 rounded-full border border-white border-opacity-30 p-1 transition-colors">
+            <ArrowDownIcon height={15} />
+          </span>
+        </button>
+      )}
       <div
         className={cn(
-          'absolute bottom-0 left-0 top-0 w-[260px] bg-sidenav-background transition-transform',
+          'bg-secondary-background absolute bottom-0 left-0 top-0 w-[260px] border-r border-r-white border-opacity-30 transition-transform',
           {
             '-translate-x-full': !sidebarExpanded,
           },
@@ -64,16 +71,16 @@ export function WorkspaceSidebar({
               <WorkspaceLogo workspaceName={workspace.name} />
               <h2 className="pr-4 text-sm font-bold">{workspace.name}</h2>
             </div>
-            <button
-              className={cn('cursor-pointer p-1.5', {
-                'rotate-90 rounded p-1.5 hover:bg-white/20': sidebarExpanded,
-                'translate-x-12 -rotate-90 rounded-full bg-sidenav-background p-1 hover:opacity-90':
-                  !sidebarExpanded,
-              })}
-              type="button"
-              onClick={() => setSidebarExpanded(!sidebarExpanded)}>
-              <ArrowDownIcon height={15} />
-            </button>
+            {sidebarExpanded && (
+              <button
+                className={cn('p-1.5', {
+                  'rotate-90 rounded p-1.5 hover:bg-white/20': sidebarExpanded,
+                })}
+                type="button"
+                onClick={() => setSidebarExpanded(!sidebarExpanded)}>
+                <ArrowDownIcon height={15} />
+              </button>
+            )}
           </div>
         </div>
         <div className="text-sm">

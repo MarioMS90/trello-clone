@@ -20,13 +20,14 @@ export function HeaderSkeleton() {
   return (
     <header
       className={`
-      flex h-12 
+      bg-primary-background 
+      flex 
+      h-12 
       items-center 
       justify-between 
       border-b 
       border-b-white 
       border-opacity-30 
-      bg-header-background 
       p-1.5 
       text-white
     `}>
@@ -53,11 +54,11 @@ export function SidebarSkeleton() {
   return (
     <nav
       className={`
+      bg-secondary-background 
       w-[260px] 
       border-r 
       border-r-white 
       border-opacity-30 
-      bg-sidenav-background 
       text-white
     `}>
       <div className="border-b border-b-white border-opacity-20 p-4">
@@ -81,7 +82,7 @@ export function BoardSkeleton() {
 
 export function BoardsSkeleton() {
   return (
-    <div className="mt-4 flex flex-wrap gap-4">
+    <div className="mb-16 mt-4 flex flex-wrap gap-4">
       <BoardSkeleton />
       <BoardSkeleton />
       <BoardSkeleton />

@@ -30,8 +30,8 @@
   --color-primary: #172b4d;
   --color-secondary: #0c66e4;
   --main-background: #3fa495;
-  --sidenav-background: #196a48e6;
-  --header-background: #14553a;
+  --primary-background: #14553a;
+  --secondary-background: #196a48e6;
   --button-hovered-background: #ffffff20;
   --button-selected-background: #ffffff3c;
 }

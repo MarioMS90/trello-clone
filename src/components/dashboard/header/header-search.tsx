@@ -16,7 +16,10 @@ import { useClickAway, useDebounce } from '@uidotdev/usehooks';
 export default function HeaderSearch({ placeholder }: { placeholder: string }) {
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchResults, setSearchResults] = useState<SearchResults | null>(null);
+  const [searchResults, setSearchResults] = useState<{
+    term: string;
+    results: SearchResults;
+  } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const pathname = usePathname();
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
@@ -26,8 +29,7 @@ export default function HeaderSearch({ placeholder }: { placeholder: string }) {
       return;
     }
 
-    setSearchResults(null);
-    inputRef.current.value = '';
+    resetSearch(true);
   });
 
   useEffect(() => {
@@ -35,19 +37,18 @@ export default function HeaderSearch({ placeholder }: { placeholder: string }) {
       return;
     }
 
-    setSearchResults(null);
-    inputRef.current.value = '';
+    resetSearch(true);
   }, [pathname]);
 
   useEffect(() => {
     const performSearch = async () => {
       if (!debouncedSearchTerm) {
-        setIsLoading(false);
+        resetSearch();
         return;
       }
 
       const results = await globalSearchAction(debouncedSearchTerm);
-      setSearchResults(results);
+      setSearchResults({ term: debouncedSearchTerm, results });
       setIsLoading(false);
     };
 
@@ -55,14 +56,23 @@ export default function HeaderSearch({ placeholder }: { placeholder: string }) {
   }, [debouncedSearchTerm]);
 
   const handleSearch = (term: string) => {
-    if (term === '') {
-      setSearchResults(null);
+    if (term === searchResults?.term) {
       setIsLoading(false);
       return;
     }
 
-    setIsLoading(true);
+    setIsLoading(term !== '');
     setSearchTerm(term);
+  };
+
+  const resetSearch = (resetTerm?: boolean) => {
+    if (resetTerm && inputRef.current) {
+      inputRef.current.value = '';
+      setSearchTerm('');
+    }
+
+    setIsLoading(false);
+    setSearchResults(null);
   };
 
   return (
@@ -109,17 +119,19 @@ export default function HeaderSearch({ placeholder }: { placeholder: string }) {
             flex-col 
             rounded 
             bg-white 
-            pb-4
-            pt-2
-            text-primary
-            shadow-xl
+            pb-4 
+            pt-2 
+            text-primary 
+            shadow-xl 
           ">
           {isLoading && (
             <div className="flex flex-1 items-center justify-center">
               <Loading />
             </div>
           )}
-          {searchResults && !isLoading && <SearchResultsContent searchResults={searchResults} />}
+          {searchResults && !isLoading && (
+            <SearchResultsContent searchResults={searchResults.results} />
+          )}
         </div>
       )}
     </div>

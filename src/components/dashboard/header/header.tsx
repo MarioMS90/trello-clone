@@ -17,14 +17,14 @@ export default async function Header() {
   return (
     <header
       className="
+        bg-primary-background 
         flex 
         h-12 
         items-center 
         justify-between 
         border-b 
         border-b-white 
-        border-opacity-30 
-        bg-header-background 
+        border-opacity-30
         p-1.5 
         text-white
       ">
