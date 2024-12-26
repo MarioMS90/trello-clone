@@ -20,7 +20,7 @@ export function SidebarBoards({ boards, boardId }: { boards: Board[]; boardId?: 
 
   useEffect(() => {
     if (editedBoard.isEditing && inputRef.current) {
-      inputRef.current.focus();
+      inputRef.current.select();
       setSelectedButton(null);
     }
   }, [editedBoard.isEditing]);

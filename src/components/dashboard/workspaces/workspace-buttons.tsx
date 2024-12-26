@@ -28,7 +28,7 @@ export function WorkspaceButtons({
 
   useEffect(() => {
     if (editedWorkspace.isEditing && inputRef.current) {
-      inputRef.current.focus();
+      inputRef.current.select();
       setIsPopoverOpen(false);
     }
   }, [editedWorkspace.isEditing]);
@@ -60,7 +60,14 @@ export function WorkspaceButtons({
             onChange={e => setEditedWorkspace({ ...editedWorkspace, name: e.target.value })}
           />
         ) : (
-          <h3 className="font-bold">{editedWorkspace.name}</h3>
+          <button
+            type="button"
+            className="font-bold"
+            onMouseUp={() => {
+              setEditedWorkspace({ ...editedWorkspace, isEditing: true });
+            }}>
+            <h3>{editedWorkspace.name}</h3>
+          </button>
         )}
       </div>
       <ul className="flex items-center gap-4 text-sm">
