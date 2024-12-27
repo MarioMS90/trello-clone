@@ -66,7 +66,7 @@ export async function fetchTaskLists(boardId: string): Promise<TaskList[]> {
     `,
     )
     .eq('board.id', boardId)
-    .order('created_at');
+    .order('order');
 
   if (error) throw new Error(error.message);
 

@@ -112,18 +112,21 @@ export type Database = {
           created_at: string;
           id: string;
           name: string;
+          order: number;
         };
         Insert: {
           board_id: string;
           created_at?: string;
           id?: string;
           name: string;
+          order: number;
         };
         Update: {
           board_id?: string;
           created_at?: string;
           id?: string;
           name?: string;
+          order?: number;
         };
         Relationships: [
           {

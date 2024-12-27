@@ -74,21 +74,25 @@ const taskLists = [
     id: crypto.randomUUID(),
     name: 'To do',
     board_id: boards[0].id,
+    order: 0,
   },
   {
     id: crypto.randomUUID(),
     name: 'In progress',
     board_id: boards[0].id,
+    order: 1,
   },
   {
     id: crypto.randomUUID(),
     name: 'Done',
     board_id: boards[0].id,
+    order: 2,
   },
   {
     id: crypto.randomUUID(),
     name: 'Not my task list',
     board_id: boards[3].id,
+    order: 0,
   },
 ];
 
