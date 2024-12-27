@@ -9,10 +9,12 @@ export function StarToggle({
   className = '',
   boardId,
   starred,
+  onStarToggle,
 }: {
   className?: string;
   boardId: string;
   starred: boolean;
+  onStarToggle?: (starred: boolean) => void;
 }) {
   const [isStarred, setIsStarred] = useState(starred);
 
@@ -21,7 +23,8 @@ export function StarToggle({
   }, [starred]);
 
   const handleStarToggle = async () => {
-    setIsStarred(prev => !prev);
+    setIsStarred(!isStarred);
+    onStarToggle?.(!isStarred);
     await starToggleAction(boardId, !starred);
   };
 

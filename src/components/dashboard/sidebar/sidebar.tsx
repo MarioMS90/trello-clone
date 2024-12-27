@@ -16,11 +16,11 @@ export function MainSidebar() {
   return (
     <nav
       className={`
-        bg-secondary-background 
         w-[260px] 
         border-r 
         border-r-white 
         border-opacity-30 
+        bg-secondary-background 
         text-white
       `}>
       <Link href="/workspaces">
@@ -45,22 +45,22 @@ export function WorkspaceSidebar({
 
   return (
     <nav
-      className={cn('bg-secondary-background relative w-[260px] text-white transition-all', {
+      className={cn('relative w-[260px] bg-secondary-background text-white transition-all', {
         'w-6': !sidebarExpanded,
       })}>
       {!sidebarExpanded && (
         <button
-          className="bg-secondary-background hover:bg-primary-background group absolute inset-0 border-r border-r-white border-opacity-30 transition-colors"
+          className="group absolute inset-0 border-r border-r-white border-opacity-30 bg-secondary-background transition-colors hover:bg-primary-background"
           type="button"
           onClick={() => setSidebarExpanded(true)}>
-          <span className="bg-secondary-background group-hover:bg-primary-background absolute top-4 -rotate-90 rounded-full border border-white border-opacity-30 p-1 transition-colors">
+          <span className="absolute top-4 -rotate-90 rounded-full border border-white border-opacity-30 bg-secondary-background p-1 transition-colors group-hover:bg-primary-background">
             <ArrowDownIcon height={15} />
           </span>
         </button>
       )}
       <div
         className={cn(
-          'bg-secondary-background absolute bottom-0 left-0 top-0 w-[260px] border-r border-r-white border-opacity-30 transition-transform',
+          'absolute bottom-0 left-0 top-0 w-[260px] border-r border-r-white border-opacity-30 bg-secondary-background transition-transform',
           {
             '-translate-x-full': !sidebarExpanded,
           },
@@ -93,7 +93,7 @@ export function WorkspaceSidebar({
               buttonText={<PlusIcon height={16} />}
             />
           </div>
-          <SidebarBoards boards={workspace.boards} boardId={boardId} />
+          <SidebarBoards boardList={workspace.boards} boardId={boardId} />
         </div>
       </div>
     </nav>

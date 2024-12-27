@@ -9,8 +9,9 @@ import { StarToggle } from '../star-toggle';
 import DotsIcon from '../../icons/dots';
 import Popover from '../../ui/popover';
 
-export function SidebarBoards({ boards, boardId }: { boards: Board[]; boardId?: string }) {
+export function SidebarBoards({ boardList, boardId }: { boardList: Board[]; boardId?: string }) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [boards, setBoards] = useState(boardList);
   const [selectedButton, setSelectedButton] = useState<string | null>(null);
   const [editedBoard, setEditedBoard] = useState<{ id: string; name: string; isEditing: boolean }>({
     id: '',
@@ -25,6 +26,10 @@ export function SidebarBoards({ boards, boardId }: { boards: Board[]; boardId?: 
     }
   }, [editedBoard.isEditing]);
 
+  useEffect(() => {
+    setBoards(boardList);
+  }, [boardList]);
+
   const handleRenameBoard = async (id: string) => {
     setEditedBoard({ ...editedBoard, isEditing: false });
     await renameBoardAction(id, editedBoard.name);
@@ -36,7 +41,7 @@ export function SidebarBoards({ boards, boardId }: { boards: Board[]; boardId?: 
 
   return (
     <ul>
-      {boards.map(({ id, name, starred }) => (
+      {boards.map(({ id, name, starred }, boardIndex) => (
         <li className="group relative" key={id}>
           {editedBoard.id === id && editedBoard.isEditing ? (
             <div className="pl-4 pr-[70px]">
@@ -92,6 +97,9 @@ export function SidebarBoards({ boards, boardId }: { boards: Board[]; boardId?: 
                 })}
                 boardId={id}
                 starred={starred}
+                onStarToggle={isStarred =>
+                  setBoards(boards.with(boardIndex, { ...boards[boardIndex], starred: isStarred }))
+                }
               />
             </>
           )}
