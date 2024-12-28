@@ -66,7 +66,8 @@ export async function fetchTaskLists(boardId: string): Promise<TaskList[]> {
     `,
     )
     .eq('board.id', boardId)
-    .order('order');
+    .order('rank', { referencedTable: 'tasks' })
+    .order('rank');
 
   if (error) throw new Error(error.message);
 

@@ -1,9 +1,9 @@
 'use client';
 
 import { Task } from '@/types/app-types';
-import DotsIcon from '../icons/dots';
-import PlusIcon from '../icons/plus';
-import PencilIcon from '../icons/pencil';
+import DotsIcon from '../../icons/dots';
+import PlusIcon from '../../icons/plus';
+import PencilIcon from '../../icons/pencil';
 
 export function TaskList({ listName, tasks }: { listName: string; tasks: Task[] }) {
   return (

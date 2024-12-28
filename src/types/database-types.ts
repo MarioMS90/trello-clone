@@ -80,6 +80,7 @@ export type Database = {
           description: string;
           id: string;
           name: string;
+          rank: string | null;
           task_list_id: string;
         };
         Insert: {
@@ -87,6 +88,7 @@ export type Database = {
           description: string;
           id?: string;
           name: string;
+          rank?: string | null;
           task_list_id?: string;
         };
         Update: {
@@ -94,6 +96,7 @@ export type Database = {
           description?: string;
           id?: string;
           name?: string;
+          rank?: string | null;
           task_list_id?: string;
         };
         Relationships: [
@@ -112,21 +115,21 @@ export type Database = {
           created_at: string;
           id: string;
           name: string;
-          order: number;
+          rank: string;
         };
         Insert: {
           board_id: string;
           created_at?: string;
           id?: string;
           name: string;
-          order: number;
+          rank: string;
         };
         Update: {
           board_id?: string;
           created_at?: string;
           id?: string;
           name?: string;
-          order?: number;
+          rank?: string;
         };
         Relationships: [
           {

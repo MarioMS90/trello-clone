@@ -74,25 +74,25 @@ const taskLists = [
     id: crypto.randomUUID(),
     name: 'To do',
     board_id: boards[0].id,
-    order: 0,
+    order: 'a',
   },
   {
     id: crypto.randomUUID(),
     name: 'In progress',
     board_id: boards[0].id,
-    order: 1,
+    order: 'b',
   },
   {
     id: crypto.randomUUID(),
     name: 'Done',
     board_id: boards[0].id,
-    order: 2,
+    order: 'c',
   },
   {
     id: crypto.randomUUID(),
     name: 'Not my task list',
     board_id: boards[3].id,
-    order: 0,
+    order: 'a',
   },
 ];
 
@@ -102,24 +102,28 @@ const tasks = [
     name: 'Task 1',
     description: 'This is the first task',
     task_list_id: taskLists[0].id,
+    order: 'a',
   },
   {
     id: crypto.randomUUID(),
     name: 'Task 2',
     description: 'This is the second task',
     task_list_id: taskLists[0].id,
+    order: 'b',
   },
   {
     id: crypto.randomUUID(),
     name: 'Mario',
     description: 'This is the third task',
     task_list_id: taskLists[0].id,
+    order: 'c',
   },
   {
     id: crypto.randomUUID(),
     name: 'Task 1',
     description: 'This is the first task in progress',
     task_list_id: taskLists[1].id,
+    order: 'a',
   },
 ];
 

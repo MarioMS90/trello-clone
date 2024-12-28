@@ -20,7 +20,6 @@ export function HeaderSkeleton() {
   return (
     <header
       className={`
-      bg-primary-background 
       flex 
       h-12 
       items-center 
@@ -28,6 +27,7 @@ export function HeaderSkeleton() {
       border-b 
       border-b-white 
       border-opacity-30 
+      bg-primary-background 
       p-1.5 
       text-white
     `}>
@@ -54,11 +54,11 @@ export function SidebarSkeleton() {
   return (
     <nav
       className={`
-      bg-secondary-background 
       w-[260px] 
       border-r 
       border-r-white 
       border-opacity-30 
+      bg-secondary-background 
       text-white
     `}>
       <div className="border-b border-b-white border-opacity-20 p-4">
@@ -86,6 +86,23 @@ export function BoardsSkeleton() {
       <BoardSkeleton />
       <BoardSkeleton />
       <BoardSkeleton />
+    </div>
+  );
+}
+
+export function TaskListSkeleton({ className }: { className: string }) {
+  return (
+    <div
+      className={`${shimmer} w-[272px] rounded-xl bg-gray-200 p-2 text-sm text-primary ${className}`}></div>
+  );
+}
+
+export function TaskListsSkeleton() {
+  return (
+    <div className="h-[calc(100% - 8px)] flex gap-4">
+      <TaskListSkeleton className="h-[350px]" />
+      <TaskListSkeleton className="h-[200px]" />
+      <TaskListSkeleton className="h-[150px]" />
     </div>
   );
 }
