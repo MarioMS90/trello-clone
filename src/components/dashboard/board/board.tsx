@@ -1,17 +1,13 @@
-import { fetchTaskLists } from '@/lib/data';
-import { TaskList } from '@/components/dashboard/board/task-list';
+import { fetchCardLists } from '@/lib/data';
 import PlusIcon from '@/components/icons/plus';
+import { Cards } from '@/components/dashboard/board/cards';
 
 export default async function Board({ boardId }: { boardId: string }) {
-  const taskLists = await fetchTaskLists(boardId);
+  const cardLists = await fetchCardLists(boardId);
 
   return (
-    <ul className="scrollbar-transparent h-[calc(100% - 8px)] flex gap-4 overflow-x-auto">
-      {taskLists.map(({ id, name, tasks }) => (
-        <li className="h-full" key={id}>
-          <TaskList listName={name} tasks={tasks} />
-        </li>
-      ))}
+    <ul className="scrollbar-transparent flex h-[calc(100%-8px)] gap-4 overflow-x-auto">
+      <Cards initialCardLists={cardLists} />
       <li>
         <button
           type="button"
@@ -31,7 +27,7 @@ export default async function Board({ boardId }: { boardId: string }) {
             hover:bg-opacity-15
           ">
           <PlusIcon width={16} height={16} />
-          {taskLists.length ? 'Add another list' : 'Add a list'}
+          {cardLists.length ? 'Add another list' : 'Add a list'}
         </button>
       </li>
     </ul>

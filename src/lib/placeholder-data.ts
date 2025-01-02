@@ -69,61 +69,61 @@ const boards = [
   },
 ];
 
-const taskLists = [
+const cardLists = [
   {
     id: crypto.randomUUID(),
     name: 'To do',
     board_id: boards[0].id,
-    order: 'a',
+    rank: 1,
   },
   {
     id: crypto.randomUUID(),
     name: 'In progress',
     board_id: boards[0].id,
-    order: 'b',
+    rank: 2,
   },
   {
     id: crypto.randomUUID(),
     name: 'Done',
     board_id: boards[0].id,
-    order: 'c',
+    rank: 3,
   },
   {
     id: crypto.randomUUID(),
-    name: 'Not my task list',
+    name: 'Not my card list',
     board_id: boards[3].id,
-    order: 'a',
+    rank: 1,
   },
 ];
 
-const tasks = [
+const cards = [
   {
     id: crypto.randomUUID(),
-    name: 'Task 1',
-    description: 'This is the first task',
-    task_list_id: taskLists[0].id,
-    order: 'a',
+    name: 'Card 1',
+    description: 'This is the first card',
+    card_list_id: cardLists[0].id,
+    rank: 1,
   },
   {
     id: crypto.randomUUID(),
-    name: 'Task 2',
-    description: 'This is the second task',
-    task_list_id: taskLists[0].id,
-    order: 'b',
+    name: 'Card 2',
+    description: 'This is the second card',
+    card_list_id: cardLists[0].id,
+    rank: 2,
   },
   {
     id: crypto.randomUUID(),
     name: 'Mario',
-    description: 'This is the third task',
-    task_list_id: taskLists[0].id,
-    order: 'c',
+    description: 'This is the third card',
+    card_list_id: cardLists[0].id,
+    rank: 3,
   },
   {
     id: crypto.randomUUID(),
-    name: 'Task 1',
-    description: 'This is the first task in progress',
-    task_list_id: taskLists[1].id,
-    order: 'a',
+    name: 'Card 1',
+    description: 'This is the first card in progress',
+    card_list_id: cardLists[1].id,
+    rank: 1,
   },
 ];
 
@@ -132,14 +132,14 @@ const comments = [
     id: crypto.randomUUID(),
     content: 'This is a comment',
     user_id: '746a5280-bcc3-4a23-842f-be2ec0334e90',
-    task_id: tasks[0].id,
+    card_id: cards[0].id,
   },
   {
     id: crypto.randomUUID(),
     content: 'This is the second comment',
     user_id: '746a5280-bcc3-4a23-842f-be2ec0334e90',
-    task_id: tasks[0].id,
+    card_id: cards[0].id,
   },
 ];
 
-export { workspaces, userWorkspace, boards, taskLists, tasks, comments };
+export { workspaces, userWorkspace, boards, cardLists, cards, comments };

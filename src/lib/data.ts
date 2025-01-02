@@ -1,4 +1,4 @@
-import { TaskList, User, UserWorkspace } from '@/types/app-types';
+import { CardList, User, UserWorkspace } from '@/types/app-types';
 import { createClient } from '@/lib/supabase/server';
 
 export async function fetchUser(): Promise<User> {
@@ -49,24 +49,24 @@ export async function fetchWorkspaces(): Promise<UserWorkspace[]> {
   return workspaces;
 }
 
-export async function fetchTaskLists(boardId: string): Promise<TaskList[]> {
+export async function fetchCardLists(boardId: string): Promise<CardList[]> {
   const supabase = await createClient();
 
   const { data, error } = await supabase
-    .from('task_list')
+    .from('card_list')
     .select(
       ` 
       *,
       board!inner(
         id
       ),
-      tasks: task(
+      cards: card(
         *
       )
     `,
     )
     .eq('board.id', boardId)
-    .order('rank', { referencedTable: 'tasks' })
+    .order('rank', { referencedTable: 'cards' })
     .order('rank');
 
   if (error) throw new Error(error.message);

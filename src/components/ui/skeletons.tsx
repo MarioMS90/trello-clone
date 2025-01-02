@@ -90,19 +90,19 @@ export function BoardsSkeleton() {
   );
 }
 
-export function TaskListSkeleton({ className }: { className: string }) {
+export function CardListSkeleton({ className }: { className: string }) {
   return (
     <div
       className={`${shimmer} w-[272px] rounded-xl bg-gray-200 p-2 text-sm text-primary ${className}`}></div>
   );
 }
 
-export function TaskListsSkeleton() {
+export function CardListsSkeleton() {
   return (
     <div className="h-[calc(100% - 8px)] flex gap-4">
-      <TaskListSkeleton className="h-[350px]" />
-      <TaskListSkeleton className="h-[200px]" />
-      <TaskListSkeleton className="h-[150px]" />
+      <CardListSkeleton className="h-[350px]" />
+      <CardListSkeleton className="h-[200px]" />
+      <CardListSkeleton className="h-[150px]" />
     </div>
   );
 }

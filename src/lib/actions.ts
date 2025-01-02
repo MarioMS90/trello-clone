@@ -151,7 +151,7 @@ export async function starToggleAction(boardId: string, starred: boolean): Promi
 export async function globalSearchAction(term: string): Promise<SearchResults> {
   const supabase = await createClient();
 
-  const { data, error } = await supabase.rpc('search_workspaces_boards_tasks', {
+  const { data, error } = await supabase.rpc('search_workspaces_boards_cards', {
     search_term: term,
   });
 

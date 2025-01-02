@@ -12,15 +12,15 @@ export type Workspace = Tables<'workspace'> & {
 };
 
 export type Board = Tables<'board'> & {
-  task_lists?: TaskList[];
+  card_lists?: CardList[];
   workspaceName?: string;
 };
 
-export type TaskList = Tables<'task_list'> & {
-  tasks: Task[];
+export type CardList = Tables<'card_list'> & {
+  cards: Card[];
 };
 
-export type Task = Tables<'task'>;
+export type Card = Tables<'card'>;
 
 export type Comment = Tables<'comment'>;
 

@@ -1,10 +1,10 @@
-export type TaskSearchResult = {
-  kind: 'task';
+export type CardSearchResult = {
+  kind: 'card';
   id: string;
   name: string;
   workspace: string;
   board: string;
-  task_list: string;
+  card_list: string;
 };
 
 export type BoardSearchResult = {
@@ -20,6 +20,6 @@ export type WorkspaceSearchResult = {
   name: string;
 };
 
-export type SearchResult = TaskSearchResult | BoardSearchResult | WorkspaceSearchResult;
+export type SearchResult = CardSearchResult | BoardSearchResult | WorkspaceSearchResult;
 
 export type SearchResults = SearchResult[];

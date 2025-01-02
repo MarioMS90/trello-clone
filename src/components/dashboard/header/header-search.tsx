@@ -168,7 +168,7 @@ function SearchResultsContent({ searchResults }: { searchResults: SearchResults 
     title: string;
     content: JSX.Element | null;
   }[] = [
-    { title: 'Cards', content: generateSearchResults('task') },
+    { title: 'Cards', content: generateSearchResults('card') },
     { title: 'Boards', content: generateSearchResults('board') },
     { title: 'Workspace', content: generateSearchResults('workspace') },
   ];
@@ -196,14 +196,14 @@ const generateSearchResult = <T extends SearchResult['kind']>(
   const searchResultRenderers: {
     [K in SearchResult['kind']]: (elem: Extract<SearchResult, { kind: K }>) => JSX.Element;
   } = {
-    task: ({ id, name, board, task_list }) => (
+    card: ({ id, name, board, card_list }) => (
       <Link className="block hover:bg-gray-200" href={`/cards/${id}`}>
         <div className="flex items-center gap-2 px-4 py-1">
           <CardIcon height={19} />
           <div>
             <h3 className="text-sm leading-4">{name}</h3>
             <p className="text-[11px] text-gray-500">
-              {board}: {task_list}
+              {board}: {card_list}
             </p>
           </div>
         </div>
@@ -222,7 +222,7 @@ const generateSearchResult = <T extends SearchResult['kind']>(
     ),
     workspace: ({ id, name }) => (
       <Link className="block hover:bg-gray-200" href={`/workspaces/${id}`}>
-        <div className="flex items-center gap-2 px-4 py-1.5">
+        <div className="flex items-center gap-2 px-4 py-2">
           <WorkspaceLogo className="[&]:size-6 [&]:text-sm" workspaceName={name} />
           <div>
             <h3 className="text-sm leading-4">{name}</h3>

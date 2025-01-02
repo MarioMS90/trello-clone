@@ -35,81 +35,42 @@ export type Database = {
           },
         ];
       };
-      comment: {
+      card: {
         Row: {
-          content: string;
-          created_at: string;
-          id: string;
-          task_id: string;
-          user_id: string;
-        };
-        Insert: {
-          content: string;
-          created_at?: string;
-          id?: string;
-          task_id: string;
-          user_id: string;
-        };
-        Update: {
-          content?: string;
-          created_at?: string;
-          id?: string;
-          task_id?: string;
-          user_id?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: 'comment_task_id_fkey';
-            columns: ['task_id'];
-            isOneToOne: false;
-            referencedRelation: 'task';
-            referencedColumns: ['id'];
-          },
-          {
-            foreignKeyName: 'comment_user_id_fkey';
-            columns: ['user_id'];
-            isOneToOne: false;
-            referencedRelation: 'user';
-            referencedColumns: ['id'];
-          },
-        ];
-      };
-      task: {
-        Row: {
+          card_list_id: string;
           created_at: string;
           description: string;
           id: string;
           name: string;
           rank: string | null;
-          task_list_id: string;
         };
         Insert: {
+          card_list_id?: string;
           created_at?: string;
           description: string;
           id?: string;
           name: string;
           rank?: string | null;
-          task_list_id?: string;
         };
         Update: {
+          card_list_id?: string;
           created_at?: string;
           description?: string;
           id?: string;
           name?: string;
           rank?: string | null;
-          task_list_id?: string;
         };
         Relationships: [
           {
             foreignKeyName: 'task_task_list_id_fkey';
-            columns: ['task_list_id'];
+            columns: ['card_list_id'];
             isOneToOne: false;
-            referencedRelation: 'task_list';
+            referencedRelation: 'card_list';
             referencedColumns: ['id'];
           },
         ];
       };
-      task_list: {
+      card_list: {
         Row: {
           board_id: string;
           created_at: string;
@@ -137,6 +98,45 @@ export type Database = {
             columns: ['board_id'];
             isOneToOne: false;
             referencedRelation: 'board';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      comment: {
+        Row: {
+          card_id: string;
+          content: string;
+          created_at: string;
+          id: string;
+          user_id: string;
+        };
+        Insert: {
+          card_id: string;
+          content: string;
+          created_at?: string;
+          id?: string;
+          user_id: string;
+        };
+        Update: {
+          card_id?: string;
+          content?: string;
+          created_at?: string;
+          id?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'comment_card_id_fkey';
+            columns: ['card_id'];
+            isOneToOne: false;
+            referencedRelation: 'card';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'comment_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'user';
             referencedColumns: ['id'];
           },
         ];
@@ -224,7 +224,7 @@ export type Database = {
         };
         Returns: string;
       };
-      search_workspaces_boards_tasks: {
+      search_workspaces_boards_cards: {
         Args: {
           search_term: string;
         };
@@ -234,7 +234,7 @@ export type Database = {
           name: string;
           workspace: string;
           board: string;
-          task_list: string;
+          card_list: string;
         }[];
       };
       user_has_workspace_access: {
@@ -245,7 +245,7 @@ export type Database = {
       };
     };
     Enums: {
-      kind_search: 'workspace' | 'board' | 'task';
+      kind_search: 'workspace' | 'board' | 'card';
       role: 'admin' | 'member';
     };
     CompositeTypes: {

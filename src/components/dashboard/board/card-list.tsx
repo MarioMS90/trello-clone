@@ -1,11 +1,11 @@
 'use client';
 
-import { Task } from '@/types/app-types';
+import { Card } from '@/types/app-types';
 import DotsIcon from '../../icons/dots';
 import PlusIcon from '../../icons/plus';
 import PencilIcon from '../../icons/pencil';
 
-export function TaskList({ listName, tasks }: { listName: string; tasks: Task[] }) {
+export function CardList({ listName, cards }: { listName: string; cards: Card[] }) {
   return (
     <div className="w-[272px] rounded-xl bg-gray-200 p-2 text-sm text-primary">
       <div className="flex cursor-pointer items-center justify-between">
@@ -22,9 +22,9 @@ export function TaskList({ listName, tasks }: { listName: string; tasks: Task[] 
           </span>
         </span>
       </div>
-      {!!tasks.length && (
+      {!!cards.length && (
         <ul className="flex flex-col gap-2 pt-2">
-          {tasks.map(({ id, name }) => (
+          {cards.map(({ id, name }) => (
             <li
               className="group cursor-pointer rounded-lg border border-gray-300 bg-white px-1 py-2 shadow-sm outline-2 outline-secondary hover:outline"
               key={id}>

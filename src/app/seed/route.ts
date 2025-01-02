@@ -3,8 +3,8 @@ import {
   workspaces,
   userWorkspace,
   boards,
-  taskLists,
-  tasks,
+  cardLists,
+  cards,
   comments,
 } from '@/lib/placeholder-data';
 import { DBClient } from '@/types/app-types';
@@ -41,8 +41,8 @@ async function seedBoards(supabase: DBClient) {
   return data;
 }
 
-async function seedTaskLists(supabase: DBClient) {
-  const { data, error } = await supabase.from('task_list').upsert(taskLists).select();
+async function seedCardLists(supabase: DBClient) {
+  const { data, error } = await supabase.from('card_list').upsert(cardLists).select();
 
   if (error) {
     throw new Error(error.message);
@@ -51,8 +51,8 @@ async function seedTaskLists(supabase: DBClient) {
   return data;
 }
 
-async function seedTasks(supabase: DBClient) {
-  const { data, error } = await supabase.from('task').upsert(tasks).select();
+async function seedCards(supabase: DBClient) {
+  const { data, error } = await supabase.from('card').upsert(cards).select();
 
   if (error) {
     throw new Error(error.message);
@@ -82,8 +82,8 @@ export async function GET() {
     await seedWorkspaces(supabase);
     await seedUserWorkspaces(supabase);
     await seedBoards(supabase);
-    await seedTaskLists(supabase);
-    await seedTasks(supabase);
+    await seedCardLists(supabase);
+    await seedCards(supabase);
     await seedComments(supabase);
 
     return Response.json({ message: 'Database seeded successfully' });
