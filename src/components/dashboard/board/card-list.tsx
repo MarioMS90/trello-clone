@@ -1,9 +1,9 @@
 'use client';
 
 import { Card } from '@/types/app-types';
-import DotsIcon from '../../icons/dots';
-import PlusIcon from '../../icons/plus';
-import PencilIcon from '../../icons/pencil';
+import DotsIcon from '@/components/icons/dots';
+import PlusIcon from '@/components/icons/plus';
+import PencilIcon from '@/components/icons/pencil';
 
 export function CardList({ listName, cards }: { listName: string; cards: Card[] }) {
   return (
