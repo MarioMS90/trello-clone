@@ -1,20 +1,21 @@
 'use client';
 
-import { starToggleAction } from '@/lib/actions';
 import { useEffect, useState } from 'react';
+import { Board } from '@/types/app-types';
+import { updateBoardAction } from '@/lib/actions';
 import StarIcon from '../icons/star';
 import StarFillIcon from '../icons/star-fill';
 
-export function StarToggle({
+export function StarToggleBoard({
   className = '',
-  boardId,
   starred,
+  board,
   onStarToggle,
 }: {
   className?: string;
-  boardId: string;
   starred: boolean;
-  onStarToggle?: (starred: boolean) => void;
+  board?: Board;
+  onStarToggle?: () => void;
 }) {
   const [isStarred, setIsStarred] = useState(starred);
 
@@ -24,8 +25,14 @@ export function StarToggle({
 
   const handleStarToggle = async () => {
     setIsStarred(!isStarred);
-    onStarToggle?.(!isStarred);
-    await starToggleAction(boardId, !starred);
+
+    if (board) {
+      await updateBoardAction({ ...board, starred: !isStarred });
+    }
+
+    if (onStarToggle) {
+      onStarToggle();
+    }
   };
 
   return (

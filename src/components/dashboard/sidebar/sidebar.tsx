@@ -93,7 +93,7 @@ export function WorkspaceSidebar({
               buttonText={<PlusIcon height={16} />}
             />
           </div>
-          <SidebarBoards boardList={workspace.boards} boardId={boardId} />
+          <SidebarBoards boardList={workspace.boards} currentBoardId={boardId} />
         </div>
       </div>
     </nav>

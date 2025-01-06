@@ -3,11 +3,13 @@
 import { useState } from 'react';
 import { Board, UserWorkspace } from '@/types/app-types';
 import Link from 'next/link';
-import Popover from '../../ui/popover';
-import ArrowDownIcon from '../../icons/arrow-down';
-import WorkspaceLogo from '../../ui/workspace-logo';
-import { CreateBoardForm } from '../create-forms';
-import { StarToggle } from '../star-toggle';
+import { updateBoardAction } from '@/lib/actions';
+import { useOptimisticMutation } from '@/app/hooks/useOptimisticMutation';
+import Popover from '@/components/ui/popover';
+import ArrowDownIcon from '@/components/icons/arrow-down';
+import WorkspaceLogo from '@/components/ui/workspace-logo';
+import { CreateBoardForm } from '@/components/dashboard/create-forms';
+import { StarToggleBoard } from '@/components/dashboard/star-toggle-board';
 
 export default function HeaderButtons({
   workspaces,
@@ -17,6 +19,12 @@ export default function HeaderButtons({
   starredBoards: Board[];
 }) {
   const [selectedButton, setSelectedButton] = useState<string | null>(null);
+  const { optimisticList: optimisticBoards, optimisticUpdate } = useOptimisticMutation(
+    starredBoards,
+    {
+      updateAction: updateBoardAction,
+    },
+  );
 
   const workspacesContent = (
     <ul className="space-y-1">
@@ -33,22 +41,25 @@ export default function HeaderButtons({
     </ul>
   );
 
-  const starredBoardsContent =
-    starredBoards.length === 0 ? (
-      <p className="text-center">No starred boards</p>
-    ) : (
-      <ul className="space-y-1">
-        {starredBoards.map(({ id, name, workspaceName }) => (
-          <li className="relative rounded-md px-2 py-1 hover:bg-gray-200" key={id}>
-            <Link className="" href={`/boards/${id}`}>
-              <h3 className="font-medium">{name}</h3>
-              <p className="text-gray-500">{workspaceName}</p>
-            </Link>
-            <StarToggle className="[&]:right-1.5" boardId={id} starred />
-          </li>
-        ))}
-      </ul>
-    );
+  const starredBoardsContent = optimisticBoards.some(({ starred }) => starred) ? (
+    <ul className="space-y-1">
+      {optimisticBoards.map(({ id, name, workspaceName }) => (
+        <li className="relative rounded-md px-2 py-1 hover:bg-gray-200" key={id}>
+          <Link className="" href={`/boards/${id}`}>
+            <h3 className="font-medium">{name}</h3>
+            <p className="text-gray-500">{workspaceName}</p>
+          </Link>
+          <StarToggleBoard
+            className="[&]:right-1.5"
+            onStarToggle={() => optimisticUpdate({ id, name, starred: false } as Board)}
+            starred
+          />
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <p className="text-center">No starred boards</p>
+  );
 
   const buttons = [
     {

@@ -74,25 +74,25 @@ const cardLists = [
     id: crypto.randomUUID(),
     name: 'To do',
     board_id: boards[0].id,
-    rank: 1,
+    rank: 'a',
   },
   {
     id: crypto.randomUUID(),
     name: 'In progress',
     board_id: boards[0].id,
-    rank: 2,
+    rank: 'b',
   },
   {
     id: crypto.randomUUID(),
     name: 'Done',
     board_id: boards[0].id,
-    rank: 3,
+    rank: 'c',
   },
   {
     id: crypto.randomUUID(),
     name: 'Not my card list',
     board_id: boards[3].id,
-    rank: 1,
+    rank: 'a',
   },
 ];
 
@@ -102,28 +102,28 @@ const cards = [
     name: 'Card 1',
     description: 'This is the first card',
     card_list_id: cardLists[0].id,
-    rank: 1,
+    rank: 'a',
   },
   {
     id: crypto.randomUUID(),
     name: 'Card 2',
     description: 'This is the second card',
     card_list_id: cardLists[0].id,
-    rank: 2,
+    rank: 'b',
   },
   {
     id: crypto.randomUUID(),
     name: 'Mario',
     description: 'This is the third card',
     card_list_id: cardLists[0].id,
-    rank: 3,
+    rank: 'c',
   },
   {
     id: crypto.randomUUID(),
     name: 'Card 1',
     description: 'This is the first card in progress',
     card_list_id: cardLists[1].id,
-    rank: 1,
+    rank: 'a',
   },
 ];
 

@@ -1,6 +1,6 @@
 import { fetchCardLists } from '@/lib/data';
 import PlusIcon from '@/components/icons/plus';
-import { Cards } from '@/components/dashboard/board/cards';
+import { Cards } from '@/components/dashboard/boards/cards';
 
 export default async function Board({ boardId }: { boardId: string }) {
   const cardLists = await fetchCardLists(boardId);

@@ -1,6 +1,6 @@
 import { CreateBoardPopover } from '@/components/dashboard/popovers';
 import { fetchWorkspaces } from '@/lib/data';
-import { BoardList } from '@/components/dashboard/boards';
+import { BoardList } from '@/components/dashboard/boards/boards';
 import { WorkspaceButtons } from './workspace-buttons';
 
 export async function Workspaces() {

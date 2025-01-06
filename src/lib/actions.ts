@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { ActionState, initialState } from '@/types/app-types';
+import { ActionState, Board, initialState, Workspace } from '@/types/app-types';
 import { CreateBoardSchema, CreateWorkspaceSchema } from '@/schemas/workspace-schemas';
 import { SearchResults } from '@/types/search-types';
 import { createClient } from './supabase/server';
@@ -87,16 +87,10 @@ export async function createBoardAction(
   return { success: true };
 }
 
-export async function renameWorkspaceAction(
-  workspaceId: string,
-  newName: string,
-): Promise<ActionState> {
+export async function updateWorkspaceAction(workspace: Workspace): Promise<ActionState> {
   const supabase = await createClient();
 
-  const { error } = await supabase
-    .from('workspace')
-    .update({ name: newName })
-    .eq('id', workspaceId);
+  const { error } = await supabase.from('workspace').update(workspace).eq('id', workspace.id);
 
   if (error) throw new Error(error.message);
 
@@ -115,14 +109,15 @@ export async function deleteWorkspaceAction(workspaceId: string): Promise<Action
   return { success: true };
 }
 
-export async function renameBoardAction(boardId: string, newName: string): Promise<ActionState> {
+export async function updateBoardAction(board: Board): Promise<ActionState> {
   const supabase = await createClient();
 
-  const { error } = await supabase.from('board').update({ name: newName }).eq('id', boardId);
+  const { error } = await supabase.from('board').update(board).eq('id', board.id);
 
   if (error) throw new Error(error.message);
 
   revalidatePath('/(dashboard)', 'layout');
+
   return { success: true };
 }
 
@@ -130,17 +125,6 @@ export async function deleteBoardAction(boardId: string): Promise<ActionState> {
   const supabase = await createClient();
 
   const { error } = await supabase.from('board').delete().eq('id', boardId);
-
-  if (error) throw new Error(error.message);
-
-  revalidatePath('/(dashboard)', 'layout');
-  return { success: true };
-}
-
-export async function starToggleAction(boardId: string, starred: boolean): Promise<ActionState> {
-  const supabase = await createClient();
-
-  const { error } = await supabase.from('board').update({ starred }).eq('id', boardId);
 
   if (error) throw new Error(error.message);
 

@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { CardListsSkeleton } from '@/components/ui/skeletons';
-import Board from '@/components/dashboard/board/board';
+import Board from '@/components/dashboard/boards/board';
 
 export const metadata: Metadata = {
   title: 'Board',

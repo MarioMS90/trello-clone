@@ -2,7 +2,7 @@ import { CreateWorkspacePopover } from '@/components/dashboard/popovers';
 import { Workspaces } from '@/components/dashboard/workspaces/workspaces';
 import { Suspense } from 'react';
 import { BoardsSkeleton } from '@/components/ui/skeletons';
-import { StarredBoards } from '@/components/dashboard/boards';
+import { StarredBoards } from '@/components/dashboard/boards/boards';
 
 export default function WorkspacesPage() {
   return (

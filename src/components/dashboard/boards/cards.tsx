@@ -1,8 +1,8 @@
 'use client';
 
 import { CardList as CardListType } from '@/types/app-types';
-import { CardList } from '@/components/dashboard/board/card-list';
 import { useEffect, useState } from 'react';
+import { CardList } from '@/components/dashboard/boards/card-list';
 
 export function Cards({ initialCardLists }: { initialCardLists: CardListType[] }) {
   const [cardLists, setCardLists] = useState<CardListType[]>(initialCardLists);

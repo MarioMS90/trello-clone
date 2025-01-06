@@ -1,11 +1,12 @@
 'use client';
 
+import { useOptimisticMutation } from '@/app/hooks/useOptimisticMutation';
 import BoardsIcon from '@/components/icons/boards';
 import SettingsIcon from '@/components/icons/settings';
 import UserIcon from '@/components/icons/user';
 import Popover from '@/components/ui/popover';
 import WorkspaceLogo from '@/components/ui/workspace-logo';
-import { deleteWorkspaceAction, renameWorkspaceAction } from '@/lib/actions';
+import { deleteWorkspaceAction, updateWorkspaceAction } from '@/lib/actions';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 
@@ -18,12 +19,15 @@ export function WorkspaceButtons({
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const [editedWorkspace, setEditedWorkspace] = useState<{
-    name: string;
-    isEditing: boolean;
-  }>({
-    name: workspaceName,
-    isEditing: false,
+  const [editingWorkspaceId, setEditingWorkspaceId] = useState<string | null>(null);
+  const {
+    optimisticList: optimisticWorkspaces,
+    isPending,
+    optimisticUpdate,
+    optimisticDelete,
+  } = useOptimisticMutation(boardList, {
+    updateAction: updateBoardAction,
+    deleteAction: deleteBoardAction,
   });
 
   useEffect(() => {
@@ -35,7 +39,7 @@ export function WorkspaceButtons({
 
   const handleRenameWorkspace = async () => {
     setEditedWorkspace({ ...editedWorkspace, isEditing: false });
-    await renameWorkspaceAction(workspaceId, editedWorkspace.name);
+    await updateWorkspaceAction(workspaceId, editedWorkspace);
   };
 
   const handleDeleteWorkspace = async () => {
