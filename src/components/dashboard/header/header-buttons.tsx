@@ -4,10 +4,10 @@ import { useState } from 'react';
 import { Board, UserWorkspace } from '@/types/app-types';
 import Link from 'next/link';
 import { updateBoardAction } from '@/lib/actions';
-import { useOptimisticMutation } from '@/app/hooks/useOptimisticMutation';
+import { useOptimisticMutation } from '@/hooks/useOptimisticMutation';
 import Popover from '@/components/ui/popover';
 import ArrowDownIcon from '@/components/icons/arrow-down';
-import WorkspaceLogo from '@/components/ui/workspace-logo';
+import WorkspaceBadge from '@/components/ui/workspace-logo';
 import { CreateBoardForm } from '@/components/dashboard/create-forms';
 import { StarToggleBoard } from '@/components/dashboard/star-toggle-board';
 
@@ -32,7 +32,7 @@ export default function HeaderButtons({
         <li key={id}>
           <Link href={`/workspaces/${id}`}>
             <div className="flex items-center gap-2 rounded-md px-2 py-1.5 hover:bg-gray-200">
-              <WorkspaceLogo className="size-10" workspaceName={name} />
+              <WorkspaceBadge className="size-10" workspaceName={name} />
               <h3 className="font-medium">{name}</h3>
             </div>
           </Link>
@@ -51,7 +51,7 @@ export default function HeaderButtons({
           </Link>
           <StarToggleBoard
             className="[&]:right-1.5"
-            onStarToggle={() => optimisticUpdate({ id, name, starred: false } as Board)}
+            onStarToggle={() => optimisticUpdate({ id, starred: false })}
             starred
           />
         </li>

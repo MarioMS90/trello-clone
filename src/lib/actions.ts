@@ -1,9 +1,10 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { ActionState, Board, initialState, Workspace } from '@/types/app-types';
+import { ActionState, Board, initialState, SubsetWithId, Workspace } from '@/types/app-types';
 import { CreateBoardSchema, CreateWorkspaceSchema } from '@/schemas/workspace-schemas';
 import { SearchResults } from '@/types/search-types';
+import { PublicSchema } from '@/types/database-types';
 import { createClient } from './supabase/server';
 
 export async function createWorkspaceAction(
@@ -87,51 +88,6 @@ export async function createBoardAction(
   return { success: true };
 }
 
-export async function updateWorkspaceAction(workspace: Workspace): Promise<ActionState> {
-  const supabase = await createClient();
-
-  const { error } = await supabase.from('workspace').update(workspace).eq('id', workspace.id);
-
-  if (error) throw new Error(error.message);
-
-  revalidatePath('/(dashboard)', 'layout');
-  return { success: true };
-}
-
-export async function deleteWorkspaceAction(workspaceId: string): Promise<ActionState> {
-  const supabase = await createClient();
-
-  const { error } = await supabase.from('workspace').delete().eq('id', workspaceId);
-
-  if (error) throw new Error(error.message);
-
-  revalidatePath('/(dashboard)', 'layout');
-  return { success: true };
-}
-
-export async function updateBoardAction(board: Board): Promise<ActionState> {
-  const supabase = await createClient();
-
-  const { error } = await supabase.from('board').update(board).eq('id', board.id);
-
-  if (error) throw new Error(error.message);
-
-  revalidatePath('/(dashboard)', 'layout');
-
-  return { success: true };
-}
-
-export async function deleteBoardAction(boardId: string): Promise<ActionState> {
-  const supabase = await createClient();
-
-  const { error } = await supabase.from('board').delete().eq('id', boardId);
-
-  if (error) throw new Error(error.message);
-
-  revalidatePath('/(dashboard)', 'layout');
-  return { success: true };
-}
-
 export async function globalSearchAction(term: string): Promise<SearchResults> {
   const supabase = await createClient();
 
@@ -143,3 +99,42 @@ export async function globalSearchAction(term: string): Promise<SearchResults> {
 
   return data;
 }
+
+export async function updateAction(
+  entity: SubsetWithId<Workspace> | SubsetWithId<Board>,
+  TableName: keyof PublicSchema['Tables'],
+): Promise<ActionState> {
+  const supabase = await createClient();
+
+  const { error } = await supabase.from(TableName).update(entity).eq('id', entity.id);
+
+  if (error) throw new Error(error.message);
+
+  revalidatePath('/(dashboard)', 'layout');
+
+  return { success: true };
+}
+
+export async function deleteAction(
+  entityId: string,
+  TableName: keyof PublicSchema['Tables'],
+): Promise<ActionState> {
+  const supabase = await createClient();
+
+  const { error } = await supabase.from(TableName).delete().eq('id', entityId);
+
+  if (error) throw new Error(error.message);
+
+  revalidatePath('/(dashboard)', 'layout');
+  return { success: true };
+}
+
+export const updateWorkspaceAction = async (workspace: SubsetWithId<Workspace>) =>
+  updateAction(workspace, 'workspace');
+
+export const deleteWorkspaceAction = async (workspaceId: string) =>
+  deleteAction(workspaceId, 'workspace');
+
+export const updateBoardAction = async (board: SubsetWithId<Board>) => updateAction(board, 'board');
+
+export const deleteBoardAction = async (boardId: string) => deleteAction(boardId, 'board');

@@ -1,4 +1,4 @@
-import { MainSidebar } from '@/components/dashboard/sidebar/sidebar';
+import { MainSidebar } from '@/components/dashboard/sidebar/sidebars';
 
 export default function SidebarPage() {
   return <MainSidebar />;

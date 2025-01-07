@@ -27,7 +27,7 @@ export function StarToggleBoard({
     setIsStarred(!isStarred);
 
     if (board) {
-      await updateBoardAction({ ...board, starred: !isStarred });
+      await updateBoardAction({ id: board.id, starred: !isStarred });
     }
 
     if (onStarToggle) {

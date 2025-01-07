@@ -1,4 +1,4 @@
-import { WorkspaceSidebar } from '@/components/dashboard/sidebar/sidebar';
+import { WorkspaceSidebar } from '@/components/dashboard/sidebar/sidebars';
 import { getWorkspace } from '@/lib/server-utils';
 import { notFound } from 'next/navigation';
 

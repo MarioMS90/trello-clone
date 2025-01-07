@@ -8,7 +8,7 @@ import CardIcon from '@/components/icons/card';
 import Loading from '@/components/ui/loading';
 import NoSearchResultsIcon from '@/components/icons/no-search-results';
 import SearchIcon from '@/components/icons/search';
-import WorkspaceLogo from '@/components/ui/workspace-logo';
+import WorkspaceBadge from '@/components/ui/workspace-logo';
 import { globalSearchAction } from '@/lib/actions';
 import { SearchResult, SearchResults } from '@/types/search-types';
 import { useClickAway, useDebounce } from '@uidotdev/usehooks';
@@ -223,7 +223,7 @@ const generateSearchResult = <T extends SearchResult['kind']>(
     workspace: ({ id, name }) => (
       <Link className="block hover:bg-gray-200" href={`/workspaces/${id}`}>
         <div className="flex items-center gap-2 px-4 py-2">
-          <WorkspaceLogo className="[&]:size-6 [&]:text-sm" workspaceName={name} />
+          <WorkspaceBadge className="[&]:size-6 [&]:text-sm" workspaceName={name} />
           <div>
             <h3 className="text-sm leading-4">{name}</h3>
           </div>

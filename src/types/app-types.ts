@@ -3,6 +3,16 @@ import { Database, Tables } from './database-types';
 
 export type DBClient = SupabaseClient<Database>;
 
+export type Subset<T> = {
+  [K in keyof T]?: T[K];
+};
+
+export type SubsetWithId<T extends { id: string }> = {
+  id: T['id'];
+} & {
+  [K in Exclude<keyof T, 'id'>]?: T[K];
+};
+
 export type User = Tables<'user'>;
 
 export type UserWorkspace = Workspace & Pick<Tables<'user_workspace'>, 'role'>;

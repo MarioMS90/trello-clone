@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import BoardsIcon from '@/components/icons/boards';
 import ArrowDownIcon from '@/components/icons/arrow-down';
-import WorkspaceLogo from '@/components/ui/workspace-logo';
+import WorkspaceBadge from '@/components/ui/workspace-logo';
 import PlusIcon from '@/components/icons/plus';
 import { CreateBoardPopover } from '@/components/dashboard/popovers';
 import { SidebarLinks } from '@/components/dashboard/sidebar/sidebar-links';
@@ -68,7 +68,7 @@ export function WorkspaceSidebar({
         <div className="border-b border-b-white border-opacity-20 p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <WorkspaceLogo workspaceName={workspace.name} />
+              <WorkspaceBadge workspaceName={workspace.name} />
               <h2 className="pr-4 text-sm font-bold">{workspace.name}</h2>
             </div>
             {sidebarExpanded && (
@@ -93,7 +93,7 @@ export function WorkspaceSidebar({
               buttonText={<PlusIcon height={16} />}
             />
           </div>
-          <SidebarBoards boardList={workspace.boards} currentBoardId={boardId} />
+          <SidebarBoards boards={workspace.boards} currentBoardId={boardId} />
         </div>
       </div>
     </nav>

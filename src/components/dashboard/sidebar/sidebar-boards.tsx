@@ -5,27 +5,27 @@ import clsx from 'clsx';
 import { Board } from '@/types/app-types';
 import { useEffect, useRef, useState } from 'react';
 import { deleteBoardAction, updateBoardAction } from '@/lib/actions';
-import { useOptimisticMutation } from '@/app/hooks/useOptimisticMutation';
+import { useOptimisticMutation } from '@/hooks/useOptimisticMutation';
 import { StarToggleBoard } from '../star-toggle-board';
 import DotsIcon from '../../icons/dots';
 import Popover from '../../ui/popover';
 
 export function SidebarBoards({
-  boardList,
+  boards,
   currentBoardId,
 }: {
-  boardList: Board[];
+  boards: Board[];
   currentBoardId?: string;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [editingBoardId, setEditingBoardId] = useState<string | null>(null);
   const [selectedButton, setSelectedButton] = useState<string | null>(null);
+  const [editingBoardId, setEditingBoardId] = useState<string | null>(null);
   const {
     optimisticList: optimisticBoards,
     isPending,
     optimisticUpdate,
     optimisticDelete,
-  } = useOptimisticMutation(boardList, {
+  } = useOptimisticMutation(boards, {
     updateAction: updateBoardAction,
     deleteAction: deleteBoardAction,
   });
@@ -50,7 +50,10 @@ export function SidebarBoards({
                 defaultValue={board.name}
                 ref={inputRef}
                 onBlur={e => {
-                  optimisticUpdate({ ...board, name: e.target.value });
+                  const newName = e.target.value.trim();
+                  if (newName && board.name !== newName) {
+                    optimisticUpdate({ ...board, name: newName });
+                  }
                   setEditingBoardId(null);
                 }}
                 onKeyUp={e => e.key === 'Enter' && e.currentTarget.blur()}
@@ -93,7 +96,7 @@ export function SidebarBoards({
                   '[&]:block': board.starred,
                 })}
                 starred={board.starred}
-                onStarToggle={() => optimisticUpdate({ ...board, starred: !board.starred })}
+                onStarToggle={() => optimisticUpdate({ id: board.id, starred: !board.starred })}
               />
             </>
           )}
