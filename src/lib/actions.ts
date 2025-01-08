@@ -4,8 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { ActionState, Board, initialState, SubsetWithId, Workspace } from '@/types/app-types';
 import { CreateBoardSchema, CreateWorkspaceSchema } from '@/schemas/workspace-schemas';
 import { SearchResults } from '@/types/search-types';
-import { PublicSchema } from '@/types/database-types';
-import { createClient } from './supabase/server';
+import { createClient, deleteEntity, execQuery, updateEntity } from './supabase/server';
 
 export async function createWorkspaceAction(
   prevState: ActionState,
@@ -89,52 +88,21 @@ export async function createBoardAction(
 }
 
 export async function globalSearchAction(term: string): Promise<SearchResults> {
-  const supabase = await createClient();
-
-  const { data, error } = await supabase.rpc('search_workspaces_boards_cards', {
-    search_term: term,
-  });
-
-  if (error) throw new Error(error.message);
+  const data = await execQuery<SearchResults>(async supabase =>
+    supabase.rpc('search_workspaces_boards_cards', { search_term: term }),
+  );
 
   return data;
 }
 
-export async function updateAction(
-  entity: SubsetWithId<Workspace> | SubsetWithId<Board>,
-  TableName: keyof PublicSchema['Tables'],
-): Promise<ActionState> {
-  const supabase = await createClient();
-
-  const { error } = await supabase.from(TableName).update(entity).eq('id', entity.id);
-
-  if (error) throw new Error(error.message);
-
-  revalidatePath('/(dashboard)', 'layout');
-
-  return { success: true };
-}
-
-export async function deleteAction(
-  entityId: string,
-  TableName: keyof PublicSchema['Tables'],
-): Promise<ActionState> {
-  const supabase = await createClient();
-
-  const { error } = await supabase.from(TableName).delete().eq('id', entityId);
-
-  if (error) throw new Error(error.message);
-
-  revalidatePath('/(dashboard)', 'layout');
-  return { success: true };
-}
-
 export const updateWorkspaceAction = async (workspace: SubsetWithId<Workspace>) =>
-  updateAction(workspace, 'workspace');
+  updateEntity(workspace, 'workspace', { revalidateParams: ['/dashboard', 'layout'] });
 
 export const deleteWorkspaceAction = async (workspaceId: string) =>
-  deleteAction(workspaceId, 'workspace');
+  deleteEntity(workspaceId, 'workspace', { revalidateParams: ['/dashboard', 'layout'] });
 
-export const updateBoardAction = async (board: SubsetWithId<Board>) => updateAction(board, 'board');
+export const updateBoardAction = async (board: SubsetWithId<Board>) =>
+  updateEntity(board, 'board', { revalidateParams: ['/dashboard', 'layout'] });
 
-export const deleteBoardAction = async (boardId: string) => deleteAction(boardId, 'board');
+export const deleteBoardAction = async (boardId: string) =>
+  deleteEntity(boardId, 'board', { revalidateParams: ['/dashboard', 'layout'] });

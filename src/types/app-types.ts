@@ -9,9 +9,7 @@ export type Subset<T> = {
 
 export type SubsetWithId<T extends { id: string }> = {
   id: T['id'];
-} & {
-  [K in Exclude<keyof T, 'id'>]?: T[K];
-};
+} & Subset<T>;
 
 export type User = Tables<'user'>;
 

@@ -2,7 +2,7 @@
 
 /* eslint no-alert: "off" */
 
-import { ActionState, SubsetWithId } from '@/types/app-types';
+import { SubsetWithId } from '@/types/app-types';
 import { useOptimistic, useTransition } from 'react';
 
 enum Action {
@@ -16,8 +16,8 @@ export function useOptimisticMutation<T extends { id: string }>(
     updateAction,
     deleteAction,
   }: {
-    updateAction?: (element: SubsetWithId<T>) => Promise<ActionState>;
-    deleteAction?: (id: string) => Promise<ActionState>;
+    updateAction?: (element: SubsetWithId<T>) => void;
+    deleteAction?: (id: string) => void;
   },
 ) {
   const [isPending, startTransition] = useTransition();

@@ -1,5 +1,7 @@
 'use client';
 
+/* eslint no-alert: "off" */
+
 import { useEffect, useState } from 'react';
 import { Board } from '@/types/app-types';
 import { updateBoardAction } from '@/lib/actions';
@@ -27,7 +29,12 @@ export function StarToggleBoard({
     setIsStarred(!isStarred);
 
     if (board) {
-      await updateBoardAction({ id: board.id, starred: !isStarred });
+      try {
+        await updateBoardAction({ id: board.id, starred: !isStarred });
+      } catch (error) {
+        // TODO: Show error with a toast
+        alert('An error occurred while updating the element');
+      }
     }
 
     if (onStarToggle) {
