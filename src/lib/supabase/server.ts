@@ -2,10 +2,9 @@
 
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
-import { Database, PublicSchema } from '@/types/database-types';
-import { DBClient, Subset, SubsetWithId } from '@/types/app-types';
+import { Database } from '@/types/database-types';
+import { DBClient } from '@/types/app-types';
 import { PostgrestSingleResponse } from '@supabase/supabase-js';
-import { revalidatePath } from 'next/cache';
 
 export async function createClient() {
   const cookieStore = await cookies();
@@ -46,32 +45,4 @@ export async function execQuery<T>(
   }
 
   return data;
-}
-
-export async function insertEntity<T>(entity: Subset<T>, TableName: keyof PublicSchema['Tables']) {
-  return execQuery(async supabase => supabase.from(TableName).insert(entity));
-}
-
-export async function updateEntity<T extends { id: string }>(
-  entity: SubsetWithId<T>,
-  TableName: keyof PublicSchema['Tables'],
-  options?: { revalidateParams?: [string, 'layout' | 'page'] },
-) {
-  await execQuery(async supabase => supabase.from(TableName).update(entity).eq('id', entity.id));
-
-  if (options?.revalidateParams) {
-    revalidatePath(...options.revalidateParams);
-  }
-}
-
-export async function deleteEntity(
-  entityId: string,
-  TableName: keyof PublicSchema['Tables'],
-  options?: { revalidateParams?: [string, 'layout' | 'page'] },
-) {
-  await execQuery(async supabase => supabase.from(TableName).delete().eq('id', entityId));
-
-  if (options?.revalidateParams) {
-    revalidatePath(...options.revalidateParams);
-  }
 }
