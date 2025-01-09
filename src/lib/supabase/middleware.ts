@@ -35,11 +35,15 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const isOnWorkspacePage = request.nextUrl.pathname.startsWith('/workspaces');
+  const PROTECTED_ROUTES = ['/workspaces', '/boards', '/cards'];
+
+  const isProtectedRoute = PROTECTED_ROUTES.some(route =>
+    request.nextUrl.pathname.startsWith(route),
+  );
   const isOnLoginPage = request.nextUrl.pathname.startsWith('/sign');
 
   const url = request.nextUrl.clone();
-  if (!user && isOnWorkspacePage) {
+  if (!user && isProtectedRoute) {
     url.pathname = '/sign-in';
     return NextResponse.redirect(url);
   }

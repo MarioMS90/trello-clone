@@ -1,7 +1,5 @@
 'use client';
 
-/* eslint no-alert: "off" */
-
 import { useEffect, useState } from 'react';
 import { Board } from '@/types/app-types';
 import { updateBoardAction } from '@/lib/actions';

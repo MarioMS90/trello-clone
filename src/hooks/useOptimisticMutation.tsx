@@ -1,7 +1,5 @@
 'use client';
 
-/* eslint no-alert: "off" */
-
 import { SubsetWithId } from '@/types/app-types';
 import { useOptimistic, useTransition } from 'react';
 

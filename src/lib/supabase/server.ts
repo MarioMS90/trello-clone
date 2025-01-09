@@ -3,8 +3,6 @@
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { Database } from '@/types/database-types';
-import { DBClient } from '@/types/app-types';
-import { PostgrestSingleResponse } from '@supabase/supabase-js';
 
 export async function createClient() {
   const cookieStore = await cookies();
@@ -31,18 +29,4 @@ export async function createClient() {
       },
     },
   );
-}
-
-export async function execQuery<T>(
-  query: (supabase: DBClient) => Promise<PostgrestSingleResponse<T>>,
-): Promise<T> {
-  const supabase = await createClient();
-
-  const { data, error } = await query(supabase);
-
-  if (error) {
-    throw error;
-  }
-
-  return data;
 }

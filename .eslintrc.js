@@ -31,5 +31,6 @@ module.exports = {
     '@typescript-eslint/no-use-before-define': 'off',
     'react/jsx-no-useless-fragment': 'off',
     //'@typescript-eslint/no-unused-vars': 'off',
+    'no-alert': 'off',
   },
 };

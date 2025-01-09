@@ -47,7 +47,12 @@ export default function HeaderSearch({ placeholder }: { placeholder: string }) {
         return;
       }
 
-      const results = await globalSearchAction(debouncedSearchTerm);
+      const { data: results, error } = await globalSearchAction(debouncedSearchTerm);
+      if (error) {
+        setSearchResults({ term: debouncedSearchTerm, results: [] });
+        setIsLoading(false);
+        return;
+      }
       setSearchResults({ term: debouncedSearchTerm, results });
       setIsLoading(false);
     };
