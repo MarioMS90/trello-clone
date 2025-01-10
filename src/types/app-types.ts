@@ -1,7 +1,4 @@
-import { SupabaseClient } from '@supabase/supabase-js';
-import { Database, Tables } from './database-types';
-
-export type DBClient = SupabaseClient<Database>;
+import { Tables } from './database-types';
 
 export type Subset<T> = {
   [K in keyof T]?: T[K];
@@ -20,15 +17,17 @@ export type Workspace = Tables<'workspace'> & {
 };
 
 export type Board = Tables<'board'> & {
-  card_lists?: CardList[];
+  card_lists?: TCardList[];
   workspaceName?: string;
 };
 
-export type CardList = Tables<'card_list'> & {
-  cards: Card[];
+export type TCardList = Tables<'card_list'> & {
+  cards?: Card[];
 };
 
-export type Card = Tables<'card'>;
+export type Card = Tables<'card'> & {
+  comments?: Comment[];
+};
 
 export type Comment = Tables<'comment'>;
 

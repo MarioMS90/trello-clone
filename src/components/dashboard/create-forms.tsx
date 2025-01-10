@@ -7,11 +7,9 @@ import { initialState, UserWorkspace } from '@/types/app-types';
 export function CreateBoardForm({
   workspaceId,
   workspaces,
-  onSubmitSuccess,
 }: {
   workspaceId?: string;
   workspaces?: UserWorkspace[];
-  onSubmitSuccess?: () => void;
 }) {
   const createBoardWithId = createBoardAction.bind(null, workspaceId);
   const [formState, formAction, isPending] = useActionState(createBoardWithId, initialState);
@@ -20,9 +18,8 @@ export function CreateBoardForm({
   useEffect(() => {
     if (formState.success) {
       setIsValidForm(false);
-      onSubmitSuccess?.();
     }
-  }, [formState.success, onSubmitSuccess]);
+  }, [formState.success]);
 
   return (
     <div className="flex flex-col text-sm text-gray-700">
@@ -84,16 +81,15 @@ export function CreateBoardForm({
   );
 }
 
-export function CreateWorkspaceForm({ onSubmitSuccess }: { onSubmitSuccess?: () => void }) {
+export function CreateWorkspaceForm() {
   const [formState, formAction, isPending] = useActionState(createWorkspaceAction, initialState);
   const [isValidForm, setIsValidForm] = useState(false);
 
   useEffect(() => {
     if (formState.success) {
       setIsValidForm(false);
-      onSubmitSuccess?.();
     }
-  }, [formState.success, onSubmitSuccess]);
+  }, [formState.success]);
 
   return (
     <div className="flex flex-col text-sm text-gray-700">

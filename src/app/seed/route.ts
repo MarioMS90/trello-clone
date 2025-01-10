@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import {
   workspaces,
   userWorkspace,
@@ -7,10 +7,9 @@ import {
   cards,
   comments,
 } from '@/lib/placeholder-data';
-import { DBClient } from '@/types/app-types';
 import { Database } from '@/types/database-types';
 
-async function seedWorkspaces(supabase: DBClient) {
+async function seedWorkspaces(supabase: SupabaseClient<Database>) {
   await supabase.from('workspace').delete().neq('id', '00000000-0000-0000-0000-000000000000');
   const { data, error } = await supabase.from('workspace').upsert(workspaces).select();
 
@@ -21,7 +20,7 @@ async function seedWorkspaces(supabase: DBClient) {
   return data;
 }
 
-async function seedUserWorkspaces(supabase: DBClient) {
+async function seedUserWorkspaces(supabase: SupabaseClient<Database>) {
   const { data, error } = await supabase.from('user_workspace').upsert(userWorkspace).select();
 
   if (error) {
@@ -31,7 +30,7 @@ async function seedUserWorkspaces(supabase: DBClient) {
   return data;
 }
 
-async function seedBoards(supabase: DBClient) {
+async function seedBoards(supabase: SupabaseClient<Database>) {
   const { data, error } = await supabase.from('board').upsert(boards).select();
 
   if (error) {
@@ -41,7 +40,7 @@ async function seedBoards(supabase: DBClient) {
   return data;
 }
 
-async function seedCardLists(supabase: DBClient) {
+async function seedCardLists(supabase: SupabaseClient<Database>) {
   const { data, error } = await supabase.from('card_list').upsert(cardLists).select();
 
   if (error) {
@@ -51,7 +50,7 @@ async function seedCardLists(supabase: DBClient) {
   return data;
 }
 
-async function seedCards(supabase: DBClient) {
+async function seedCards(supabase: SupabaseClient<Database>) {
   const { data, error } = await supabase.from('card').upsert(cards).select();
 
   if (error) {
@@ -61,7 +60,7 @@ async function seedCards(supabase: DBClient) {
   return data;
 }
 
-async function seedComments(supabase: DBClient) {
+async function seedComments(supabase: SupabaseClient<Database>) {
   const { data, error } = await supabase.from('comment').upsert(comments).select();
 
   if (error) {

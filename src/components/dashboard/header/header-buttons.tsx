@@ -1,9 +1,8 @@
 'use client';
 
-import { useState } from 'react';
 import { Board, UserWorkspace } from '@/types/app-types';
 import Link from 'next/link';
-import { updateBoardAction } from '@/lib/actions';
+import { updateEntityAction } from '@/lib/actions';
 import { useOptimisticMutation } from '@/hooks/useOptimisticMutation';
 import Popover from '@/components/ui/popover';
 import ArrowDownIcon from '@/components/icons/arrow-down';
@@ -18,11 +17,10 @@ export default function HeaderButtons({
   workspaces: UserWorkspace[];
   starredBoards: Board[];
 }) {
-  const [selectedButton, setSelectedButton] = useState<string | null>(null);
   const { optimisticList: optimisticBoards, optimisticUpdate } = useOptimisticMutation(
     starredBoards,
     {
-      updateAction: updateBoardAction,
+      updateAction: entityData => updateEntityAction('board', entityData),
     },
   );
 
@@ -87,9 +85,7 @@ export default function HeaderButtons({
     {
       id: 'create-board',
       text: 'Create board',
-      popoverContent: (
-        <CreateBoardForm workspaces={workspaces} onSubmitSuccess={() => setSelectedButton(null)} />
-      ),
+      popoverContent: <CreateBoardForm workspaces={workspaces} />,
       triggerClassName: `font-medium bg-white bg-opacity-20 px-3 py-1.5 text-white hover:bg-opacity-30`,
     },
   ];
@@ -97,12 +93,7 @@ export default function HeaderButtons({
   return (
     <>
       {buttons.map(({ id, text, popoverContent, triggerClassName }) => (
-        <Popover
-          key={id}
-          triggerClassName={triggerClassName}
-          triggerContent={text}
-          open={selectedButton === id}
-          onOpenChange={isOpen => isOpen && setSelectedButton(id)}>
+        <Popover key={id} triggerClassName={triggerClassName} triggerContent={text}>
           {popoverContent}
         </Popover>
       ))}

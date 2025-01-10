@@ -1,7 +1,8 @@
 'use server';
 
-import { ActionState, Board, initialState, SubsetWithId, Workspace } from '@/types/app-types';
+import { ActionState, initialState } from '@/types/app-types';
 import { CreateBoardSchema, CreateWorkspaceSchema } from '@/schemas/workspace-schemas';
+import { PublicSchema, TablesUpdate } from '@/types/database-types';
 import { createClient } from './supabase/server';
 import { revalidateDashboard } from './server-utils';
 
@@ -98,44 +99,31 @@ export async function globalSearchAction(term: string) {
   return supabase.rpc('search_workspaces_boards_cards', { search_term: term });
 }
 
-export const updateWorkspaceAction = async (workspace: SubsetWithId<Workspace>) => {
+export async function updateEntityAction<TableName extends keyof PublicSchema['Tables']>(
+  relation: TableName,
+  entityData: TablesUpdate<TableName> & { id: string },
+) {
   const supabase = await createClient();
-  const { error } = await supabase.from('workspace').update(workspace).eq('id', workspace.id);
+
+  const { error } = await supabase
+    .from(relation as keyof PublicSchema['Tables'])
+    .update(entityData)
+    .eq('id', entityData.id);
 
   if (error) {
     throw error;
   }
 
   revalidateDashboard();
-};
+}
 
-export const deleteWorkspaceAction = async (workspaceId: string) => {
-  const supabase = await createClient();
-  const { error } = await supabase.from('workspace').delete().eq('id', workspaceId);
-
-  if (error) {
-    throw error;
-  }
-
-  revalidateDashboard();
-};
-
-export const updateBoardAction = async (board: SubsetWithId<Board>) => {
+export async function deleteEntityAction<TableName extends keyof PublicSchema['Tables']>(
+  relation: TableName,
+  entityId: string,
+) {
   const supabase = await createClient();
 
-  const { error } = await supabase.from('board').update(board).eq('id', board.id);
-
-  if (error) {
-    throw error;
-  }
-
-  revalidateDashboard();
-};
-
-export async function deleteBoardAction(boardId: string) {
-  const supabase = await createClient();
-
-  const { error } = await supabase.from('board').delete().eq('id', boardId);
+  const { error } = await supabase.from(relation).delete().eq('id', entityId);
 
   if (error) {
     throw error;

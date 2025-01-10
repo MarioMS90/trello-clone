@@ -22,15 +22,8 @@ export default function Popover({
   addCloseButton?: boolean;
 }) {
   const [isOpen, setIsOpen] = useState(open);
-  const clickAwayRef = useClickAway<HTMLDialogElement>(event => {
-    const target = event.target as HTMLElement;
-
-    if (
-      !target ||
-      (!target.closest('.popover-wrapper') && !target.classList.contains('close-popover'))
-    ) {
-      handleOpenChange(false);
-    }
+  const clickAwayRef = useClickAway<HTMLDialogElement>(() => {
+    handleOpenChange(false);
   });
 
   const handleOpenChange = (state: boolean) => {

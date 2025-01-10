@@ -1,12 +1,7 @@
-'use client';
-
-import { useState } from 'react';
 import Popover from '../ui/popover';
 import { CreateBoardForm, CreateWorkspaceForm } from './create-forms';
 
 export function CreateWorkspacePopover() {
-  const [popoverOpen, setPopoverOpen] = useState(false);
-
   return (
     <div className="inline-block">
       <Popover
@@ -25,10 +20,8 @@ export function CreateWorkspacePopover() {
           hover:bg-gray-300 
         "
         triggerContent="Create a new workspace"
-        open={popoverOpen}
-        onOpenChange={setPopoverOpen}
         addCloseButton>
-        <CreateWorkspaceForm onSubmitSuccess={() => setPopoverOpen(false)} />
+        <CreateWorkspaceForm />
       </Popover>
     </div>
   );
@@ -43,8 +36,6 @@ export function CreateBoardPopover({
   triggerClassName?: string;
   buttonText?: React.ReactNode;
 }) {
-  const [popoverOpen, setPopoverOpen] = useState(false);
-
   return (
     <div className="inline-block">
       <Popover
@@ -66,10 +57,8 @@ export function CreateBoardPopover({
           `
         }
         triggerContent={buttonText || 'Create a new board'}
-        open={popoverOpen}
-        onOpenChange={setPopoverOpen}
         addCloseButton>
-        <CreateBoardForm workspaceId={workspaceId} onSubmitSuccess={() => setPopoverOpen(false)} />
+        <CreateBoardForm workspaceId={workspaceId} />
       </Popover>
     </div>
   );

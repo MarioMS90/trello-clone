@@ -43,7 +43,7 @@ export function useOptimisticMutation<T extends { id: string }>(
     setOptimisticElements({ action: Action.Update, element });
 
     try {
-      await updateAction(element);
+      updateAction(element);
     } catch (error) {
       // TODO: Show error with a toast
       alert('An error occurred while updating the element');
@@ -58,7 +58,7 @@ export function useOptimisticMutation<T extends { id: string }>(
     setOptimisticElements({ action: Action.Delete, element });
 
     try {
-      await deleteAction(element.id);
+      deleteAction(element.id);
     } catch (error) {
       // TODO: Show error with a toast
       alert('An error occurred while deleting the element');

@@ -9,28 +9,25 @@ import SettingsIcon from '@/components/icons/settings';
 import UserIcon from '@/components/icons/user';
 import Popover from '@/components/ui/popover';
 import WorkspaceBadge from '@/components/ui/workspace-logo';
-import { deleteWorkspaceAction, updateWorkspaceAction } from '@/lib/actions';
+import { deleteEntityAction, updateEntityAction } from '@/lib/actions';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 
 export function WorkspaceList({ workspaces }: { workspaces: UserWorkspace[] }) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [selectedButton, setSelectedButton] = useState<string | null>(null);
   const [editingWorkspaceId, setEditingWorkspaceId] = useState<string | null>(null);
   const {
     optimisticList: optimisticWorkspaces,
-    isPending,
     optimisticUpdate,
     optimisticDelete,
   } = useOptimisticMutation(workspaces, {
-    updateAction: updateWorkspaceAction,
-    deleteAction: deleteWorkspaceAction,
+    updateAction: entityData => updateEntityAction('workspace', entityData),
+    deleteAction: entityId => deleteEntityAction('workspace', entityId),
   });
 
   useEffect(() => {
     if (editingWorkspaceId && inputRef.current) {
       inputRef.current.select();
-      setSelectedButton(null);
     }
   }, [editingWorkspaceId]);
 
@@ -44,7 +41,7 @@ export function WorkspaceList({ workspaces }: { workspaces: UserWorkspace[] }) {
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-3">
               <WorkspaceBadge workspaceName={workspace.name} />
-              {editingWorkspaceId === workspace.id && !isPending ? (
+              {editingWorkspaceId === workspace.id ? (
                 <input
                   type="text"
                   className="w-48 rounded-lg border-none p-2 font-bold text-primary outline-offset-0 outline-secondary"
@@ -81,9 +78,7 @@ export function WorkspaceList({ workspaces }: { workspaces: UserWorkspace[] }) {
                     </>
                   }
                   triggerClassName={btnClassName}
-                  popoverClassName="px-0 [&]:w-48"
-                  open={selectedButton === workspace.id}
-                  onOpenChange={isOpen => isOpen && setSelectedButton(workspace.id)}>
+                  popoverClassName="px-0 [&]:w-48">
                   <ul className="text-sm [&>li>button:hover]:bg-gray-200 [&>li>button]:w-full [&>li>button]:px-3 [&>li>button]:py-2 [&>li>button]:text-left">
                     <li>
                       <button

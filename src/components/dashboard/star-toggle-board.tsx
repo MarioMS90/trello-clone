@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Board } from '@/types/app-types';
-import { updateBoardAction } from '@/lib/actions';
+import { updateEntityAction } from '@/lib/actions';
 import StarIcon from '../icons/star';
 import StarFillIcon from '../icons/star-fill';
 
@@ -28,7 +28,7 @@ export function StarToggleBoard({
 
     if (board) {
       try {
-        await updateBoardAction({ id: board.id, starred: !isStarred });
+        updateEntityAction('board', { id: board.id, starred: !isStarred });
       } catch (error) {
         // TODO: Show error with a toast
         alert('An error occurred while updating the element');

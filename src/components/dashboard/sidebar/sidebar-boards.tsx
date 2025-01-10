@@ -4,7 +4,7 @@ import Link from 'next/link';
 import clsx from 'clsx';
 import { Board } from '@/types/app-types';
 import { useEffect, useRef, useState } from 'react';
-import { deleteBoardAction, updateBoardAction } from '@/lib/actions';
+import { deleteEntityAction, updateEntityAction } from '@/lib/actions';
 import { useOptimisticMutation } from '@/hooks/useOptimisticMutation';
 import { StarToggleBoard } from '../star-toggle-board';
 import DotsIcon from '../../icons/dots';
@@ -17,23 +17,22 @@ export function SidebarBoards({
   boards: Board[];
   currentBoardId?: string;
 }) {
+  const [selectedPopover, setSelectedPopover] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const [selectedButton, setSelectedButton] = useState<string | null>(null);
   const [editingBoardId, setEditingBoardId] = useState<string | null>(null);
   const {
     optimisticList: optimisticBoards,
-    isPending,
     optimisticUpdate,
     optimisticDelete,
   } = useOptimisticMutation(boards, {
-    updateAction: updateBoardAction,
-    deleteAction: deleteBoardAction,
+    updateAction: entityData => updateEntityAction('board', entityData),
+    deleteAction: entityId => deleteEntityAction('board', entityId),
   });
 
   useEffect(() => {
     if (editingBoardId && inputRef.current) {
       inputRef.current.select();
-      setSelectedButton(null);
+      setSelectedPopover(null);
     }
   }, [editingBoardId]);
 
@@ -41,7 +40,7 @@ export function SidebarBoards({
     <ul>
       {optimisticBoards.map(board => (
         <li className="group relative" key={board.id}>
-          {editingBoardId === board.id && !isPending ? (
+          {editingBoardId === board.id ? (
             <div className="pl-4 pr-[70px]">
               <input
                 type="text"
@@ -52,7 +51,7 @@ export function SidebarBoards({
                 onBlur={e => {
                   const newName = e.target.value.trim();
                   if (newName && board.name !== newName) {
-                    optimisticUpdate({ ...board, name: newName });
+                    optimisticUpdate({ id: board.id, name: newName });
                   }
                   setEditingBoardId(null);
                 }}
@@ -74,8 +73,8 @@ export function SidebarBoards({
                   triggerContent={<DotsIcon height={16} />}
                   triggerClassName="[&]:p-1"
                   popoverClassName="px-0 [&]:w-40"
-                  open={selectedButton === board.id}
-                  onOpenChange={isOpen => isOpen && setSelectedButton(board.id)}>
+                  open={selectedPopover === board.id}
+                  onOpenChange={isOpen => isOpen && setSelectedPopover(board.id)}>
                   <ul className="text-sm [&>li>button:hover]:bg-gray-200 [&>li>button]:w-full [&>li>button]:px-3 [&>li>button]:py-2 [&>li>button]:text-left">
                     <li>
                       <button type="button" onClick={() => setEditingBoardId(board.id)}>

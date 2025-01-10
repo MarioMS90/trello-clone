@@ -33,7 +33,7 @@ const userWorkspace = [
 
 const boards = [
   {
-    id: crypto.randomUUID(),
+    id: '0e88de62-4c0a-4696-83d8-952fcde1dee4',
     name: 'My board',
     starred: true,
     workspace_id: workspaces[0].id,
