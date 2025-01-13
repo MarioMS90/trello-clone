@@ -1,4 +1,4 @@
-import { CardList, User, UserWorkspace } from '@/types/app-types';
+import { TColumn, User, UserWorkspace } from '@/types/app-types';
 import { createClient } from '@/lib/supabase/server';
 
 export async function fetchUser(): Promise<User> {
@@ -49,11 +49,11 @@ export async function fetchWorkspaces(): Promise<UserWorkspace[]> {
   return workspaces;
 }
 
-export async function fetchCardLists(boardId: string): Promise<CardList[]> {
+export async function fetchColumns(boardId: string): Promise<TColumn[]> {
   const supabase = await createClient();
 
   const { data, error } = await supabase
-    .from('card_list')
+    .from('board_column')
     .select(
       ` 
       *,

@@ -4,7 +4,7 @@ export type CardSearchResult = {
   name: string;
   workspace: string;
   board: string;
-  card_list: string;
+  column: string;
 };
 
 export type BoardSearchResult = {

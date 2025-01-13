@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { Suspense } from 'react';
-import { CardListsSkeleton } from '@/components/ui/skeletons';
+import { ColumnsSkeleton } from '@/components/ui/skeletons';
 import Board from '@/components/dashboard/boards/board';
 
 export const metadata: Metadata = {
@@ -11,7 +11,7 @@ export default async function BoardPage({ params }: { params: Promise<{ id: stri
   const { id: boardId } = await params;
 
   return (
-    <Suspense fallback={<CardListsSkeleton />}>
+    <Suspense fallback={<ColumnsSkeleton />}>
       <Board boardId={boardId} />
     </Suspense>
   );

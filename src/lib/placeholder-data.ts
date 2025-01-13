@@ -69,7 +69,7 @@ const boards = [
   },
 ];
 
-const cardLists = [
+const columns = [
   {
     id: crypto.randomUUID(),
     name: 'To do',
@@ -94,6 +94,38 @@ const cardLists = [
     board_id: boards[3].id,
     rank: 'a',
   },
+
+  // To remove
+  {
+    id: crypto.randomUUID(),
+    name: 'Test 1',
+    board_id: boards[0].id,
+    rank: 'd',
+  },
+  {
+    id: crypto.randomUUID(),
+    name: 'Test 2',
+    board_id: boards[0].id,
+    rank: 'e',
+  },
+  {
+    id: crypto.randomUUID(),
+    name: 'Test 3',
+    board_id: boards[0].id,
+    rank: 'f',
+  },
+  {
+    id: crypto.randomUUID(),
+    name: 'Test 5',
+    board_id: boards[0].id,
+    rank: 'g',
+  },
+  {
+    id: crypto.randomUUID(),
+    name: 'Test 6',
+    board_id: boards[0].id,
+    rank: 'h',
+  },
 ];
 
 const cards = [
@@ -101,28 +133,28 @@ const cards = [
     id: crypto.randomUUID(),
     name: 'Card 1',
     description: 'This is the first card',
-    card_list_id: cardLists[0].id,
+    board_column_id: columns[0].id,
     rank: 'a',
   },
   {
     id: crypto.randomUUID(),
     name: 'Card 2',
     description: 'This is the second card',
-    card_list_id: cardLists[0].id,
+    board_column_id: columns[0].id,
     rank: 'b',
   },
   {
     id: crypto.randomUUID(),
     name: 'Mario',
     description: 'This is the third card',
-    card_list_id: cardLists[0].id,
+    board_column_id: columns[0].id,
     rank: 'c',
   },
   {
     id: crypto.randomUUID(),
     name: 'Card 1',
     description: 'This is the first card in progress',
-    card_list_id: cardLists[1].id,
+    board_column_id: columns[1].id,
     rank: 'a',
   },
 ];
@@ -142,4 +174,4 @@ const comments = [
   },
 ];
 
-export { workspaces, userWorkspace, boards, cardLists, cards, comments };
+export { workspaces, userWorkspace, boards, columns, cards, comments };

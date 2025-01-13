@@ -1,5 +1,5 @@
 import { WorkspaceSidebar } from '@/components/dashboard/sidebar/sidebars';
-import { getWorkspace, getWorkspaceIdFromBoard } from '@/lib/server-utils';
+import { getWorkspace, getWorkspaceIdFromBoard } from '@/lib/utils/server-utils';
 import { notFound } from 'next/navigation';
 
 export default async function SidebarPage({ params }: { params: Promise<{ id: string }> }) {

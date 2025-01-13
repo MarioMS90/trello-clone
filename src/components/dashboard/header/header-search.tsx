@@ -201,14 +201,14 @@ const generateSearchResult = <T extends SearchResult['kind']>(
   const searchResultRenderers: {
     [K in SearchResult['kind']]: (elem: Extract<SearchResult, { kind: K }>) => JSX.Element;
   } = {
-    card: ({ id, name, board, card_list }) => (
+    card: ({ id, name, board, column }) => (
       <Link className="block hover:bg-gray-200" href={`/cards/${id}`}>
         <div className="flex items-center gap-2 px-4 py-1">
           <CardIcon height={19} />
           <div>
             <h3 className="text-sm leading-4">{name}</h3>
             <p className="text-[11px] text-gray-500">
-              {board}: {card_list}
+              {board}: {column}
             </p>
           </div>
         </div>

@@ -8,7 +8,7 @@ import Popover from '@/components/ui/popover';
 import ArrowDownIcon from '@/components/icons/arrow-down';
 import WorkspaceBadge from '@/components/ui/workspace-logo';
 import { CreateBoardForm } from '@/components/dashboard/create-forms';
-import { StarToggleBoard } from '@/components/dashboard/star-toggle-board';
+import StarToggleBoard from '@/components/dashboard/star-toggle-board';
 
 export default function HeaderButtons({
   workspaces,

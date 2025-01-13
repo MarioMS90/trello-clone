@@ -6,7 +6,7 @@ import { updateEntityAction } from '@/lib/actions';
 import StarIcon from '../icons/star';
 import StarFillIcon from '../icons/star-fill';
 
-export function StarToggleBoard({
+export default function StarToggleBoard({
   className = '',
   starred,
   board,

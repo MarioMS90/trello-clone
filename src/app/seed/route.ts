@@ -3,7 +3,7 @@ import {
   workspaces,
   userWorkspace,
   boards,
-  cardLists,
+  columns,
   cards,
   comments,
 } from '@/lib/placeholder-data';
@@ -40,8 +40,8 @@ async function seedBoards(supabase: SupabaseClient<Database>) {
   return data;
 }
 
-async function seedCardLists(supabase: SupabaseClient<Database>) {
-  const { data, error } = await supabase.from('card_list').upsert(cardLists).select();
+async function seedColumns(supabase: SupabaseClient<Database>) {
+  const { data, error } = await supabase.from('board_column').upsert(columns).select();
 
   if (error) {
     throw new Error(error.message);
@@ -81,7 +81,7 @@ export async function GET() {
     await seedWorkspaces(supabase);
     await seedUserWorkspaces(supabase);
     await seedBoards(supabase);
-    await seedCardLists(supabase);
+    await seedColumns(supabase);
     await seedCards(supabase);
     await seedComments(supabase);
 

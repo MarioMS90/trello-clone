@@ -6,11 +6,11 @@ import { Board } from '@/types/app-types';
 import { useEffect, useRef, useState } from 'react';
 import { deleteEntityAction, updateEntityAction } from '@/lib/actions';
 import { useOptimisticMutation } from '@/hooks/useOptimisticMutation';
-import { StarToggleBoard } from '../star-toggle-board';
+import StarToggleBoard from '../star-toggle-board';
 import DotsIcon from '../../icons/dots';
 import Popover from '../../ui/popover';
 
-export function SidebarBoards({
+export default function SidebarBoards({
   boards,
   currentBoardId,
 }: {

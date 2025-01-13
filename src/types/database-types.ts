@@ -35,42 +35,7 @@ export type Database = {
           },
         ];
       };
-      card: {
-        Row: {
-          card_list_id: string;
-          created_at: string;
-          description: string;
-          id: string;
-          name: string;
-          rank: string | null;
-        };
-        Insert: {
-          card_list_id?: string;
-          created_at?: string;
-          description: string;
-          id?: string;
-          name: string;
-          rank?: string | null;
-        };
-        Update: {
-          card_list_id?: string;
-          created_at?: string;
-          description?: string;
-          id?: string;
-          name?: string;
-          rank?: string | null;
-        };
-        Relationships: [
-          {
-            foreignKeyName: 'task_task_list_id_fkey';
-            columns: ['card_list_id'];
-            isOneToOne: false;
-            referencedRelation: 'card_list';
-            referencedColumns: ['id'];
-          },
-        ];
-      };
-      card_list: {
+      board_column: {
         Row: {
           board_id: string;
           created_at: string;
@@ -98,6 +63,41 @@ export type Database = {
             columns: ['board_id'];
             isOneToOne: false;
             referencedRelation: 'board';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      card: {
+        Row: {
+          board_column_id: string;
+          created_at: string;
+          description: string;
+          id: string;
+          name: string;
+          rank: string | null;
+        };
+        Insert: {
+          board_column_id?: string;
+          created_at?: string;
+          description: string;
+          id?: string;
+          name: string;
+          rank?: string | null;
+        };
+        Update: {
+          board_column_id?: string;
+          created_at?: string;
+          description?: string;
+          id?: string;
+          name?: string;
+          rank?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'card_board_column_id_fkey';
+            columns: ['board_column_id'];
+            isOneToOne: false;
+            referencedRelation: 'board_column';
             referencedColumns: ['id'];
           },
         ];
@@ -234,7 +234,7 @@ export type Database = {
           name: string;
           workspace: string;
           board: string;
-          card_list: string;
+          column: string;
         }[];
       };
       user_has_workspace_access: {
@@ -254,7 +254,7 @@ export type Database = {
   };
 };
 
-export type PublicSchema = Database[Extract<keyof Database, 'public'>];
+type PublicSchema = Database[Extract<keyof Database, 'public'>];
 
 export type Tables<
   PublicTableNameOrOptions extends

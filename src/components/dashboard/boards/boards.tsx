@@ -1,8 +1,8 @@
 import { Board } from '@/types/app-types';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getWorkspace, getStarredBoards } from '@/lib/server-utils';
-import { StarToggleBoard } from '@/components/dashboard/star-toggle-board';
+import { getWorkspace, getStarredBoards } from '@/lib/utils/server-utils';
+import StarToggleBoard from '@/components/dashboard/star-toggle-board';
 import { CreateBoardPopover } from '../popovers';
 import StarIcon from '../../icons/star';
 

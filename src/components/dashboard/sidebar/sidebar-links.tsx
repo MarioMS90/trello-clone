@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 import BoardsIcon from '../../icons/boards';
 import UserIcon from '../../icons/user';
 
-export function SidebarLinks({ workspace }: { workspace: UserWorkspace }) {
+export default function SidebarLinks({ workspace }: { workspace: UserWorkspace }) {
   const pathname = usePathname();
 
   const links = [

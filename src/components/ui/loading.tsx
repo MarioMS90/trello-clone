@@ -1,4 +1,4 @@
-import { SVGProps } from 'react';
+import { JSX, SVGProps } from 'react';
 
 export default function Loading({
   width = 24,

@@ -90,19 +90,19 @@ export function BoardsSkeleton() {
   );
 }
 
-export function CardListSkeleton({ className }: { className: string }) {
+export function ColumnSkeleton({ className }: { className: string }) {
   return (
     <div
       className={`${shimmer} w-[272px] rounded-xl bg-gray-200 p-2 text-sm text-primary ${className}`}></div>
   );
 }
 
-export function CardListsSkeleton() {
+export function ColumnsSkeleton() {
   return (
     <div className="h-[calc(100% - 8px)] flex gap-4">
-      <CardListSkeleton className="h-[350px]" />
-      <CardListSkeleton className="h-[200px]" />
-      <CardListSkeleton className="h-[150px]" />
+      <ColumnSkeleton className="h-[350px]" />
+      <ColumnSkeleton className="h-[200px]" />
+      <ColumnSkeleton className="h-[150px]" />
     </div>
   );
 }

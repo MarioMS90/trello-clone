@@ -6,11 +6,11 @@ import ArrowDownIcon from '@/components/icons/arrow-down';
 import WorkspaceBadge from '@/components/ui/workspace-logo';
 import PlusIcon from '@/components/icons/plus';
 import { CreateBoardPopover } from '@/components/dashboard/popovers';
-import { SidebarLinks } from '@/components/dashboard/sidebar/sidebar-links';
-import { SidebarBoards } from '@/components/dashboard/sidebar/sidebar-boards';
+import SidebarLinks from '@/components/dashboard/sidebar/sidebar-links';
+import SidebarBoards from '@/components/dashboard/sidebar/sidebar-boards';
 import { useState } from 'react';
 import { UserWorkspace } from '@/types/app-types';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/utils';
 
 export function MainSidebar() {
   return (

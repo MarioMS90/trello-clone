@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { getWorkspace } from '@/lib/server-utils';
+import { getWorkspace } from '@/lib/utils/server-utils';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
@@ -15,5 +15,5 @@ export default async function MembersPage({ params }: { params: Promise<{ id: st
     notFound();
   }
 
-  return 'Members page, coming soon! 🚀';
+  return <div className="main-container">'Members page, coming soon! 🚀'</div>;
 }

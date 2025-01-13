@@ -2,7 +2,7 @@
 
 import { Board, UserWorkspace } from '@/types/app-types';
 import { revalidatePath } from 'next/cache';
-import { fetchWorkspaces } from './data';
+import { fetchWorkspaces } from '../data';
 
 export async function revalidateDashboard() {
   revalidatePath('/(dashboard)', 'layout');

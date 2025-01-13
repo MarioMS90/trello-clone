@@ -13,7 +13,7 @@ import { deleteEntityAction, updateEntityAction } from '@/lib/actions';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 
-export function WorkspaceList({ workspaces }: { workspaces: UserWorkspace[] }) {
+export default function WorkspaceList({ workspaces }: { workspaces: UserWorkspace[] }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [editingWorkspaceId, setEditingWorkspaceId] = useState<string | null>(null);
   const {

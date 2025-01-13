@@ -1,4 +1,4 @@
-import { Tables } from './database-types';
+import { Database, Tables } from './database-types';
 
 export type Subset<T> = {
   [K in keyof T]?: T[K];
@@ -7,6 +7,8 @@ export type Subset<T> = {
 export type SubsetWithId<T extends { id: string }> = {
   id: T['id'];
 } & Subset<T>;
+
+export type PublicSchema = Database[Extract<keyof Database, 'public'>];
 
 export type User = Tables<'user'>;
 
@@ -17,15 +19,15 @@ export type Workspace = Tables<'workspace'> & {
 };
 
 export type Board = Tables<'board'> & {
-  card_lists?: TCardList[];
+  columns?: TColumn[];
   workspaceName?: string;
 };
 
-export type TCardList = Tables<'card_list'> & {
-  cards?: Card[];
+export type TColumn = Tables<'board_column'> & {
+  cards?: TCard[];
 };
 
-export type Card = Tables<'card'> & {
+export type TCard = Tables<'card'> & {
   comments?: Comment[];
 };
 

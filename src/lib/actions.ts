@@ -1,10 +1,10 @@
 'use server';
 
-import { ActionState, initialState } from '@/types/app-types';
+import { ActionState, initialState, PublicSchema } from '@/types/app-types';
 import { CreateBoardSchema, CreateWorkspaceSchema } from '@/schemas/workspace-schemas';
-import { PublicSchema, TablesUpdate } from '@/types/database-types';
+import { TablesUpdate } from '@/types/database-types';
 import { createClient } from './supabase/server';
-import { revalidateDashboard } from './server-utils';
+import { revalidateDashboard } from './utils/server-utils';
 
 export async function createWorkspaceAction(
   prevState: ActionState,

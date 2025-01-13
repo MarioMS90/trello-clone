@@ -16,9 +16,7 @@ export default function DashboardLayout({
       </Suspense>
       <div className="flex flex-1">
         <Suspense fallback={<SidebarSkeleton />}>{sidebar}</Suspense>
-        <main className="flex-1 overflow-hidden bg-main-background p-5 pb-20 text-white">
-          {children}
-        </main>
+        <main className="flex-1 overflow-hidden bg-main-background text-white">{children}</main>
       </div>
     </div>
   );
