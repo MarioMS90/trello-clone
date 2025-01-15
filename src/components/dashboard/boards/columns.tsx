@@ -72,22 +72,18 @@ export default function Columns({ initialColumns }: { initialColumns: TColumn[] 
 
       const parsedLexoRank = genLexorank(destinationIndex);
 
-      setColumns(prev => {
-        const newColumns = prev.with(startIndex, {
-          ...columns[startIndex],
-          rank: parsedLexoRank.format(),
-        });
+      const updatedColumns = columns.with(startIndex, {
+        ...columns[startIndex],
+        rank: parsedLexoRank.format(),
+      });
 
-        const updatedItems = reorder({
-          list: newColumns,
+      setColumns(
+        reorder({
+          list: updatedColumns,
           startIndex,
           finishIndex: destinationIndex,
-        });
-
-        console.log('updatedItems', updatedItems);
-
-        return updatedItems;
-      });
+        }),
+      );
     },
     [columns, genLexorank],
   );
