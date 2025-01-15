@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@atlaskit/pragmatic-drag-and-drop": "^1.4.0",
+    "@atlaskit/pragmatic-drag-and-drop-hitbox": "^1.0.3",
     "@supabase/ssr": "0.5.2",
     "@supabase/supabase-js": "2.46.1",
     "@uidotdev/usehooks": "^2.4.1",

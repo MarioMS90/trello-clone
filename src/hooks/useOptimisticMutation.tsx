@@ -1,6 +1,6 @@
 'use client';
 
-import { SubsetWithId } from '@/types/app-types';
+import { SubsetWithId } from '@/types/types';
 import { useOptimistic, useTransition } from 'react';
 
 enum Action {

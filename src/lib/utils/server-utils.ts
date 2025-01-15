@@ -1,6 +1,6 @@
 'use server';
 
-import { Board, UserWorkspace } from '@/types/app-types';
+import { Board, UserWorkspace } from '@/types/types';
 import { revalidatePath } from 'next/cache';
 import { fetchWorkspaces } from '../data';
 

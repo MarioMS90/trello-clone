@@ -1,7 +1,7 @@
 'use client';
 
 import PencilIcon from '@/components/icons/pencil';
-import { TCard } from '@/types/app-types';
+import { TCard } from '@/types/types';
 
 export default function Card({ card }: { card: TCard }) {
   return (

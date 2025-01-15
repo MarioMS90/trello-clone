@@ -1,6 +1,6 @@
 'use server';
 
-import { ActionState, initialState, PublicSchema } from '@/types/app-types';
+import { ActionState, initialState, PublicSchema } from '@/types/types';
 import { CreateBoardSchema, CreateWorkspaceSchema } from '@/schemas/workspace-schemas';
 import { TablesUpdate } from '@/types/database-types';
 import { createClient } from './supabase/server';

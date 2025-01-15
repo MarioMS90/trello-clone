@@ -9,14 +9,14 @@ import { CreateBoardPopover } from '@/components/dashboard/popovers';
 import SidebarLinks from '@/components/dashboard/sidebar/sidebar-links';
 import SidebarBoards from '@/components/dashboard/sidebar/sidebar-boards';
 import { useState } from 'react';
-import { UserWorkspace } from '@/types/app-types';
+import { UserWorkspace } from '@/types/types';
 import { cn } from '@/lib/utils/utils';
 
 export function MainSidebar() {
   return (
     <nav
       className={`
-        w-[260px] 
+        min-w-[260px] 
         border-r 
         border-r-white 
         border-opacity-30 
@@ -45,8 +45,8 @@ export function WorkspaceSidebar({
 
   return (
     <nav
-      className={cn('relative w-[260px] bg-secondary-background text-white transition-all', {
-        'w-6': !sidebarExpanded,
+      className={cn('relative min-w-[260px] bg-secondary-background text-white transition-all', {
+        'min-w-6': !sidebarExpanded,
       })}>
       {!sidebarExpanded && (
         <button

@@ -99,7 +99,7 @@ export function ColumnSkeleton({ className }: { className: string }) {
 
 export function ColumnsSkeleton() {
   return (
-    <div className="h-[calc(100% - 8px)] flex gap-4">
+    <div className="h-[calc(100% - 8px)] flex gap-4 p-4">
       <ColumnSkeleton className="h-[350px]" />
       <ColumnSkeleton className="h-[200px]" />
       <ColumnSkeleton className="h-[150px]" />

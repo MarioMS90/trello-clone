@@ -1,3 +1,5 @@
+import { LexoRank } from 'lexorank';
+
 const workspaces = [
   {
     id: crypto.randomUUID(),
@@ -69,95 +71,67 @@ const boards = [
   },
 ];
 
-const columns = [
+const columnsData = [
   {
     id: crypto.randomUUID(),
     name: 'To do',
     board_id: boards[0].id,
-    rank: 'a',
   },
   {
     id: crypto.randomUUID(),
     name: 'In progress',
     board_id: boards[0].id,
-    rank: 'b',
   },
   {
     id: crypto.randomUUID(),
     name: 'Done',
     board_id: boards[0].id,
-    rank: 'c',
   },
   {
     id: crypto.randomUUID(),
     name: 'Not my card list',
     board_id: boards[3].id,
-    rank: 'a',
-  },
-
-  // To remove
-  {
-    id: crypto.randomUUID(),
-    name: 'Test 1',
-    board_id: boards[0].id,
-    rank: 'd',
-  },
-  {
-    id: crypto.randomUUID(),
-    name: 'Test 2',
-    board_id: boards[0].id,
-    rank: 'e',
-  },
-  {
-    id: crypto.randomUUID(),
-    name: 'Test 3',
-    board_id: boards[0].id,
-    rank: 'f',
-  },
-  {
-    id: crypto.randomUUID(),
-    name: 'Test 5',
-    board_id: boards[0].id,
-    rank: 'g',
-  },
-  {
-    id: crypto.randomUUID(),
-    name: 'Test 6',
-    board_id: boards[0].id,
-    rank: 'h',
   },
 ];
 
-const cards = [
+let currentRank = LexoRank.middle();
+const columns = columnsData.map(column => {
+  currentRank = currentRank.genNext();
+  return { ...column, rank: currentRank.format() };
+});
+
+const cardsData = [
   {
     id: crypto.randomUUID(),
     name: 'Card 1',
     description: 'This is the first card',
     board_column_id: columns[0].id,
-    rank: 'a',
   },
   {
     id: crypto.randomUUID(),
     name: 'Card 2',
     description: 'This is the second card',
     board_column_id: columns[0].id,
-    rank: 'b',
   },
   {
     id: crypto.randomUUID(),
     name: 'Mario',
     description: 'This is the third card',
     board_column_id: columns[0].id,
-    rank: 'c',
   },
   {
     id: crypto.randomUUID(),
     name: 'Card 1',
     description: 'This is the first card in progress',
     board_column_id: columns[1].id,
-    rank: 'a',
   },
 ];
+
+currentRank = LexoRank.middle();
+const cards = cardsData.map(card => {
+  currentRank = currentRank.genNext();
+  return { ...card, rank: currentRank.format() };
+});
 
 const comments = [
   {

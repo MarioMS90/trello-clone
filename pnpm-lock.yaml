@@ -4,9 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  react-is: 19.0.0-beta-26f2496093-20240514
-
 importers:
 
   .:
@@ -14,6 +11,9 @@ importers:
       '@atlaskit/pragmatic-drag-and-drop':
         specifier: ^1.4.0
         version: 1.4.0
+      '@atlaskit/pragmatic-drag-and-drop-hitbox':
+        specifier: ^1.0.3
+        version: 1.0.3
       '@supabase/ssr':
         specifier: 0.5.2
         version: 0.5.2(@supabase/supabase-js@2.46.1)
@@ -108,6 +108,9 @@ packages:
   '@alloc/quick-lru@5.2.0':
     resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
     engines: {node: '>=10'}
+
+  '@atlaskit/pragmatic-drag-and-drop-hitbox@1.0.3':
+    resolution: {integrity: sha512-/Sbu/HqN2VGLYBhnsG7SbRNg98XKkbF6L7XDdBi+izRybfaK1FeMfodPpm/xnBHPJzwYMdkE0qtLyv6afhgMUA==}
 
   '@atlaskit/pragmatic-drag-and-drop@1.4.0':
     resolution: {integrity: sha512-qRY3PTJIcxfl/QB8Gwswz+BRvlmgAC5pB+J2hL6dkIxgqAgVwOhAamMUKsrOcFU/axG2Q7RbNs1xfoLKDuhoPg==}
@@ -1642,8 +1645,8 @@ packages:
     peerDependencies:
       react: ^19.0.0
 
-  react-is@19.0.0-beta-26f2496093-20240514:
-    resolution: {integrity: sha512-w5VsWOdq06F29cxg6oQy+GcGbLEd7gFOkkN9BLHWNnPIUuIo86/rGYbReTdnx5PxkHggTiFGZI+9Zy2nbRyAkQ==}
+  react-is@16.13.1:
+    resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
   react@19.0.0:
     resolution: {integrity: sha512-V8AVnmPIICiWpGfm6GLzCR/W5FXLchHop40W4nXBmdlEceh16rCN8O8LNWm5bh5XUX91fh7KpA+W0TgMKmgTpQ==}
@@ -2006,6 +2009,11 @@ packages:
 snapshots:
 
   '@alloc/quick-lru@5.2.0': {}
+
+  '@atlaskit/pragmatic-drag-and-drop-hitbox@1.0.3':
+    dependencies:
+      '@atlaskit/pragmatic-drag-and-drop': 1.4.0
+      '@babel/runtime': 7.26.0
 
   '@atlaskit/pragmatic-drag-and-drop@1.4.0':
     dependencies:
@@ -3668,7 +3676,7 @@ snapshots:
     dependencies:
       loose-envify: 1.4.0
       object-assign: 4.1.1
-      react-is: 19.0.0-beta-26f2496093-20240514
+      react-is: 16.13.1
 
   punycode@2.3.1: {}
 
@@ -3681,7 +3689,7 @@ snapshots:
       react: 19.0.0
       scheduler: 0.25.0
 
-  react-is@19.0.0-beta-26f2496093-20240514: {}
+  react-is@16.13.1: {}
 
   react@19.0.0: {}
 

@@ -33,11 +33,6 @@ export type TCard = Tables<'card'> & {
 
 export type Comment = Tables<'comment'>;
 
-export enum Role {
-  Admin = 'admin',
-  Member = 'member',
-}
-
 export type ActionState = {
   success?: boolean;
   errors?: {

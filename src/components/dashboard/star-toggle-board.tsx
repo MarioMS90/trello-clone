@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Board } from '@/types/app-types';
+import { Board } from '@/types/types';
 import { updateEntityAction } from '@/lib/actions';
 import StarIcon from '../icons/star';
 import StarFillIcon from '../icons/star-fill';

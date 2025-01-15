@@ -10,13 +10,13 @@ export default function DashboardLayout({
   sidebar: React.ReactNode;
 }>) {
   return (
-    <div className="flex h-dvh w-screen flex-col">
+    <div className="flex h-dvh flex-col">
       <Suspense fallback={<HeaderSkeleton />}>
         <Header />
       </Suspense>
-      <div className="flex flex-1">
+      <div className="flex grow">
         <Suspense fallback={<SidebarSkeleton />}>{sidebar}</Suspense>
-        <main className="flex-1 overflow-hidden bg-main-background text-white">{children}</main>
+        <main className="grow bg-main-background text-white">{children}</main>
       </div>
     </div>
   );

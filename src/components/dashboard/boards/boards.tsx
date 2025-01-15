@@ -1,4 +1,4 @@
-import { Board } from '@/types/app-types';
+import { Board } from '@/types/types';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getWorkspace, getStarredBoards } from '@/lib/utils/server-utils';

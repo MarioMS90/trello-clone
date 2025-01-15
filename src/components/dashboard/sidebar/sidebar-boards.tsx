@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import clsx from 'clsx';
-import { Board } from '@/types/app-types';
+import { Board } from '@/types/types';
 import { useEffect, useRef, useState } from 'react';
 import { deleteEntityAction, updateEntityAction } from '@/lib/actions';
 import { useOptimisticMutation } from '@/hooks/useOptimisticMutation';

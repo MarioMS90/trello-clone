@@ -1,6 +1,6 @@
 'use client';
 
-import { Board, UserWorkspace } from '@/types/app-types';
+import { Board, UserWorkspace } from '@/types/types';
 import Link from 'next/link';
 import { updateEntityAction } from '@/lib/actions';
 import { useOptimisticMutation } from '@/hooks/useOptimisticMutation';

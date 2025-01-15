@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import clsx from 'clsx';
-import { UserWorkspace } from '@/types/app-types';
+import { UserWorkspace } from '@/types/types';
 import { usePathname } from 'next/navigation';
 import BoardsIcon from '../../icons/boards';
 import UserIcon from '../../icons/user';

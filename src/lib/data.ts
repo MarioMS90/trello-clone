@@ -1,4 +1,4 @@
-import { TColumn, User, UserWorkspace } from '@/types/app-types';
+import { TColumn, User, UserWorkspace } from '@/types/types';
 import { createClient } from '@/lib/supabase/server';
 
 export async function fetchUser(): Promise<User> {

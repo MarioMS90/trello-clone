@@ -2,7 +2,7 @@
 
 import { useActionState, useEffect, useState } from 'react';
 import { createBoardAction, createWorkspaceAction } from '@/lib/actions';
-import { initialState, UserWorkspace } from '@/types/app-types';
+import { initialState, UserWorkspace } from '@/types/types';
 
 export function CreateBoardForm({
   workspaceId,

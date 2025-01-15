@@ -2,7 +2,7 @@
 
 import { CreateBoardPopover } from '@/components/dashboard/popovers';
 import { BoardList } from '@/components/dashboard/boards/boards';
-import { UserWorkspace } from '@/types/app-types';
+import { UserWorkspace } from '@/types/types';
 import { useOptimisticMutation } from '@/hooks/useOptimisticMutation';
 import BoardsIcon from '@/components/icons/boards';
 import SettingsIcon from '@/components/icons/settings';
