@@ -39,7 +39,8 @@ export default function HeaderButtons({
     </ul>
   );
 
-  const starredBoardsContent = optimisticBoards.some(({ starred }) => starred) ? (
+  const hasStarredBoards = optimisticBoards.some(({ starred }) => starred);
+  const starredBoardsContent = hasStarredBoards ? (
     <ul className="space-y-1">
       {optimisticBoards.map(({ id, name, workspaceName }) => (
         <li className="relative rounded-md px-2 py-1 hover:bg-gray-200" key={id}>

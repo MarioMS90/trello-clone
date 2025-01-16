@@ -15,7 +15,7 @@ import { preserveOffsetOnSource } from '@atlaskit/pragmatic-drag-and-drop/elemen
 import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
 import { attachClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
 import { isSafari } from '@/lib/utils/is-safari';
-import { DragTypeData, isColumnData } from '@/types/drag-types';
+import { TColumnData, isCardData, isColumnData } from '@/types/drag-types';
 import Card from './card';
 
 type State =
@@ -34,7 +34,7 @@ const stateStyles: {
 } = {
   idle: '',
   'is-dragging': 'opacity-40',
-  'is-dragging-leave': 'opacity-80 bg-secondary-background',
+  'is-dragging-leave': 'opacity-60 bg-secondary-background',
 };
 
 /**
@@ -72,7 +72,7 @@ export function Column({
     invariant(inner);
     invariant(outer);
 
-    const data: DragTypeData = { id: column.id, kind: 'column' };
+    const data: TColumnData = { id: column.id, type: 'column' };
 
     return combine(
       draggable({
@@ -115,7 +115,7 @@ export function Column({
             allowedEdges: ['left', 'right'],
           }),
         canDrop({ source }) {
-          return isColumnData(source.data) || isColumnData(source.data);
+          return isColumnData(source.data) || isCardData(source.data);
         },
         getIsSticky: () => true,
         onDragLeave({ source }) {

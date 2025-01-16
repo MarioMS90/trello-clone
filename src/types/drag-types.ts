@@ -1,20 +1,18 @@
 export type TColumnData = {
-  kind: 'column';
+  type: 'column';
   id: string;
 };
 
 export type TCardData = {
-  kind: 'card';
+  type: 'card';
   id: string;
   columnId: string;
 };
 
-export type DragTypeData = TColumnData | TCardData;
-
 export function isColumnData(value: Record<string, unknown>): value is TColumnData {
-  return value && value.kind === 'column';
+  return value && value.type === 'column';
 }
 
-export function isCardData(value: DragTypeData): value is TCardData {
-  return value && value.kind === 'card';
+export function isCardData(value: Record<string, unknown>): value is TCardData {
+  return value && value.type === 'card';
 }
