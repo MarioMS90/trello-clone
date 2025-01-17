@@ -6,11 +6,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function generateRank<T extends { rank: string }>(
-  list: T[],
-  startIndex: number,
-  destinationIndex: number,
-) {
+export function generateRank<T extends { rank: string }>(list: T[], destinationIndex: number) {
   if (destinationIndex === 0) {
     return LexoRank.parse(list[destinationIndex + 1].rank).genPrev();
   }
@@ -19,9 +15,7 @@ export function generateRank<T extends { rank: string }>(
     return LexoRank.parse(list[destinationIndex - 1].rank).genNext();
   }
 
-  const leftIndex = startIndex < destinationIndex ? destinationIndex : destinationIndex - 1;
-  const rightIndex = startIndex < destinationIndex ? destinationIndex + 1 : destinationIndex;
-  const leftRank = LexoRank.parse(list[leftIndex].rank);
-  const rightRank = LexoRank.parse(list[rightIndex].rank);
+  const leftRank = LexoRank.parse(list[destinationIndex - 1].rank);
+  const rightRank = LexoRank.parse(list[destinationIndex + 1].rank);
   return leftRank.between(rightRank);
 }

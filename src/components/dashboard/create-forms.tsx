@@ -2,14 +2,14 @@
 
 import { useActionState, useEffect, useState } from 'react';
 import { createBoardAction, createWorkspaceAction } from '@/lib/actions';
-import { initialState, UserWorkspace } from '@/types/types';
+import { initialState, TUserWorkspace } from '@/types/types';
 
 export function CreateBoardForm({
   workspaceId,
   workspaces,
 }: {
   workspaceId?: string;
-  workspaces?: UserWorkspace[];
+  workspaces?: TUserWorkspace[];
 }) {
   const createBoardWithId = createBoardAction.bind(null, workspaceId);
   const [formState, formAction, isPending] = useActionState(createBoardWithId, initialState);

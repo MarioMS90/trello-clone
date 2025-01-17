@@ -1,25 +1,25 @@
-export type CardSearchResult = {
+export type TCardSearchResult = {
   kind: 'card';
   id: string;
   name: string;
   workspace: string;
   board: string;
-  column: string;
+  list: string;
 };
 
-export type BoardSearchResult = {
+export type TBoardSearchResult = {
   kind: 'board';
   id: string;
   name: string;
   workspace: string;
 };
 
-export type WorkspaceSearchResult = {
+export type TWorkspaceSearchResult = {
   kind: 'workspace';
   id: string;
   name: string;
 };
 
-export type SearchResult = CardSearchResult | BoardSearchResult | WorkspaceSearchResult;
+export type TSearchResult = TCardSearchResult | TBoardSearchResult | TWorkspaceSearchResult;
 
-export type SearchResults = SearchResult[];
+export type TSearchResults = TSearchResult[];

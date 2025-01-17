@@ -1,6 +1,6 @@
 'use server';
 
-import { Board, UserWorkspace } from '@/types/types';
+import { TBoard, TUserWorkspace } from '@/types/types';
 import { revalidatePath } from 'next/cache';
 import { fetchWorkspaces } from '../data';
 
@@ -10,7 +10,7 @@ export async function revalidateDashboard() {
 
 export async function getWorkspace(
   workspaceId: string | undefined,
-): Promise<UserWorkspace | undefined> {
+): Promise<TUserWorkspace | undefined> {
   const workspaces = await fetchWorkspaces();
 
   const workspace = workspaces.find(_workspace => _workspace.id === workspaceId);
@@ -27,7 +27,7 @@ export async function getWorkspaceIdFromBoard(boardId: string): Promise<string |
   return board?.workspace_id;
 }
 
-export async function getStarredBoards(): Promise<Board[]> {
+export async function getStarredBoards(): Promise<TBoard[]> {
   const workspaces = await fetchWorkspaces();
 
   return workspaces.flatMap(workspace =>

@@ -71,7 +71,7 @@ const boards = [
   },
 ];
 
-const columnsData = [
+const boardListsData = [
   {
     id: crypto.randomUUID(),
     name: 'To do',
@@ -89,15 +89,45 @@ const columnsData = [
   },
   {
     id: crypto.randomUUID(),
+    name: 'test1',
+    board_id: boards[0].id,
+  },
+  {
+    id: crypto.randomUUID(),
+    name: 'test12',
+    board_id: boards[0].id,
+  },
+  {
+    id: crypto.randomUUID(),
+    name: 'test13',
+    board_id: boards[0].id,
+  },
+  {
+    id: crypto.randomUUID(),
+    name: 'test14',
+    board_id: boards[0].id,
+  },
+  {
+    id: crypto.randomUUID(),
+    name: 'test15',
+    board_id: boards[0].id,
+  },
+  {
+    id: crypto.randomUUID(),
+    name: 'test16',
+    board_id: boards[0].id,
+  },
+  {
+    id: crypto.randomUUID(),
     name: 'Not my card list',
     board_id: boards[3].id,
   },
 ];
 
 let currentRank = LexoRank.middle();
-const columns = columnsData.map(column => {
+const boardLists = boardListsData.map(list => {
   currentRank = currentRank.genNext();
-  return { ...column, rank: currentRank.format() };
+  return { ...list, rank: currentRank.format() };
 });
 
 const cardsData = [
@@ -105,25 +135,25 @@ const cardsData = [
     id: crypto.randomUUID(),
     name: 'Card 1',
     description: 'This is the first card',
-    board_column_id: columns[0].id,
+    board_list_id: boardLists[0].id,
   },
   {
     id: crypto.randomUUID(),
     name: 'Card 2',
     description: 'This is the second card',
-    board_column_id: columns[0].id,
+    board_list_id: boardLists[0].id,
   },
   {
     id: crypto.randomUUID(),
     name: 'Mario',
     description: 'This is the third card',
-    board_column_id: columns[0].id,
+    board_list_id: boardLists[0].id,
   },
   {
     id: crypto.randomUUID(),
     name: 'Card 1',
     description: 'This is the first card in progress',
-    board_column_id: columns[1].id,
+    board_list_id: boardLists[1].id,
   },
 ];
 
@@ -148,4 +178,4 @@ const comments = [
   },
 ];
 
-export { workspaces, userWorkspace, boards, columns, cards, comments };
+export { workspaces, userWorkspace, boards, boardLists, cards, comments };

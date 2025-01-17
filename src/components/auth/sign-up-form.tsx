@@ -1,6 +1,6 @@
 'use client';
 
-import { signUpAction, SignUpState } from '@/lib/auth-actions';
+import { signUpAction, TSignUpState } from '@/lib/auth-actions';
 import { useState, useActionState } from 'react';
 
 export default function SignUpForm() {
@@ -10,7 +10,7 @@ export default function SignUpForm() {
     password: '',
   });
   const [isGeneratedUser, setIsGeneratedUser] = useState(false);
-  const initialState: SignUpState = { message: null, errors: {} };
+  const initialState: TSignUpState = { message: null, errors: {} };
   const [state, formAction, isPending] = useActionState(signUpAction, initialState);
 
   const TOTAL_POKEMONS = 600;

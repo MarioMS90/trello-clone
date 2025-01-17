@@ -30,7 +30,7 @@ module.exports = {
     'react/require-default-props': 'off',
     '@typescript-eslint/no-use-before-define': 'off',
     'react/jsx-no-useless-fragment': 'off',
-    //'@typescript-eslint/no-unused-vars': 'off',
+    'prefer-arrow-callback': ['error', { allowNamedFunctions: true }],
     'no-alert': 'off',
   },
 };

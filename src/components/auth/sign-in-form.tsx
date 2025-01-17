@@ -1,10 +1,10 @@
 'use client';
 
-import { signInAction, SignInState } from '@/lib/auth-actions';
+import { signInAction, TSignInState } from '@/lib/auth-actions';
 import { useActionState } from 'react';
 
 export default function SignInForm() {
-  const initialState: SignInState = { error: false, message: '' };
+  const initialState: TSignInState = { error: false, message: '' };
   const [state, formAction, isPending] = useActionState(signInAction, initialState);
 
   return (

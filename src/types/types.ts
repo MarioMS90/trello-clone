@@ -1,39 +1,39 @@
 import { Database, Tables } from './database-types';
 
-export type Subset<T> = {
+export type TSubset<T> = {
   [K in keyof T]?: T[K];
 };
 
-export type SubsetWithId<T extends { id: string }> = {
+export type TSubsetWithId<T extends { id: string }> = {
   id: T['id'];
-} & Subset<T>;
+} & TSubset<T>;
 
-export type PublicSchema = Database[Extract<keyof Database, 'public'>];
+export type TPublicSchema = Database[Extract<keyof Database, 'public'>];
 
-export type User = Tables<'user'>;
+export type TUser = Tables<'user'>;
 
-export type UserWorkspace = Workspace & Pick<Tables<'user_workspace'>, 'role'>;
+export type TUserWorkspace = TWorkspace & Pick<Tables<'user_workspace'>, 'role'>;
 
-export type Workspace = Tables<'workspace'> & {
-  boards: Board[];
+export type TWorkspace = Tables<'workspace'> & {
+  boards: TBoard[];
 };
 
-export type Board = Tables<'board'> & {
-  columns?: TColumn[];
+export type TBoard = Tables<'board'> & {
+  lists?: TList[];
   workspaceName?: string;
 };
 
-export type TColumn = Tables<'board_column'> & {
+export type TList = Tables<'board_list'> & {
   cards?: TCard[];
 };
 
 export type TCard = Tables<'card'> & {
-  comments?: Comment[];
+  comments?: TComment[];
 };
 
-export type Comment = Tables<'comment'>;
+export type TComment = Tables<'comment'>;
 
-export type ActionState = {
+export type TActionState = {
   success?: boolean;
   errors?: {
     name?: string[];
@@ -41,4 +41,4 @@ export type ActionState = {
   message?: string | null;
 };
 
-export const initialState: ActionState = { success: false, message: null, errors: {} };
+export const initialState: TActionState = { success: false, message: null, errors: {} };

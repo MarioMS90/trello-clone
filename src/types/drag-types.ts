@@ -1,16 +1,16 @@
-export type TColumnData = {
-  type: 'column';
+export type TListData = {
+  type: 'list';
   id: string;
 };
 
 export type TCardData = {
   type: 'card';
   id: string;
-  columnId: string;
+  listId: string;
 };
 
-export function isColumnData(value: Record<string, unknown>): value is TColumnData {
-  return value && value.type === 'column';
+export function isListData(value: Record<string, unknown>): value is TListData {
+  return value && value.type === 'list';
 }
 
 export function isCardData(value: Record<string, unknown>): value is TCardData {

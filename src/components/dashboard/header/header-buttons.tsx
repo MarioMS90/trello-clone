@@ -1,6 +1,6 @@
 'use client';
 
-import { Board, UserWorkspace } from '@/types/types';
+import { TBoard, TUserWorkspace } from '@/types/types';
 import Link from 'next/link';
 import { updateEntityAction } from '@/lib/actions';
 import { useOptimisticMutation } from '@/hooks/useOptimisticMutation';
@@ -14,8 +14,8 @@ export default function HeaderButtons({
   workspaces,
   starredBoards,
 }: {
-  workspaces: UserWorkspace[];
-  starredBoards: Board[];
+  workspaces: TUserWorkspace[];
+  starredBoards: TBoard[];
 }) {
   const { optimisticList: optimisticBoards, optimisticUpdate } = useOptimisticMutation(
     starredBoards,

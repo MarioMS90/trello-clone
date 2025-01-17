@@ -2,12 +2,12 @@
 
 import Link from 'next/link';
 import clsx from 'clsx';
-import { UserWorkspace } from '@/types/types';
+import { TUserWorkspace } from '@/types/types';
 import { usePathname } from 'next/navigation';
 import BoardsIcon from '../../icons/boards';
 import UserIcon from '../../icons/user';
 
-export default function SidebarLinks({ workspace }: { workspace: UserWorkspace }) {
+export default function SidebarLinks({ workspace }: { workspace: TUserWorkspace }) {
   const pathname = usePathname();
 
   const links = [

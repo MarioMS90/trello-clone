@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { SignInUser, SignUpUser } from '@/schemas/auth-schemas';
 
-export type SignUpState = {
+export type TSignUpState = {
   errors: {
     name?: string[];
     email?: string[];
@@ -15,15 +15,15 @@ export type SignUpState = {
   message: string | null;
 };
 
-export type SignInState = {
+export type TSignInState = {
   error: boolean;
   message?: string | null;
 };
 
 export async function signInAction(
-  prevState: SignInState,
+  prevState: TSignInState,
   formData: FormData,
-): Promise<SignInState> {
+): Promise<TSignInState> {
   const validatedFields = SignInUser.safeParse({
     email: formData.get('email'),
     password: formData.get('password'),
@@ -56,9 +56,9 @@ export async function signInAction(
 }
 
 export async function signUpAction(
-  prevState: SignUpState,
+  prevState: TSignUpState,
   formData: FormData,
-): Promise<SignUpState> {
+): Promise<TSignUpState> {
   const validatedFields = SignUpUser.safeParse({
     name: formData.get('name'),
     email: formData.get('email'),

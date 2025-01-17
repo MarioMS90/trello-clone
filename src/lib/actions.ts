@@ -1,15 +1,15 @@
 'use server';
 
-import { ActionState, initialState, PublicSchema } from '@/types/types';
+import { TActionState, initialState, TPublicSchema } from '@/types/types';
 import { CreateBoardSchema, CreateWorkspaceSchema } from '@/schemas/workspace-schemas';
 import { TablesUpdate } from '@/types/database-types';
 import { createClient } from './supabase/server';
 import { revalidateDashboard } from './utils/server-utils';
 
 export async function createWorkspaceAction(
-  prevState: ActionState,
+  prevState: TActionState,
   formData: FormData,
-): Promise<ActionState> {
+): Promise<TActionState> {
   if (!formData) {
     return initialState;
   }
@@ -60,9 +60,9 @@ export async function createWorkspaceAction(
 
 export async function createBoardAction(
   workspaceIdParam: string | undefined,
-  prevState: ActionState,
+  prevState: TActionState,
   formData: FormData,
-): Promise<ActionState> {
+): Promise<TActionState> {
   if (!formData) {
     return initialState;
   }
@@ -99,14 +99,14 @@ export async function globalSearchAction(term: string) {
   return supabase.rpc('search_workspaces_boards_cards', { search_term: term });
 }
 
-export async function updateEntityAction<TableName extends keyof PublicSchema['Tables']>(
+export async function updateEntityAction<TableName extends keyof TPublicSchema['Tables']>(
   relation: TableName,
   entityData: TablesUpdate<TableName> & { id: string },
 ) {
   const supabase = await createClient();
 
   const { error } = await supabase
-    .from(relation as keyof PublicSchema['Tables'])
+    .from(relation as keyof TPublicSchema['Tables'])
     .update(entityData)
     .eq('id', entityData.id);
 
@@ -117,7 +117,7 @@ export async function updateEntityAction<TableName extends keyof PublicSchema['T
   revalidateDashboard();
 }
 
-export async function deleteEntityAction<TableName extends keyof PublicSchema['Tables']>(
+export async function deleteEntityAction<TableName extends keyof TPublicSchema['Tables']>(
   relation: TableName,
   entityId: string,
 ) {

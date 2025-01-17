@@ -2,7 +2,7 @@
 
 import { CreateBoardPopover } from '@/components/dashboard/popovers';
 import { BoardList } from '@/components/dashboard/boards/boards';
-import { UserWorkspace } from '@/types/types';
+import { TUserWorkspace } from '@/types/types';
 import { useOptimisticMutation } from '@/hooks/useOptimisticMutation';
 import BoardsIcon from '@/components/icons/boards';
 import SettingsIcon from '@/components/icons/settings';
@@ -13,7 +13,7 @@ import { deleteEntityAction, updateEntityAction } from '@/lib/actions';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 
-export default function WorkspaceList({ workspaces }: { workspaces: UserWorkspace[] }) {
+export default function WorkspaceList({ workspaces }: { workspaces: TUserWorkspace[] }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [editingWorkspaceId, setEditingWorkspaceId] = useState<string | null>(null);
   const {
@@ -44,8 +44,7 @@ export default function WorkspaceList({ workspaces }: { workspaces: UserWorkspac
               {editingWorkspaceId === workspace.id ? (
                 <input
                   type="text"
-                  className="w-48 rounded-lg border-none p-2 font-bold text-primary outline-offset-0 outline-secondary"
-                  style={{ height: '32px' }}
+                  className="w-48 rounded-lg border-none px-2 py-1 font-bold text-primary outline-offset-0 outline-secondary"
                   defaultValue={workspace.name}
                   ref={inputRef}
                   onBlur={e => {
@@ -56,7 +55,10 @@ export default function WorkspaceList({ workspaces }: { workspaces: UserWorkspac
 
                     setEditingWorkspaceId(null);
                   }}
-                  onKeyUp={e => e.key === 'Enter' && e.currentTarget.blur()}
+                  onKeyUp={e => {
+                    if (e.key === 'Enter') e.currentTarget.blur();
+                    if (e.key === 'Escape') setEditingWorkspaceId(null);
+                  }}
                 />
               ) : (
                 <button

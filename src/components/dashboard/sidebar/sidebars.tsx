@@ -9,7 +9,7 @@ import { CreateBoardPopover } from '@/components/dashboard/popovers';
 import SidebarLinks from '@/components/dashboard/sidebar/sidebar-links';
 import SidebarBoards from '@/components/dashboard/sidebar/sidebar-boards';
 import { useState } from 'react';
-import { UserWorkspace } from '@/types/types';
+import { TUserWorkspace } from '@/types/types';
 import { cn } from '@/lib/utils/utils';
 
 export function MainSidebar() {
@@ -38,7 +38,7 @@ export function WorkspaceSidebar({
   workspace,
   boardId,
 }: {
-  workspace: UserWorkspace;
+  workspace: TUserWorkspace;
   boardId?: string;
 }) {
   const [sidebarExpanded, setSidebarExpanded] = useState(true);

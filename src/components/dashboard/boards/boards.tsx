@@ -1,4 +1,4 @@
-import { Board } from '@/types/types';
+import { TBoard } from '@/types/types';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getWorkspace, getStarredBoards } from '@/lib/utils/server-utils';
@@ -27,7 +27,7 @@ export function BoardList({
   extraItem,
 }: {
   className?: string;
-  boards: Board[];
+  boards: TBoard[];
   extraItem?: React.ReactNode;
 }) {
   return (
@@ -53,7 +53,7 @@ export function BoardList({
 
             <StarToggleBoard
               className="bottom-3 top-[unset] transform-none"
-              board={{ id, name, starred } as Board}
+              board={{ id, name, starred } as TBoard}
               starred={starred}
             />
           </li>

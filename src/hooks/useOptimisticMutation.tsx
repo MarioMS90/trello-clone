@@ -1,6 +1,6 @@
 'use client';
 
-import { SubsetWithId } from '@/types/types';
+import { TSubsetWithId } from '@/types/types';
 import { useOptimistic, useTransition } from 'react';
 
 enum Action {
@@ -14,14 +14,14 @@ export function useOptimisticMutation<T extends { id: string }>(
     updateAction,
     deleteAction,
   }: {
-    updateAction?: (element: SubsetWithId<T>) => void;
+    updateAction?: (element: TSubsetWithId<T>) => void;
     deleteAction?: (id: string) => void;
   },
 ) {
   const [isPending, startTransition] = useTransition();
   const [optimisticList, setOptimisticElements] = useOptimistic<
     T[],
-    { action: Action; element: SubsetWithId<T> }
+    { action: Action; element: TSubsetWithId<T> }
   >(elementList, (elements, { action, element }) => {
     switch (action) {
       case Action.Update:
@@ -35,7 +35,7 @@ export function useOptimisticMutation<T extends { id: string }>(
     }
   });
 
-  const handleUpdate = async (element: SubsetWithId<T>) => {
+  const handleUpdate = async (element: TSubsetWithId<T>) => {
     if (!updateAction) {
       return;
     }
@@ -50,7 +50,7 @@ export function useOptimisticMutation<T extends { id: string }>(
     }
   };
 
-  const handleDelete = async (element: SubsetWithId<T>) => {
+  const handleDelete = async (element: TSubsetWithId<T>) => {
     if (!deleteAction) {
       return;
     }
@@ -68,7 +68,7 @@ export function useOptimisticMutation<T extends { id: string }>(
   return {
     optimisticList,
     isPending,
-    optimisticUpdate: (element: SubsetWithId<T>) => startTransition(() => handleUpdate(element)),
-    optimisticDelete: (element: SubsetWithId<T>) => startTransition(() => handleDelete(element)),
+    optimisticUpdate: (element: TSubsetWithId<T>) => startTransition(() => handleUpdate(element)),
+    optimisticDelete: (element: TSubsetWithId<T>) => startTransition(() => handleDelete(element)),
   };
 }

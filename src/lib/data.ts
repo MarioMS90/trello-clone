@@ -1,7 +1,7 @@
-import { TColumn, User, UserWorkspace } from '@/types/types';
+import { TList, TUser, TUserWorkspace } from '@/types/types';
 import { createClient } from '@/lib/supabase/server';
 
-export async function fetchUser(): Promise<User> {
+export async function fetchUser(): Promise<TUser> {
   const supabase = await createClient();
 
   const {
@@ -17,7 +17,7 @@ export async function fetchUser(): Promise<User> {
   return data[0];
 }
 
-export async function fetchWorkspaces(): Promise<UserWorkspace[]> {
+export async function fetchWorkspaces(): Promise<TUserWorkspace[]> {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -49,11 +49,11 @@ export async function fetchWorkspaces(): Promise<UserWorkspace[]> {
   return workspaces;
 }
 
-export async function fetchColumns(boardId: string): Promise<TColumn[]> {
+export async function fetchLists(boardId: string): Promise<TList[]> {
   const supabase = await createClient();
 
   const { data, error } = await supabase
-    .from('board_column')
+    .from('board_list')
     .select(
       ` 
       *,

@@ -35,7 +35,7 @@ export type Database = {
           },
         ];
       };
-      board_column: {
+      board_list: {
         Row: {
           board_id: string;
           created_at: string;
@@ -69,7 +69,7 @@ export type Database = {
       };
       card: {
         Row: {
-          board_column_id: string;
+          board_list_id: string;
           created_at: string;
           description: string;
           id: string;
@@ -77,7 +77,7 @@ export type Database = {
           rank: string | null;
         };
         Insert: {
-          board_column_id?: string;
+          board_list_id?: string;
           created_at?: string;
           description: string;
           id?: string;
@@ -85,7 +85,7 @@ export type Database = {
           rank?: string | null;
         };
         Update: {
-          board_column_id?: string;
+          board_list_id?: string;
           created_at?: string;
           description?: string;
           id?: string;
@@ -94,10 +94,10 @@ export type Database = {
         };
         Relationships: [
           {
-            foreignKeyName: 'card_board_column_id_fkey';
-            columns: ['board_column_id'];
+            foreignKeyName: 'card_board_list_id_fkey';
+            columns: ['board_list_id'];
             isOneToOne: false;
-            referencedRelation: 'board_column';
+            referencedRelation: 'board_list';
             referencedColumns: ['id'];
           },
         ];
@@ -234,7 +234,7 @@ export type Database = {
           name: string;
           workspace: string;
           board: string;
-          column: string;
+          list: string;
         }[];
       };
       user_has_workspace_access: {

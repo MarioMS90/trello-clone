@@ -22,7 +22,7 @@ export default function Popover({
   addCloseButton?: boolean;
 }) {
   const [isOpen, setIsOpen] = useState(open);
-  const clickAwayRef = useClickAway<HTMLDialogElement>(() => {
+  const clickAwayRef = useClickAway<HTMLDivElement>(() => {
     handleOpenChange(false);
   });
 
@@ -39,7 +39,7 @@ export default function Popover({
   }, [open]);
 
   return (
-    <div className="popover-wrapper relative">
+    <div className="popover-wrapper relative" ref={clickAwayRef}>
       <button
         className={`
           flex 
@@ -72,8 +72,7 @@ export default function Popover({
             text-primary
             shadow-lg
             ${popoverClassName}
-          `}
-          ref={clickAwayRef}>
+          `}>
           {addCloseButton && (
             <button
               className="

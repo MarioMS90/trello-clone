@@ -10,7 +10,7 @@ import NoSearchResultsIcon from '@/components/icons/no-search-results';
 import SearchIcon from '@/components/icons/search';
 import WorkspaceBadge from '@/components/ui/workspace-logo';
 import { globalSearchAction } from '@/lib/actions';
-import { SearchResult, SearchResults } from '@/types/search-types';
+import { TSearchResult, TSearchResults } from '@/types/search-types';
 import { useClickAway, useDebounce } from '@uidotdev/usehooks';
 
 export default function HeaderSearch({ placeholder }: { placeholder: string }) {
@@ -18,7 +18,7 @@ export default function HeaderSearch({ placeholder }: { placeholder: string }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState<{
     term: string;
-    results: SearchResults;
+    results: TSearchResults;
   } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const pathname = usePathname();
@@ -114,7 +114,6 @@ export default function HeaderSearch({ placeholder }: { placeholder: string }) {
       {(searchResults || isLoading) && (
         <div
           className="
-            column 
             absolute
             inset-x-0
             top-[calc(100%+10px)] 
@@ -143,7 +142,7 @@ export default function HeaderSearch({ placeholder }: { placeholder: string }) {
   );
 }
 
-function SearchResultsContent({ searchResults }: { searchResults: SearchResults }) {
+function SearchResultsContent({ searchResults }: { searchResults: TSearchResults }) {
   if (searchResults.length === 0) {
     return (
       <div className="flex w-full flex-col items-center text-center">
@@ -154,7 +153,7 @@ function SearchResultsContent({ searchResults }: { searchResults: SearchResults 
     );
   }
 
-  const generateSearchResults = (kind: SearchResult['kind']): JSX.Element | null => {
+  const generateSearchResults = (kind: TSearchResult['kind']): JSX.Element | null => {
     const resultsToRender = searchResults.filter(result => result.kind === kind);
     if (resultsToRender.length === 0) {
       return null;
@@ -195,20 +194,20 @@ function SearchResultsContent({ searchResults }: { searchResults: SearchResults 
   );
 }
 
-const generateSearchResult = <T extends SearchResult['kind']>(
-  searchResult: Extract<SearchResult, { kind: T }>,
+const generateSearchResult = <T extends TSearchResult['kind']>(
+  searchResult: Extract<TSearchResult, { kind: T }>,
 ): JSX.Element => {
   const searchResultRenderers: {
-    [K in SearchResult['kind']]: (elem: Extract<SearchResult, { kind: K }>) => JSX.Element;
+    [K in TSearchResult['kind']]: (elem: Extract<TSearchResult, { kind: K }>) => JSX.Element;
   } = {
-    card: ({ id, name, board, column }) => (
+    card: ({ id, name, board, list }) => (
       <Link className="block hover:bg-gray-200" href={`/cards/${id}`}>
         <div className="flex items-center gap-2 px-4 py-1">
           <CardIcon height={19} />
           <div>
             <h3 className="text-sm leading-4">{name}</h3>
             <p className="text-[11px] text-gray-500">
-              {board}: {column}
+              {board}: {list}
             </p>
           </div>
         </div>
