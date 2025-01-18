@@ -9,9 +9,16 @@ import { reorder } from '@atlaskit/pragmatic-drag-and-drop/reorder';
 import { autoScrollForElements } from '@atlaskit/pragmatic-drag-and-drop-auto-scroll/element';
 import { isCardData, isListData } from '@/types/drag-types';
 import { TList, TSubsetWithId } from '@/types/types';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useOptimistic,
+  useRef,
+  useState,
+  useTransition,
+} from 'react';
 import { List } from '@/components/dashboard/boards/list';
-import { useOptimisticMutation } from '@/hooks/useOptimisticMutation';
 import { deleteEntityAction, updateEntityAction } from '@/lib/actions';
 import PlusIcon from '@/components/icons/plus';
 import { generateRank } from '@/lib/utils/utils';
@@ -29,26 +36,72 @@ type TCardDrag = {
 
 type TCurrentDrag = TListDrag | TCardDrag;
 
-type TBoardListsState = {
+type TListsState = {
   lists: TList[];
   currentDrag: TCurrentDrag | null;
 };
 
+export function useOptimisticMutation<T extends { id: string }>(list: T[]) {
+  const [isPending, startTransition] = useTransition();
+  const [optimisticList, setOptimisticList] = useOptimistic<T[], (currentList: T[]) => T[]>(
+    list,
+    (currentList, callback) => callback(currentList),
+  );
+
+  const handleMutation = async (callback: (currentList: T[]) => T[]) => {
+    try {
+      setOptimisticList(callback);
+    } catch (error) {
+      // TODO: Show error with a toast
+      alert('An error occurred while updating the element');
+    }
+  };
+
+  return {
+    optimisticList,
+    isPending,
+    optimisticMutation: (callback: (currentList: T[]) => T[]) =>
+      startTransition(() => handleMutation(callback)),
+  };
+}
+
 export default function BoardLists({ initialLists }: { initialLists: TList[] }) {
-  const [boardListsData, setBoardListsdata] = useState<TBoardListsState>({
+  const [listsData, setListsdata] = useState<TListsState>({
     lists: initialLists,
     currentDrag: null,
   });
   const scrollableRef = useRef<HTMLUListElement | null>(null);
+  const [isPending, startTransition] = useTransition();
+  const [optimisticLists, setOptimisticLists] = useOptimistic<
+    TList[],
+    (currentLists: TList[]) => TList[]
+  >(listsData.lists, (currentLists, callback) => callback(currentLists));
 
-  const {
-    optimisticList: optimisticBoardLists,
-    optimisticUpdate,
-    optimisticDelete,
-  } = useOptimisticMutation(boardListsData.lists, {
-    updateAction: entityData => updateEntityAction('board_list', entityData),
-    deleteAction: entityId => deleteEntityAction('board_list', entityId),
-  });
+  const updateList = useCallback(
+    (listData: TSubsetWithId<TList>) => {
+      try {
+        startTransition(async () => {
+          setOptimisticLists(currentLists =>
+            currentLists.map(list => (list.id === listData.id ? { ...list, ...listData } : list)),
+          );
+          await updateEntityAction('board_list', listData);
+          setListsdata(prev => ({
+            ...prev,
+            lists: prev.lists.map(list =>
+              list.id === listData.id ? { ...list, ...listData } : list,
+            ),
+          }));
+        });
+      } catch (error) {
+        // TODO: Show error with a toast
+        alert('An error occurred while updating the element');
+      }
+    },
+    [setOptimisticLists],
+  );
+  const deleteList = useCallback(() => {}, []);
+  const updateCard = useCallback(() => {}, []);
+  const deleteCard = useCallback(() => {}, []);
 
   useEffect(() => {
     const element = scrollableRef.current;
@@ -58,7 +111,7 @@ export default function BoardLists({ initialLists }: { initialLists: TList[] }) 
       monitorForElements({
         canMonitor: ({ source }) => isListData(source.data),
         onDrop: async ({ source, location }) => {
-          const { lists, currentDrag } = boardListsData;
+          const { lists, currentDrag } = listsData;
           const dragging = source.data;
           const dropTarget = location.current.dropTargets[0]?.data;
 
@@ -70,7 +123,7 @@ export default function BoardLists({ initialLists }: { initialLists: TList[] }) 
 
           if (!isListData(dropTarget)) {
             // Drag operation was cancelled, revert the order
-            setBoardListsdata({
+            setListsdata({
               lists: reorder({
                 list: lists,
                 startIndex: currentIndex,
@@ -89,13 +142,13 @@ export default function BoardLists({ initialLists }: { initialLists: TList[] }) 
               rank,
             });
 
-            setBoardListsdata({
+            setListsdata({
               lists: updatedLists,
               currentDrag: null,
             });
           } catch (error) {
             // Revert the order
-            setBoardListsdata({
+            setListsdata({
               lists: reorder({
                 list: lists,
                 startIndex: currentIndex,
@@ -114,8 +167,8 @@ export default function BoardLists({ initialLists }: { initialLists: TList[] }) 
             return;
           }
 
-          const startIndex = boardListsData.lists.findIndex(list => list.id === dragging.id);
-          const indexOfTarget = boardListsData.lists.findIndex(list => list.id === dropTarget.id);
+          const startIndex = listsData.lists.findIndex(list => list.id === dragging.id);
+          const indexOfTarget = listsData.lists.findIndex(list => list.id === dropTarget.id);
           const closestEdgeOfTarget = extractClosestEdge(dropTarget);
           const destinationIndex = getReorderDestinationIndex({
             startIndex,
@@ -128,7 +181,7 @@ export default function BoardLists({ initialLists }: { initialLists: TList[] }) 
             return;
           }
 
-          setBoardListsdata(prev => {
+          setListsdata(prev => {
             const { lists } = prev;
             const list = lists[startIndex];
             const currentDrag = prev.currentDrag ?? {
@@ -156,12 +209,7 @@ export default function BoardLists({ initialLists }: { initialLists: TList[] }) 
         element,
       }),
     );
-  }, [boardListsData]);
-
-  const updateList = useCallback((listData: TSubsetWithId<TList>) => {}, []);
-  const deleteList = useCallback(() => {}, []);
-  const updateCard = useCallback(() => {}, []);
-  const deleteCard = useCallback(() => {}, []);
+  }, [listsData]);
 
   const contextValue: BoardContextValue = useMemo(
     () => ({
@@ -173,22 +221,12 @@ export default function BoardLists({ initialLists }: { initialLists: TList[] }) 
     [updateList, deleteList, updateCard, deleteCard],
   );
 
-  const [counter, setCounter] = useState(0);
-
   return (
     <BoardContext.Provider value={contextValue}>
-      <button
-        type="button"
-        onClick={() => {
-          setCounter(prev => prev + 1);
-        }}>
-        set counter
-      </button>
-      <div>{counter}</div>
       <ul
         className="scrollbar-transparent flex h-full gap-4 overflow-x-auto p-4"
         ref={scrollableRef}>
-        {optimisticBoardLists.map(list => (
+        {optimisticLists.map(list => (
           <li className="flex" key={list.id}>
             <List list={list} />
           </li>
@@ -212,7 +250,7 @@ export default function BoardLists({ initialLists }: { initialLists: TList[] }) 
             hover:bg-opacity-15
           ">
             <PlusIcon width={16} height={16} />
-            {optimisticBoardLists.length ? 'Add another list' : 'Add a list'}
+            {optimisticLists.length ? 'Add another list' : 'Add a list'}
           </button>
         </li>
       </ul>

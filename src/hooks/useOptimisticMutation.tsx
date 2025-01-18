@@ -9,7 +9,7 @@ enum Action {
 }
 
 export function useOptimisticMutation<T extends { id: string }>(
-  elementList: T[],
+  list: T[],
   {
     updateAction,
     deleteAction,
@@ -19,46 +19,46 @@ export function useOptimisticMutation<T extends { id: string }>(
   },
 ) {
   const [isPending, startTransition] = useTransition();
-  const [optimisticList, setOptimisticElements] = useOptimistic<
+  const [optimisticList, setOptimisticList] = useOptimistic<
     T[],
-    { action: Action; element: TSubsetWithId<T> }
-  >(elementList, (elements, { action, element }) => {
+    { action: Action; entityData: TSubsetWithId<T> }
+  >(list, (currentList, { action, entityData }) => {
     switch (action) {
       case Action.Update:
-        return elements.map(_element =>
-          _element.id === element.id ? { ..._element, ...element } : _element,
+        return currentList.map(entity =>
+          entity.id === entityData.id ? { ...entity, ...entityData } : entity,
         );
       case Action.Delete:
-        return elements.filter(_element => _element.id !== element.id);
+        return currentList.filter(entity => entity.id !== entityData.id);
       default:
-        return elements;
+        return currentList;
     }
   });
 
-  const handleUpdate = async (element: TSubsetWithId<T>) => {
+  const handleUpdate = async (entityData: TSubsetWithId<T>) => {
     if (!updateAction) {
       return;
     }
 
-    setOptimisticElements({ action: Action.Update, element });
+    setOptimisticList({ action: Action.Update, entityData });
 
     try {
-      updateAction(element);
+      updateAction(entityData);
     } catch (error) {
       // TODO: Show error with a toast
       alert('An error occurred while updating the element');
     }
   };
 
-  const handleDelete = async (element: TSubsetWithId<T>) => {
+  const handleDelete = async (entityData: TSubsetWithId<T>) => {
     if (!deleteAction) {
       return;
     }
 
-    setOptimisticElements({ action: Action.Delete, element });
+    setOptimisticList({ action: Action.Delete, entityData });
 
     try {
-      deleteAction(element.id);
+      deleteAction(entityData.id);
     } catch (error) {
       // TODO: Show error with a toast
       alert('An error occurred while deleting the element');
@@ -68,7 +68,9 @@ export function useOptimisticMutation<T extends { id: string }>(
   return {
     optimisticList,
     isPending,
-    optimisticUpdate: (element: TSubsetWithId<T>) => startTransition(() => handleUpdate(element)),
-    optimisticDelete: (element: TSubsetWithId<T>) => startTransition(() => handleDelete(element)),
+    optimisticUpdate: (entityData: TSubsetWithId<T>) =>
+      startTransition(() => handleUpdate(entityData)),
+    optimisticDelete: (entityData: TSubsetWithId<T>) =>
+      startTransition(() => handleDelete(entityData)),
   };
 }
