@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import { TBoard } from '@/types/types';
 import { useEffect, useRef, useState } from 'react';
 import { deleteEntityAction, updateEntityAction } from '@/lib/actions';
-import { useOptimisticMutation } from '@/hooks/useOptimisticMutation';
+import { useOptimisticListMutation } from '@/hooks/useOptimisticMutation';
 import StarToggleBoard from '../star-toggle-board';
 import DotsIcon from '../../icons/dots';
 import Popover from '../../ui/popover';
@@ -23,7 +23,7 @@ export default function SidebarBoards({
     optimisticList: optimisticBoards,
     optimisticUpdate,
     optimisticDelete,
-  } = useOptimisticMutation(boards, {
+  } = useOptimisticListMutation(boards, {
     updateAction: entityData => updateEntityAction('board', entityData),
     deleteAction: entityId => deleteEntityAction('board', entityId),
   });

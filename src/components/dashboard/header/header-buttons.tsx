@@ -3,7 +3,7 @@
 import { TBoard, TUserWorkspace } from '@/types/types';
 import Link from 'next/link';
 import { updateEntityAction } from '@/lib/actions';
-import { useOptimisticMutation } from '@/hooks/useOptimisticMutation';
+import { useOptimisticListMutation } from '@/hooks/useOptimisticMutation';
 import Popover from '@/components/ui/popover';
 import ArrowDownIcon from '@/components/icons/arrow-down';
 import WorkspaceBadge from '@/components/ui/workspace-logo';
@@ -17,7 +17,7 @@ export default function HeaderButtons({
   workspaces: TUserWorkspace[];
   starredBoards: TBoard[];
 }) {
-  const { optimisticList: optimisticBoards, optimisticUpdate } = useOptimisticMutation(
+  const { optimisticList: optimisticBoards, optimisticUpdate } = useOptimisticListMutation(
     starredBoards,
     {
       updateAction: entityData => updateEntityAction('board', entityData),

@@ -172,12 +172,12 @@ export const List = memo(function List({ list }: { list: TList }) {
               <ul className="text-sm [&>li>button:hover]:bg-gray-200 [&>li>button]:w-full [&>li>button]:px-3 [&>li>button]:py-2 [&>li>button]:text-left">
                 <li>
                   <button type="button" onClick={() => setIsEditing(true)}>
-                    Rename board
+                    Rename list
                   </button>
                 </li>
                 <li>
                   <button type="button" onClick={() => deleteList(list.id)}>
-                    Delete board
+                    Delete list
                   </button>
                 </li>
               </ul>

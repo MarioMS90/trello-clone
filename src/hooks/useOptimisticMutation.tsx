@@ -8,7 +8,7 @@ enum Action {
   Delete = 'delete',
 }
 
-export function useOptimisticMutation<T extends { id: string }>(
+export function useOptimisticListMutation<T extends { id: string }>(
   list: T[],
   {
     updateAction,
@@ -35,42 +35,44 @@ export function useOptimisticMutation<T extends { id: string }>(
     }
   });
 
-  const handleUpdate = async (entityData: TSubsetWithId<T>) => {
+  const optimisticUpdate = async (entityData: TSubsetWithId<T>) => {
     if (!updateAction) {
       return;
     }
 
-    setOptimisticList({ action: Action.Update, entityData });
+    startTransition(() => {
+      setOptimisticList({ action: Action.Update, entityData });
 
-    try {
-      updateAction(entityData);
-    } catch (error) {
-      // TODO: Show error with a toast
-      alert('An error occurred while updating the element');
-    }
+      try {
+        updateAction(entityData);
+      } catch (error) {
+        // TODO: Show error with a toast
+        alert('An error occurred while updating the element');
+      }
+    });
   };
 
-  const handleDelete = async (entityData: TSubsetWithId<T>) => {
+  const optimisticDelete = async (entityData: TSubsetWithId<T>) => {
     if (!deleteAction) {
       return;
     }
 
-    setOptimisticList({ action: Action.Delete, entityData });
+    startTransition(() => {
+      setOptimisticList({ action: Action.Delete, entityData });
 
-    try {
-      deleteAction(entityData.id);
-    } catch (error) {
-      // TODO: Show error with a toast
-      alert('An error occurred while deleting the element');
-    }
+      try {
+        deleteAction(entityData.id);
+      } catch (error) {
+        // TODO: Show error with a toast
+        alert('An error occurred while deleting the element');
+      }
+    });
   };
 
   return {
     optimisticList,
     isPending,
-    optimisticUpdate: (entityData: TSubsetWithId<T>) =>
-      startTransition(() => handleUpdate(entityData)),
-    optimisticDelete: (entityData: TSubsetWithId<T>) =>
-      startTransition(() => handleDelete(entityData)),
+    optimisticUpdate,
+    optimisticDelete,
   };
 }

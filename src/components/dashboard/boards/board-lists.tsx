@@ -41,30 +41,6 @@ type TListsState = {
   currentDrag: TCurrentDrag | null;
 };
 
-export function useOptimisticMutation<T extends { id: string }>(list: T[]) {
-  const [isPending, startTransition] = useTransition();
-  const [optimisticList, setOptimisticList] = useOptimistic<T[], (currentList: T[]) => T[]>(
-    list,
-    (currentList, callback) => callback(currentList),
-  );
-
-  const handleMutation = async (callback: (currentList: T[]) => T[]) => {
-    try {
-      setOptimisticList(callback);
-    } catch (error) {
-      // TODO: Show error with a toast
-      alert('An error occurred while updating the element');
-    }
-  };
-
-  return {
-    optimisticList,
-    isPending,
-    optimisticMutation: (callback: (currentList: T[]) => T[]) =>
-      startTransition(() => handleMutation(callback)),
-  };
-}
-
 export default function BoardLists({ initialLists }: { initialLists: TList[] }) {
   const [listsData, setListsdata] = useState<TListsState>({
     lists: initialLists,
@@ -76,32 +52,6 @@ export default function BoardLists({ initialLists }: { initialLists: TList[] }) 
     TList[],
     (currentLists: TList[]) => TList[]
   >(listsData.lists, (currentLists, callback) => callback(currentLists));
-
-  const updateList = useCallback(
-    (listData: TSubsetWithId<TList>) => {
-      try {
-        startTransition(async () => {
-          setOptimisticLists(currentLists =>
-            currentLists.map(list => (list.id === listData.id ? { ...list, ...listData } : list)),
-          );
-          await updateEntityAction('board_list', listData);
-          setListsdata(prev => ({
-            ...prev,
-            lists: prev.lists.map(list =>
-              list.id === listData.id ? { ...list, ...listData } : list,
-            ),
-          }));
-        });
-      } catch (error) {
-        // TODO: Show error with a toast
-        alert('An error occurred while updating the element');
-      }
-    },
-    [setOptimisticLists],
-  );
-  const deleteList = useCallback(() => {}, []);
-  const updateCard = useCallback(() => {}, []);
-  const deleteCard = useCallback(() => {}, []);
 
   useEffect(() => {
     const element = scrollableRef.current;
@@ -181,10 +131,10 @@ export default function BoardLists({ initialLists }: { initialLists: TList[] }) 
             return;
           }
 
-          setListsdata(prev => {
-            const { lists } = prev;
+          setListsdata(current => {
+            const { lists } = current;
             const list = lists[startIndex];
-            const currentDrag = prev.currentDrag ?? {
+            const currentDrag = current.currentDrag ?? {
               type: 'list',
               initialIndex: startIndex,
               list,
@@ -210,6 +160,56 @@ export default function BoardLists({ initialLists }: { initialLists: TList[] }) 
       }),
     );
   }, [listsData]);
+
+  const listsUpdater = useCallback((listData: TSubsetWithId<TList>) => {
+    setListsdata(current => ({
+      ...current,
+      lists: current.lists.map(list => (list.id === listData.id ? { ...list, ...listData } : list)),
+    }));
+  }, []);
+
+  const updateList = useCallback(
+    (listData: TSubsetWithId<TList>) => {
+      startTransition(async () => {
+        setOptimisticLists(current =>
+          current.map(list => (list.id === listData.id ? { ...list, ...listData } : list)),
+        );
+
+        try {
+          await updateEntityAction('board_list', listData);
+          listsUpdater(listData);
+        } catch (error) {
+          // TODO: Show error with a toast
+          alert('An error occurred while updating the element');
+        }
+      });
+    },
+    [startTransition, setOptimisticLists, listsUpdater],
+  );
+
+  const deleteList = useCallback(
+    async (id: string) => {
+      startTransition(async () => {
+        setOptimisticLists(current => current.filter(list => list.id !== id));
+
+        try {
+          await deleteEntityAction('board_list', id);
+          setListsdata(current => ({
+            ...current,
+            lists: current.lists.filter(list => list.id !== id),
+          }));
+        } catch (error) {
+          // TODO: Show error with a toast
+          alert('An error occurred while deleting the element');
+        }
+      });
+    },
+    [startTransition, setOptimisticLists],
+  );
+
+  const updateCard = useCallback(async (cardData: TSubsetWithId<TList>) => {}, []);
+
+  const deleteCard = useCallback(async (listData: TSubsetWithId<TList>) => {}, []);
 
   const contextValue: BoardContextValue = useMemo(
     () => ({

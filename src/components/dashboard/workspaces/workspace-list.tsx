@@ -3,7 +3,7 @@
 import { CreateBoardPopover } from '@/components/dashboard/popovers';
 import { BoardList } from '@/components/dashboard/boards/boards';
 import { TUserWorkspace } from '@/types/types';
-import { useOptimisticMutation } from '@/hooks/useOptimisticMutation';
+import { useOptimisticListMutation } from '@/hooks/useOptimisticMutation';
 import BoardsIcon from '@/components/icons/boards';
 import SettingsIcon from '@/components/icons/settings';
 import UserIcon from '@/components/icons/user';
@@ -20,7 +20,7 @@ export default function WorkspaceList({ workspaces }: { workspaces: TUserWorkspa
     optimisticList: optimisticWorkspaces,
     optimisticUpdate,
     optimisticDelete,
-  } = useOptimisticMutation(workspaces, {
+  } = useOptimisticListMutation(workspaces, {
     updateAction: entityData => updateEntityAction('workspace', entityData),
     deleteAction: entityId => deleteEntityAction('workspace', entityId),
   });
