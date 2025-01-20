@@ -1,7 +1,11 @@
 'use server';
 
 import { TActionState, initialState, TPublicSchema } from '@/types/types';
-import { CreateBoardSchema, CreateWorkspaceSchema } from '@/schemas/workspace-schemas';
+import {
+  CreateBoardSchema,
+  CreateListSchema,
+  CreateWorkspaceSchema,
+} from '@/schemas/workspace-schemas';
 import { TablesUpdate } from '@/types/database-types';
 import { createClient } from './supabase/server';
 import { revalidateDashboard } from './utils/server-utils';
@@ -21,7 +25,7 @@ export async function createWorkspaceAction(
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Create Workspace.',
+      message: 'Missing fields. Failed to create workspace.',
     };
   }
 
@@ -68,14 +72,14 @@ export async function createBoardAction(
   }
 
   const validatedFields = CreateBoardSchema.safeParse({
-    workspaceId: workspaceIdParam ?? formData.get('workspace-id'),
     name: formData.get('name'),
+    workspaceId: workspaceIdParam ?? formData.get('workspace-id'),
   });
 
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Create Board.',
+      message: 'Missing fields. Failed to create board.',
     };
   }
 
@@ -91,6 +95,43 @@ export async function createBoardAction(
   revalidateDashboard();
 
   return { success: true };
+}
+
+export async function createListAction({
+  boardId,
+  name,
+  rank,
+}: {
+  boardId: string;
+  name: string;
+  rank: string;
+}) {
+  const validatedFields = CreateListSchema.safeParse({
+    boardId,
+    name,
+    rank,
+  });
+
+  if (!validatedFields.success) {
+    throw new Error('Missing fields. Failed to create list.');
+  }
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('board_list')
+    .insert({
+      name: validatedFields.data.name,
+      rank: validatedFields.data.rank,
+      board_id: validatedFields.data.boardId,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
 }
 
 export async function globalSearchAction(term: string) {

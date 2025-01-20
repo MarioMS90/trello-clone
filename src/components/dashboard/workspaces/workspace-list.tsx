@@ -1,9 +1,8 @@
 'use client';
 
-import { CreateBoardPopover } from '@/components/dashboard/popovers';
 import { BoardList } from '@/components/dashboard/boards/boards';
 import { TUserWorkspace } from '@/types/types';
-import { useOptimisticListMutation } from '@/hooks/useOptimisticMutation';
+import { useOptimisticList } from '@/hooks/useOptimisticList';
 import BoardsIcon from '@/components/icons/boards';
 import SettingsIcon from '@/components/icons/settings';
 import UserIcon from '@/components/icons/user';
@@ -12,6 +11,7 @@ import WorkspaceBadge from '@/components/ui/workspace-logo';
 import { deleteEntityAction, updateEntityAction } from '@/lib/actions';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
+import { CreateBoardPopover } from '../boards/create-board';
 
 export default function WorkspaceList({ workspaces }: { workspaces: TUserWorkspace[] }) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -20,7 +20,7 @@ export default function WorkspaceList({ workspaces }: { workspaces: TUserWorkspa
     optimisticList: optimisticWorkspaces,
     optimisticUpdate,
     optimisticDelete,
-  } = useOptimisticListMutation(workspaces, {
+  } = useOptimisticList(workspaces, {
     updateAction: entityData => updateEntityAction('workspace', entityData),
     deleteAction: entityId => deleteEntityAction('workspace', entityId),
   });
@@ -55,9 +55,15 @@ export default function WorkspaceList({ workspaces }: { workspaces: TUserWorkspa
 
                     setEditingWorkspaceId(null);
                   }}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter') {
+                      e.currentTarget.blur();
+                    }
+                  }}
                   onKeyUp={e => {
-                    if (e.key === 'Enter') e.currentTarget.blur();
-                    if (e.key === 'Escape') setEditingWorkspaceId(null);
+                    if (e.key === 'Escape') {
+                      setEditingWorkspaceId(null);
+                    }
                   }}
                 />
               ) : (

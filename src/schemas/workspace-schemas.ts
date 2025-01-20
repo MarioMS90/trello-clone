@@ -20,5 +20,17 @@ const BoardSchema = z.object({
   createdAt: z.string(),
 });
 
+const ListSchema = z.object({
+  id: z.string(),
+  name: z.string({
+    invalid_type_error: 'Name must be a string.',
+    required_error: 'Name is required.',
+  }),
+  rank: z.string(),
+  boardId: z.string(),
+  createdAt: z.string(),
+});
+
 export const CreateWorkspaceSchema = WorkspaceSchema.pick({ name: true });
 export const CreateBoardSchema = BoardSchema.pick({ name: true, workspaceId: true });
+export const CreateListSchema = ListSchema.pick({ name: true, rank: true, boardId: true });

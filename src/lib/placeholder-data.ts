@@ -87,36 +87,36 @@ const boardListsData = [
     name: 'Done',
     board_id: boards[0].id,
   },
-  {
-    id: crypto.randomUUID(),
-    name: 'test1',
-    board_id: boards[0].id,
-  },
-  {
-    id: crypto.randomUUID(),
-    name: 'test12',
-    board_id: boards[0].id,
-  },
-  {
-    id: crypto.randomUUID(),
-    name: 'test13',
-    board_id: boards[0].id,
-  },
-  {
-    id: crypto.randomUUID(),
-    name: 'test14',
-    board_id: boards[0].id,
-  },
-  {
-    id: crypto.randomUUID(),
-    name: 'test15',
-    board_id: boards[0].id,
-  },
-  {
-    id: crypto.randomUUID(),
-    name: 'test16',
-    board_id: boards[0].id,
-  },
+  // {
+  //   id: crypto.randomUUID(),
+  //   name: 'test1',
+  //   board_id: boards[0].id,
+  // },
+  // {
+  //   id: crypto.randomUUID(),
+  //   name: 'test12',
+  //   board_id: boards[0].id,
+  // },
+  // {
+  //   id: crypto.randomUUID(),
+  //   name: 'test13',
+  //   board_id: boards[0].id,
+  // },
+  // {
+  //   id: crypto.randomUUID(),
+  //   name: 'test14',
+  //   board_id: boards[0].id,
+  // },
+  // {
+  //   id: crypto.randomUUID(),
+  //   name: 'test15',
+  //   board_id: boards[0].id,
+  // },
+  // {
+  //   id: crypto.randomUUID(),
+  //   name: 'test16',
+  //   board_id: boards[0].id,
+  // },
   {
     id: crypto.randomUUID(),
     name: 'Not my card list',

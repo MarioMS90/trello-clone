@@ -16,8 +16,9 @@ import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
 import { attachClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
 import { isSafari } from '@/lib/utils/is-safari';
 import { TListData, isCardData, isListData } from '@/types/drag-types';
+import { resizeTextarea } from '@/lib/utils/utils';
 import { Card } from './card';
-import { useBoardContext } from './board-context';
+import { useBoardContext } from '../boards/board-context';
 
 type TListState =
   | { type: 'idle' }
@@ -38,12 +39,12 @@ const listStateStyles: {
   'is-dragging-leave': 'opacity-60 bg-secondary-background',
 };
 
-export const List = memo(function List({ list }: { list: TList }) {
+export const List = memo(function List({ list, position }: { list: TList; position: number }) {
   const outerFullHeightRef = useRef<HTMLDivElement>(null);
   const [isOpenPopover, setIsOpenPopover] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [state, setState] = useState<TListState>({ type: 'idle' });
-  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
   const { updateList, deleteList } = useBoardContext();
@@ -56,7 +57,7 @@ export const List = memo(function List({ list }: { list: TList }) {
     invariant(inner);
     invariant(outer);
 
-    const data: TListData = { id: list.id, type: 'list' };
+    const data: TListData = { type: 'list', id: list.id, originalPosition: position };
 
     return combine(
       draggable({
@@ -110,12 +111,14 @@ export const List = memo(function List({ list }: { list: TList }) {
         },
       }),
     );
-  }, [list, isEditing]);
+  }, [list, position, isEditing]);
 
   useEffect(() => {
-    if (isEditing && inputRef.current) {
-      inputRef.current.select();
+    const textarea = textareaRef.current;
+    if (isEditing && textarea) {
+      resizeTextarea(textareaRef);
       setIsOpenPopover(false);
+      textarea.select();
     }
   }, [isEditing]);
 
@@ -126,13 +129,15 @@ export const List = memo(function List({ list }: { list: TList }) {
         ref={innerRef}>
         <div
           className={`flex max-h-full flex-col ${state.type === 'is-dragging-leave' ? 'invisible' : ''}`}>
-          <div className="flex cursor-pointer items-center justify-between p-2" ref={headerRef}>
+          <div
+            className="flex cursor-pointer items-center justify-between px-2 pt-2"
+            ref={headerRef}>
             {isEditing ? (
               <textarea
-                className="resize-none overflow-hidden rounded-lg px-2.5 py-1.5 font-semibold outline outline-2 outline-secondary"
-                style={{ height: '32px' }}
+                className="grow resize-none overflow-hidden rounded-lg px-2.5 py-1.5 font-semibold outline outline-2 outline-secondary"
                 defaultValue={list.name}
-                ref={inputRef}
+                style={{ height: '32px' }}
+                onChange={() => resizeTextarea(textareaRef)}
                 onBlur={e => {
                   const newName = e.target.value.trim();
                   if (newName && list.name !== newName) {
@@ -140,26 +145,31 @@ export const List = memo(function List({ list }: { list: TList }) {
                   }
                   setIsEditing(false);
                 }}
-                onChange={() => {
-                  // TODO: Control the height of the textarea
+                onKeyDown={e => {
+                  if (e.key === 'Enter') {
+                    e.currentTarget.blur();
+                  }
                 }}
                 onKeyUp={e => {
-                  if (e.key === 'Enter') e.currentTarget.blur();
-                  if (e.key === 'Escape') setIsEditing(false);
-                }}></textarea>
+                  if (e.key === 'Escape') {
+                    e.preventDefault();
+                    setIsEditing(false);
+                  }
+                }}
+                ref={textareaRef}></textarea>
             ) : (
               <button
                 type="button"
-                className="grow px-2.5 text-left font-semibold"
+                className="grow px-2.5 py-1.5 text-left font-semibold"
                 onMouseUp={() => {
                   setIsEditing(true);
                 }}>
-                <h3>{list.name}</h3>
+                <h3 className="[overflow-wrap:anywhere]">{list.name}</h3>
               </button>
             )}
             <Popover
               triggerContent={
-                <span className="relative flex size-8 cursor-pointer rounded-lg hover:bg-gray-300">
+                <span className="relative flex size-8 rounded-lg hover:bg-gray-300">
                   <span className="center-xy">
                     <DotsIcon width={16} height={16} />
                   </span>

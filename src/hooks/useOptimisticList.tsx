@@ -8,7 +8,7 @@ enum Action {
   Delete = 'delete',
 }
 
-export function useOptimisticListMutation<T extends { id: string }>(
+export function useOptimisticList<T extends { id: string }>(
   list: T[],
   {
     updateAction,

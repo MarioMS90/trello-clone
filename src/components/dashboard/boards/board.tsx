@@ -8,7 +8,7 @@ export default async function Board({ boardId }: { boardId: string }) {
     <div className="relative h-[calc(100%-8px)]">
       {/* position: absolute needed for max-height:100% to be respected internally */}
       <div className="absolute inset-0">
-        <BoardLists initialLists={lists} />
+        <BoardLists boardId={boardId} initialLists={lists} />
       </div>
     </div>
   );

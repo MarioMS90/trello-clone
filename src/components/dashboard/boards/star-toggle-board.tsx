@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react';
 import { TBoard } from '@/types/types';
 import { updateEntityAction } from '@/lib/actions';
-import StarIcon from '../icons/star';
-import StarFillIcon from '../icons/star-fill';
+import StarIcon from '../../icons/star';
+import StarFillIcon from '../../icons/star-fill';
 
 export default function StarToggleBoard({
   className = '',

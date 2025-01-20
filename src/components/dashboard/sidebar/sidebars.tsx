@@ -5,12 +5,12 @@ import BoardsIcon from '@/components/icons/boards';
 import ArrowDownIcon from '@/components/icons/arrow-down';
 import WorkspaceBadge from '@/components/ui/workspace-logo';
 import PlusIcon from '@/components/icons/plus';
-import { CreateBoardPopover } from '@/components/dashboard/popovers';
 import SidebarLinks from '@/components/dashboard/sidebar/sidebar-links';
 import SidebarBoards from '@/components/dashboard/sidebar/sidebar-boards';
 import { useState } from 'react';
 import { TUserWorkspace } from '@/types/types';
 import { cn } from '@/lib/utils/utils';
+import { CreateBoardPopover } from '../boards/create-board';
 
 export function MainSidebar() {
   return (

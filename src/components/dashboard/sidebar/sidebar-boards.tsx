@@ -5,8 +5,8 @@ import clsx from 'clsx';
 import { TBoard } from '@/types/types';
 import { useEffect, useRef, useState } from 'react';
 import { deleteEntityAction, updateEntityAction } from '@/lib/actions';
-import { useOptimisticListMutation } from '@/hooks/useOptimisticMutation';
-import StarToggleBoard from '../star-toggle-board';
+import { useOptimisticList } from '@/hooks/useOptimisticList';
+import StarToggleBoard from '../boards/star-toggle-board';
 import DotsIcon from '../../icons/dots';
 import Popover from '../../ui/popover';
 
@@ -23,7 +23,7 @@ export default function SidebarBoards({
     optimisticList: optimisticBoards,
     optimisticUpdate,
     optimisticDelete,
-  } = useOptimisticListMutation(boards, {
+  } = useOptimisticList(boards, {
     updateAction: entityData => updateEntityAction('board', entityData),
     deleteAction: entityId => deleteEntityAction('board', entityId),
   });
@@ -52,9 +52,15 @@ export default function SidebarBoards({
                   }
                   setEditingBoardId(null);
                 }}
+                onKeyDown={e => {
+                  if (e.key === 'Enter') {
+                    e.currentTarget.blur();
+                  }
+                }}
                 onKeyUp={e => {
-                  if (e.key === 'Enter') e.currentTarget.blur();
-                  if (e.key === 'Escape') setEditingBoardId(null);
+                  if (e.key === 'Escape') {
+                    setEditingBoardId(null);
+                  }
                 }}
               />
             </div>

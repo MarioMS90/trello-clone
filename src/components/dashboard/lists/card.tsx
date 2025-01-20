@@ -5,7 +5,6 @@ import PencilIcon from '@/components/icons/pencil';
 import { TCard } from '@/types/types';
 
 export const Card = memo(function Card({ card }: { card: TCard }) {
-  console.log('rendering card');
   return (
     <li className="group rounded-lg border border-gray-300 bg-white p-3 py-2 shadow-sm outline-2 outline-secondary hover:outline">
       <div className="relative justify-between">

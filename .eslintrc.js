@@ -27,6 +27,7 @@ module.exports = {
     ],
     'import/prefer-default-export': 'off',
     'jsx-a11y/anchor-is-valid': 'off',
+    'jsx-a11y/no-autofocus': 'off',
     'react/require-default-props': 'off',
     '@typescript-eslint/no-use-before-define': 'off',
     'react/jsx-no-useless-fragment': 'off',

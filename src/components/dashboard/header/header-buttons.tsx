@@ -3,12 +3,12 @@
 import { TBoard, TUserWorkspace } from '@/types/types';
 import Link from 'next/link';
 import { updateEntityAction } from '@/lib/actions';
-import { useOptimisticListMutation } from '@/hooks/useOptimisticMutation';
+import { useOptimisticList } from '@/hooks/useOptimisticList';
 import Popover from '@/components/ui/popover';
 import ArrowDownIcon from '@/components/icons/arrow-down';
 import WorkspaceBadge from '@/components/ui/workspace-logo';
-import { CreateBoardForm } from '@/components/dashboard/create-forms';
-import StarToggleBoard from '@/components/dashboard/star-toggle-board';
+import { CreateBoard } from '@/components/dashboard/boards/create-board';
+import StarToggleBoard from '@/components/dashboard/boards/star-toggle-board';
 
 export default function HeaderButtons({
   workspaces,
@@ -17,12 +17,9 @@ export default function HeaderButtons({
   workspaces: TUserWorkspace[];
   starredBoards: TBoard[];
 }) {
-  const { optimisticList: optimisticBoards, optimisticUpdate } = useOptimisticListMutation(
-    starredBoards,
-    {
-      updateAction: entityData => updateEntityAction('board', entityData),
-    },
-  );
+  const { optimisticList: optimisticBoards, optimisticUpdate } = useOptimisticList(starredBoards, {
+    updateAction: entityData => updateEntityAction('board', entityData),
+  });
 
   const workspacesContent = (
     <ul className="space-y-1">
@@ -86,7 +83,7 @@ export default function HeaderButtons({
     {
       id: 'create-board',
       text: 'Create board',
-      popoverContent: <CreateBoardForm workspaces={workspaces} />,
+      popoverContent: <CreateBoard workspaces={workspaces} />,
       triggerClassName: `font-medium bg-white bg-opacity-20 px-3 py-1.5 text-white hover:bg-opacity-30`,
     },
   ];
