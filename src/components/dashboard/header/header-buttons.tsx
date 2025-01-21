@@ -18,7 +18,8 @@ export default function HeaderButtons({
   starredBoards: TBoard[];
 }) {
   const { optimisticList: optimisticBoards, optimisticUpdate } = useOptimisticList(starredBoards, {
-    updateAction: entityData => updateEntityAction('board', entityData),
+    updateAction: entityData =>
+      updateEntityAction({ tableName: 'board', entityData, revalidate: true }),
   });
 
   const workspacesContent = (

@@ -28,7 +28,11 @@ export default function StarToggleBoard({
 
     if (board) {
       try {
-        updateEntityAction('board', { id: board.id, starred: !isStarred });
+        updateEntityAction({
+          tableName: 'board',
+          entityData: { id: board.id, starred: !isStarred },
+          revalidate: true,
+        });
       } catch (error) {
         // TODO: Show error with a toast
         alert('An error occurred while updating the element');

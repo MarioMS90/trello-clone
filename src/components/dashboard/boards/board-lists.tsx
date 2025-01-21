@@ -7,6 +7,7 @@ import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/clo
 import { getReorderDestinationIndex } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index';
 import { reorder } from '@atlaskit/pragmatic-drag-and-drop/reorder';
 import { autoScrollForElements } from '@atlaskit/pragmatic-drag-and-drop-auto-scroll/element';
+import { bind, bindAll } from 'bind-event-listener';
 import { isCardData, isListData } from '@/types/drag-types';
 import { TCard, TList, TSubsetWithId } from '@/types/types';
 import {
@@ -22,6 +23,8 @@ import { List } from '@/components/dashboard/lists/list';
 import { createListAction, deleteEntityAction, updateEntityAction } from '@/lib/actions';
 import { generateRank, updateListObj } from '@/lib/utils/utils';
 import { LexoRank } from 'lexorank';
+import { CleanupFn } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types';
+import { blockBoardPanningAttr } from '@/constants/constants';
 import { BoardContext, BoardContextValue } from './board-context';
 import { CreateList } from '../lists/create-list';
 
@@ -82,7 +85,10 @@ export default function BoardLists({
           try {
             const index = lists.findIndex(list => list.id === dragging.id);
             const rank = generateRank(lists, index).format();
-            await updateEntityAction('board_list', { id: dragging.id, rank });
+            await updateEntityAction({
+              tableName: 'board_list',
+              entityData: { id: dragging.id, rank },
+            });
 
             setLists(
               lists.with(index, {
@@ -140,14 +146,112 @@ export default function BoardLists({
     );
   }, [lists, reorderLists]);
 
+  // Panning the board
+  useEffect(() => {
+    let cleanupActive: CleanupFn | null = null;
+    const scrollable = scrollableRef.current;
+    invariant(scrollable);
+
+    function begin({ startX }: { startX: number }) {
+      let lastX = startX;
+
+      const cleanupEvents = bindAll(
+        window,
+        [
+          {
+            type: 'pointermove',
+            listener(event) {
+              console.log('pointermove');
+              console.log('selected text', window.getSelection()?.toString());
+              const currentX = event.clientX;
+              const diffX = lastX - currentX;
+
+              lastX = currentX;
+              scrollable?.scrollBy({ left: diffX });
+            },
+          },
+          // stop panning if we see any of these events
+          ...(
+            [
+              'pointercancel',
+              'pointerup',
+              'pointerdown',
+              'keydown',
+              'resize',
+              'click',
+              'visibilitychange',
+            ] as const
+          ).map(eventName => ({
+            type: eventName,
+            listener: () => {
+              console.log('cancel');
+              console.log('selected text', window.getSelection()?.toString());
+              cleanupEvents();
+            },
+          })),
+        ],
+        // need to make sure we are not after the "pointerdown" on the scrollable
+        // Also this is helpful to make sure we always hear about events from this point
+        { capture: true },
+      );
+
+      cleanupActive = cleanupEvents;
+    }
+
+    const cleanupStart = bind(scrollable, {
+      type: 'pointerdown',
+      listener(event) {
+        console.log('pointerdown');
+        console.log('selected text', window.getSelection()?.toString());
+        if (!(event.target instanceof HTMLElement)) {
+          return;
+        }
+        // ignore interactive elements
+        if (event.target.closest(`[${blockBoardPanningAttr}]`)) {
+          return;
+        }
+
+        begin({ startX: event.clientX });
+      },
+    });
+
+    return function cleanupAll() {
+      cleanupStart();
+      cleanupActive?.();
+    };
+  }, []);
+
+  // TODO: Consider using a new hook or a generic function for this type of optimistic updates to avoid repetitive code.
+  const addList = useCallback(
+    (name: string) => {
+      const temporalId = crypto.randomUUID();
+      startTransition(async () => {
+        setOptimisticLists(current => [...current, { id: temporalId, name } as TList]);
+
+        try {
+          const lastList = lists.at(-1);
+          const rank = lastList ? LexoRank.parse(lastList.rank).genNext() : LexoRank.middle();
+          const list = await createListAction({ boardId, name, rank: rank.format() });
+          startTransition(async () => setLists(current => [...current, list]));
+        } catch (error) {
+          alert('An error occurred while creating the element');
+        }
+      });
+    },
+    [lists, setOptimisticLists, boardId],
+  );
+
   const updateList = useCallback(
     (listData: TSubsetWithId<TList>) => {
       startTransition(async () => {
         setOptimisticLists(current => updateListObj(current, listData));
 
         try {
-          await updateEntityAction('board_list', listData);
-          setLists(current => updateListObj(current, listData));
+          await updateEntityAction({
+            tableName: 'board_list',
+            entityData: listData,
+          });
+          startTransition(async () => setLists(current => updateListObj(current, listData)));
         } catch (error) {
           // TODO: Show error with a toast
           alert('An error occurred while updating the element');
@@ -157,34 +261,17 @@ export default function BoardLists({
     [startTransition, setOptimisticLists],
   );
 
-  const addList = useCallback(
-    (name: string) => {
-      startTransition(async () => {
-        const temporalId = crypto.randomUUID();
-        setOptimisticLists(current => [...current, { id: temporalId, name } as TList]);
-
-        try {
-          const lastList = lists.at(-1);
-          const rank = lastList ? LexoRank.parse(lastList.rank).genNext() : LexoRank.middle();
-          const list = await createListAction({ boardId, name, rank: rank.format() });
-
-          setLists(current => [...current, list]);
-        } catch (error) {
-          alert('An error occurred while creating the element');
-        }
-      });
-    },
-    [lists, setOptimisticLists, boardId],
-  );
-
   const deleteList = useCallback(
     (id: string) => {
       startTransition(async () => {
         setOptimisticLists(current => current.filter(list => list.id !== id));
 
         try {
-          await deleteEntityAction('board_list', id);
-          setLists(current => current.filter(list => list.id !== id));
+          await deleteEntityAction({
+            tableName: 'board_list',
+            entityId: id,
+          });
+          startTransition(async () => setLists(current => current.filter(list => list.id !== id)));
         } catch (error) {
           // TODO: Show error with a toast
           alert('An error occurred while deleting the element');
@@ -214,8 +301,9 @@ export default function BoardLists({
 
   return (
     <BoardContext.Provider value={contextValue}>
+      hola
       <ul
-        className="scrollbar-transparent flex h-full gap-4 overflow-x-auto p-4"
+        className="scrollbar-transparent flex h-full select-none gap-4 overflow-x-auto p-4"
         ref={scrollableRef}>
         {optimisticLists.map((list, index) => (
           <li className="flex" key={list.id}>

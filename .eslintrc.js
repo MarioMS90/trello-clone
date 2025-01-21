@@ -9,7 +9,7 @@ module.exports = {
     sourceType: 'module',
     project: './tsconfig.json',
   },
-  ignorePatterns: ['.eslintrc.js', 'next.config.mjs'],
+  ignorePatterns: ['.eslintrc.js', 'next.config.mjs', 'postcss.config.mjs'],
   settings: {
     'import/resolver': {
       typescript: {

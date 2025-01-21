@@ -40,10 +40,10 @@ export function CreateList({ buttonText }: { buttonText: string }) {
     <>
       {creatingList ? (
         <div
-          className="flex h-max w-[272px] flex-shrink-0 flex-col gap-4 rounded-xl bg-gray-200 p-2 text-sm text-primary"
+          className="flex h-max w-[272px] flex-shrink-0 flex-col gap-2 rounded-xl bg-gray-200 p-2 text-sm text-primary"
           ref={clickAwayRef}>
           <textarea
-            className="h-8 resize-none overflow-hidden rounded-lg px-2.5 py-1.5 font-semibold outline outline-2 outline-secondary"
+            className="shadow-transition h-8 resize-none overflow-hidden rounded-lg bg-white px-2.5 py-1.5 font-semibold outline-none"
             value={listName}
             onChange={e => {
               setListName(e.target.value);

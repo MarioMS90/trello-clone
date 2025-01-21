@@ -45,9 +45,12 @@ export function WorkspaceSidebar({
 
   return (
     <nav
-      className={cn('relative min-w-[260px] bg-secondary-background text-white transition-all', {
-        'min-w-6': !sidebarExpanded,
-      })}>
+      className={cn(
+        'relative z-10 min-w-[260px] bg-secondary-background text-white transition-all',
+        {
+          'min-w-6': !sidebarExpanded,
+        },
+      )}>
       {!sidebarExpanded && (
         <button
           className="group absolute inset-0 border-r border-r-white border-opacity-30 bg-secondary-background transition-colors hover:bg-primary-background"

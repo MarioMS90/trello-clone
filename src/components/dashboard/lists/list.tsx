@@ -17,6 +17,7 @@ import { attachClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/clos
 import { isSafari } from '@/lib/utils/is-safari';
 import { TListData, isCardData, isListData } from '@/types/drag-types';
 import { resizeTextarea } from '@/lib/utils/utils';
+import { blockBoardPanningAttr } from '@/constants/constants';
 import { Card } from './card';
 import { useBoardContext } from '../boards/board-context';
 
@@ -40,13 +41,13 @@ const listStateStyles: {
 };
 
 export const List = memo(function List({ list, position }: { list: TList; position: number }) {
-  const outerFullHeightRef = useRef<HTMLDivElement>(null);
   const [isOpenPopover, setIsOpenPopover] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [state, setState] = useState<TListState>({ type: 'idle' });
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const outerFullHeightRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { updateList, deleteList } = useBoardContext();
 
   useEffect(() => {
@@ -126,7 +127,8 @@ export const List = memo(function List({ list, position }: { list: TList; positi
     <div className="flex w-[272px] flex-shrink-0 select-none flex-col" ref={outerFullHeightRef}>
       <div
         className={`flex max-h-full flex-col rounded-xl bg-gray-200 text-sm text-primary ${listStateStyles[state.type]}`}
-        ref={innerRef}>
+        ref={innerRef}
+        {...{ [blockBoardPanningAttr]: true }}>
         <div
           className={`flex max-h-full flex-col ${state.type === 'is-dragging-leave' ? 'invisible' : ''}`}>
           <div
@@ -134,7 +136,7 @@ export const List = memo(function List({ list, position }: { list: TList; positi
             ref={headerRef}>
             {isEditing ? (
               <textarea
-                className="grow resize-none overflow-hidden rounded-lg px-2.5 py-1.5 font-semibold outline outline-2 outline-secondary"
+                className="shadow-transition grow resize-none overflow-hidden rounded-lg bg-gray-200 px-2.5 py-1.5 font-semibold outline-none focus:bg-white"
                 defaultValue={list.name}
                 style={{ height: '32px' }}
                 onChange={() => resizeTextarea(textareaRef)}

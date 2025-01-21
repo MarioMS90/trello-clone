@@ -21,8 +21,10 @@ export default function WorkspaceList({ workspaces }: { workspaces: TUserWorkspa
     optimisticUpdate,
     optimisticDelete,
   } = useOptimisticList(workspaces, {
-    updateAction: entityData => updateEntityAction('workspace', entityData),
-    deleteAction: entityId => deleteEntityAction('workspace', entityId),
+    updateAction: entityData =>
+      updateEntityAction({ tableName: 'workspace', entityData, revalidate: true }),
+    deleteAction: entityId =>
+      deleteEntityAction({ tableName: 'workspace', entityId, revalidate: true }),
   });
 
   useEffect(() => {

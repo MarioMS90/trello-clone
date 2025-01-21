@@ -24,8 +24,10 @@ export default function SidebarBoards({
     optimisticUpdate,
     optimisticDelete,
   } = useOptimisticList(boards, {
-    updateAction: entityData => updateEntityAction('board', entityData),
-    deleteAction: entityId => deleteEntityAction('board', entityId),
+    updateAction: entityData =>
+      updateEntityAction({ tableName: 'board', entityData, revalidate: true }),
+    deleteAction: entityId =>
+      deleteEntityAction({ tableName: 'board', entityId, revalidate: true }),
   });
 
   useEffect(() => {

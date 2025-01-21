@@ -111,7 +111,6 @@ export async function createListAction({
     name,
     rank,
   });
-
   if (!validatedFields.success) {
     throw new Error('Missing fields. Failed to create list.');
   }
@@ -140,14 +139,19 @@ export async function globalSearchAction(term: string) {
   return supabase.rpc('search_workspaces_boards_cards', { search_term: term });
 }
 
-export async function updateEntityAction<TableName extends keyof TPublicSchema['Tables']>(
-  relation: TableName,
-  entityData: TablesUpdate<TableName> & { id: string },
-) {
+export async function updateEntityAction<TableName extends keyof TPublicSchema['Tables']>({
+  tableName,
+  entityData,
+  revalidate = false,
+}: {
+  tableName: TableName;
+  entityData: TablesUpdate<TableName> & { id: string };
+  revalidate?: boolean;
+}) {
   const supabase = await createClient();
 
   const { error } = await supabase
-    .from(relation as keyof TPublicSchema['Tables'])
+    .from(tableName as keyof TPublicSchema['Tables'])
     .update(entityData)
     .eq('id', entityData.id);
 
@@ -155,20 +159,29 @@ export async function updateEntityAction<TableName extends keyof TPublicSchema['
     throw error;
   }
 
-  revalidateDashboard();
+  if (revalidate) {
+    revalidateDashboard();
+  }
 }
 
-export async function deleteEntityAction<TableName extends keyof TPublicSchema['Tables']>(
-  relation: TableName,
-  entityId: string,
-) {
+export async function deleteEntityAction<TableName extends keyof TPublicSchema['Tables']>({
+  tableName,
+  entityId,
+  revalidate = false,
+}: {
+  tableName: TableName;
+  entityId: string;
+  revalidate?: boolean;
+}) {
   const supabase = await createClient();
 
-  const { error } = await supabase.from(relation).delete().eq('id', entityId);
+  const { error } = await supabase.from(tableName).delete().eq('id', entityId);
 
   if (error) {
     throw error;
   }
 
-  revalidateDashboard();
+  if (revalidate) {
+    revalidateDashboard();
+  }
 }
