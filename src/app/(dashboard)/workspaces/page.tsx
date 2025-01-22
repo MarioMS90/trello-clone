@@ -1,9 +1,9 @@
-import { Workspaces } from '@/components/dashboard/workspaces/workspaces';
+import { Workspaces } from '@/components/dashboard/workspace/workspaces';
 import { Suspense } from 'react';
 import { BoardsSkeleton } from '@/components/ui/skeletons';
-import { StarredBoards } from '@/components/dashboard/boards/boards';
+import { StarredBoards } from '@/components/dashboard/board/boards';
 import Popover from '@/components/ui/popover';
-import { CreateWorkspace } from '@/components/dashboard/workspaces/create-workspace';
+import { CreateWorkspace } from '@/components/dashboard/workspace/create-workspace';
 
 export default function WorkspacesPage() {
   return (

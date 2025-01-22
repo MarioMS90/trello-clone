@@ -31,7 +31,6 @@ export default function StarToggleBoard({
         updateEntityAction({
           tableName: 'board',
           entityData: { id: board.id, starred: !isStarred },
-          revalidate: true,
         });
       } catch (error) {
         // TODO: Show error with a toast

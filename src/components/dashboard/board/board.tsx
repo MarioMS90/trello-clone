@@ -1,5 +1,5 @@
 import { fetchLists } from '@/lib/data';
-import BoardLists from '@/components/dashboard/boards/board-lists';
+import BoardLists from '@/components/dashboard/board/board-lists';
 
 export default async function Board({ boardId }: { boardId: string }) {
   const lists = await fetchLists(boardId);

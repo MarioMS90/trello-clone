@@ -19,14 +19,14 @@ import {
   useState,
   useTransition,
 } from 'react';
-import { List } from '@/components/dashboard/lists/list';
+import { List } from '@/components/dashboard/list/list';
 import { createListAction, deleteEntityAction, updateEntityAction } from '@/lib/actions';
 import { generateRank, updateListObj } from '@/lib/utils/utils';
 import { LexoRank } from 'lexorank';
 import { CleanupFn } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types';
 import { blockBoardPanningAttr } from '@/constants/constants';
 import { BoardContext, BoardContextValue } from './board-context';
-import { CreateList } from '../lists/create-list';
+import { CreateList } from '../list/create-list';
 
 export default function BoardLists({
   boardId,
@@ -161,8 +161,6 @@ export default function BoardLists({
           {
             type: 'pointermove',
             listener(event) {
-              console.log('pointermove');
-              console.log('selected text', window.getSelection()?.toString());
               const currentX = event.clientX;
               const diffX = lastX - currentX;
 
@@ -184,8 +182,6 @@ export default function BoardLists({
           ).map(eventName => ({
             type: eventName,
             listener: () => {
-              console.log('cancel');
-              console.log('selected text', window.getSelection()?.toString());
               cleanupEvents();
             },
           })),
@@ -201,8 +197,6 @@ export default function BoardLists({
     const cleanupStart = bind(scrollable, {
       type: 'pointerdown',
       listener(event) {
-        console.log('pointerdown');
-        console.log('selected text', window.getSelection()?.toString());
         if (!(event.target instanceof HTMLElement)) {
           return;
         }
@@ -210,6 +204,9 @@ export default function BoardLists({
         if (event.target.closest(`[${blockBoardPanningAttr}]`)) {
           return;
         }
+
+        // Prevent text selected dragging
+        window?.getSelection()?.removeAllRanges();
 
         begin({ startX: event.clientX });
       },
@@ -221,7 +218,6 @@ export default function BoardLists({
     };
   }, []);
 
-  // TODO: Consider using a new hook or a generic function for this type of optimistic updates to avoid repetitive code.
   const addList = useCallback(
     (name: string) => {
       const temporalId = crypto.randomUUID();
@@ -301,10 +297,10 @@ export default function BoardLists({
 
   return (
     <BoardContext.Provider value={contextValue}>
-      hola
       <ul
-        className="scrollbar-transparent flex h-full select-none gap-4 overflow-x-auto p-4"
-        ref={scrollableRef}>
+        className="scrollbar-transparent [-webkit-user-drag: none] flex h-full select-none gap-4 overflow-x-auto p-4"
+        ref={scrollableRef}
+        draggable={false}>
         {optimisticLists.map((list, index) => (
           <li className="flex" key={list.id}>
             <List list={list} position={index} />

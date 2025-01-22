@@ -14,7 +14,7 @@ export default function DashboardLayout({
       <Suspense fallback={<HeaderSkeleton />}>
         <Header />
       </Suspense>
-      <div className="flex grow">
+      <div className="z-0 flex grow">
         <Suspense fallback={<SidebarSkeleton />}>{sidebar}</Suspense>
         <main className="grow bg-main-background text-white">{children}</main>
       </div>

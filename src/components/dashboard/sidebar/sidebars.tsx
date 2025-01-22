@@ -10,7 +10,7 @@ import SidebarBoards from '@/components/dashboard/sidebar/sidebar-boards';
 import { useState } from 'react';
 import { TUserWorkspace } from '@/types/types';
 import { cn } from '@/lib/utils/utils';
-import { CreateBoardPopover } from '../boards/create-board';
+import { CreateBoardPopover } from '../board/create-board';
 
 export function MainSidebar() {
   return (
@@ -96,7 +96,11 @@ export function WorkspaceSidebar({
               buttonText={<PlusIcon height={16} />}
             />
           </div>
-          <SidebarBoards boards={workspace.boards} currentBoardId={boardId} />
+          <SidebarBoards
+            boards={workspace.boards}
+            currentWorkspaceId={workspace.id}
+            currentBoardId={boardId}
+          />
         </div>
       </div>
     </nav>

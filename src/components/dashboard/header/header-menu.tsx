@@ -1,14 +1,14 @@
 'use client';
 
-import { TBoard, TUserWorkspace } from '@/types/types';
+import { TBoard, TSubsetWithId, TUserWorkspace } from '@/types/types';
 import Link from 'next/link';
 import { updateEntityAction } from '@/lib/actions';
 import { useOptimisticList } from '@/hooks/useOptimisticList';
 import Popover from '@/components/ui/popover';
 import ArrowDownIcon from '@/components/icons/arrow-down';
 import WorkspaceBadge from '@/components/ui/workspace-logo';
-import { CreateBoard } from '@/components/dashboard/boards/create-board';
-import StarToggleBoard from '@/components/dashboard/boards/star-toggle-board';
+import { CreateBoard } from '@/components/dashboard/board/create-board';
+import StarToggleBoard from '@/components/dashboard/board/star-toggle-board';
 
 export default function HeaderButtons({
   workspaces,
@@ -17,10 +17,13 @@ export default function HeaderButtons({
   workspaces: TUserWorkspace[];
   starredBoards: TBoard[];
 }) {
-  const { optimisticList: optimisticBoards, optimisticUpdate } = useOptimisticList(starredBoards, {
-    updateAction: entityData =>
-      updateEntityAction({ tableName: 'board', entityData, revalidate: true }),
-  });
+  const { optimisticList: optimisticBoards, optimisticUpdate } = useOptimisticList(starredBoards);
+
+  const handleUpdate = (boardData: TSubsetWithId<TBoard>) => {
+    optimisticUpdate(boardData, () =>
+      updateEntityAction({ tableName: 'board', entityData: boardData }),
+    );
+  };
 
   const workspacesContent = (
     <ul className="space-y-1">
@@ -48,7 +51,7 @@ export default function HeaderButtons({
           </Link>
           <StarToggleBoard
             className="[&]:right-1.5"
-            onStarToggle={() => optimisticUpdate({ id, starred: false })}
+            onStarToggle={() => handleUpdate({ id, starred: false })}
             starred
           />
         </li>
@@ -58,7 +61,7 @@ export default function HeaderButtons({
     <p className="text-center">No starred boards</p>
   );
 
-  const buttons = [
+  const menu = [
     {
       id: 'workspaces',
       text: (
@@ -91,7 +94,7 @@ export default function HeaderButtons({
 
   return (
     <>
-      {buttons.map(({ id, text, popoverContent, triggerClassName }) => (
+      {menu.map(({ id, text, popoverContent, triggerClassName }) => (
         <Popover key={id} triggerClassName={triggerClassName} triggerContent={text}>
           {popoverContent}
         </Popover>

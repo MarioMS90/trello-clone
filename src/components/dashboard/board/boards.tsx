@@ -2,7 +2,7 @@ import { TBoard } from '@/types/types';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getWorkspace, getStarredBoards } from '@/lib/utils/server-utils';
-import StarToggleBoard from '@/components/dashboard/boards/star-toggle-board';
+import StarToggleBoard from '@/components/dashboard/board/star-toggle-board';
 import StarIcon from '../../icons/star';
 import { CreateBoardPopover } from './create-board';
 

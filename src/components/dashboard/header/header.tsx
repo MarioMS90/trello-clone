@@ -5,7 +5,7 @@ import { signOutAction } from '@/lib/auth-actions';
 import AppsIcon from '@/components/icons/apps';
 import Avatar from '@/components/ui/avatar';
 import TrelloWhiteIcon from '@/components/icons/trello-white';
-import HeaderButtons from '@/components/dashboard/header/header-buttons';
+import HeaderButtons from '@/components/dashboard/header/header-menu';
 import HeaderSearch from '@/components/dashboard/header/header-search';
 import Popover from '../../ui/popover';
 
@@ -17,8 +17,9 @@ export default async function Header() {
   return (
     <header
       className="
+        z-10 
         flex 
-        h-12 
+        h-12
         items-center 
         justify-between 
         border-b 

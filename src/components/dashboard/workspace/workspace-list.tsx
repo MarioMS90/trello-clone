@@ -1,7 +1,7 @@
 'use client';
 
-import { BoardList } from '@/components/dashboard/boards/boards';
-import { TUserWorkspace } from '@/types/types';
+import { BoardList } from '@/components/dashboard/board/boards';
+import { TSubsetWithId, TUserWorkspace } from '@/types/types';
 import { useOptimisticList } from '@/hooks/useOptimisticList';
 import BoardsIcon from '@/components/icons/boards';
 import SettingsIcon from '@/components/icons/settings';
@@ -11,7 +11,7 @@ import WorkspaceBadge from '@/components/ui/workspace-logo';
 import { deleteEntityAction, updateEntityAction } from '@/lib/actions';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
-import { CreateBoardPopover } from '../boards/create-board';
+import { CreateBoardPopover } from '../board/create-board';
 
 export default function WorkspaceList({ workspaces }: { workspaces: TUserWorkspace[] }) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -20,18 +20,27 @@ export default function WorkspaceList({ workspaces }: { workspaces: TUserWorkspa
     optimisticList: optimisticWorkspaces,
     optimisticUpdate,
     optimisticDelete,
-  } = useOptimisticList(workspaces, {
-    updateAction: entityData =>
-      updateEntityAction({ tableName: 'workspace', entityData, revalidate: true }),
-    deleteAction: entityId =>
-      deleteEntityAction({ tableName: 'workspace', entityId, revalidate: true }),
-  });
+  } = useOptimisticList(workspaces);
 
   useEffect(() => {
     if (editingWorkspaceId && inputRef.current) {
       inputRef.current.select();
     }
   }, [editingWorkspaceId]);
+
+  const handleUpdate = (workspaceData: TSubsetWithId<TUserWorkspace>) =>
+    optimisticUpdate(workspaceData, () =>
+      updateEntityAction({ tableName: 'board', entityData: workspaceData }),
+    );
+
+  const handleDelete = (workspaceData: TSubsetWithId<TUserWorkspace>) => {
+    optimisticDelete(workspaceData, () =>
+      deleteEntityAction({
+        tableName: 'workspace',
+        entityId: workspaceData.id,
+      }),
+    );
+  };
 
   const btnClassName =
     'flex items-center gap-1.5 rounded bg-gray-300 px-3 py-1.5 text-primary hover:bg-opacity-90 hover:bg-gray-300';
@@ -52,7 +61,7 @@ export default function WorkspaceList({ workspaces }: { workspaces: TUserWorkspa
                   onBlur={e => {
                     const newName = e.target.value.trim();
                     if (newName && workspace.name !== newName) {
-                      optimisticUpdate({ id: workspace.id, name: newName });
+                      handleUpdate({ id: workspace.id, name: newName });
                     }
 
                     setEditingWorkspaceId(null);
@@ -100,7 +109,7 @@ export default function WorkspaceList({ workspaces }: { workspaces: TUserWorkspa
                       </button>
                     </li>
                     <li>
-                      <button type="button" onClick={() => optimisticDelete(workspace)}>
+                      <button type="button" onClick={() => handleDelete(workspace)}>
                         Delete workspace
                       </button>
                     </li>

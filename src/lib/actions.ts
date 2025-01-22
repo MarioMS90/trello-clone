@@ -7,6 +7,7 @@ import {
   CreateWorkspaceSchema,
 } from '@/schemas/workspace-schemas';
 import { TablesUpdate } from '@/types/database-types';
+import { redirect } from 'next/navigation';
 import { createClient } from './supabase/server';
 import { revalidateDashboard } from './utils/server-utils';
 
@@ -142,11 +143,11 @@ export async function globalSearchAction(term: string) {
 export async function updateEntityAction<TableName extends keyof TPublicSchema['Tables']>({
   tableName,
   entityData,
-  revalidate = false,
+  redirectUrl,
 }: {
   tableName: TableName;
   entityData: TablesUpdate<TableName> & { id: string };
-  revalidate?: boolean;
+  redirectUrl?: string;
 }) {
   const supabase = await createClient();
 
@@ -159,19 +160,21 @@ export async function updateEntityAction<TableName extends keyof TPublicSchema['
     throw error;
   }
 
-  if (revalidate) {
-    revalidateDashboard();
+  revalidateDashboard();
+
+  if (redirectUrl) {
+    redirect(redirectUrl);
   }
 }
 
 export async function deleteEntityAction<TableName extends keyof TPublicSchema['Tables']>({
   tableName,
   entityId,
-  revalidate = false,
+  redirectUrl,
 }: {
   tableName: TableName;
   entityId: string;
-  revalidate?: boolean;
+  redirectUrl?: string;
 }) {
   const supabase = await createClient();
 
@@ -181,7 +184,9 @@ export async function deleteEntityAction<TableName extends keyof TPublicSchema['
     throw error;
   }
 
-  if (revalidate) {
-    revalidateDashboard();
+  revalidateDashboard();
+
+  if (redirectUrl) {
+    redirect(redirectUrl);
   }
 }

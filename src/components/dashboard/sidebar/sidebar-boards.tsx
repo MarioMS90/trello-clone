@@ -2,19 +2,21 @@
 
 import Link from 'next/link';
 import clsx from 'clsx';
-import { TBoard } from '@/types/types';
+import { TBoard, TSubsetWithId } from '@/types/types';
 import { useEffect, useRef, useState } from 'react';
 import { deleteEntityAction, updateEntityAction } from '@/lib/actions';
 import { useOptimisticList } from '@/hooks/useOptimisticList';
-import StarToggleBoard from '../boards/star-toggle-board';
+import StarToggleBoard from '../board/star-toggle-board';
 import DotsIcon from '../../icons/dots';
 import Popover from '../../ui/popover';
 
 export default function SidebarBoards({
   boards,
+  currentWorkspaceId,
   currentBoardId,
 }: {
   boards: TBoard[];
+  currentWorkspaceId: string;
   currentBoardId?: string;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -23,12 +25,7 @@ export default function SidebarBoards({
     optimisticList: optimisticBoards,
     optimisticUpdate,
     optimisticDelete,
-  } = useOptimisticList(boards, {
-    updateAction: entityData =>
-      updateEntityAction({ tableName: 'board', entityData, revalidate: true }),
-    deleteAction: entityId =>
-      deleteEntityAction({ tableName: 'board', entityId, revalidate: true }),
-  });
+  } = useOptimisticList(boards);
 
   useEffect(() => {
     if (editingBoardId && inputRef.current) {
@@ -36,10 +33,38 @@ export default function SidebarBoards({
     }
   }, [editingBoardId]);
 
+  const handleUpdate = (boardData: TSubsetWithId<TBoard>) => {
+    optimisticUpdate(boardData, () =>
+      updateEntityAction({ tableName: 'board', entityData: boardData }),
+    );
+  };
+
+  const handleDelete = (boardData: TSubsetWithId<TBoard>) => {
+    let redirectUrl: string | undefined;
+    if (currentBoardId === boardData.id) {
+      redirectUrl = `/workspaces/${currentWorkspaceId}`;
+    }
+
+    optimisticDelete(boardData, () =>
+      deleteEntityAction({
+        tableName: 'board',
+        entityId: boardData.id,
+        redirectUrl,
+      }),
+    );
+  };
+
   return (
     <ul>
       {optimisticBoards.map((board, index) => (
-        <li className="group relative" key={board.id}>
+        <li
+          className={clsx(
+            'group relative [&:hover:not(:has(.popover:hover))]:bg-button-hovered-background',
+            {
+              'bg-button-hovered-background': currentBoardId === board.id,
+            },
+          )}
+          key={board.id}>
           {editingBoardId === board.id || index === 5 ? (
             <div className="py-0.5 pl-4 pr-[74px]">
               <input
@@ -50,7 +75,7 @@ export default function SidebarBoards({
                 onBlur={e => {
                   const newName = e.target.value.trim();
                   if (newName && board.name !== newName) {
-                    optimisticUpdate({ id: board.id, name: newName });
+                    handleUpdate({ id: board.id, name: newName });
                   }
                   setEditingBoardId(null);
                 }}
@@ -68,17 +93,12 @@ export default function SidebarBoards({
             </div>
           ) : (
             <Link
-              className={clsx(
-                'block overflow-hidden text-ellipsis py-2 pl-4 pr-[70px] hover:bg-button-hovered-background',
-                {
-                  'bg-button-hovered-background': currentBoardId === board.id,
-                },
-              )}
+              className={clsx('block overflow-hidden text-ellipsis py-2 pl-4 pr-[70px] ')}
               href={`/boards/${board.id}`}>
               {board.name}
             </Link>
           )}
-          <div className="center-y absolute right-11 z-10 hidden group-hover:block has-[.popover-wrapper>.popover]:block">
+          <div className="center-y absolute right-11 z-10 hidden group-hover:block has-[.popover]:block">
             <Popover
               triggerContent={<DotsIcon height={16} />}
               triggerClassName="[&]:p-1"
@@ -90,7 +110,7 @@ export default function SidebarBoards({
                   </button>
                 </li>
                 <li>
-                  <button type="button" onClick={() => optimisticDelete(board)}>
+                  <button type="button" onClick={() => handleDelete(board)}>
                     Delete board
                   </button>
                 </li>
@@ -99,14 +119,19 @@ export default function SidebarBoards({
           </div>
 
           <StarToggleBoard
-            className={clsx('hidden group-hover:block', {
+            className={clsx('hidden group-[:hover:not(:has(.popover:hover))]:block', {
               '[&]:block': board.starred,
             })}
             starred={board.starred}
-            onStarToggle={() => optimisticUpdate({ id: board.id, starred: !board.starred })}
+            onStarToggle={() => handleUpdate({ id: board.id, starred: !board.starred })}
           />
         </li>
       ))}
     </ul>
   );
 }
+
+// updateAction: entityData =>
+//   updateEntityAction({ tableName: 'board', entityData, revalidate: true }),
+// deleteAction: entityId =>
+//   deleteEntityAction({ tableName: 'board', entityId, revalidate: true }),

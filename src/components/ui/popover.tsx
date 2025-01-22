@@ -71,6 +71,7 @@ export default function Popover({
             p-3 
             text-primary
             shadow-lg
+            outline-none
             ${popoverClassName}
           `}>
           {addCloseButton && (

@@ -6,7 +6,7 @@ import invariant from 'tiny-invariant';
 import PlusIcon from '@/components/icons/plus';
 import { useClickAway } from '@uidotdev/usehooks';
 import { resizeTextarea } from '@/lib/utils/utils';
-import { useBoardContext } from '../boards/board-context';
+import { useBoardContext } from '../board/board-context';
 
 export function CreateList({ buttonText }: { buttonText: string }) {
   const [creatingList, setCreatingList] = useState(false);
@@ -43,7 +43,7 @@ export function CreateList({ buttonText }: { buttonText: string }) {
           className="flex h-max w-[272px] flex-shrink-0 flex-col gap-2 rounded-xl bg-gray-200 p-2 text-sm text-primary"
           ref={clickAwayRef}>
           <textarea
-            className="shadow-transition h-8 resize-none overflow-hidden rounded-lg bg-white px-2.5 py-1.5 font-semibold outline-none"
+            className="shadow-transition focus:shadow-transition-effect h-8 resize-none overflow-hidden rounded-lg bg-white px-2.5 py-1.5 font-semibold outline-none"
             value={listName}
             onChange={e => {
               setListName(e.target.value);

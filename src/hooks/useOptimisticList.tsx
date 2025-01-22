@@ -1,6 +1,7 @@
 'use client';
 
 import { TSubsetWithId } from '@/types/types';
+import { isRedirectError } from 'next/dist/client/components/redirect';
 import { useOptimistic, useTransition } from 'react';
 
 enum Action {
@@ -8,16 +9,7 @@ enum Action {
   Delete = 'delete',
 }
 
-export function useOptimisticList<T extends { id: string }>(
-  list: T[],
-  {
-    updateAction,
-    deleteAction,
-  }: {
-    updateAction?: (element: TSubsetWithId<T>) => void;
-    deleteAction?: (id: string) => void;
-  },
-) {
+export function useOptimisticList<T extends { id: string }>(list: T[]) {
   const [isPending, startTransition] = useTransition();
   const [optimisticList, setOptimisticList] = useOptimistic<
     T[],
@@ -35,34 +27,32 @@ export function useOptimisticList<T extends { id: string }>(
     }
   });
 
-  const optimisticUpdate = async (entityData: TSubsetWithId<T>) => {
-    if (!updateAction) {
-      return;
-    }
-
-    startTransition(() => {
+  const optimisticUpdate = (entityData: TSubsetWithId<T>, callbackAction: () => Promise<void>) => {
+    startTransition(async () => {
       setOptimisticList({ action: Action.Update, entityData });
 
       try {
-        updateAction(entityData);
+        await callbackAction();
       } catch (error) {
+        if (isRedirectError(error)) {
+          throw error;
+        }
         // TODO: Show error with a toast
         alert('An error occurred while updating the element');
       }
     });
   };
 
-  const optimisticDelete = async (entityData: TSubsetWithId<T>) => {
-    if (!deleteAction) {
-      return;
-    }
-
-    startTransition(() => {
+  const optimisticDelete = (entityData: TSubsetWithId<T>, callbackAction: () => Promise<void>) => {
+    startTransition(async () => {
       setOptimisticList({ action: Action.Delete, entityData });
 
       try {
-        deleteAction(entityData.id);
+        await callbackAction();
       } catch (error) {
+        if (isRedirectError(error)) {
+          throw error;
+        }
         // TODO: Show error with a toast
         alert('An error occurred while deleting the element');
       }

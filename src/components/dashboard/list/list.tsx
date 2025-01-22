@@ -19,7 +19,7 @@ import { TListData, isCardData, isListData } from '@/types/drag-types';
 import { resizeTextarea } from '@/lib/utils/utils';
 import { blockBoardPanningAttr } from '@/constants/constants';
 import { Card } from './card';
-import { useBoardContext } from '../boards/board-context';
+import { useBoardContext } from '../board/board-context';
 
 type TListState =
   | { type: 'idle' }
@@ -37,7 +37,7 @@ const listStateStyles: {
 } = {
   idle: '',
   'is-dragging': 'opacity-40',
-  'is-dragging-leave': 'opacity-60 bg-secondary-background',
+  'is-dragging-leave': 'opacity-60 [&]:bg-secondary-background',
 };
 
 export const List = memo(function List({ list, position }: { list: TList; position: number }) {
@@ -124,9 +124,9 @@ export const List = memo(function List({ list, position }: { list: TList; positi
   }, [isEditing]);
 
   return (
-    <div className="flex w-[272px] flex-shrink-0 select-none flex-col" ref={outerFullHeightRef}>
+    <div className="flex w-[272px] flex-shrink-0 flex-col" ref={outerFullHeightRef}>
       <div
-        className={`flex max-h-full flex-col rounded-xl bg-gray-200 text-sm text-primary ${listStateStyles[state.type]}`}
+        className={`flex max-h-full flex-col rounded-xl bg-[#f1f2f4] text-sm text-primary ${listStateStyles[state.type]}`}
         ref={innerRef}
         {...{ [blockBoardPanningAttr]: true }}>
         <div
@@ -136,7 +136,7 @@ export const List = memo(function List({ list, position }: { list: TList; positi
             ref={headerRef}>
             {isEditing ? (
               <textarea
-                className="shadow-transition grow resize-none overflow-hidden rounded-lg bg-gray-200 px-2.5 py-1.5 font-semibold outline-none focus:bg-white"
+                className="shadow-transition focus:shadow-transition-effect grow resize-none overflow-hidden rounded-lg bg-gray-200 px-2.5 py-1.5 font-semibold outline-none focus:bg-white"
                 defaultValue={list.name}
                 style={{ height: '32px' }}
                 onChange={() => resizeTextarea(textareaRef)}
