@@ -32,6 +32,13 @@ module.exports = {
     '@typescript-eslint/no-use-before-define': 'off',
     'react/jsx-no-useless-fragment': 'off',
     'prefer-arrow-callback': ['error', { allowNamedFunctions: true }],
-    'no-alert': 'off',
+    'no-alert': 'off', // Temporary
+    'react/jsx-props-no-spreading': [
+      'error',
+      {
+        html: 'ignore',
+        exceptions: ['ListDisplay', 'CardDisplay'],
+      },
+    ],
   },
 };

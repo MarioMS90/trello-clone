@@ -1,9 +1,9 @@
 'use client';
 
-import { TList } from '@/types/types';
+import { TList, TSubsetWithId } from '@/types/types';
 import DotsIcon from '@/components/icons/dots';
 import PlusIcon from '@/components/icons/plus';
-import { memo, useEffect, useRef, useState } from 'react';
+import { Dispatch, memo, RefObject, SetStateAction, useEffect, useRef, useState } from 'react';
 import Popover from '@/components/ui/popover';
 import invariant from 'tiny-invariant';
 import {
@@ -16,8 +16,9 @@ import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
 import { attachClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
 import { isSafari } from '@/lib/utils/is-safari';
 import { TListData, isCardData, isListData } from '@/types/drag-types';
-import { resizeTextarea } from '@/lib/utils/utils';
+import { cn, resizeTextarea } from '@/lib/utils/utils';
 import { blockBoardPanningAttr } from '@/constants/constants';
+import { createPortal } from 'react-dom';
 import { Card } from './card';
 import { useBoardContext } from '../board/board-context';
 
@@ -27,119 +28,75 @@ type TListState =
       type: 'is-dragging';
     }
   | {
-      type: 'is-dragging-leave';
+      type: 'is-dragging-and-left-self';
+    }
+  | {
+      type: 'preview';
+      container: HTMLElement;
+      dragging: DOMRect;
     };
 
-const idle: TListState = { type: 'idle' };
-
 const listStateStyles: {
-  [key in TListState['type']]: string;
+  [key in TListState['type']]?: string;
 } = {
-  idle: '',
+  idle: 'idle',
   'is-dragging': 'opacity-40',
-  'is-dragging-leave': 'opacity-60 [&]:bg-secondary-background',
+  'is-dragging-and-left-self': 'opacity-60 [&]:bg-secondary-background',
 };
 
-export const List = memo(function List({ list, position }: { list: TList; position: number }) {
-  const [isOpenPopover, setIsOpenPopover] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [state, setState] = useState<TListState>({ type: 'idle' });
-  const outerFullHeightRef = useRef<HTMLDivElement>(null);
-  const headerRef = useRef<HTMLDivElement>(null);
-  const innerRef = useRef<HTMLDivElement>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const { updateList, deleteList } = useBoardContext();
-
-  useEffect(() => {
-    const header = headerRef.current;
-    const inner = innerRef.current;
-    const outer = outerFullHeightRef.current;
-    invariant(header);
-    invariant(inner);
-    invariant(outer);
-
-    const data: TListData = { type: 'list', id: list.id, originalPosition: position };
-
-    return combine(
-      draggable({
-        element: header,
-        getInitialData: () => data,
-        canDrag: () => !isEditing,
-        onGenerateDragPreview: ({ source, location, nativeSetDragImage }) => {
-          setCustomNativeDragPreview({
-            getOffset: preserveOffsetOnSource({
-              element: source.element,
-              input: location.current.input,
-            }),
-            render: ({ container }) => {
-              const rect = inner.getBoundingClientRect();
-              const preview = inner.cloneNode(true);
-              invariant(preview instanceof HTMLElement);
-              preview.style.width = `${rect.width}px`;
-              preview.style.height = `${rect.height}px`;
-
-              // rotation of native drag previews does not work in safari
-              if (!isSafari()) {
-                preview.style.transform = 'rotate(4deg)';
-              }
-
-              container.appendChild(preview);
-            },
-            nativeSetDragImage,
-          });
-        },
-        onDragStart: () => setState({ type: 'is-dragging' }),
-        onDrop: () => {
-          setState(idle);
-        },
-      }),
-      dropTargetForElements({
-        element: outer,
-        getData: ({ input, element }) =>
-          attachClosestEdge(data, {
-            input,
-            element,
-            allowedEdges: ['left', 'right'],
-          }),
-        canDrop({ source }) {
-          return isListData(source.data) || isCardData(source.data);
-        },
-        getIsSticky: () => true,
-        onDragLeave({ source }) {
-          if (isListData(source.data) && source.data.id === list.id) {
-            setState({ type: 'is-dragging-leave' });
-          }
-        },
-      }),
-    );
-  }, [list, position, isEditing]);
-
-  useEffect(() => {
-    const textarea = textareaRef.current;
-    if (isEditing && textarea) {
-      resizeTextarea(textareaRef);
-      setIsOpenPopover(false);
-      textarea.select();
-    }
-  }, [isEditing]);
-
+export const ListDisplay = memo(function ListDisplay({
+  list,
+  state,
+  isEditing,
+  setIsEditing,
+  isOpenPopover,
+  setIsOpenPopover,
+  updateList,
+  deleteList,
+  outerFullHeightRef,
+  innerRef,
+  headerRef,
+  textareaRef,
+}: {
+  list: TList;
+  state: TListState;
+  isEditing: boolean;
+  setIsEditing: Dispatch<SetStateAction<boolean>>;
+  isOpenPopover: boolean;
+  setIsOpenPopover: Dispatch<SetStateAction<boolean>>;
+  updateList: (listData: TSubsetWithId<TList>) => void;
+  deleteList: (id: string) => void;
+  outerFullHeightRef?: RefObject<HTMLDivElement | null>;
+  innerRef?: RefObject<HTMLDivElement | null>;
+  headerRef?: RefObject<HTMLDivElement | null>;
+  textareaRef?: RefObject<HTMLTextAreaElement | null>;
+}) {
   return (
     <div className="flex w-[272px] flex-shrink-0 flex-col" ref={outerFullHeightRef}>
       <div
-        className={`flex max-h-full flex-col rounded-xl bg-[#f1f2f4] text-sm text-primary ${listStateStyles[state.type]}`}
+        className={cn(
+          'flex max-h-full flex-col rounded-xl bg-[#f1f2f4] text-sm text-primary',
+          listStateStyles[state.type],
+          {
+            'rotate-[4deg]': state.type === 'preview' && !isSafari(),
+          },
+        )}
         ref={innerRef}
         {...{ [blockBoardPanningAttr]: true }}>
         <div
-          className={`flex max-h-full flex-col ${state.type === 'is-dragging-leave' ? 'invisible' : ''}`}>
+          className={cn('flex max-h-full flex-col', {
+            invisible: state.type === 'is-dragging-and-left-self',
+          })}>
           <div
             className="flex cursor-pointer items-center justify-between px-2 pt-2"
             ref={headerRef}>
-            {isEditing ? (
+            {isEditing && textareaRef ? (
               <textarea
                 className="shadow-transition focus:shadow-transition-effect grow resize-none overflow-hidden rounded-lg bg-gray-200 px-2.5 py-1.5 font-semibold outline-none focus:bg-white"
                 defaultValue={list.name}
                 style={{ height: '32px' }}
                 onChange={() => resizeTextarea(textareaRef)}
+                draggable={false}
                 onBlur={e => {
                   const newName = e.target.value.trim();
                   if (newName && list.name !== newName) {
@@ -215,5 +172,106 @@ export const List = memo(function List({ list, position }: { list: TList; positi
         </div>
       </div>
     </div>
+  );
+});
+
+const idle: TListState = { type: 'idle' };
+
+export const List = memo(function List({ list, position }: { list: TList; position: number }) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [isOpenPopover, setIsOpenPopover] = useState(false);
+  const [state, setState] = useState<TListState>(idle);
+  const outerFullHeightRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const { updateList, deleteList } = useBoardContext();
+
+  useEffect(() => {
+    const header = headerRef.current;
+    const inner = innerRef.current;
+    const outer = outerFullHeightRef.current;
+
+    invariant(inner);
+    invariant(outer);
+    invariant(header);
+
+    const data: TListData = { type: 'list', id: list.id, originalPosition: position };
+
+    return combine(
+      draggable({
+        element: header,
+        getInitialData: () => data,
+        canDrag: () => true,
+        onGenerateDragPreview: ({ source, location, nativeSetDragImage }) => {
+          invariant(isListData(source.data));
+          setCustomNativeDragPreview({
+            nativeSetDragImage,
+            getOffset: preserveOffsetOnSource({ element: inner, input: location.current.input }),
+            render({ container }) {
+              setState({
+                type: 'preview',
+                container,
+                dragging: inner.getBoundingClientRect(),
+              });
+            },
+          });
+        },
+        onDragStart: () => setState({ type: 'is-dragging' }),
+        onDrop: () => {
+          setState(idle);
+        },
+      }),
+      dropTargetForElements({
+        element: outer,
+        getData: ({ input, element }) =>
+          attachClosestEdge(data, {
+            input,
+            element,
+            allowedEdges: ['left', 'right'],
+          }),
+        canDrop({ source }) {
+          return isListData(source.data) || isCardData(source.data);
+        },
+        getIsSticky: () => true,
+        onDragLeave({ source }) {
+          if (isListData(source.data) && source.data.id === list.id) {
+            setState({ type: 'is-dragging-and-left-self' });
+          }
+        },
+      }),
+    );
+  }, [list, position]);
+
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (isEditing && textarea) {
+      resizeTextarea(textareaRef);
+      setIsOpenPopover(false);
+      textarea.select();
+    }
+  }, [isEditing]);
+
+  const listDisplayProps = {
+    list,
+    state,
+    isEditing,
+    setIsEditing,
+    isOpenPopover,
+    setIsOpenPopover,
+    updateList,
+    deleteList,
+  };
+
+  return (
+    <>
+      <ListDisplay
+        {...listDisplayProps}
+        {...{ outerFullHeightRef, innerRef, headerRef, textareaRef }}
+      />
+      {state.type === 'preview'
+        ? createPortal(<ListDisplay {...listDisplayProps} />, state.container)
+        : null}
+    </>
   );
 });
