@@ -11,6 +11,7 @@ import WorkspaceBadge from '@/components/ui/workspace-logo';
 import { deleteEntityAction, updateEntityAction } from '@/lib/actions';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
+import EditableText from '@/components/ui/editable-text';
 import { CreateBoardPopover } from '../board/create-board';
 
 export default function WorkspaceList({ workspaces }: { workspaces: TUserWorkspace[] }) {
@@ -52,41 +53,21 @@ export default function WorkspaceList({ workspaces }: { workspaces: TUserWorkspa
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-3">
               <WorkspaceBadge workspaceName={workspace.name} />
-              {editingWorkspaceId === workspace.id ? (
-                <input
-                  type="text"
-                  className="w-48 rounded-lg border-none px-2 py-1 font-bold text-primary outline-offset-0 outline-secondary"
-                  defaultValue={workspace.name}
-                  ref={inputRef}
-                  onBlur={e => {
-                    const newName = e.target.value.trim();
-                    if (newName && workspace.name !== newName) {
-                      handleUpdate({ id: workspace.id, name: newName });
-                    }
-
-                    setEditingWorkspaceId(null);
-                  }}
-                  onKeyDown={e => {
-                    if (e.key === 'Enter') {
-                      e.currentTarget.blur();
-                    }
-                  }}
-                  onKeyUp={e => {
-                    if (e.key === 'Escape') {
-                      setEditingWorkspaceId(null);
-                    }
-                  }}
-                />
-              ) : (
-                <button
-                  type="button"
-                  className="font-bold"
-                  onMouseUp={() => {
+              <EditableText
+                className="text-base font-bold text-white [&>input:focus]:shadow-none [&>input]:w-48 [&>input]:rounded-lg"
+                defaultText={workspace.name}
+                onEdit={name => handleUpdate({ id: workspace.id, name })}
+                editing={editingWorkspaceId === workspace.id}
+                onEditingChange={isEditing => {
+                  if (isEditing) {
                     setEditingWorkspaceId(workspace.id);
-                  }}>
-                  <h3>{workspace.name}</h3>
-                </button>
-              )}
+                  } else {
+                    setEditingWorkspaceId(null);
+                  }
+                }}
+                editOnClick>
+                <h3>{workspace.name}</h3>
+              </EditableText>
             </div>
             <ul className="flex items-center gap-4 text-sm">
               <li>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import CloseIcon from '@/components/icons/close';
 import invariant from 'tiny-invariant';
 import PlusIcon from '@/components/icons/plus';
@@ -10,17 +10,12 @@ import { useBoardContext } from '../board/board-context';
 
 export function CreateList({ buttonText }: { buttonText: string }) {
   const [creatingList, setCreatingList] = useState(false);
-  const [listName, setListName] = useState('');
+
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { addList } = useBoardContext();
   const clickAwayRef = useClickAway<HTMLDivElement>(() => {
     setCreatingList(false);
-    setListName('');
   });
-
-  useEffect(() => {
-    resizeTextarea(textareaRef);
-  }, [listName]);
 
   const handleSubmit = () => {
     const textarea = textareaRef.current;
@@ -32,7 +27,7 @@ export function CreateList({ buttonText }: { buttonText: string }) {
     }
 
     addList(name);
-    setListName('');
+    textarea.value = '';
     textarea.focus();
   };
 
@@ -43,26 +38,22 @@ export function CreateList({ buttonText }: { buttonText: string }) {
           className="flex h-max w-[272px] flex-shrink-0 flex-col gap-2 rounded-xl bg-gray-200 p-2 text-sm text-primary"
           ref={clickAwayRef}>
           <textarea
-            className="shadow-transition focus:shadow-transition-effect h-8 resize-none overflow-hidden rounded-lg bg-white px-2.5 py-1.5 font-semibold outline-none"
-            value={listName}
-            onChange={e => {
-              setListName(e.target.value);
-            }}
-            rows={1}
-            onKeyUp={e => {
-              if (e.key === 'Escape') {
-                setCreatingList(false);
-                setListName('');
-              }
-            }}
+            className="shadow-transition focus:shadow-transition-effect resize-none overflow-hidden rounded-md bg-white px-2.5 py-1.5 font-semibold outline-none"
+            onChange={() => resizeTextarea(textareaRef)}
             onKeyDown={e => {
               if (e.key === 'Enter') {
                 e.preventDefault();
                 handleSubmit();
               }
             }}
+            onKeyUp={e => {
+              if (e.key === 'Escape') {
+                setCreatingList(false);
+              }
+            }}
             ref={textareaRef}
-            autoFocus></textarea>
+            autoFocus
+            rows={1}></textarea>
           <div className="flex gap-2">
             <button
               className="
@@ -86,7 +77,6 @@ export function CreateList({ buttonText }: { buttonText: string }) {
               type="button"
               onClick={() => {
                 setCreatingList(false);
-                setListName('');
               }}>
               <span className="pointer-events-none">
                 <CloseIcon height={20} />

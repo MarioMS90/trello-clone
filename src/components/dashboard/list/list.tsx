@@ -1,9 +1,9 @@
 'use client';
 
-import { TList, TSubsetWithId } from '@/types/types';
+import { TList } from '@/types/types';
 import DotsIcon from '@/components/icons/dots';
 import PlusIcon from '@/components/icons/plus';
-import { Dispatch, memo, RefObject, SetStateAction, useEffect, useRef, useState } from 'react';
+import { memo, RefObject, useEffect, useRef, useState } from 'react';
 import Popover from '@/components/ui/popover';
 import invariant from 'tiny-invariant';
 import {
@@ -16,9 +16,10 @@ import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
 import { attachClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
 import { isSafari } from '@/lib/utils/is-safari';
 import { TListData, isCardData, isListData } from '@/types/drag-types';
-import { cn, resizeTextarea } from '@/lib/utils/utils';
-import { blockBoardPanningAttr } from '@/constants/constants';
+import { cn } from '@/lib/utils/utils';
+import { blockBoardPanningAttr, blockListDraggingAttr } from '@/constants/constants';
 import { createPortal } from 'react-dom';
+import EditableText from '@/components/ui/editable-text';
 import { Card } from './card';
 import { useBoardContext } from '../board/board-context';
 
@@ -47,30 +48,20 @@ const listStateStyles: {
 export const ListDisplay = memo(function ListDisplay({
   list,
   state,
-  isEditing,
-  setIsEditing,
-  isOpenPopover,
-  setIsOpenPopover,
-  updateList,
-  deleteList,
   outerFullHeightRef,
   innerRef,
   headerRef,
-  textareaRef,
 }: {
   list: TList;
   state: TListState;
-  isEditing: boolean;
-  setIsEditing: Dispatch<SetStateAction<boolean>>;
-  isOpenPopover: boolean;
-  setIsOpenPopover: Dispatch<SetStateAction<boolean>>;
-  updateList: (listData: TSubsetWithId<TList>) => void;
-  deleteList: (id: string) => void;
   outerFullHeightRef?: RefObject<HTMLDivElement | null>;
   innerRef?: RefObject<HTMLDivElement | null>;
   headerRef?: RefObject<HTMLDivElement | null>;
-  textareaRef?: RefObject<HTMLTextAreaElement | null>;
 }) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [isOpenPopover, setIsOpenPopover] = useState(false);
+  const { updateList, deleteList } = useBoardContext();
+
   return (
     <div className="flex w-[272px] flex-shrink-0 flex-col" ref={outerFullHeightRef}>
       <div
@@ -88,44 +79,19 @@ export const ListDisplay = memo(function ListDisplay({
             invisible: state.type === 'is-dragging-and-left-self',
           })}>
           <div
-            className="flex cursor-pointer items-center justify-between px-2 pt-2"
-            ref={headerRef}>
-            {isEditing && textareaRef ? (
-              <textarea
-                className="shadow-transition focus:shadow-transition-effect grow resize-none overflow-hidden rounded-lg bg-gray-200 px-2.5 py-1.5 font-semibold outline-none focus:bg-white"
-                defaultValue={list.name}
-                style={{ height: '32px' }}
-                onChange={() => resizeTextarea(textareaRef)}
-                draggable={false}
-                onBlur={e => {
-                  const newName = e.target.value.trim();
-                  if (newName && list.name !== newName) {
-                    updateList({ id: list.id, name: newName });
-                  }
-                  setIsEditing(false);
-                }}
-                onKeyDown={e => {
-                  if (e.key === 'Enter') {
-                    e.currentTarget.blur();
-                  }
-                }}
-                onKeyUp={e => {
-                  if (e.key === 'Escape') {
-                    e.preventDefault();
-                    setIsEditing(false);
-                  }
-                }}
-                ref={textareaRef}></textarea>
-            ) : (
-              <button
-                type="button"
-                className="grow px-2.5 py-1.5 text-left font-semibold"
-                onMouseUp={() => {
-                  setIsEditing(true);
-                }}>
-                <h3 className="[overflow-wrap:anywhere]">{list.name}</h3>
-              </button>
-            )}
+            className="flex cursor-pointer justify-between px-2 pt-2"
+            ref={headerRef}
+            {...(isEditing && { [blockListDraggingAttr]: true })}>
+            <EditableText
+              className="[&>button]px-2.5 font-semibold [&>textarea]:px-2.5"
+              defaultText={list.name}
+              onEdit={name => updateList({ id: list.id, name })}
+              autoResize
+              editOnClick
+              editing={isEditing}
+              onEditingChange={setIsEditing}>
+              <h3 className="[overflow-wrap:anywhere]">{list.name}</h3>
+            </EditableText>
             <Popover
               triggerContent={
                 <span className="relative flex size-8 rounded-lg hover:bg-gray-300">
@@ -140,12 +106,22 @@ export const ListDisplay = memo(function ListDisplay({
               onOpenChange={setIsOpenPopover}>
               <ul className="text-sm [&>li>button:hover]:bg-gray-200 [&>li>button]:w-full [&>li>button]:px-3 [&>li>button]:py-2 [&>li>button]:text-left">
                 <li>
-                  <button type="button" onClick={() => setIsEditing(true)}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsEditing(true);
+                      setIsOpenPopover(false);
+                    }}>
                     Rename list
                   </button>
                 </li>
                 <li>
-                  <button type="button" onClick={() => deleteList(list.id)}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      deleteList(list.id);
+                      setIsOpenPopover(false);
+                    }}>
                     Delete list
                   </button>
                 </li>
@@ -154,14 +130,14 @@ export const ListDisplay = memo(function ListDisplay({
           </div>
           {!!list.cards?.length && (
             <div className="overflow-y-auto [overflow-anchor:none] [scrollbar-width:thin]">
-              <ul className="flex flex-col gap-2 p-2">
+              <ul className="flex flex-col gap-2 px-2 pb-0.5 pt-2">
                 {list.cards.map(card => (
                   <Card key={card.id} card={card} />
                 ))}
               </ul>
             </div>
           )}
-          <div className="p-2">
+          <div className="px-2 pb-2 pt-2">
             <button
               type="button"
               className="flex w-full items-center gap-2 rounded-lg p-1.5 text-sm hover:bg-gray-300">
@@ -178,14 +154,10 @@ export const ListDisplay = memo(function ListDisplay({
 const idle: TListState = { type: 'idle' };
 
 export const List = memo(function List({ list, position }: { list: TList; position: number }) {
-  const [isEditing, setIsEditing] = useState(false);
-  const [isOpenPopover, setIsOpenPopover] = useState(false);
   const [state, setState] = useState<TListState>(idle);
   const outerFullHeightRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const { updateList, deleteList } = useBoardContext();
 
   useEffect(() => {
     const header = headerRef.current;
@@ -202,7 +174,7 @@ export const List = memo(function List({ list, position }: { list: TList; positi
       draggable({
         element: header,
         getInitialData: () => data,
-        canDrag: () => true,
+        canDrag: ({ element }) => !element.getAttribute(blockListDraggingAttr),
         onGenerateDragPreview: ({ source, location, nativeSetDragImage }) => {
           invariant(isListData(source.data));
           setCustomNativeDragPreview({
@@ -243,34 +215,11 @@ export const List = memo(function List({ list, position }: { list: TList; positi
     );
   }, [list, position]);
 
-  useEffect(() => {
-    const textarea = textareaRef.current;
-    if (isEditing && textarea) {
-      resizeTextarea(textareaRef);
-      setIsOpenPopover(false);
-      textarea.select();
-    }
-  }, [isEditing]);
-
-  const listDisplayProps = {
-    list,
-    state,
-    isEditing,
-    setIsEditing,
-    isOpenPopover,
-    setIsOpenPopover,
-    updateList,
-    deleteList,
-  };
-
   return (
     <>
-      <ListDisplay
-        {...listDisplayProps}
-        {...{ outerFullHeightRef, innerRef, headerRef, textareaRef }}
-      />
+      <ListDisplay {...{ list, state, outerFullHeightRef, innerRef, headerRef }} />
       {state.type === 'preview'
-        ? createPortal(<ListDisplay {...listDisplayProps} />, state.container)
+        ? createPortal(<ListDisplay {...{ list, state }} />, state.container)
         : null}
     </>
   );

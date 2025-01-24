@@ -9,28 +9,32 @@ export default function Popover({
   triggerClassName,
   popoverClassName,
   children: popoverContent,
+  addCloseButton,
   open = false,
   onOpenChange,
-  addCloseButton,
 }: {
   triggerContent: React.ReactNode;
   triggerClassName?: string;
   popoverClassName?: string;
   children: React.ReactNode;
+  addCloseButton?: boolean;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
-  addCloseButton?: boolean;
 }) {
   const [isOpen, setIsOpen] = useState(open);
   const clickAwayRef = useClickAway<HTMLDivElement>(() => {
+    if (!isOpen) {
+      return;
+    }
+
     handleOpenChange(false);
   });
 
-  const handleOpenChange = (state: boolean) => {
-    setIsOpen(state);
+  const handleOpenChange = (openState: boolean) => {
+    setIsOpen(openState);
 
     if (onOpenChange) {
-      onOpenChange(state);
+      onOpenChange(openState);
     }
   };
 
@@ -89,7 +93,7 @@ export default function Popover({
                 hover:bg-gray-300
               "
               type="button"
-              onClick={() => handleOpenChange(false)}>
+              onMouseUp={() => handleOpenChange(false)}>
               <span className="pointer-events-none">
                 <CloseIcon height={16} />
               </span>

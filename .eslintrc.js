@@ -37,7 +37,7 @@ module.exports = {
       'error',
       {
         html: 'ignore',
-        exceptions: ['ListDisplay', 'CardDisplay'],
+        explicitSpread: 'ignore',
       },
     ],
   },

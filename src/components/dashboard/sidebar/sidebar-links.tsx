@@ -1,9 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import clsx from 'clsx';
 import { TUserWorkspace } from '@/types/types';
 import { usePathname } from 'next/navigation';
+import { cn } from '@/lib/utils/utils';
 import BoardsIcon from '../../icons/boards';
 import UserIcon from '../../icons/user';
 
@@ -29,7 +29,7 @@ export default function SidebarLinks({ workspace }: { workspace: TUserWorkspace 
         <li key={link.name}>
           <Link key={link.name} href={link.href}>
             <div
-              className={clsx('py-2 hover:bg-button-hovered-background', {
+              className={cn('py-2 hover:bg-button-hovered-background', {
                 'bg-button-selected-background': pathname === link.href,
               })}>
               <span className="flex items-center gap-3 px-4">
