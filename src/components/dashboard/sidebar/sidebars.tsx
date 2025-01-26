@@ -10,7 +10,7 @@ import SidebarBoards from '@/components/dashboard/sidebar/sidebar-boards';
 import { useState } from 'react';
 import { TUserWorkspace } from '@/types/types';
 import { cn } from '@/lib/utils/utils';
-import { CreateBoardPopover } from '../board/create-board';
+import { CreateBoard } from '../board/create-board';
 
 export function MainSidebar() {
   return (
@@ -90,7 +90,7 @@ export function WorkspaceSidebar({
           <SidebarLinks workspace={workspace} />
           <div className="flex items-center justify-between pl-4 pr-2.5">
             <h3 className="mb-3 mt-4 font-bold">Your boards</h3>
-            <CreateBoardPopover
+            <CreateBoard
               workspaceId={workspace.id}
               triggerClassName="[&]:px-1.5"
               buttonText={<PlusIcon height={16} />}

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useClickAway } from '@uidotdev/usehooks';
+import { cn } from '@/lib/utils/utils';
 import CloseIcon from '../icons/close';
 
 export default function Popover({
@@ -45,53 +46,23 @@ export default function Popover({
   return (
     <div className="popover-wrapper relative" ref={clickAwayRef}>
       <button
-        className={`
-          flex 
-          items-center 
-          gap-2 
-          rounded
-          px-3 
-          py-1.5 
-          hover:bg-button-hovered-background 
-          ${triggerClassName}
-        `}
+        className={cn(
+          'flex items-center gap-2 rounded px-3 py-1.5 hover:bg-button-hovered-background',
+          triggerClassName,
+        )}
         type="button"
         onClick={() => handleOpenChange(!isOpen)}>
         {triggerContent}
       </button>
       {isOpen && (
         <dialog
-          className={` 
-            popover
-            absolute
-            left-0 
-            top-[calc(100%+5px)]
-            z-10 
-            flex 
-            w-72 
-            flex-col 
-            rounded-lg 
-            bg-white 
-            p-3 
-            text-primary
-            shadow-lg
-            outline-none
-            ${popoverClassName}
-          `}>
+          className={cn(
+            'popover absolute left-0 top-[calc(100%+5px)] z-10 flex w-72 flex-col rounded-lg bg-white p-3 text-primary shadow-lg outline-none',
+            popoverClassName,
+          )}>
           {addCloseButton && (
             <button
-              className="
-                close-popover 
-                absolute 
-                right-2 
-                top-2 
-                flex 
-                size-7 
-                items-center 
-                justify-center 
-                rounded-md 
-                hover:bg-gray-300
-              "
+              className="close-popover absolute right-2 top-2 flex size-7 items-center justify-center rounded-md hover:bg-gray-300"
               type="button"
               onMouseUp={() => handleOpenChange(false)}>
               <span className="pointer-events-none">

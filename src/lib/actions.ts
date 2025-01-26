@@ -65,6 +65,7 @@ export async function createWorkspaceAction(
 
 export async function createBoardAction(
   workspaceIdParam: string | undefined,
+  redirectToNewBoard: boolean,
   prevState: TActionState,
   formData: FormData,
 ): Promise<TActionState> {
@@ -85,15 +86,21 @@ export async function createBoardAction(
   }
 
   const supabase = await createClient();
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from('board')
-    .insert({ name: validatedFields.data.name, workspace_id: validatedFields.data.workspaceId });
+    .insert({ name: validatedFields.data.name, workspace_id: validatedFields.data.workspaceId })
+    .select()
+    .single();
 
   if (error) {
     throw error;
   }
 
   revalidateDashboard();
+
+  if (redirectToNewBoard) {
+    redirect(`/boards/${data.id}`);
+  }
 
   return { success: true };
 }

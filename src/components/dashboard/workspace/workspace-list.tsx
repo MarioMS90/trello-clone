@@ -12,7 +12,7 @@ import { deleteEntityAction, updateEntityAction } from '@/lib/actions';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import EditableText from '@/components/ui/editable-text';
-import { CreateBoardPopover } from '../board/create-board';
+import { CreateBoard } from '../board/create-board';
 
 export default function WorkspaceList({ workspaces }: { workspaces: TUserWorkspace[] }) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -117,7 +117,12 @@ export default function WorkspaceList({ workspaces }: { workspaces: TUserWorkspa
           <BoardList
             className="mt-6"
             boards={workspace.boards}
-            extraItem={<CreateBoardPopover workspaceId={workspace.id} />}
+            extraItem={
+              <CreateBoard
+                popoverClassName="[&]:center-y [&]:left-[calc(100%+10px)]"
+                workspaceId={workspace.id}
+              />
+            }
           />
         </li>
       ))}

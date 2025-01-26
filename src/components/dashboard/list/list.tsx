@@ -37,6 +37,8 @@ type TListState =
       dragging: DOMRect;
     };
 
+const idle: TListState = { type: 'idle' };
+
 const listStateStyles: {
   [key in TListState['type']]?: string;
 } = {
@@ -131,8 +133,10 @@ export const ListDisplay = memo(function ListDisplay({
           {!!list.cards?.length && (
             <div className="overflow-y-auto [overflow-anchor:none] [scrollbar-width:thin]">
               <ul className="flex flex-col gap-2 px-2 pb-0.5 pt-2">
-                {list.cards.map(card => (
-                  <Card key={card.id} card={card} />
+                {list.cards.map((card, index) => (
+                  <li key={card.id}>
+                    <Card card={card} position={index} />
+                  </li>
                 ))}
               </ul>
             </div>
@@ -151,32 +155,29 @@ export const ListDisplay = memo(function ListDisplay({
   );
 });
 
-const idle: TListState = { type: 'idle' };
-
 export const List = memo(function List({ list, position }: { list: TList; position: number }) {
   const [state, setState] = useState<TListState>(idle);
   const outerFullHeightRef = useRef<HTMLDivElement>(null);
-  const headerRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const header = headerRef.current;
-    const inner = innerRef.current;
     const outer = outerFullHeightRef.current;
+    const inner = innerRef.current;
+    const header = headerRef.current;
 
-    invariant(inner);
     invariant(outer);
+    invariant(inner);
     invariant(header);
 
-    const data: TListData = { type: 'list', id: list.id, originalPosition: position };
+    const data: TListData = { type: 'list', id: list.id, position };
 
     return combine(
       draggable({
         element: header,
         getInitialData: () => data,
         canDrag: ({ element }) => !element.getAttribute(blockListDraggingAttr),
-        onGenerateDragPreview: ({ source, location, nativeSetDragImage }) => {
-          invariant(isListData(source.data));
+        onGenerateDragPreview: ({ location, nativeSetDragImage }) => {
           setCustomNativeDragPreview({
             nativeSetDragImage,
             getOffset: preserveOffsetOnSource({ element: inner, input: location.current.input }),

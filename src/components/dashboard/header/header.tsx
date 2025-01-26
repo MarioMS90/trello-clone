@@ -26,7 +26,7 @@ export default async function Header() {
         border-b-white 
         border-opacity-30 
         bg-primary-background
-        p-1.5 
+        p-2 
         text-white
       ">
       <nav className="flex items-center text-sm [&>a:hover]:bg-button-hovered-background [&>a]:relative [&>a]:h-[32px] [&>a]:rounded">

@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { getWorkspace, getStarredBoards } from '@/lib/utils/server-utils';
 import StarToggleBoard from '@/components/dashboard/board/star-toggle-board';
 import StarIcon from '../../icons/star';
-import { CreateBoardPopover } from './create-board';
+import { CreateBoard } from './create-board';
 
 export async function Boards({ workspaceId }: { workspaceId: string }) {
   const workspace = await getWorkspace(workspaceId);
@@ -16,7 +16,12 @@ export async function Boards({ workspaceId }: { workspaceId: string }) {
   return (
     <BoardList
       boards={workspace.boards}
-      extraItem={<CreateBoardPopover workspaceId={workspaceId} />}
+      extraItem={
+        <CreateBoard
+          popoverClassName="[&]:center-y [&]:left-[calc(100%+10px)]"
+          workspaceId={workspaceId}
+        />
+      }
     />
   );
 }

@@ -61,44 +61,37 @@ export default function HeaderButtons({
     <p className="text-center">No starred boards</p>
   );
 
-  const menu = [
-    {
-      id: 'workspaces',
-      text: (
+  const menuItems = [
+    <Popover
+      key="workspaces"
+      triggerClassName="font-medium"
+      triggerContent={
         <>
           Workspaces
           <ArrowDownIcon height={16} />
         </>
-      ),
-      popoverContent: workspacesContent,
-      triggerClassName: `font-medium`,
-    },
-    {
-      id: 'Starred',
-      text: (
+      }>
+      {workspacesContent}
+    </Popover>,
+    <Popover
+      key="Starred"
+      triggerClassName="font-medium mr-3"
+      triggerContent={
         <>
           Starred
           <ArrowDownIcon height={16} />
         </>
-      ),
-      popoverContent: starredBoardsContent,
-      triggerClassName: `font-medium mr-3`,
-    },
-    {
-      id: 'create-board',
-      text: 'Create board',
-      popoverContent: <CreateBoard workspaces={workspaces} />,
-      triggerClassName: `font-medium bg-white bg-opacity-20 px-3 py-1.5 text-white hover:bg-opacity-30`,
-    },
+      }>
+      {starredBoardsContent}
+    </Popover>,
+    <CreateBoard
+      key="Create board"
+      triggerClassName="font-medium bg-white bg-opacity-20 px-3 py-1.5 text-white hover:bg-opacity-30"
+      workspaces={workspaces}
+      buttonText="Create board"
+      redirectToNewBoard
+    />,
   ];
 
-  return (
-    <>
-      {menu.map(({ id, text, popoverContent, triggerClassName }) => (
-        <Popover key={id} triggerClassName={triggerClassName} triggerContent={text}>
-          {popoverContent}
-        </Popover>
-      ))}
-    </>
-  );
+  return <>{menuItems.map(item => item)}</>;
 }

@@ -123,8 +123,3 @@ export default function SidebarBoards({
     </ul>
   );
 }
-
-// updateAction: entityData =>
-//   updateEntityAction({ tableName: 'board', entityData, revalidate: true }),
-// deleteAction: entityId =>
-//   deleteEntityAction({ tableName: 'board', entityId, revalidate: true }),

@@ -77,7 +77,7 @@ export default function BoardLists({
             // Invalid drag operation, revert the order
             reorderLists({
               listId: dragging.id,
-              finishIndex: dragging.originalPosition,
+              finishIndex: dragging.position,
             });
             return;
           }
@@ -100,7 +100,7 @@ export default function BoardLists({
             // Revert the order
             reorderLists({
               listId: dragging.id,
-              finishIndex: dragging.originalPosition,
+              finishIndex: dragging.position,
             });
             alert('An error occurred while updating the element');
           }

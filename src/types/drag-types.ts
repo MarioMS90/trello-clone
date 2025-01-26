@@ -1,14 +1,14 @@
 export type TListData = {
   type: 'list';
   id: string;
-  originalPosition: number;
+  position: number;
 };
 
 export type TCardData = {
   type: 'card';
   id: string;
+  position: number;
   listId: string;
-  originalPosition: number;
 };
 
 export function isListData(value: Record<string, unknown>): value is TListData {

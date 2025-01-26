@@ -21,25 +21,7 @@ export default function WorkspacesPage() {
         </section>
       </div>
       <div className="inline-block">
-        <Popover
-          popoverClassName="[&]:center-y [&]:left-[calc(100%+10px)]"
-          triggerClassName="
-                rounded 
-                px-2 
-                py-1.5 
-                h-20 
-                w-44 
-                bg-gray-300 
-                text-sm 
-                text-primary 
-                justify-center 
-                hover:opacity-90 
-                hover:bg-gray-300 
-              "
-          triggerContent="Create a new workspace"
-          addCloseButton>
-          <CreateWorkspace />
-        </Popover>
+        <CreateWorkspace />
       </div>
     </div>
   );
