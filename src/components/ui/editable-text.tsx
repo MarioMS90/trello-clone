@@ -1,13 +1,6 @@
 'use client';
 
-import {
-  InputHTMLAttributes,
-  RefObject,
-  TextareaHTMLAttributes,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { InputHTMLAttributes, TextareaHTMLAttributes, useEffect, useRef, useState } from 'react';
 import { cn, resizeTextarea } from '@/lib/utils/utils';
 import invariant from 'tiny-invariant';
 
@@ -31,25 +24,27 @@ export default function EditableText({
   onEditingChange?: (editing: boolean) => void;
 }) {
   const [isEditing, setIsEditing] = useState(editing);
-  const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const usedRef = autoResize ? textareaRef : inputRef;
 
   useEffect(() => {
-    const textarea = inputRef.current;
-    invariant(textarea);
+    const currentRef = usedRef.current;
+    invariant(currentRef);
 
     if (editing) {
-      textarea.select();
+      currentRef.select();
     }
 
     setIsEditing(editing);
-  }, [editing]);
+  }, [usedRef, editing]);
 
   const handleEditingChange = (editingState: boolean) => {
-    const input = inputRef.current;
-    invariant(input);
+    const currentRef = usedRef.current;
+    invariant(currentRef);
 
     if (editingState) {
-      input.select();
+      currentRef.select();
     }
 
     setIsEditing(editingState);
@@ -100,13 +95,14 @@ export default function EditableText({
       </button>
       {autoResize ? (
         <textarea
-          onChange={() => resizeTextarea(inputRef as RefObject<HTMLTextAreaElement>)}
-          onFocus={() => resizeTextarea(inputRef as RefObject<HTMLTextAreaElement>)}
+          ref={textareaRef}
+          onChange={() => resizeTextarea(textareaRef)}
+          onFocus={() => resizeTextarea(textareaRef)}
           {...commonAttributes}
           rows={1}
-          ref={inputRef as RefObject<HTMLTextAreaElement>}></textarea>
+        />
       ) : (
-        <input {...commonAttributes} ref={inputRef as RefObject<HTMLInputElement>} />
+        <input ref={inputRef} {...commonAttributes} />
       )}
     </div>
   );

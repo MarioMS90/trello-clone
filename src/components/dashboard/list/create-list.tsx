@@ -53,7 +53,8 @@ export function CreateList({ buttonText }: { buttonText: string }) {
             }}
             ref={textareaRef}
             autoFocus
-            rows={1}></textarea>
+            rows={1}
+          />
           <div className="flex gap-2">
             <button
               className="

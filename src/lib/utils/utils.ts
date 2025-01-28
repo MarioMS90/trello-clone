@@ -8,17 +8,23 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function generateRank<T extends { rank: string }>(list: T[], index: number) {
-  if (index === 0) {
-    return LexoRank.parse(list[index + 1].rank).genPrev();
+export function generateElementRank<T extends { rank: string }>({
+  list,
+  elementIndex,
+}: {
+  list: T[];
+  elementIndex: number;
+}) {
+  if (elementIndex === 0) {
+    return LexoRank.parse(list[elementIndex + 1].rank).genPrev();
   }
 
-  if (index === list.length - 1) {
-    return LexoRank.parse(list[index - 1].rank).genNext();
+  if (elementIndex === list.length - 1) {
+    return LexoRank.parse(list[elementIndex - 1].rank).genNext();
   }
 
-  const leftRank = LexoRank.parse(list[index - 1].rank);
-  const rightRank = LexoRank.parse(list[index + 1].rank);
+  const leftRank = LexoRank.parse(list[elementIndex - 1].rank);
+  const rightRank = LexoRank.parse(list[elementIndex + 1].rank);
   return leftRank.between(rightRank);
 }
 

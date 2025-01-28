@@ -74,7 +74,7 @@ export type Database = {
           description: string;
           id: string;
           name: string;
-          rank: string | null;
+          rank: string;
         };
         Insert: {
           board_list_id?: string;
@@ -82,7 +82,7 @@ export type Database = {
           description: string;
           id?: string;
           name: string;
-          rank?: string | null;
+          rank: string;
         };
         Update: {
           board_list_id?: string;
@@ -90,7 +90,7 @@ export type Database = {
           description?: string;
           id?: string;
           name?: string;
-          rank?: string | null;
+          rank?: string;
         };
         Relationships: [
           {

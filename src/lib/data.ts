@@ -57,15 +57,12 @@ export async function fetchLists(boardId: string): Promise<TList[]> {
     .select(
       ` 
       *,
-      board!inner(
-        id
-      ),
       cards: card(
         *
       )
     `,
     )
-    .eq('board.id', boardId)
+    .eq('board_id', boardId)
     .order('rank', { referencedTable: 'cards' })
     .order('rank');
 

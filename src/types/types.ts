@@ -24,7 +24,7 @@ export type TBoard = Tables<'board'> & {
 };
 
 export type TList = Tables<'board_list'> & {
-  cards?: TCard[];
+  cards: TCard[];
 };
 
 export type TCard = Tables<'card'> & {

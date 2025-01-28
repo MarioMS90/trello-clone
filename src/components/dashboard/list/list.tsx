@@ -13,14 +13,21 @@ import {
 import { setCustomNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview';
 import { preserveOffsetOnSource } from '@atlaskit/pragmatic-drag-and-drop/element/preserve-offset-on-source';
 import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
-import { attachClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
+import { autoScrollForElements } from '@atlaskit/pragmatic-drag-and-drop-auto-scroll/element';
+import {
+  attachClosestEdge,
+  Edge,
+  extractClosestEdge,
+} from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
 import { isSafari } from '@/lib/utils/is-safari';
-import { TListData, isCardData, isListData } from '@/types/drag-types';
+import { TCardData, TListData, isCardData, isListData } from '@/types/drag-types';
 import { cn } from '@/lib/utils/utils';
 import { blockBoardPanningAttr, blockListDraggingAttr } from '@/constants/constants';
 import { createPortal } from 'react-dom';
 import EditableText from '@/components/ui/editable-text';
-import { Card } from './card';
+import { isShallowEqual } from '@/lib/utils/is-shallow-equal';
+import { DragLocationHistory } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types';
+import { Card, CardShadow } from './card';
 import { useBoardContext } from '../board/board-context';
 
 type TListState =
@@ -29,154 +36,215 @@ type TListState =
       type: 'is-dragging';
     }
   | {
+      type: 'is-card-over';
+      isOverChildCard: boolean;
+      dragging: DOMRect;
+    }
+  | {
       type: 'is-dragging-and-left-self';
+    }
+  | {
+      type: 'is-over';
+      dragging: DOMRect;
+      closestEdge: Edge;
     }
   | {
       type: 'preview';
       container: HTMLElement;
-      dragging: DOMRect;
     };
 
 const idle: TListState = { type: 'idle' };
 
-const listStateStyles: {
+const innerStyles: {
   [key in TListState['type']]?: string;
 } = {
   idle: 'idle',
   'is-dragging': 'opacity-40',
-  'is-dragging-and-left-self': 'opacity-60 [&]:bg-secondary-background',
 };
 
-export const ListDisplay = memo(function ListDisplay({
+const outerStyles: { [Key in TListState['type']]?: string } = {
+  'is-dragging-and-left-self': 'hidden',
+};
+
+function ListShadow({ dragging }: { dragging: DOMRect }) {
+  return (
+    <div
+      className="mx-2 flex-shrink-0 rounded-xl opacity-60 [&]:bg-secondary-background"
+      style={{ width: dragging.width, height: dragging.height }}></div>
+  );
+}
+
+const ListDisplay = memo(function ListDisplay({
   list,
   state,
   outerFullHeightRef,
   innerRef,
   headerRef,
+  scrollableRef,
 }: {
   list: TList;
   state: TListState;
-  outerFullHeightRef?: RefObject<HTMLDivElement | null>;
+  outerFullHeightRef?: RefObject<HTMLLIElement | null>;
   innerRef?: RefObject<HTMLDivElement | null>;
   headerRef?: RefObject<HTMLDivElement | null>;
+  scrollableRef?: RefObject<HTMLDivElement | null>;
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const [isOpenPopover, setIsOpenPopover] = useState(false);
   const { updateList, deleteList } = useBoardContext();
 
   return (
-    <div className="flex w-[272px] flex-shrink-0 flex-col" ref={outerFullHeightRef}>
-      <div
-        className={cn(
-          'flex max-h-full flex-col rounded-xl bg-[#f1f2f4] text-sm text-primary',
-          listStateStyles[state.type],
-          {
-            'rotate-[4deg]': state.type === 'preview' && !isSafari(),
-          },
-        )}
-        ref={innerRef}
-        {...{ [blockBoardPanningAttr]: true }}>
+    <>
+      {state.type === 'is-over' && state.closestEdge === 'left' ? (
+        <ListShadow dragging={state.dragging} />
+      ) : null}
+      <li
+        className={cn('flex flex-shrink-0 flex-col px-2', outerStyles[state.type])}
+        ref={outerFullHeightRef}>
         <div
-          className={cn('flex max-h-full flex-col', {
-            invisible: state.type === 'is-dragging-and-left-self',
-          })}>
-          <div
-            className="flex cursor-pointer justify-between px-2 pt-2"
-            ref={headerRef}
-            {...(isEditing && { [blockListDraggingAttr]: true })}>
-            <EditableText
-              className="[&>button]px-2.5 font-semibold [&>textarea]:px-2.5"
-              defaultText={list.name}
-              onEdit={name => updateList({ id: list.id, name })}
-              autoResize
-              editOnClick
-              editing={isEditing}
-              onEditingChange={setIsEditing}>
-              <h3 className="[overflow-wrap:anywhere]">{list.name}</h3>
-            </EditableText>
-            <Popover
-              triggerContent={
-                <span className="relative flex size-8 rounded-lg hover:bg-gray-300">
-                  <span className="center-xy">
-                    <DotsIcon width={16} height={16} />
+          className={cn(
+            'flex max-h-full w-[272px] flex-col rounded-xl bg-[#f1f2f4] text-sm text-primary',
+            innerStyles[state.type],
+          )}
+          style={
+            state.type === 'preview'
+              ? {
+                  transform: !isSafari() ? 'rotate(4deg)' : '',
+                }
+              : undefined
+          }
+          ref={innerRef}
+          {...{ [blockBoardPanningAttr]: true }}>
+          <div className="flex max-h-full flex-col">
+            <div
+              className="flex cursor-pointer justify-between px-2 pt-2"
+              ref={headerRef}
+              {...(isEditing && { [blockListDraggingAttr]: true })}>
+              <EditableText
+                className="[&>button]px-2.5 font-semibold [&>textarea]:px-2.5"
+                defaultText={list.name}
+                onEdit={name => updateList({ id: list.id, name })}
+                autoResize
+                editOnClick
+                editing={isEditing}
+                onEditingChange={setIsEditing}>
+                <h3 className="[overflow-wrap:anywhere]">{list.name}</h3>
+              </EditableText>
+              <Popover
+                triggerContent={
+                  <span className="relative flex size-8 rounded-lg hover:bg-gray-300">
+                    <span className="center-xy">
+                      <DotsIcon width={16} height={16} />
+                    </span>
                   </span>
-                </span>
-              }
-              triggerClassName="[&]:p-0"
-              popoverClassName="px-0 [&]:w-40"
-              open={isOpenPopover}
-              onOpenChange={setIsOpenPopover}>
-              <ul className="text-sm [&>li>button:hover]:bg-gray-200 [&>li>button]:w-full [&>li>button]:px-3 [&>li>button]:py-2 [&>li>button]:text-left">
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsEditing(true);
-                      setIsOpenPopover(false);
-                    }}>
-                    Rename list
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      deleteList(list.id);
-                      setIsOpenPopover(false);
-                    }}>
-                    Delete list
-                  </button>
-                </li>
-              </ul>
-            </Popover>
-          </div>
-          {!!list.cards?.length && (
-            <div className="overflow-y-auto [overflow-anchor:none] [scrollbar-width:thin]">
-              <ul className="flex flex-col gap-2 px-2 pb-0.5 pt-2">
-                {list.cards.map((card, index) => (
-                  <li key={card.id}>
-                    <Card card={card} position={index} />
+                }
+                triggerClassName="[&]:p-0"
+                popoverClassName="px-0 [&]:w-40"
+                open={isOpenPopover}
+                onOpenChange={setIsOpenPopover}>
+                <ul className="text-sm [&>li>button:hover]:bg-gray-200 [&>li>button]:w-full [&>li>button]:px-3 [&>li>button]:py-2 [&>li>button]:text-left">
+                  <li>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsEditing(true);
+                        setIsOpenPopover(false);
+                      }}>
+                      Rename list
+                    </button>
                   </li>
+                  <li>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        deleteList(list.id);
+                        setIsOpenPopover(false);
+                      }}>
+                      Delete list
+                    </button>
+                  </li>
+                </ul>
+              </Popover>
+            </div>
+            <div
+              className="overflow-y-auto [overflow-anchor:none] [scrollbar-width:thin]"
+              ref={scrollableRef}>
+              <ul>
+                {list.cards.map(card => (
+                  <Card card={card} key={card.id} />
                 ))}
+                {state.type === 'is-card-over' && !state.isOverChildCard ? (
+                  <CardShadow dragging={state.dragging} />
+                ) : null}
               </ul>
             </div>
-          )}
-          <div className="px-2 pb-2 pt-2">
-            <button
-              type="button"
-              className="flex w-full items-center gap-2 rounded-lg p-1.5 text-sm hover:bg-gray-300">
-              <PlusIcon width={16} height={16} />
-              Add a card
-            </button>
+            <div className="px-2 pb-2 pt-2">
+              <button
+                type="button"
+                className="flex w-full items-center gap-2 rounded-lg p-1.5 text-sm hover:bg-gray-300">
+                <PlusIcon width={16} height={16} />
+                Add a card
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      </li>
+      {state.type === 'is-over' && state.closestEdge === 'right' ? (
+        <ListShadow dragging={state.dragging} />
+      ) : null}
+    </>
   );
 });
 
-export const List = memo(function List({ list, position }: { list: TList; position: number }) {
+export const List = memo(function List({ list }: { list: TList }) {
   const [state, setState] = useState<TListState>(idle);
-  const outerFullHeightRef = useRef<HTMLDivElement>(null);
+  const outerFullHeightRef = useRef<HTMLLIElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
+  const scrollableRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const outer = outerFullHeightRef.current;
     const inner = innerRef.current;
     const header = headerRef.current;
+    const scrollable = scrollableRef.current;
 
     invariant(outer);
     invariant(inner);
     invariant(header);
+    invariant(scrollable);
 
-    const data: TListData = { type: 'list', id: list.id, position };
+    const data: TListData = { type: 'list', id: list.id, rect: inner.getBoundingClientRect() };
+
+    function setIsCardOver({
+      sourceData,
+      location,
+    }: {
+      sourceData: TCardData;
+      location: DragLocationHistory;
+    }) {
+      const innerMost = location.current.dropTargets[0];
+      const isOverChildCard = Boolean(innerMost && isCardData(innerMost.data));
+
+      const proposed: TListState = {
+        type: 'is-card-over',
+        dragging: sourceData.rect,
+        isOverChildCard,
+      };
+      // optimization - don't update state if we don't need to.
+      setState(current => {
+        if (isShallowEqual(proposed, current)) {
+          return current;
+        }
+        return proposed;
+      });
+    }
 
     return combine(
       draggable({
         element: header,
-        getInitialData: () => data,
         canDrag: ({ element }) => !element.getAttribute(blockListDraggingAttr),
+        getInitialData: () => data,
         onGenerateDragPreview: ({ location, nativeSetDragImage }) => {
           setCustomNativeDragPreview({
             nativeSetDragImage,
@@ -185,7 +253,6 @@ export const List = memo(function List({ list, position }: { list: TList; positi
               setState({
                 type: 'preview',
                 container,
-                dragging: inner.getBoundingClientRect(),
               });
             },
           });
@@ -197,28 +264,88 @@ export const List = memo(function List({ list, position }: { list: TList; positi
       }),
       dropTargetForElements({
         element: outer,
+        getIsSticky: () => true,
+        canDrop({ source }) {
+          return isListData(source.data) || isCardData(source.data);
+        },
         getData: ({ input, element }) =>
           attachClosestEdge(data, {
             input,
             element,
             allowedEdges: ['left', 'right'],
           }),
-        canDrop({ source }) {
-          return isListData(source.data) || isCardData(source.data);
+        onDragStart({ source, location }) {
+          if (isCardData(source.data)) {
+            setIsCardOver({ sourceData: source.data, location });
+          }
         },
-        getIsSticky: () => true,
+        onDragEnter({ source, location, self }) {
+          if (isCardData(source.data)) {
+            setIsCardOver({ sourceData: source.data, location });
+            return;
+          }
+          if (!isListData(source.data)) {
+            return;
+          }
+          if (source.data.id === list.id) {
+            return;
+          }
+          const closestEdge = extractClosestEdge(self.data);
+          if (!closestEdge) {
+            return;
+          }
+          setState({ type: 'is-over', dragging: source.data.rect, closestEdge });
+        },
+        onDropTargetChange({ source, location }) {
+          if (isCardData(source.data)) {
+            setIsCardOver({ sourceData: source.data, location });
+          }
+        },
+        onDrag({ source, self }) {
+          if (!isListData(source.data)) {
+            return;
+          }
+          if (source.data.id === list.id) {
+            return;
+          }
+          const closestEdge = extractClosestEdge(self.data);
+          if (!closestEdge) {
+            return;
+          }
+          // optimization - Don't update react state if we don't need to.
+          const proposed: TListState = { type: 'is-over', dragging: source.data.rect, closestEdge };
+          setState(current => {
+            if (isShallowEqual(proposed, current)) {
+              return current;
+            }
+            return proposed;
+          });
+        },
         onDragLeave({ source }) {
           if (isListData(source.data) && source.data.id === list.id) {
             setState({ type: 'is-dragging-and-left-self' });
+            return;
           }
+
+          setState(idle);
+        },
+        onDrop() {
+          setState(idle);
         },
       }),
+      autoScrollForElements({
+        canScroll({ source }) {
+          return isCardData(source.data);
+        },
+        getConfiguration: () => ({ maxScrollSpeed: 'standard' }),
+        element: scrollable,
+      }),
     );
-  }, [list, position]);
+  }, [list]);
 
   return (
     <>
-      <ListDisplay {...{ list, state, outerFullHeightRef, innerRef, headerRef }} />
+      <ListDisplay {...{ list, state, outerFullHeightRef, innerRef, headerRef, scrollableRef }} />
       {state.type === 'preview'
         ? createPortal(<ListDisplay {...{ list, state }} />, state.container)
         : null}

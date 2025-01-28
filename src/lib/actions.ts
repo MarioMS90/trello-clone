@@ -131,7 +131,14 @@ export async function createListAction({
       rank: validatedFields.data.rank,
       board_id: validatedFields.data.boardId,
     })
-    .select()
+    .select(
+      ` 
+      *,
+      cards: card(
+        *
+      )
+    `,
+    )
     .single();
 
   if (error) {
