@@ -125,7 +125,7 @@ export async function createListAction({
 
   const supabase = await createClient();
   const { data, error } = await supabase
-    .from('board_list')
+    .from('list')
     .insert({
       name: validatedFields.data.name,
       rank: validatedFields.data.rank,

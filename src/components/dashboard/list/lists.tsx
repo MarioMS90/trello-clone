@@ -21,13 +21,13 @@ import {
 } from 'react';
 import { List } from '@/components/dashboard/list/list';
 import { createListAction, deleteEntityAction, updateEntityAction } from '@/lib/actions';
-import { generateRank, updateListObj } from '@/lib/utils/utils';
+import { generateRank, updateElement } from '@/lib/utils/utils';
 import { CleanupFn } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types';
 import { blockBoardPanningAttr } from '@/constants/constants';
-import { BoardContext, BoardContextValue } from './board-context';
-import { CreateList } from '../list/create-list';
+import { BoardContext, BoardContextValue } from '../board/board-context';
+import { CreateList } from './create-list';
 
-export default function BoardLists({
+export default function Lists({
   boardId,
   initialLists,
 }: {
@@ -44,25 +44,25 @@ export default function BoardLists({
 
   const reorderElement = useCallback(
     <T extends { id: string; rank: string }>({
-      list,
+      elements,
       startIndex,
       finishIndex,
     }: {
-      list: T[];
+      elements: T[];
       startIndex: number;
       finishIndex: number;
     }) => {
       if (startIndex === finishIndex) {
-        return list;
+        return elements;
       }
 
       const rank = generateRank({
-        list,
+        elements,
         leftIndex: startIndex < finishIndex ? finishIndex : finishIndex - 1,
       }).format();
 
-      const updated = list.with(startIndex, {
-        ...list[startIndex],
+      const updated = elements.with(startIndex, {
+        ...elements[startIndex],
         rank,
       });
 
@@ -77,37 +77,49 @@ export default function BoardLists({
     [],
   );
 
-  const getReorderIndices = useCallback(
+  const getPositionIndices = useCallback(
     <T extends { id: string }>({
-      list,
-      destinationList,
+      sourceElements,
+      destinationElements,
       dragging,
       dropTarget,
       axis,
+      isReorder = false,
     }: {
-      list: T[];
-      destinationList?: T[];
+      sourceElements: T[];
+      destinationElements: T[];
       dragging: TListData | TCardData;
       dropTarget: TListData | TCardData | null;
       axis: 'horizontal' | 'vertical';
+      isReorder?: boolean;
     }) => {
-      const startIndex = list.findIndex(element => element.id === dragging.id);
-      const targetList = destinationList ?? list;
+      const startIndex = sourceElements.findIndex(element => element.id === dragging.id);
 
       if (!dropTarget) {
-        return { startIndex, finishIndex: targetList.length - 1 };
+        return {
+          startIndex,
+          finishIndex: !isReorder ? destinationElements.length : destinationElements.length - 1,
+        };
       }
 
-      const indexOfTarget = targetList.findIndex(element => element.id === dropTarget.id);
+      const indexOfTarget = destinationElements.findIndex(element => element.id === dropTarget.id);
       const closestEdgeOfTarget = extractClosestEdge(dropTarget);
-      const finishIndex = getReorderDestinationIndex({
-        startIndex,
-        indexOfTarget,
-        closestEdgeOfTarget,
-        axis,
-      });
 
-      return { startIndex, finishIndex };
+      if (isReorder) {
+        const finishIndex = getReorderDestinationIndex({
+          startIndex,
+          indexOfTarget,
+          closestEdgeOfTarget,
+          axis,
+        });
+
+        return { startIndex, finishIndex };
+      }
+
+      return {
+        startIndex,
+        finishIndex: closestEdgeOfTarget === 'top' ? indexOfTarget : indexOfTarget + 1,
+      };
     },
     [],
   );
@@ -129,7 +141,7 @@ export default function BoardLists({
       const draggingCard = sourceList.cards.find(card => card.id === cardId);
 
       if (!draggingCard) {
-        return lists;
+        return undefined;
       }
 
       const filtered = lists.with(sourceListIndex, {
@@ -138,7 +150,7 @@ export default function BoardLists({
       });
 
       const rank = generateRank({
-        list: destinationList.cards,
+        elements: destinationList.cards,
         leftIndex: destinationIndex - 1,
       }).format();
 
@@ -146,7 +158,7 @@ export default function BoardLists({
         ...destinationList,
         cards: destinationList.cards.toSpliced(destinationIndex, 0, {
           ...draggingCard,
-          board_list_id: destinationList.id,
+          list_id: destinationList.id,
           rank,
         }),
       });
@@ -156,7 +168,7 @@ export default function BoardLists({
     [lists],
   );
 
-  const reorderCard = useCallback(
+  const positionCard = useCallback(
     ({
       dragging,
       listTarget,
@@ -169,30 +181,17 @@ export default function BoardLists({
       const sourceListIndex = lists.findIndex(list => list.id === dragging.listId);
       const destinationListIndex = lists.findIndex(list => list.id === listTarget.id);
       const sourceList = lists[sourceListIndex];
-
-      const destinationList = lists[destinationListIndex];
-      console.log('destinationList.cards', destinationList.cards);
-      console.log('cardTarget', cardTarget);
-      const { startIndex, finishIndex } = getReorderIndices({
-        list: sourceList.cards,
-        destinationList: destinationList.cards,
+      const isReorder = sourceListIndex === destinationListIndex;
+      const { startIndex, finishIndex } = getPositionIndices({
+        sourceElements: sourceList.cards,
+        destinationElements: lists[destinationListIndex].cards,
         dragging,
         dropTarget: cardTarget,
         axis: 'vertical',
+        isReorder,
       });
 
-      if (sourceListIndex === destinationListIndex && startIndex === finishIndex) {
-        return undefined;
-      }
-
-      if (sourceListIndex !== destinationListIndex) {
-        console.log('hola', {
-          cardId: dragging.id,
-          destinationIndex: finishIndex,
-          sourceListIndex,
-          destinationListIndex,
-        });
-
+      if (!isReorder) {
         return moveCard({
           cardId: dragging.id,
           destinationIndex: finishIndex,
@@ -201,8 +200,12 @@ export default function BoardLists({
         });
       }
 
+      if (startIndex === finishIndex) {
+        return undefined;
+      }
+
       const reordered = reorderElement({
-        list: sourceList.cards,
+        elements: sourceList.cards,
         startIndex,
         finishIndex,
       });
@@ -214,7 +217,7 @@ export default function BoardLists({
 
       return updated;
     },
-    [lists, getReorderIndices, moveCard, reorderElement],
+    [lists, moveCard, getPositionIndices, reorderElement],
   );
 
   useEffect(() => {
@@ -226,17 +229,19 @@ export default function BoardLists({
         canMonitor: ({ source }) => isListData(source.data),
         onDrop: async ({ source, location }) => {
           const dragging = source.data;
-          const dropTarget = location.current.dropTargets[0]?.data;
+          const listTarget = location.current.dropTargets[0]?.data;
 
-          if (!isListData(dragging) || !isListData(dropTarget)) {
+          if (!isListData(dragging) || !isListData(listTarget)) {
             return;
           }
 
-          const { startIndex, finishIndex } = getReorderIndices({
-            list: lists,
+          const { startIndex, finishIndex } = getPositionIndices({
+            sourceElements: lists,
+            destinationElements: lists,
             dragging,
-            dropTarget,
+            dropTarget: listTarget,
             axis: 'horizontal',
+            isReorder: true,
           });
 
           if (startIndex === finishIndex) {
@@ -244,7 +249,7 @@ export default function BoardLists({
           }
 
           const updatedLists = reorderElement({
-            list: lists,
+            elements: lists,
             startIndex,
             finishIndex,
           });
@@ -256,7 +261,7 @@ export default function BoardLists({
               const { rank } = updatedLists[finishIndex];
 
               await updateEntityAction({
-                tableName: 'board_list',
+                tableName: 'list',
                 entityData: { id: dragging.id, rank },
               });
               startTransition(async () => setLists(updatedLists));
@@ -270,16 +275,17 @@ export default function BoardLists({
         canMonitor: ({ source }) => isCardData(source.data),
         onDrop: async ({ source, location }) => {
           const dragging = source.data;
-          const firstDropTarget = location.current.dropTargets[0]?.data;
-          const secondDropTarget = location.current.dropTargets[1]?.data;
-          const listTarget = isListData(firstDropTarget) ? firstDropTarget : secondDropTarget;
-          const cardTarget = isCardData(firstDropTarget) ? firstDropTarget : null;
+          const { dropTargets } = location.current;
+          const listTarget = isListData(dropTargets[0]?.data)
+            ? dropTargets[0]?.data
+            : dropTargets[1]?.data;
+          const cardTarget = isCardData(dropTargets[0]?.data) ? dropTargets[0]?.data : null;
 
           if (!isCardData(dragging) || !isListData(listTarget)) {
             return;
           }
 
-          const updatedLists = reorderCard({
+          const updatedLists = positionCard({
             dragging,
             listTarget,
             cardTarget,
@@ -293,10 +299,10 @@ export default function BoardLists({
             setOptimisticLists(() => updatedLists);
 
             try {
-              const destinationListIndex = updatedLists.findIndex(list =>
+              const listIndex = updatedLists.findIndex(list =>
                 list.cards.some(card => card.id === dragging.id),
               );
-              const list = updatedLists[destinationListIndex];
+              const list = updatedLists[listIndex];
               const cardIndex = list.cards.findIndex(card => card.id === dragging.id);
 
               await updateEntityAction({
@@ -318,7 +324,7 @@ export default function BoardLists({
         element: scrollable,
       }),
     );
-  }, [lists, getReorderIndices, reorderElement, reorderCard, setOptimisticLists]);
+  }, [lists, getPositionIndices, reorderElement, positionCard, setOptimisticLists]);
 
   // Panning the board
   useEffect(() => {
@@ -402,7 +408,7 @@ export default function BoardLists({
         ]);
 
         try {
-          const rank = generateRank({ list: lists, leftIndex: lists.length - 1 }).format();
+          const rank = generateRank({ elements: lists, leftIndex: lists.length - 1 }).format();
           const list = await createListAction({ boardId, name, rank });
           startTransition(async () => setLists(current => [...current, list]));
         } catch (error) {
@@ -416,14 +422,14 @@ export default function BoardLists({
   const updateList = useCallback(
     (listData: TSubsetWithId<TList>) => {
       startTransition(async () => {
-        setOptimisticLists(current => updateListObj(current, listData));
+        setOptimisticLists(current => updateElement(current, listData));
 
         try {
           await updateEntityAction({
-            tableName: 'board_list',
+            tableName: 'list',
             entityData: listData,
           });
-          startTransition(async () => setLists(current => updateListObj(current, listData)));
+          startTransition(async () => setLists(current => updateElement(current, listData)));
         } catch (error) {
           // TODO: Show error with a toast
           alert('An error occurred while updating the element');
@@ -440,7 +446,7 @@ export default function BoardLists({
 
         try {
           await deleteEntityAction({
-            tableName: 'board_list',
+            tableName: 'list',
             entityId: id,
           });
           startTransition(async () => setLists(current => current.filter(list => list.id !== id)));

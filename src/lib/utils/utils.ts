@@ -9,34 +9,34 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function generateRank<T extends { rank: string }>({
-  list,
+  elements,
   leftIndex,
 }: {
-  list: T[];
+  elements: T[];
   leftIndex: number;
 }) {
-  if (!list.length) {
+  if (!elements.length) {
     return LexoRank.middle();
   }
 
   if (leftIndex === -1) {
-    return LexoRank.parse(list[0].rank).genPrev();
+    return LexoRank.parse(elements[0].rank).genPrev();
   }
 
-  if (leftIndex === list.length - 1) {
-    return LexoRank.parse(list[leftIndex].rank).genNext();
+  if (leftIndex === elements.length - 1) {
+    return LexoRank.parse(elements[leftIndex].rank).genNext();
   }
 
-  const leftRank = LexoRank.parse(list[leftIndex].rank);
-  const rightRank = LexoRank.parse(list[leftIndex + 1].rank);
+  const leftRank = LexoRank.parse(elements[leftIndex].rank);
+  const rightRank = LexoRank.parse(elements[leftIndex + 1].rank);
   return leftRank.between(rightRank);
 }
 
-export function updateListObj<T extends { id: string }, U extends TSubsetWithId<T>>(
-  list: T[],
+export function updateElement<T extends { id: string }, U extends TSubsetWithId<T>>(
+  elements: T[],
   obj: U,
 ): T[] {
-  return list.map(item => (item.id === obj.id ? { ...item, ...obj } : item));
+  return elements.map(element => (element.id === obj.id ? { ...element, ...obj } : element));
 }
 
 export function resizeTextarea(textareaRef: RefObject<HTMLTextAreaElement | null>) {

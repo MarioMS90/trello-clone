@@ -129,7 +129,7 @@ export const Card = memo(function Card({ card }: { card: TCard }) {
     const data: TCardData = {
       type: 'card',
       id: card.id,
-      listId: card.board_list_id,
+      listId: card.list_id,
       rect: inner.getBoundingClientRect(),
     };
 

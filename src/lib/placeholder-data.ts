@@ -71,7 +71,7 @@ const boards = [
   },
 ];
 
-const boardListsData = [
+const listsData = [
   {
     id: crypto.randomUUID(),
     name: 'To do',
@@ -89,43 +89,13 @@ const boardListsData = [
   },
   {
     id: crypto.randomUUID(),
-    name: 'test1',
-    board_id: boards[0].id,
-  },
-  {
-    id: crypto.randomUUID(),
-    name: 'test12',
-    board_id: boards[0].id,
-  },
-  {
-    id: crypto.randomUUID(),
-    name: 'test13',
-    board_id: boards[0].id,
-  },
-  {
-    id: crypto.randomUUID(),
-    name: 'test14',
-    board_id: boards[0].id,
-  },
-  {
-    id: crypto.randomUUID(),
-    name: 'test15',
-    board_id: boards[0].id,
-  },
-  {
-    id: crypto.randomUUID(),
-    name: 'test16',
-    board_id: boards[0].id,
-  },
-  {
-    id: crypto.randomUUID(),
     name: 'Not my card list',
     board_id: boards[3].id,
   },
 ];
 
 let currentRank = LexoRank.middle();
-const boardLists = boardListsData.map(list => {
+const lists = listsData.map(list => {
   currentRank = currentRank.genNext();
   return { ...list, rank: currentRank.format() };
 });
@@ -135,97 +105,61 @@ const cardsData = [
     id: crypto.randomUUID(),
     name: 'Card 1',
     description: 'This is the first card',
-    board_list_id: boardLists[0].id,
+    list_id: lists[0].id,
   },
   {
     id: crypto.randomUUID(),
     name: 'Card 2',
     description: 'This is the second card',
-    board_list_id: boardLists[0].id,
+    list_id: lists[0].id,
   },
   {
     id: crypto.randomUUID(),
     name: 'Mario',
     description: 'This is the third card',
-    board_list_id: boardLists[0].id,
+    list_id: lists[0].id,
+  },
+  {
+    id: crypto.randomUUID(),
+    name: 'Card 4',
+    description: 'This is the first card',
+    list_id: lists[1].id,
+  },
+  {
+    id: crypto.randomUUID(),
+    name: 'Card 5',
+    description: 'This is the second card',
+    list_id: lists[1].id,
+  },
+  {
+    id: crypto.randomUUID(),
+    name: 'Card 6',
+    description: 'This is the third card',
+    list_id: lists[1].id,
+  },
+  {
+    id: crypto.randomUUID(),
+    name: 'Card 7',
+    description: 'This is the first card',
+    list_id: lists[1].id,
+  },
+  {
+    id: crypto.randomUUID(),
+    name: 'Card 8',
+    description: 'This is the second card',
+    list_id: lists[1].id,
+  },
+  {
+    id: crypto.randomUUID(),
+    name: 'Card 9',
+    description: 'This is the third card',
+    list_id: lists[1].id,
   },
   {
     id: crypto.randomUUID(),
     name: 'Test 1',
-    description: 'This is the test card',
-    board_list_id: boardLists[0].id,
-  },
-  {
-    id: crypto.randomUUID(),
-    name: 'Test 12',
-    description: 'This is the test card',
-    board_list_id: boardLists[0].id,
-  },
-  {
-    id: crypto.randomUUID(),
-    name: 'Test 13',
-    description: 'This is the test card',
-    board_list_id: boardLists[0].id,
-  },
-  {
-    id: crypto.randomUUID(),
-    name: 'Test 14',
-    description: 'This is the test card',
-    board_list_id: boardLists[0].id,
-  },
-  {
-    id: crypto.randomUUID(),
-    name: 'Test 15',
-    description: 'This is the test card',
-    board_list_id: boardLists[0].id,
-  },
-  {
-    id: crypto.randomUUID(),
-    name: 'Test 16',
-    description: 'This is the test card',
-    board_list_id: boardLists[0].id,
-  },
-  {
-    id: crypto.randomUUID(),
-    name: 'Test 17',
-    description: 'This is the test card',
-    board_list_id: boardLists[0].id,
-  },
-  {
-    id: crypto.randomUUID(),
-    name: 'Test 18',
-    description: 'This is the test card',
-    board_list_id: boardLists[0].id,
-  },
-  {
-    id: crypto.randomUUID(),
-    name: 'Card 1',
-    description: 'This is the first card in progress',
-    board_list_id: boardLists[1].id,
-  },
-  {
-    id: crypto.randomUUID(),
-    name: 'Test 16',
-    description: 'This is the test card',
-    board_list_id: boardLists[1].id,
-  },
-  {
-    id: crypto.randomUUID(),
-    name: 'Test 17',
-    description: 'This is the test card',
-    board_list_id: boardLists[1].id,
-  },
-  {
-    id: crypto.randomUUID(),
-    name: 'Test 18',
-    description: 'This is the test card',
-    board_list_id: boardLists[1].id,
-  },
-  {
-    id: crypto.randomUUID(),
-    name: 'Card 1',
-    description: 'This is the first card in progress',
-    board_list_id: boardLists[1].id,
+    description: 'This is a test card',
+    list_id: lists[2].id,
   },
 ];
 
@@ -250,4 +184,4 @@ const comments = [
   },
 ];
 
-export { workspaces, userWorkspace, boards, boardLists, cards, comments };
+export { workspaces, userWorkspace, boards, lists, cards, comments };

@@ -10,11 +10,11 @@ export async function fetchUser(): Promise<TUser> {
 
   if (!user) throw new Error('User not logged in');
 
-  const { data, error } = await supabase.from('user').select('*').eq('id', user.id);
+  const { data, error } = await supabase.from('user').select('*').eq('id', user.id).single();
 
   if (error) throw new Error(error.message);
 
-  return data[0];
+  return data;
 }
 
 export async function fetchWorkspaces(): Promise<TUserWorkspace[]> {
@@ -53,7 +53,7 @@ export async function fetchLists(boardId: string): Promise<TList[]> {
   const supabase = await createClient();
 
   const { data, error } = await supabase
-    .from('board_list')
+    .from('list')
     .select(
       ` 
       *,

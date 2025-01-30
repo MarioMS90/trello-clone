@@ -35,69 +35,37 @@ export type Database = {
           },
         ];
       };
-      board_list: {
-        Row: {
-          board_id: string;
-          created_at: string;
-          id: string;
-          name: string;
-          rank: string;
-        };
-        Insert: {
-          board_id: string;
-          created_at?: string;
-          id?: string;
-          name: string;
-          rank: string;
-        };
-        Update: {
-          board_id?: string;
-          created_at?: string;
-          id?: string;
-          name?: string;
-          rank?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: 'task_list_board_id_fkey';
-            columns: ['board_id'];
-            isOneToOne: false;
-            referencedRelation: 'board';
-            referencedColumns: ['id'];
-          },
-        ];
-      };
       card: {
         Row: {
-          board_list_id: string;
           created_at: string;
           description: string;
           id: string;
+          list_id: string;
           name: string;
           rank: string;
         };
         Insert: {
-          board_list_id?: string;
           created_at?: string;
           description: string;
           id?: string;
+          list_id?: string;
           name: string;
           rank: string;
         };
         Update: {
-          board_list_id?: string;
           created_at?: string;
           description?: string;
           id?: string;
+          list_id?: string;
           name?: string;
           rank?: string;
         };
         Relationships: [
           {
-            foreignKeyName: 'card_board_list_id_fkey';
-            columns: ['board_list_id'];
+            foreignKeyName: 'card_list_id_fkey';
+            columns: ['list_id'];
             isOneToOne: false;
-            referencedRelation: 'board_list';
+            referencedRelation: 'list';
             referencedColumns: ['id'];
           },
         ];
@@ -137,6 +105,38 @@ export type Database = {
             columns: ['user_id'];
             isOneToOne: false;
             referencedRelation: 'user';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      list: {
+        Row: {
+          board_id: string;
+          created_at: string;
+          id: string;
+          name: string;
+          rank: string;
+        };
+        Insert: {
+          board_id: string;
+          created_at?: string;
+          id?: string;
+          name: string;
+          rank: string;
+        };
+        Update: {
+          board_id?: string;
+          created_at?: string;
+          id?: string;
+          name?: string;
+          rank?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'task_list_board_id_fkey';
+            columns: ['board_id'];
+            isOneToOne: false;
+            referencedRelation: 'board';
             referencedColumns: ['id'];
           },
         ];

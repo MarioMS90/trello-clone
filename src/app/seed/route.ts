@@ -1,12 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import {
-  workspaces,
-  userWorkspace,
-  boards,
-  boardLists,
-  cards,
-  comments,
-} from '@/lib/placeholder-data';
+import { workspaces, userWorkspace, boards, lists, cards, comments } from '@/lib/placeholder-data';
 import { Database } from '@/types/database-types';
 
 async function seedWorkspaces(supabase: SupabaseClient<Database>) {
@@ -40,8 +33,8 @@ async function seedBoards(supabase: SupabaseClient<Database>) {
   return data;
 }
 
-async function seedBoardLists(supabase: SupabaseClient<Database>) {
-  const { data, error } = await supabase.from('board_list').upsert(boardLists).select();
+async function seedLists(supabase: SupabaseClient<Database>) {
+  const { data, error } = await supabase.from('list').upsert(lists).select();
 
   if (error) {
     throw new Error(error.message);
@@ -81,7 +74,7 @@ export async function GET() {
     await seedWorkspaces(supabase);
     await seedUserWorkspaces(supabase);
     await seedBoards(supabase);
-    await seedBoardLists(supabase);
+    await seedLists(supabase);
     await seedCards(supabase);
     await seedComments(supabase);
 

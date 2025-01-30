@@ -23,7 +23,7 @@ export type TBoard = Tables<'board'> & {
   workspaceName?: string;
 };
 
-export type TList = Tables<'board_list'> & {
+export type TList = Tables<'list'> & {
   cards: TCard[];
 };
 
