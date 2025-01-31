@@ -9,6 +9,7 @@ import invariant from 'tiny-invariant';
 import {
   draggable,
   dropTargetForElements,
+  monitorForElements,
 } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { setCustomNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview';
 import { preserveOffsetOnSource } from '@atlaskit/pragmatic-drag-and-drop/element/preserve-offset-on-source';
@@ -20,13 +21,12 @@ import {
   extractClosestEdge,
 } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
 import { isSafari } from '@/lib/utils/is-safari';
-import { TCardData, TListData, isCardData, isListData } from '@/types/drag-types';
+import { TListData, isCardData, isListData } from '@/types/drag-types';
 import { cn } from '@/lib/utils/utils';
 import { blockBoardPanningAttr, blockListDraggingAttr } from '@/constants/constants';
 import { createPortal } from 'react-dom';
 import EditableText from '@/components/ui/editable-text';
 import { isShallowEqual } from '@/lib/utils/is-shallow-equal';
-import { DragLocationHistory } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types';
 import { Card, CardShadow } from './card';
 import { useBoardContext } from '../board/board-context';
 
@@ -60,6 +60,7 @@ const innerStyles: {
 } = {
   idle: 'idle',
   'is-dragging': 'opacity-40',
+  'is-card-over': 'outline outline-2 outline-primary-border',
 };
 
 const outerStyles: { [Key in TListState['type']]?: string } = {
@@ -216,30 +217,6 @@ export const List = memo(function List({ list }: { list: TList }) {
 
     const data: TListData = { type: 'list', id: list.id, rect: inner.getBoundingClientRect() };
 
-    function setIsCardOver({
-      sourceData,
-      location,
-    }: {
-      sourceData: TCardData;
-      location: DragLocationHistory;
-    }) {
-      const innerMost = location.current.dropTargets[0];
-      const isOverChildCard = Boolean(innerMost && isCardData(innerMost.data));
-
-      const proposed: TListState = {
-        type: 'is-card-over',
-        dragging: sourceData.rect,
-        isOverChildCard,
-      };
-      // optimization - don't update state if we don't need to.
-      setState(current => {
-        if (isShallowEqual(proposed, current)) {
-          return current;
-        }
-        return proposed;
-      });
-    }
-
     return combine(
       draggable({
         element: header,
@@ -258,6 +235,11 @@ export const List = memo(function List({ list }: { list: TList }) {
           });
         },
         onDragStart: () => setState({ type: 'is-dragging' }),
+        onDropTargetChange: ({ location }) => {
+          if (location.current.dropTargets.length) {
+            setState({ type: 'is-dragging-and-left-self' });
+          }
+        },
         onDrop: () => {
           setState(idle);
         },
@@ -265,29 +247,25 @@ export const List = memo(function List({ list }: { list: TList }) {
       dropTargetForElements({
         element: outer,
         getIsSticky: () => true,
-        canDrop({ source }) {
-          return isListData(source.data) || isCardData(source.data);
-        },
+        canDrop: ({ source }) =>
+          (isListData(source.data) && source.data.id !== list.id) || isCardData(source.data),
         getData: ({ input, element }) =>
           attachClosestEdge(data, {
             input,
             element,
             allowedEdges: ['left', 'right'],
           }),
-        onDragStart({ source, location }) {
+        onDragStart: ({ source }) => {
           if (isCardData(source.data)) {
-            setIsCardOver({ sourceData: source.data, location });
+            setState({
+              type: 'is-card-over',
+              dragging: source.data.rect,
+              isOverChildCard: true,
+            });
           }
         },
-        onDragEnter({ source, location, self }) {
-          if (isCardData(source.data)) {
-            setIsCardOver({ sourceData: source.data, location });
-            return;
-          }
+        onDragEnter: ({ source, self }) => {
           if (!isListData(source.data)) {
-            return;
-          }
-          if (source.data.id === list.id) {
             return;
           }
           const closestEdge = extractClosestEdge(self.data);
@@ -296,16 +274,27 @@ export const List = memo(function List({ list }: { list: TList }) {
           }
           setState({ type: 'is-over', dragging: source.data.rect, closestEdge });
         },
-        onDropTargetChange({ source, location }) {
+        onDropTargetChange: ({ source, location }) => {
           if (isCardData(source.data)) {
-            setIsCardOver({ sourceData: source.data, location });
+            const innerMost = location.current.dropTargets[0];
+            const isOverChildCard = Boolean(innerMost && isCardData(innerMost.data));
+
+            const proposed: TListState = {
+              type: 'is-card-over',
+              dragging: source.data.rect,
+              isOverChildCard,
+            };
+            // optimization - don't update state if we don't need to.
+            setState(current => {
+              if (isShallowEqual(proposed, current)) {
+                return current;
+              }
+              return proposed;
+            });
           }
         },
-        onDrag({ source, self }) {
+        onDrag: ({ source, self }) => {
           if (!isListData(source.data)) {
-            return;
-          }
-          if (source.data.id === list.id) {
             return;
           }
           const closestEdge = extractClosestEdge(self.data);
@@ -321,22 +310,28 @@ export const List = memo(function List({ list }: { list: TList }) {
             return proposed;
           });
         },
-        onDragLeave({ source }) {
-          if (isListData(source.data) && source.data.id === list.id) {
-            setState({ type: 'is-dragging-and-left-self' });
-            return;
-          }
-
+        onDragLeave: () => {
           setState(idle);
         },
-        onDrop() {
+        onDrop: () => {
           setState(idle);
         },
       }),
-      autoScrollForElements({
-        canScroll({ source }) {
-          return isCardData(source.data);
+      monitorForElements({
+        canMonitor: ({ source }) => isListData(source.data),
+        onDropTargetChange: ({ source, location }) => {
+          const [firstTarget, secondTarget] = location.current.dropTargets;
+          const listTarget = isListData(firstTarget?.data) ? firstTarget.data : secondTarget?.data;
+
+          if (!listTarget) {
+            return;
+          }
+
+          console.log('hola?');
         },
+      }),
+      autoScrollForElements({
+        canScroll: ({ source }) => isCardData(source.data),
         getConfiguration: () => ({ maxScrollSpeed: 'standard' }),
         element: scrollable,
       }),

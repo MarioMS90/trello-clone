@@ -152,6 +152,11 @@ export const Card = memo(function Card({ card }: { card: TCard }) {
           });
         },
         onDragStart: () => setState({ type: 'is-dragging' }),
+        onDropTargetChange: ({ location }) => {
+          if (location.current.dropTargets.length) {
+            setState({ type: 'is-dragging-and-left-self' });
+          }
+        },
         onDrop: () => {
           setState(idle);
         },
@@ -159,20 +164,15 @@ export const Card = memo(function Card({ card }: { card: TCard }) {
       dropTargetForElements({
         element: outer,
         getIsSticky: () => true,
-        canDrop({ source }) {
-          return isCardData(source.data);
-        },
+        canDrop: ({ source }) => isCardData(source.data) && source.data.id !== data.id,
         getData: ({ input, element }) =>
           attachClosestEdge(data, {
             input,
             element,
             allowedEdges: ['top', 'bottom'],
           }),
-        onDragEnter({ source, self }) {
+        onDragEnter: ({ source, self }) => {
           if (!isCardData(source.data)) {
-            return;
-          }
-          if (source.data.id === card.id) {
             return;
           }
           const closestEdge = extractClosestEdge(self.data);
@@ -181,11 +181,8 @@ export const Card = memo(function Card({ card }: { card: TCard }) {
           }
           setState({ type: 'is-over', dragging: source.data.rect, closestEdge });
         },
-        onDrag({ source, self }) {
+        onDrag: ({ source, self }) => {
           if (!isCardData(source.data)) {
-            return;
-          }
-          if (source.data.id === card.id) {
             return;
           }
           const closestEdge = extractClosestEdge(self.data);
@@ -201,18 +198,10 @@ export const Card = memo(function Card({ card }: { card: TCard }) {
             return proposed;
           });
         },
-        onDragLeave({ source }) {
-          if (!isCardData(source.data)) {
-            return;
-          }
-          if (source.data.id === card.id) {
-            setState({ type: 'is-dragging-and-left-self' });
-            return;
-          }
-
+        onDragLeave: () => {
           setState(idle);
         },
-        onDrop() {
+        onDrop: () => {
           setState(idle);
         },
       }),

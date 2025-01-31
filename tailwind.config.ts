@@ -16,6 +16,7 @@ const config: Config = {
         'primary-background': 'var(--primary-background)',
         'button-hovered-background': 'var(--button-hovered-background)',
         'button-selected-background': 'var(--button-selected-background)',
+        'primary-border': 'var(--primary-border)',
       },
       boxShadow: {
         'custom-light': '1px 0px 0px 0px hsl(0deg 0% 100% / 14%)',

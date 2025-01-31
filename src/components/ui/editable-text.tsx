@@ -76,6 +76,7 @@ export default function EditableText({
     onKeyUp: e => {
       if (e.key === 'Escape') {
         e.preventDefault();
+        e.currentTarget.value = defaultText;
         handleEditingChange(false);
       }
     },

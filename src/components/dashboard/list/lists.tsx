@@ -275,11 +275,9 @@ export default function Lists({
         canMonitor: ({ source }) => isCardData(source.data),
         onDrop: async ({ source, location }) => {
           const dragging = source.data;
-          const { dropTargets } = location.current;
-          const listTarget = isListData(dropTargets[0]?.data)
-            ? dropTargets[0]?.data
-            : dropTargets[1]?.data;
-          const cardTarget = isCardData(dropTargets[0]?.data) ? dropTargets[0]?.data : null;
+          const [firstTarget, secondTarget] = location.current.dropTargets;
+          const listTarget = isListData(firstTarget?.data) ? firstTarget.data : secondTarget?.data;
+          const cardTarget = isCardData(firstTarget?.data) ? firstTarget.data : null;
 
           if (!isCardData(dragging) || !isListData(listTarget)) {
             return;
@@ -317,9 +315,7 @@ export default function Lists({
         },
       }),
       autoScrollForElements({
-        canScroll({ source }) {
-          return isListData(source.data) || isCardData(source.data);
-        },
+        canScroll: ({ source }) => isListData(source.data) || isCardData(source.data),
         getConfiguration: () => ({ maxScrollSpeed: 'standard' }),
         element: scrollable,
       }),

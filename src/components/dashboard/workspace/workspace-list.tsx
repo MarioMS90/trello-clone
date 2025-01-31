@@ -29,10 +29,11 @@ export default function WorkspaceList({ workspaces }: { workspaces: TUserWorkspa
     }
   }, [editingWorkspaceId]);
 
-  const handleUpdate = (workspaceData: TSubsetWithId<TUserWorkspace>) =>
+  const handleUpdate = (workspaceData: TSubsetWithId<TUserWorkspace>) => {
     optimisticUpdate(workspaceData, () =>
-      updateEntityAction({ tableName: 'board', entityData: workspaceData }),
+      updateEntityAction({ tableName: 'workspace', entityData: workspaceData }),
     );
+  };
 
   const handleDelete = (workspaceData: TSubsetWithId<TUserWorkspace>) => {
     optimisticDelete(workspaceData, () =>
