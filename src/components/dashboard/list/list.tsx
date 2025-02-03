@@ -236,9 +236,11 @@ export const List = memo(function List({ list }: { list: TList }) {
         },
         onDragStart: () => setState({ type: 'is-dragging' }),
         onDropTargetChange: ({ location }) => {
-          if (location.current.dropTargets.length) {
-            setState({ type: 'is-dragging-and-left-self' });
+          if (!location.current.dropTargets.length) {
+            return;
           }
+
+          setState({ type: 'is-dragging-and-left-self' });
         },
         onDrop: () => {
           setState(idle);
@@ -256,25 +258,25 @@ export const List = memo(function List({ list }: { list: TList }) {
             allowedEdges: ['left', 'right'],
           }),
         onDragStart: ({ source }) => {
-          if (isCardData(source.data)) {
-            setState({
-              type: 'is-card-over',
-              dragging: source.data.rect,
-              isOverChildCard: true,
-            });
-          }
-        },
-        onDragEnter: ({ source, self }) => {
-          if (!isListData(source.data)) {
+          if (!isCardData(source.data)) {
             return;
           }
-          const closestEdge = extractClosestEdge(self.data);
-          if (!closestEdge) {
-            return;
-          }
-          setState({ type: 'is-over', dragging: source.data.rect, closestEdge });
+
+          setState({
+            type: 'is-card-over',
+            dragging: source.data.rect,
+            isOverChildCard: true,
+          });
         },
-        onDropTargetChange: ({ source, location }) => {
+        onDragEnter: ({ source, location, self }) => {
+          if (isListData(source.data)) {
+            const closestEdge = extractClosestEdge(self.data);
+            if (!closestEdge) {
+              return;
+            }
+            setState({ type: 'is-over', dragging: source.data.rect, closestEdge });
+          }
+
           if (isCardData(source.data)) {
             const innerMost = location.current.dropTargets[0];
             const isOverChildCard = Boolean(innerMost && isCardData(innerMost.data));
@@ -289,6 +291,7 @@ export const List = memo(function List({ list }: { list: TList }) {
               if (isShallowEqual(proposed, current)) {
                 return current;
               }
+
               return proposed;
             });
           }
@@ -297,6 +300,7 @@ export const List = memo(function List({ list }: { list: TList }) {
           if (!isListData(source.data)) {
             return;
           }
+
           const closestEdge = extractClosestEdge(self.data);
           if (!closestEdge) {
             return;
@@ -310,24 +314,40 @@ export const List = memo(function List({ list }: { list: TList }) {
             return proposed;
           });
         },
-        onDragLeave: () => {
-          setState(idle);
-        },
         onDrop: () => {
           setState(idle);
         },
       }),
+
+      // This ensures that the user always sees a drop shadow for both cards and lists,
+      // even if the mouse leaves the viewport. By using monitorForElements, we can
+      // trigger the necessary events on any list displaying a drop shadow.
       monitorForElements({
-        canMonitor: ({ source }) => isListData(source.data),
-        onDropTargetChange: ({ source, location }) => {
+        canMonitor: ({ source }) =>
+          (isListData(source.data) && source.data.id !== list.id) || isCardData(source.data),
+        onDropTargetChange: ({ location }) => {
           const [firstTarget, secondTarget] = location.current.dropTargets;
           const listTarget = isListData(firstTarget?.data) ? firstTarget.data : secondTarget?.data;
-
-          if (!listTarget) {
+          if (!isListData(listTarget) || listTarget.id === list.id) {
             return;
           }
 
-          console.log('hola?');
+          setState(current => {
+            if (current.type === 'idle') {
+              return current;
+            }
+
+            return idle;
+          });
+        },
+        onDrop: () => {
+          setState(current => {
+            if (current.type === 'idle') {
+              return current;
+            }
+
+            return idle;
+          });
         },
       }),
       autoScrollForElements({
