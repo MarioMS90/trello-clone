@@ -57,8 +57,8 @@ export default function EditableText({
   const commonAttributes: InputHTMLAttributes<HTMLInputElement> &
     TextareaHTMLAttributes<HTMLTextAreaElement> = {
     className: cn(
-      'shadow-transition focus:shadow-transition-effect absolute inset-0 z-[1] grow resize-none overflow-hidden rounded-md bg-gray-200 px-2 py-1.5 text-primary opacity-0 outline-none focus:bg-white',
-      { 'static opacity-100': isEditing },
+      'shadow-transition pointer-events-none focus:shadow-transition-effect absolute inset-0 z-[1] grow resize-none overflow-hidden rounded-md bg-gray-200 px-2 py-1.5 text-primary opacity-0 outline-none focus:bg-white',
+      { 'static opacity-100 pointer-events-auto': isEditing },
     ),
     defaultValue: defaultText,
     onBlur: e => {
@@ -84,16 +84,23 @@ export default function EditableText({
 
   return (
     <div className={cn('relative flex grow text-sm', className)}>
-      <button
-        type="button"
-        className={cn('z-[2] h-full grow px-2 py-1.5 text-left', {
-          hidden: isEditing,
-        })}
-        {...(editOnClick && {
-          onMouseUp: () => handleEditingChange(true),
-        })}>
-        {children}
-      </button>
+      {editOnClick ? (
+        <button
+          type="button"
+          className={cn('z-[2] h-full grow px-2 py-1.5 text-left', {
+            hidden: isEditing,
+          })}
+          onMouseUp={() => handleEditingChange(true)}>
+          {children}
+        </button>
+      ) : (
+        <div
+          className={cn('z-[2] h-full grow px-2 py-1.5 text-left', {
+            hidden: isEditing,
+          })}>
+          {children}
+        </div>
+      )}
       {autoResize ? (
         <textarea
           ref={textareaRef}

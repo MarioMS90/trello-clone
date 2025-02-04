@@ -112,7 +112,7 @@ export default function SidebarBoards({
           </div>
 
           <StarToggleBoard
-            className={cn('hidden group-[:hover:not(:has(.popover:hover))]:block', {
+            className={cn('z-10 hidden group-[:hover:not(:has(.popover:hover))]:block', {
               '[&]:block': board.starred,
             })}
             starred={board.starred}
