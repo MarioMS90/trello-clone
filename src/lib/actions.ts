@@ -1,8 +1,9 @@
 'use server';
 
-import { TActionState, initialState, TPublicSchema } from '@/types/types';
+import { TActionState, initialState, TPublicSchema, TList, TCard } from '@/types/types';
 import {
   CreateBoardSchema,
+  CreateCardSchema,
   CreateListSchema,
   CreateWorkspaceSchema,
 } from '@/schemas/workspace-schemas';
@@ -113,7 +114,7 @@ export async function createListAction({
   boardId: string;
   name: string;
   rank: string;
-}) {
+}): Promise<TList> {
   const validatedFields = CreateListSchema.safeParse({
     boardId,
     name,
@@ -135,6 +136,53 @@ export async function createListAction({
       ` 
       *,
       cards: card(
+        *,
+        comments: comment(
+          *
+        )
+      )
+    `,
+    )
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
+export async function createCardAction({
+  listId,
+  name,
+  rank,
+}: {
+  listId: string;
+  name: string;
+  rank: string;
+}): Promise<TCard> {
+  const validatedFields = CreateCardSchema.safeParse({
+    listId,
+    name,
+    rank,
+  });
+  if (!validatedFields.success) {
+    throw new Error('Missing fields. Failed to create list.');
+  }
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('card')
+    .insert({
+      name: validatedFields.data.name,
+      description: '',
+      rank: validatedFields.data.rank,
+      list_id: validatedFields.data.listId,
+    })
+    .select(
+      ` 
+      *,
+      comments: comment(
         *
       )
     `,

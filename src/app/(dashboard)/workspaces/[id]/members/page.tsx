@@ -15,5 +15,5 @@ export default async function MembersPage({ params }: { params: Promise<{ id: st
     notFound();
   }
 
-  return <div className="main-container">'Members page, coming soon! 🚀'</div>;
+  return <div className="main-container">Members page, coming soon! 🚀</div>;
 }

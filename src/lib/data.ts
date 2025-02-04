@@ -58,7 +58,10 @@ export async function fetchLists(boardId: string): Promise<TList[]> {
       ` 
       *,
       cards: card(
-        *
+        *,
+        comments: comment(
+          *
+        )
       )
     `,
     )

@@ -1,9 +1,7 @@
 'use client';
 
-import { TBoard, TSubsetWithId, TUserWorkspace } from '@/types/types';
+import { TBoard, TUserWorkspace } from '@/types/types';
 import Link from 'next/link';
-import { updateEntityAction } from '@/lib/actions';
-import { useOptimisticList } from '@/hooks/useOptimisticList';
 import Popover from '@/components/ui/popover';
 import ArrowDownIcon from '@/components/icons/arrow-down';
 import WorkspaceBadge from '@/components/ui/workspace-logo';
@@ -17,14 +15,6 @@ export default function HeaderButtons({
   workspaces: TUserWorkspace[];
   starredBoards: TBoard[];
 }) {
-  const { optimisticList: optimisticBoards, optimisticUpdate } = useOptimisticList(starredBoards);
-
-  const handleUpdate = (boardData: TSubsetWithId<TBoard>) => {
-    optimisticUpdate(boardData, () =>
-      updateEntityAction({ tableName: 'board', entityData: boardData }),
-    );
-  };
-
   const workspacesContent = (
     <ul className="space-y-1">
       {workspaces.map(({ id, name }) => (
@@ -40,20 +30,16 @@ export default function HeaderButtons({
     </ul>
   );
 
-  const hasStarredBoards = optimisticBoards.some(({ starred }) => starred);
+  const hasStarredBoards = starredBoards.some(({ starred }) => starred);
   const starredBoardsContent = hasStarredBoards ? (
     <ul className="space-y-1">
-      {optimisticBoards.map(({ id, name, workspaceName }) => (
-        <li className="relative rounded-md px-2 py-1 hover:bg-gray-200" key={id}>
-          <Link className="" href={`/boards/${id}`}>
-            <h3 className="font-medium">{name}</h3>
-            <p className="text-gray-500">{workspaceName}</p>
+      {starredBoards.map(board => (
+        <li className="relative rounded-md px-2 py-1 hover:bg-gray-200" key={board.id}>
+          <Link className="" href={`/boards/${board.id}`}>
+            <h3 className="font-medium">{board.name}</h3>
+            <p className="text-gray-500">{board.workspaceName}</p>
           </Link>
-          <StarToggleBoard
-            className="[&]:right-1.5"
-            onStarToggle={() => handleUpdate({ id, starred: false })}
-            starred
-          />
+          <StarToggleBoard className="[&]:right-1.5" board={board} />
         </li>
       ))}
     </ul>

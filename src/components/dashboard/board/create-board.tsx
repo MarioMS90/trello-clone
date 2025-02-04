@@ -67,7 +67,7 @@ export function CreateBoard({
                   className="mb-1 mt-1 w-full rounded border border-gray-500 px-3 py-2 outline-secondary"
                   required
                   onInput={e => {
-                    setIsValidForm(!!e.currentTarget.value.trim());
+                    setIsValidForm(Boolean(e.currentTarget.value.trim()));
                   }}>
                   <option value="">Select a workspace</option>
                   {workspaces.map(({ id, name }) => (
@@ -85,7 +85,7 @@ export function CreateBoard({
                 className="mb-1 mt-1 w-full rounded border border-gray-500 px-3 py-2 outline-secondary"
                 required
                 onInput={e => {
-                  setIsValidForm(!!e.currentTarget.value.trim());
+                  setIsValidForm(Boolean(e.currentTarget.value.trim()));
                 }}
                 type="text"
               />

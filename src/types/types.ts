@@ -28,7 +28,7 @@ export type TList = Tables<'list'> & {
 };
 
 export type TCard = Tables<'card'> & {
-  comments?: TComment[];
+  comments: TComment[];
 };
 
 export type TComment = Tables<'comment'>;

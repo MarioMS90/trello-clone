@@ -115,8 +115,7 @@ export default function SidebarBoards({
             className={cn('z-10 hidden group-[:hover:not(:has(.popover:hover))]:block', {
               '[&]:block': board.starred,
             })}
-            starred={board.starred}
-            onStarToggle={() => handleUpdate({ id: board.id, starred: !board.starred })}
+            board={board}
           />
         </li>
       ))}

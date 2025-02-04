@@ -38,7 +38,7 @@ export function BoardList({
   return (
     <ul className={`mt-4 flex flex-wrap gap-4 ${className}`}>
       {boards &&
-        boards.map(({ id, name, starred }) => (
+        boards.map(board => (
           <li
             className="
               relative 
@@ -49,18 +49,14 @@ export function BoardList({
               text-primary 
               hover:bg-opacity-95
             "
-            key={id}>
+            key={board.id}>
             <Link
               className="block h-full w-full pl-4 pt-2 text-sm font-bold"
-              href={`/boards/${id}`}>
-              {name}
+              href={`/boards/${board.id}`}>
+              {board.name}
             </Link>
 
-            <StarToggleBoard
-              className="bottom-3 top-[unset] transform-none"
-              board={{ id, name, starred } as TBoard}
-              starred={starred}
-            />
+            <StarToggleBoard className="bottom-3 top-[unset] transform-none" board={board} />
           </li>
         ))}
       {extraItem && <li>{extraItem}</li>}

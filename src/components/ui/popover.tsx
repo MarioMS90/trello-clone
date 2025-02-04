@@ -57,7 +57,7 @@ export default function Popover({
       {isOpen && (
         <dialog
           className={cn(
-            'popover absolute left-0 top-[calc(100%+5px)] z-10 flex w-72 flex-col rounded-lg bg-white p-3 text-primary shadow-lg outline-none',
+            'popover absolute left-0 top-[calc(100%+5px)] z-20 flex w-72 flex-col rounded-lg bg-white p-3 text-primary shadow-lg outline-none',
             popoverClassName,
           )}>
           {addCloseButton && (

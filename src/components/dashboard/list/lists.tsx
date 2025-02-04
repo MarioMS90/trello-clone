@@ -20,13 +20,19 @@ import {
   useTransition,
 } from 'react';
 import { List } from '@/components/dashboard/list/list';
-import { createListAction, deleteEntityAction, updateEntityAction } from '@/lib/actions';
+import {
+  createListAction,
+  createCardAction,
+  deleteEntityAction,
+  updateEntityAction,
+} from '@/lib/actions';
 import { generateRank, updateElement } from '@/lib/utils/utils';
 import { CleanupFn } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types';
 import { blockBoardPanningAttr } from '@/constants/constants';
 import { BoardContext, BoardContextValue } from '../board/board-context';
 import { CreateList } from './create-list';
 
+// TODO: Revalidate data with a use effect and verify all the update functions
 export default function Lists({
   boardId,
   initialLists,
@@ -144,15 +150,15 @@ export default function Lists({
         return undefined;
       }
 
-      const filtered = lists.with(sourceListIndex, {
-        ...sourceList,
-        cards: sourceList.cards.filter(card => card.id !== cardId),
-      });
-
       const rank = generateRank({
         elements: destinationList.cards,
         leftIndex: destinationIndex - 1,
       }).format();
+
+      const filtered = lists.with(sourceListIndex, {
+        ...sourceList,
+        cards: sourceList.cards.filter(card => card.id !== cardId),
+      });
 
       const updated = filtered.with(destinationListIndex, {
         ...destinationList,
@@ -305,7 +311,7 @@ export default function Lists({
 
               await updateEntityAction({
                 tableName: 'card',
-                entityData: list.cards[cardIndex],
+                entityData: { id: dragging.id, list_id: list.id, rank: list.cards[cardIndex].rank },
               });
               startTransition(async () => setLists(updatedLists));
             } catch (error) {
@@ -397,18 +403,20 @@ export default function Lists({
   const addList = useCallback(
     (name: string) => {
       const temporalId = crypto.randomUUID();
+      const rank = generateRank({ elements: lists, leftIndex: lists.length - 1 }).format();
+
       startTransition(async () => {
         setOptimisticLists(current => [
           ...current,
-          { id: temporalId, name, cards: [] } as unknown as TList,
+          { id: temporalId, name, rank, board_id: boardId, cards: [], created_at: '' },
         ]);
 
         try {
-          const rank = generateRank({ elements: lists, leftIndex: lists.length - 1 }).format();
           const list = await createListAction({ boardId, name, rank });
           startTransition(async () => setLists(current => [...current, list]));
         } catch (error) {
-          alert(error);
+          // TODO: Show error with a toast
+          alert('An error occurred while creating the element');
         }
       });
     },
@@ -455,7 +463,56 @@ export default function Lists({
     [startTransition, setOptimisticLists],
   );
 
-  const addCard = useCallback((listId: string, cardName: string) => {}, []);
+  const addCard = useCallback(
+    (listId: string, name: string) => {
+      const temporalId = crypto.randomUUID();
+      const listIndex = lists.findIndex(list => list.id === listId);
+      const rank = generateRank({
+        elements: lists[listIndex].cards,
+        leftIndex: lists[listIndex].cards.length - 1,
+      }).format();
+
+      startTransition(async () => {
+        setOptimisticLists(current => {
+          const updated = current.with(listIndex, {
+            ...current[listIndex],
+            cards: [
+              ...current[listIndex].cards,
+              {
+                id: temporalId,
+                name,
+                description: '',
+                rank,
+                list_id: listId,
+                comments: [],
+                created_at: '',
+              },
+            ],
+          });
+
+          return updated;
+        });
+
+        try {
+          const card = await createCardAction({ listId, name, rank });
+          startTransition(async () =>
+            setLists(current => {
+              const updated = current.with(listIndex, {
+                ...current[listIndex],
+                cards: [...current[listIndex].cards, card],
+              });
+
+              return updated;
+            }),
+          );
+        } catch (error) {
+          // TODO: Show error with a toast
+          alert('An error occurred while creating the element');
+        }
+      });
+    },
+    [lists, setOptimisticLists],
+  );
 
   const updateCard = useCallback((cardData: TSubsetWithId<TCard>) => {}, []);
 
@@ -476,7 +533,7 @@ export default function Lists({
   return (
     <BoardContext.Provider value={contextValue}>
       <ul
-        className="scrollbar-transparent [-webkit-user-drag: none] flex h-full select-none overflow-x-auto p-4"
+        className="scrollbar-transparent [-webkit-user-drag: none] flex h-full select-none overflow-x-auto px-2 pb-2 pt-3"
         ref={scrollableRef}
         draggable={false}>
         {optimisticLists.map(list => (

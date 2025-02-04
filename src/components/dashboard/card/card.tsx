@@ -22,6 +22,8 @@ import { isCardData, TCardData } from '@/types/drag-types';
 import { createPortal } from 'react-dom';
 import { cn } from '@/lib/utils/utils';
 import { isShallowEqual } from '@/lib/utils/is-shallow-equal';
+import DescriptionIcon from '@/components/icons/description';
+import CommentIcon from '@/components/icons/comment';
 
 type TCardState =
   | { type: 'idle' }
@@ -101,11 +103,24 @@ const CardDisplay = memo(function CardDisplay({
           }
           ref={innerRef}>
           <h2>{card.name}</h2>
-          <span className="center-y absolute right-1.5 hidden size-7 rounded-full hover:bg-gray-200 group-hover:block">
+          <span className="absolute right-1.5 top-1.5 hidden size-7 rounded-full hover:bg-gray-200 group-hover:block">
             <span className="center-xy">
               <PencilIcon width={11} height={11} />
             </span>
           </span>
+          <div className="flex items-center gap-3 has-[span]:p-1">
+            {card.description && (
+              <span title="This card has a description">
+                <DescriptionIcon width={16} height={16} />
+              </span>
+            )}
+            {card.comments?.length > 0 && (
+              <span className="flex items-center gap-1" title="Comments">
+                <CommentIcon width={16} height={16} />
+                <span className="text-xs">{card.comments.length}</span>
+              </span>
+            )}
+          </div>
         </div>
       </li>
       {state.type === 'is-over' && state.closestEdge === 'bottom' ? (

@@ -27,8 +27,10 @@ import { blockBoardPanningAttr, blockListDraggingAttr } from '@/constants/consta
 import { createPortal } from 'react-dom';
 import EditableText from '@/components/ui/editable-text';
 import { isShallowEqual } from '@/lib/utils/is-shallow-equal';
-import { Card, CardShadow } from './card';
+import { useClickAway } from '@uidotdev/usehooks';
+import { Card, CardShadow } from '../card/card';
 import { useBoardContext } from '../board/board-context';
+import { CreateCard } from '../card/create-card';
 
 type TListState =
   | { type: 'idle' }
@@ -92,7 +94,13 @@ const ListDisplay = memo(function ListDisplay({
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const [isOpenPopover, setIsOpenPopover] = useState(false);
-  const { updateList, deleteList } = useBoardContext();
+  const [isCreatingCard, setIsCreatingCard] = useState(false);
+  const { updateList, deleteList, addCard } = useBoardContext();
+  const clickAwayRef = useClickAway<HTMLLIElement>(() => {
+    if (isCreatingCard) {
+      setIsCreatingCard(false);
+    }
+  });
 
   return (
     <>
@@ -100,11 +108,11 @@ const ListDisplay = memo(function ListDisplay({
         <ListShadow dragging={state.dragging} />
       ) : null}
       <li
-        className={cn('flex flex-shrink-0 flex-col px-2', outerStyles[state.type])}
+        className={cn('flex flex-shrink-0 flex-col px-1.5', outerStyles[state.type])}
         ref={outerFullHeightRef}>
         <div
           className={cn(
-            'flex max-h-full w-[272px] flex-col rounded-xl bg-[#f1f2f4] text-sm text-primary',
+            'flex max-h-full w-[272px] flex-col rounded-xl bg-[#f1f2f4] pb-2 text-sm text-primary',
             innerStyles[state.type],
           )}
           style={
@@ -122,7 +130,7 @@ const ListDisplay = memo(function ListDisplay({
               ref={headerRef}
               {...(isEditing && { [blockListDraggingAttr]: true })}>
               <EditableText
-                className="[&>button]px-2.5 font-semibold [&>textarea]:px-2.5"
+                className="[&>button]px-2.5 mb-1 font-semibold [&>textarea]:px-2"
                 defaultText={list.name}
                 onEdit={name => updateList({ id: list.id, name })}
                 autoResize
@@ -174,19 +182,29 @@ const ListDisplay = memo(function ListDisplay({
                 {list.cards.map(card => (
                   <Card card={card} key={card.id} />
                 ))}
+                {isCreatingCard && (
+                  <CreateCard
+                    onCardCreated={cardName => addCard(list.id, cardName)}
+                    onCancel={() => setIsCreatingCard(false)}
+                    ref={clickAwayRef}
+                  />
+                )}
                 {state.type === 'is-card-over' && !state.isOverChildCard ? (
                   <CardShadow dragging={state.dragging} />
                 ) : null}
               </ul>
             </div>
-            <div className="px-2 pb-2 pt-2">
-              <button
-                type="button"
-                className="flex w-full items-center gap-2 rounded-lg p-1.5 text-sm hover:bg-gray-300">
-                <PlusIcon width={16} height={16} />
-                Add a card
-              </button>
-            </div>
+            {!isCreatingCard && (
+              <div className="px-2 pt-2">
+                <button
+                  type="button"
+                  className="flex w-full items-center gap-2 rounded-lg p-1.5 text-sm hover:bg-gray-300"
+                  onClick={() => setIsCreatingCard(true)}>
+                  <PlusIcon width={16} height={16} />
+                  Add a card
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </li>

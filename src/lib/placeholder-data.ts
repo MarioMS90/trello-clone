@@ -103,57 +103,21 @@ const lists = listsData.map(list => {
 const cardsData = [
   {
     id: crypto.randomUUID(),
-    name: 'Card 1',
-    description: 'This is the first card',
+    name: 'Card with description',
+    description: 'This is the description',
     list_id: lists[0].id,
   },
   {
     id: crypto.randomUUID(),
-    name: 'Card 2',
-    description: 'This is the second card',
+    name: 'Card with a comment',
+    description: '',
     list_id: lists[0].id,
   },
   {
     id: crypto.randomUUID(),
-    name: 'Mario',
-    description: 'This is the third card',
+    name: 'Empty card',
+    description: '',
     list_id: lists[0].id,
-  },
-  {
-    id: crypto.randomUUID(),
-    name: 'Card 4',
-    description: 'This is the first card',
-    list_id: lists[1].id,
-  },
-  {
-    id: crypto.randomUUID(),
-    name: 'Card 5',
-    description: 'This is the second card',
-    list_id: lists[1].id,
-  },
-  {
-    id: crypto.randomUUID(),
-    name: 'Card 6',
-    description: 'This is the third card',
-    list_id: lists[1].id,
-  },
-  {
-    id: crypto.randomUUID(),
-    name: 'Card 7',
-    description: 'This is the first card',
-    list_id: lists[1].id,
-  },
-  {
-    id: crypto.randomUUID(),
-    name: 'Card 8',
-    description: 'This is the second card',
-    list_id: lists[1].id,
-  },
-  {
-    id: crypto.randomUUID(),
-    name: 'Card 9',
-    description: 'This is the third card',
-    list_id: lists[1].id,
   },
   {
     id: crypto.randomUUID(),
@@ -174,13 +138,13 @@ const comments = [
     id: crypto.randomUUID(),
     content: 'This is a comment',
     user_id: '746a5280-bcc3-4a23-842f-be2ec0334e90',
-    card_id: cards[0].id,
+    card_id: cards[1].id,
   },
   {
     id: crypto.randomUUID(),
     content: 'This is the second comment',
     user_id: '746a5280-bcc3-4a23-842f-be2ec0334e90',
-    card_id: cards[0].id,
+    card_id: cards[3].id,
   },
 ];
 

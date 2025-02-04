@@ -12,9 +12,9 @@ export type TCardData = {
 };
 
 export function isListData(value: Record<string, unknown>): value is TListData {
-  return Boolean(value && value.type === 'list');
+  return value && value.type === 'list';
 }
 
 export function isCardData(value: Record<string, unknown>): value is TCardData {
-  return Boolean(value && value.type === 'card');
+  return value && value.type === 'card';
 }
