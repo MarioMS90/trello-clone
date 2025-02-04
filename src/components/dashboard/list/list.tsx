@@ -249,8 +249,7 @@ export const List = memo(function List({ list }: { list: TList }) {
       dropTargetForElements({
         element: outer,
         getIsSticky: () => true,
-        canDrop: ({ source }) =>
-          (isListData(source.data) && source.data.id !== list.id) || isCardData(source.data),
+        canDrop: ({ source }) => isListData(source.data) || isCardData(source.data),
         getData: ({ input, element }) =>
           attachClosestEdge(data, {
             input,
@@ -258,7 +257,7 @@ export const List = memo(function List({ list }: { list: TList }) {
             allowedEdges: ['left', 'right'],
           }),
         onDragStart: ({ source }) => {
-          if (!isCardData(source.data)) {
+          if (!isCardData(source.data) || source.data.id === list.id) {
             return;
           }
 
@@ -269,7 +268,7 @@ export const List = memo(function List({ list }: { list: TList }) {
           });
         },
         onDragEnter: ({ source, location, self }) => {
-          if (isListData(source.data)) {
+          if (isListData(source.data) && source.data.id !== list.id) {
             const closestEdge = extractClosestEdge(self.data);
             if (!closestEdge) {
               return;
@@ -296,8 +295,28 @@ export const List = memo(function List({ list }: { list: TList }) {
             });
           }
         },
+        onDropTargetChange: ({ source, location }) => {
+          const dropTarget = location.current.dropTargets[0]?.data;
+          if (!isCardData(source.data) || !isCardData(dropTarget)) {
+            return;
+          }
+
+          const proposed: TListState = {
+            type: 'is-card-over',
+            dragging: dropTarget.rect,
+            isOverChildCard: true,
+          };
+
+          setState(current => {
+            if (isShallowEqual(proposed, current)) {
+              return current;
+            }
+
+            return proposed;
+          });
+        },
         onDrag: ({ source, self }) => {
-          if (!isListData(source.data)) {
+          if (!isListData(source.data) || source.data.id === list.id) {
             return;
           }
 
@@ -314,14 +333,10 @@ export const List = memo(function List({ list }: { list: TList }) {
             return proposed;
           });
         },
-        onDrop: () => {
-          setState(idle);
-        },
       }),
-
-      // This ensures that the user always sees a drop shadow for both cards and lists,
-      // even if the mouse leaves the viewport. By using monitorForElements, we can
-      // trigger the necessary events on any list displaying a drop shadow.
+      // A shadow is always displayed, even when the mouse leaves the viewport.
+      // Using monitorForElements, we can trigger the necessary events to remove
+      // the shadow on components that are no longer being targeted.
       monitorForElements({
         canMonitor: ({ source }) =>
           (isListData(source.data) && source.data.id !== list.id) || isCardData(source.data),
@@ -332,22 +347,10 @@ export const List = memo(function List({ list }: { list: TList }) {
             return;
           }
 
-          setState(current => {
-            if (current.type === 'idle') {
-              return current;
-            }
-
-            return idle;
-          });
+          setState(current => (current.type === 'idle' ? current : idle));
         },
         onDrop: () => {
-          setState(current => {
-            if (current.type === 'idle') {
-              return current;
-            }
-
-            return idle;
-          });
+          setState(current => (current.type === 'idle' ? current : idle));
         },
       }),
       autoScrollForElements({

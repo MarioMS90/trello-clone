@@ -7,6 +7,7 @@ import invariant from 'tiny-invariant';
 import {
   draggable,
   dropTargetForElements,
+  monitorForElements,
 } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { setCustomNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview';
 import { preserveOffsetOnSource } from '@atlaskit/pragmatic-drag-and-drop/element/preserve-offset-on-source';
@@ -153,9 +154,11 @@ export const Card = memo(function Card({ card }: { card: TCard }) {
         },
         onDragStart: () => setState({ type: 'is-dragging' }),
         onDropTargetChange: ({ location }) => {
-          if (location.current.dropTargets.length) {
-            setState({ type: 'is-dragging-and-left-self' });
+          if (!location.current.dropTargets.length) {
+            return;
           }
+
+          setState({ type: 'is-dragging-and-left-self' });
         },
         onDrop: () => {
           setState(idle);
@@ -164,7 +167,7 @@ export const Card = memo(function Card({ card }: { card: TCard }) {
       dropTargetForElements({
         element: outer,
         getIsSticky: () => true,
-        canDrop: ({ source }) => isCardData(source.data) && source.data.id !== data.id,
+        canDrop: ({ source }) => isCardData(source.data),
         getData: ({ input, element }) =>
           attachClosestEdge(data, {
             input,
@@ -172,7 +175,7 @@ export const Card = memo(function Card({ card }: { card: TCard }) {
             allowedEdges: ['top', 'bottom'],
           }),
         onDragEnter: ({ source, self }) => {
-          if (!isCardData(source.data)) {
+          if (!isCardData(source.data) || source.data.id === card.id) {
             return;
           }
           const closestEdge = extractClosestEdge(self.data);
@@ -182,7 +185,7 @@ export const Card = memo(function Card({ card }: { card: TCard }) {
           setState({ type: 'is-over', dragging: source.data.rect, closestEdge });
         },
         onDrag: ({ source, self }) => {
-          if (!isCardData(source.data)) {
+          if (!isCardData(source.data) || source.data.id === card.id) {
             return;
           }
           const closestEdge = extractClosestEdge(self.data);
@@ -198,11 +201,26 @@ export const Card = memo(function Card({ card }: { card: TCard }) {
             return proposed;
           });
         },
-        onDragLeave: () => {
-          setState(idle);
+      }),
+      // A shadow is always displayed, even when the mouse leaves the viewport.
+      // Using monitorForElements, we can trigger the necessary events to remove
+      // the shadow on components that are no longer being targeted.
+      monitorForElements({
+        canMonitor: ({ source }) => isCardData(source.data) && source.data.id !== card.id,
+        onDropTargetChange: ({ location }) => {
+          if (!location.current.dropTargets.length) {
+            return;
+          }
+
+          const dropTarget = location.current.dropTargets[0]?.data;
+          if (isCardData(dropTarget) && dropTarget.id === card.id) {
+            return;
+          }
+
+          setState(current => (current.type === 'idle' ? current : idle));
         },
         onDrop: () => {
-          setState(idle);
+          setState(current => (current.type === 'idle' ? current : idle));
         },
       }),
     );
