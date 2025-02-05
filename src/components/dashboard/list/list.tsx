@@ -130,7 +130,7 @@ const ListDisplay = memo(function ListDisplay({
               ref={headerRef}
               {...(isEditing && { [blockListDraggingAttr]: true })}>
               <EditableText
-                className="[&>button]px-2.5 mb-1 font-semibold [&>textarea]:px-2"
+                className="font-semibold [&>button]:px-3 [&>textarea]:px-3"
                 defaultText={list.name}
                 onEdit={name => updateList({ id: list.id, name })}
                 autoResize
@@ -176,9 +176,9 @@ const ListDisplay = memo(function ListDisplay({
               </Popover>
             </div>
             <div
-              className="overflow-y-auto [overflow-anchor:none] [scrollbar-width:thin]"
+              className="overflow-y-auto [overflow-anchor:none] [scrollbar-width:thin] has-[li]:mt-1.5"
               ref={scrollableRef}>
-              <ul>
+              <ul className="flex flex-col gap-2 has-[li]:py-0.5">
                 {list.cards.map(card => (
                   <Card card={card} key={card.id} />
                 ))}

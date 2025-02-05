@@ -83,7 +83,7 @@ const CardDisplay = memo(function CardDisplay({
       ) : null}
       <li
         className={cn(
-          'group flex flex-shrink-0 cursor-pointer flex-col px-2 py-1',
+          'group flex flex-shrink-0 cursor-pointer flex-col px-2',
           outerStyles[state.type],
         )}
         ref={outerRef}>
@@ -103,7 +103,7 @@ const CardDisplay = memo(function CardDisplay({
           }
           ref={innerRef}>
           <h2>{card.name}</h2>
-          <span className="absolute right-1.5 top-1.5 hidden size-7 rounded-full hover:bg-gray-200 group-hover:block">
+          <span className="absolute right-1 top-1 hidden size-7 rounded-full hover:bg-gray-200 group-hover:block">
             <span className="center-xy">
               <PencilIcon width={11} height={11} />
             </span>
