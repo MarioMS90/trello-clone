@@ -1,5 +1,6 @@
 import Header from '@/components/dashboard/header/header';
-import { HeaderSkeleton, SidebarSkeleton } from '@/components/ui/skeletons';
+import { MainProvider } from '@/providers/main-provider';
+import { LayoutSkeleton } from '@/components/ui/skeletons';
 import { Suspense } from 'react';
 
 export default function DashboardLayout({
@@ -10,14 +11,16 @@ export default function DashboardLayout({
   sidebar: React.ReactNode;
 }>) {
   return (
-    <div className="flex h-dvh flex-col">
-      <Suspense fallback={<HeaderSkeleton />}>
-        <Header />
-      </Suspense>
-      <div className="z-0 flex grow">
-        <Suspense fallback={<SidebarSkeleton />}>{sidebar}</Suspense>
-        <main className="grow bg-main-background text-white">{children}</main>
-      </div>
-    </div>
+    <Suspense fallback={<LayoutSkeleton />}>
+      <MainProvider>
+        <div className="flex h-dvh flex-col">
+          <Header />
+        </div>
+        {/* <main className="z-0 flex grow">
+          {sidebar} Pending
+          <div className="grow bg-main-background text-white">{children}</div>
+        </main> */}
+      </MainProvider>
+    </Suspense>
   );
 }

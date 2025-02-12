@@ -1,20 +1,17 @@
 'use client';
 
-import { TBoard, TUserWorkspace } from '@/types/types';
 import Link from 'next/link';
 import Popover from '@/components/ui/popover';
 import ArrowDownIcon from '@/components/icons/arrow-down';
 import WorkspaceBadge from '@/components/ui/workspace-logo';
 import { CreateBoard } from '@/components/dashboard/board/create-board';
 import StarToggleBoard from '@/components/dashboard/board/star-toggle-board';
+import { useWorkspaces } from '@/providers/main-store-provider';
+import { TBoard } from '@/types/types';
 
-export default function HeaderButtons({
-  workspaces,
-  starredBoards,
-}: {
-  workspaces: TUserWorkspace[];
-  starredBoards: TBoard[];
-}) {
+export default function HeaderMenu({ starredBoards }: { starredBoards: TBoard[] }) {
+  const workspaces = useWorkspaces();
+
   const workspacesContent = (
     <ul className="space-y-1">
       {workspaces.map(({ id, name }) => (
@@ -30,22 +27,22 @@ export default function HeaderButtons({
     </ul>
   );
 
-  const hasStarredBoards = starredBoards.some(({ starred }) => starred);
-  const starredBoardsContent = hasStarredBoards ? (
-    <ul className="space-y-1">
-      {starredBoards.map(board => (
-        <li className="relative rounded-md px-2 py-1 hover:bg-gray-200" key={board.id}>
-          <Link className="" href={`/boards/${board.id}`}>
-            <h3 className="font-medium">{board.name}</h3>
-            <p className="text-gray-500">{board.workspaceName}</p>
-          </Link>
-          <StarToggleBoard className="[&]:right-1.5" board={board} />
-        </li>
-      ))}
-    </ul>
-  ) : (
-    <p className="text-center">No starred boards</p>
-  );
+  const starredBoardsContent =
+    starredBoards.length > 0 ? (
+      <ul className="space-y-1">
+        {starredBoards.map(board => (
+          <li className="relative rounded-md px-2 py-1 hover:bg-gray-200" key={board.id}>
+            <Link className="" href={`/boards/${board.id}`}>
+              <h3 className="font-medium">{board.name}</h3>
+              <p className="text-gray-500">{board.workspaceName}</p>
+            </Link>
+            <StarToggleBoard className="[&]:right-1.5" board={board} />
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p className="text-center">No starred boards</p>
+    );
 
   const menuItems = [
     <Popover

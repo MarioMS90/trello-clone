@@ -32,6 +32,7 @@ module.exports = {
     '@typescript-eslint/no-use-before-define': 'off',
     'react/jsx-no-useless-fragment': 'off',
     'prefer-arrow-callback': ['error', { allowNamedFunctions: true }],
+    'no-param-reassign': ['error', { props: false }],
     'no-alert': 'off', // Temporary
     'react/jsx-props-no-spreading': [
       'error',

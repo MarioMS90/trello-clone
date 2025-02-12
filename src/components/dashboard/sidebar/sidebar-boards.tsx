@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { TBoard, TSubsetWithId } from '@/types/types';
 import { useState } from 'react';
-import { deleteEntityAction, updateEntityAction } from '@/lib/actions';
+import { deleteEntity, updateEntity } from '@/lib/actions';
 import { useOptimisticList } from '@/hooks/useOptimisticList';
 import { cn } from '@/lib/utils/utils';
 import EditableText from '@/components/ui/editable-text';
@@ -29,9 +29,7 @@ export default function SidebarBoards({
   } = useOptimisticList(boards);
 
   const handleUpdate = (boardData: TSubsetWithId<TBoard>) => {
-    optimisticUpdate(boardData, () =>
-      updateEntityAction({ tableName: 'board', entityData: boardData }),
-    );
+    optimisticUpdate(boardData, () => updateEntity({ tableName: 'board', entityData: boardData }));
   };
 
   const handleDelete = (boardData: TSubsetWithId<TBoard>) => {
@@ -41,7 +39,7 @@ export default function SidebarBoards({
     }
 
     optimisticDelete(boardData, () =>
-      deleteEntityAction({
+      deleteEntity({
         tableName: 'board',
         entityId: boardData.id,
         redirectUrl,

@@ -1,18 +1,14 @@
 import Link from 'next/link';
-import { fetchUser, fetchWorkspaces } from '@/lib/data';
-import { getStarredBoards } from '@/lib/utils/server-utils';
 import { signOutAction } from '@/lib/auth-actions';
 import AppsIcon from '@/components/icons/apps';
 import Avatar from '@/components/ui/avatar';
 import TrelloWhiteIcon from '@/components/icons/trello-white';
-import HeaderButtons from '@/components/dashboard/header/header-menu';
+import HeaderMenu from '@/components/dashboard/header/header-menu';
 import HeaderSearch from '@/components/dashboard/header/header-search';
 import Popover from '../../ui/popover';
 
 export default async function Header() {
-  const workspaces = await fetchWorkspaces();
-  const starredBoards = await getStarredBoards();
-  const user = await fetchUser();
+  const starredBoards = await fetchBoards({ eq: { column: 'starred', value: true } });
 
   return (
     <header
@@ -40,12 +36,12 @@ export default async function Header() {
             <TrelloWhiteIcon />
           </span>
         </Link>
-        <HeaderButtons workspaces={workspaces} starredBoards={starredBoards} />
+        <HeaderMenu />
       </nav>
       <div className="flex flex-1 items-center justify-end gap-4">
         <HeaderSearch placeholder="Search Trello" />
         <Popover
-          triggerContent={<Avatar userName={user.name} />}
+          triggerContent={<Avatar />}
           triggerClassName="rounded-full [&]:p-1"
           popoverClassName="right-0 left-auto px-0 [&]:w-40">
           <button

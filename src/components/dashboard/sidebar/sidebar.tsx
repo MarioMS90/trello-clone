@@ -8,7 +8,7 @@ import PlusIcon from '@/components/icons/plus';
 import SidebarLinks from '@/components/dashboard/sidebar/sidebar-links';
 import SidebarBoards from '@/components/dashboard/sidebar/sidebar-boards';
 import { useState } from 'react';
-import { TUserWorkspace } from '@/types/types';
+import { TWorkspace } from '@/types/types';
 import { cn } from '@/lib/utils/utils';
 import { CreateBoard } from '../board/create-board';
 
@@ -16,11 +16,12 @@ export function MainSidebar() {
   return (
     <nav
       className={`
+        z-10 
         min-w-[260px] 
         border-r 
         border-r-white 
         border-opacity-30 
-        bg-secondary-background 
+        bg-secondary-background
         text-white
       `}>
       <Link href="/workspaces">
@@ -38,7 +39,7 @@ export function WorkspaceSidebar({
   workspace,
   boardId,
 }: {
-  workspace: TUserWorkspace;
+  workspace: TWorkspace;
   boardId?: string;
 }) {
   const [sidebarExpanded, setSidebarExpanded] = useState(true);

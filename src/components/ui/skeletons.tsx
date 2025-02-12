@@ -12,7 +12,7 @@ const shimmer = `
     before:animate-[shimmer_2s_infinite] 
     before:bg-gradient-to-r 
     before:from-transparent 
-    before:via-white/60 
+    before:via-gray-100
     before:to-transparent
   `;
 
@@ -63,8 +63,8 @@ export function SidebarSkeleton() {
     `}>
       <div className="border-b border-b-white border-opacity-20 p-4">
         <div className="flex items-center gap-2">
-          <div className={`${shimmer} h-8 w-8 rounded bg-gray-200`} />
-          <div className={`${shimmer} h-4 w-24 rounded bg-gray-200`} />
+          <div className={`${shimmer} h-8 w-8 rounded bg-white`} />
+          <div className={`${shimmer} h-4 w-24 rounded bg-white`} />
         </div>
       </div>
     </nav>
@@ -74,8 +74,8 @@ export function SidebarSkeleton() {
 export function BoardSkeleton() {
   return (
     <div className={`${shimmer} h-20 w-44 rounded bg-white pl-4 pt-2`}>
-      <div className="h-4 w-32 rounded-md bg-gray-200 text-sm font-medium" />
-      <div className="absolute bottom-3 right-3 z-10 size-4 rounded-md bg-gray-200" />
+      <div className="h-4 w-32 rounded-md bg-white text-sm font-medium" />
+      <div className="absolute bottom-3 right-3 z-10 size-4 rounded-md bg-white" />
     </div>
   );
 }
@@ -90,19 +90,31 @@ export function BoardsSkeleton() {
   );
 }
 
-export function ColumnSkeleton({ className }: { className: string }) {
+export function ListSkeleton({ className }: { className: string }) {
   return (
     <div
-      className={`${shimmer} w-[272px] rounded-xl bg-gray-200 p-2 text-sm text-primary ${className}`}></div>
+      className={`${shimmer} w-[272px] rounded-xl bg-white p-2 text-sm text-primary ${className}`}></div>
   );
 }
 
-export function ColumnsSkeleton() {
+export function ListsSkeleton() {
   return (
     <div className="h-[calc(100% - 8px)] flex gap-4 p-4">
-      <ColumnSkeleton className="h-[350px]" />
-      <ColumnSkeleton className="h-[200px]" />
-      <ColumnSkeleton className="h-[150px]" />
+      <ListSkeleton className="h-[350px]" />
+      <ListSkeleton className="h-[200px]" />
+      <ListSkeleton className="h-[150px]" />
+    </div>
+  );
+}
+
+export function LayoutSkeleton() {
+  return (
+    <div className="flex h-dvh flex-col">
+      <HeaderSkeleton />
+      <main className="z-0 flex grow">
+        <SidebarSkeleton />
+        <div className="grow bg-main-background text-white"></div>
+      </main>
     </div>
   );
 }

@@ -1,13 +1,13 @@
 'use client';
 
 import Link from 'next/link';
-import { TUserWorkspace } from '@/types/types';
+import { TWorkspace } from '@/types/types';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils/utils';
 import BoardsIcon from '../../icons/boards';
 import UserIcon from '../../icons/user';
 
-export default function SidebarLinks({ workspace }: { workspace: TUserWorkspace }) {
+export default function SidebarLinks({ workspace }: { workspace: TWorkspace }) {
   const pathname = usePathname();
 
   const links = [

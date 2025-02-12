@@ -1,6 +1,6 @@
 'use server';
 
-import { TActionState, initialState, TPublicSchema, TList, TCard } from '@/types/types';
+import { TActionState, initialActionState, TPublicSchema, TList, TCard } from '@/types/types';
 import {
   CreateBoardSchema,
   CreateCardSchema,
@@ -10,14 +10,13 @@ import {
 import { TablesUpdate } from '@/types/database-types';
 import { redirect } from 'next/navigation';
 import { createClient } from './supabase/server';
-import { revalidateDashboard } from './utils/server-utils';
 
-export async function createWorkspaceAction(
+export async function createWorkspace(
   prevState: TActionState,
   formData: FormData,
 ): Promise<TActionState> {
   if (!formData) {
-    return initialState;
+    return initialActionState;
   }
 
   const validatedFields = CreateWorkspaceSchema.safeParse({
@@ -60,18 +59,17 @@ export async function createWorkspaceAction(
     throw userWorkspaceError;
   }
 
-  revalidateDashboard();
   return { success: true };
 }
 
-export async function createBoardAction(
+export async function createBoard(
   workspaceIdParam: string | undefined,
   redirectToNewBoard: boolean,
   prevState: TActionState,
   formData: FormData,
 ): Promise<TActionState> {
   if (!formData) {
-    return initialState;
+    return initialActionState;
   }
 
   const validatedFields = CreateBoardSchema.safeParse({
@@ -97,8 +95,6 @@ export async function createBoardAction(
     throw error;
   }
 
-  revalidateDashboard();
-
   if (redirectToNewBoard) {
     redirect(`/boards/${data.id}`);
   }
@@ -106,7 +102,7 @@ export async function createBoardAction(
   return { success: true };
 }
 
-export async function createListAction({
+export async function createList({
   boardId,
   name,
   rank,
@@ -152,7 +148,7 @@ export async function createListAction({
   return data;
 }
 
-export async function createCardAction({
+export async function createCard({
   listId,
   name,
   rank,
@@ -202,7 +198,7 @@ export async function globalSearchAction(term: string) {
   return supabase.rpc('search_workspaces_boards_cards', { search_term: term });
 }
 
-export async function updateEntityAction<TableName extends keyof TPublicSchema['Tables']>({
+export async function updateEntity<TableName extends keyof TPublicSchema['Tables']>({
   tableName,
   entityData,
   redirectUrl,
@@ -222,14 +218,12 @@ export async function updateEntityAction<TableName extends keyof TPublicSchema['
     throw error;
   }
 
-  revalidateDashboard();
-
   if (redirectUrl) {
     redirect(redirectUrl);
   }
 }
 
-export async function deleteEntityAction<TableName extends keyof TPublicSchema['Tables']>({
+export async function deleteEntity<TableName extends keyof TPublicSchema['Tables']>({
   tableName,
   entityId,
   redirectUrl,
@@ -245,8 +239,6 @@ export async function deleteEntityAction<TableName extends keyof TPublicSchema['
   if (error) {
     throw error;
   }
-
-  revalidateDashboard();
 
   if (redirectUrl) {
     redirect(redirectUrl);

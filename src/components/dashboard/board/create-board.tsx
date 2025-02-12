@@ -1,8 +1,8 @@
 'use client';
 
 import { useActionState, useEffect, useState } from 'react';
-import { createBoardAction } from '@/lib/actions';
-import { initialState, TUserWorkspace } from '@/types/types';
+import { createBoard } from '@/lib/actions';
+import { initialActionState, TWorkspace } from '@/types/types';
 import Popover from '../../ui/popover';
 
 export function CreateBoard({
@@ -14,14 +14,14 @@ export function CreateBoard({
   redirectToNewBoard = false,
 }: {
   workspaceId?: string;
-  workspaces?: TUserWorkspace[];
+  workspaces?: TWorkspace[];
   popoverClassName?: string;
   triggerClassName?: string;
   buttonText?: React.ReactNode;
   redirectToNewBoard?: boolean;
 }) {
-  const createBoardWithId = createBoardAction.bind(null, workspaceId, redirectToNewBoard);
-  const [formState, formAction, isPending] = useActionState(createBoardWithId, initialState);
+  const createBoardWithId = createBoard.bind(null, workspaceId, redirectToNewBoard);
+  const [formState, formAction, isPending] = useActionState(createBoardWithId, initialActionState);
   const [isValidForm, setIsValidForm] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
@@ -39,18 +39,18 @@ export function CreateBoard({
         triggerClassName={
           triggerClassName ??
           `
-          rounded 
-          px-2 
-          py-1.5 
-          h-20 
-          w-44 
-          bg-gray-300 
-          text-sm 
-          text-primary 
-          justify-center 
-          hover:opacity-90 
-          hover:bg-gray-300 
-        `
+            rounded 
+            px-2 
+            py-1.5 
+            h-20 
+            w-44 
+            bg-gray-300 
+            text-sm 
+            text-primary 
+            justify-center 
+            hover:opacity-90 
+            hover:bg-gray-300 
+          `
         }
         triggerContent={buttonText || 'Create a new board'}
         open={isPopoverOpen}

@@ -20,19 +20,13 @@ import {
   useTransition,
 } from 'react';
 import { List } from '@/components/dashboard/list/list';
-import {
-  createListAction,
-  createCardAction,
-  deleteEntityAction,
-  updateEntityAction,
-} from '@/lib/actions';
+import { createList, createCard, deleteEntity, updateEntity } from '@/lib/actions';
 import { generateRank, updateElement } from '@/lib/utils/utils';
 import { CleanupFn } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types';
 import { blockBoardPanningAttr } from '@/constants/constants';
 import { BoardContext, BoardContextValue } from '../board/board-context';
 import { CreateList } from './create-list';
 
-// TODO: Revalidate data with a use effect and verify all the update functions
 export default function Lists({
   boardId,
   initialLists,
@@ -266,7 +260,7 @@ export default function Lists({
             try {
               const { rank } = updatedLists[finishIndex];
 
-              await updateEntityAction({
+              await updateEntity({
                 tableName: 'list',
                 entityData: { id: dragging.id, rank },
               });
@@ -309,7 +303,7 @@ export default function Lists({
               const list = updatedLists[listIndex];
               const cardIndex = list.cards.findIndex(card => card.id === dragging.id);
 
-              await updateEntityAction({
+              await updateEntity({
                 tableName: 'card',
                 entityData: { id: dragging.id, list_id: list.id, rank: list.cards[cardIndex].rank },
               });
@@ -412,7 +406,7 @@ export default function Lists({
         ]);
 
         try {
-          const list = await createListAction({ boardId, name, rank });
+          const list = await createList({ boardId, name, rank });
           startTransition(async () => setLists(current => [...current, list]));
         } catch (error) {
           // TODO: Show error with a toast
@@ -429,11 +423,10 @@ export default function Lists({
         setOptimisticLists(current => updateElement(current, listData));
 
         try {
-          await updateEntityAction({
+          await updateEntity({
             tableName: 'list',
             entityData: listData,
           });
-          startTransition(async () => setLists(current => updateElement(current, listData)));
         } catch (error) {
           // TODO: Show error with a toast
           alert('An error occurred while updating the element');
@@ -449,7 +442,7 @@ export default function Lists({
         setOptimisticLists(current => current.filter(list => list.id !== id));
 
         try {
-          await deleteEntityAction({
+          await deleteEntity({
             tableName: 'list',
             entityId: id,
           });
@@ -494,7 +487,7 @@ export default function Lists({
         });
 
         try {
-          const card = await createCardAction({ listId, name, rank });
+          const card = await createCard({ listId, name, rank });
           startTransition(async () =>
             setLists(current => {
               const updated = current.with(listIndex, {

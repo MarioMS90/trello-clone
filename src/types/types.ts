@@ -1,3 +1,4 @@
+import { CamelCasedProperties } from 'type-fest';
 import { Database, Tables } from './database-types';
 
 export type TSubset<T> = {
@@ -10,28 +11,21 @@ export type TSubsetWithId<T extends { id: string }> = {
 
 export type TPublicSchema = Database[Extract<keyof Database, 'public'>];
 
-export type TUser = Tables<'user'>;
+type CamelCaseTable<T extends keyof TPublicSchema['Tables']> = CamelCasedProperties<Tables<T>>;
 
-export type TUserWorkspace = TWorkspace & Pick<Tables<'user_workspace'>, 'role'>;
+export type TUser = CamelCaseTable<'user'>;
 
-export type TWorkspace = Tables<'workspace'> & {
-  boards: TBoard[];
-};
+export type TWorkspace = CamelCaseTable<'workspace'>;
 
-export type TBoard = Tables<'board'> & {
-  lists?: TList[];
+export type TBoard = CamelCaseTable<'board'> & {
   workspaceName?: string;
 };
 
-export type TList = Tables<'list'> & {
-  cards: TCard[];
-};
+export type TList = CamelCaseTable<'list'>;
 
-export type TCard = Tables<'card'> & {
-  comments: TComment[];
-};
+export type TCard = CamelCaseTable<'card'>;
 
-export type TComment = Tables<'comment'>;
+export type TComment = CamelCaseTable<'comment'>;
 
 export type TActionState = {
   success?: boolean;
@@ -41,4 +35,4 @@ export type TActionState = {
   message?: string | null;
 };
 
-export const initialState: TActionState = { success: false, message: null, errors: {} };
+export const initialActionState: TActionState = { success: false, message: null, errors: {} };

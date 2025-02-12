@@ -1,12 +1,12 @@
 'use client';
 
 import { useActionState, useEffect, useState } from 'react';
-import { createWorkspaceAction } from '@/lib/actions';
-import { initialState } from '@/types/types';
+import { createWorkspace } from '@/lib/actions';
+import { initialActionState } from '@/types/types';
 import Popover from '@/components/ui/popover';
 
 export function CreateWorkspace() {
-  const [formState, formAction, isPending] = useActionState(createWorkspaceAction, initialState);
+  const [formState, formAction, isPending] = useActionState(createWorkspace, initialActionState);
   const [isValidForm, setIsValidForm] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 

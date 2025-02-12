@@ -1,20 +1,20 @@
 'use client';
 
 import { BoardList } from '@/components/dashboard/board/boards';
-import { TSubsetWithId, TUserWorkspace } from '@/types/types';
+import { TSubsetWithId, TWorkspace } from '@/types/types';
 import { useOptimisticList } from '@/hooks/useOptimisticList';
 import BoardsIcon from '@/components/icons/boards';
 import SettingsIcon from '@/components/icons/settings';
 import UserIcon from '@/components/icons/user';
 import Popover from '@/components/ui/popover';
 import WorkspaceBadge from '@/components/ui/workspace-logo';
-import { deleteEntityAction, updateEntityAction } from '@/lib/actions';
+import { deleteEntity, updateEntity } from '@/lib/actions';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import EditableText from '@/components/ui/editable-text';
 import { CreateBoard } from '../board/create-board';
 
-export default function WorkspaceList({ workspaces }: { workspaces: TUserWorkspace[] }) {
+export default function WorkspaceList({ workspaces }: { workspaces: TWorkspace[] }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [editingWorkspaceId, setEditingWorkspaceId] = useState<string | null>(null);
   const {
@@ -29,15 +29,15 @@ export default function WorkspaceList({ workspaces }: { workspaces: TUserWorkspa
     }
   }, [editingWorkspaceId]);
 
-  const handleUpdate = (workspaceData: TSubsetWithId<TUserWorkspace>) => {
+  const handleUpdate = (workspaceData: TSubsetWithId<TWorkspace>) => {
     optimisticUpdate(workspaceData, () =>
-      updateEntityAction({ tableName: 'workspace', entityData: workspaceData }),
+      updateEntity({ tableName: 'workspace', entityData: workspaceData }),
     );
   };
 
-  const handleDelete = (workspaceData: TSubsetWithId<TUserWorkspace>) => {
+  const handleDelete = (workspaceData: TSubsetWithId<TWorkspace>) => {
     optimisticDelete(workspaceData, () =>
-      deleteEntityAction({
+      deleteEntity({
         tableName: 'workspace',
         entityId: workspaceData.id,
       }),

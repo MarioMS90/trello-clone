@@ -1,8 +1,8 @@
 'use client';
 
 import { TBoard } from '@/types/types';
-import { updateEntityAction } from '@/lib/actions';
-import { useEffect, useState } from 'react';
+import { updateEntity } from '@/lib/actions';
+import { useWorkspaceActions } from '@/providers/main-store-provider';
 import StarIcon from '../../icons/star';
 import StarFillIcon from '../../icons/star-fill';
 
@@ -13,17 +13,13 @@ export default function StarToggleBoard({
   className?: string;
   board: TBoard;
 }) {
-  const [isStarred, setIsStarred] = useState(board.starred);
-
-  useEffect(() => {
-    setIsStarred(board.starred);
-  }, [board.starred]);
+  const { updateBoard } = useWorkspaceActions();
 
   const handleStarToggle = async () => {
-    const starred = !isStarred;
+    const starred = !board.starred;
 
     try {
-      updateEntityAction({
+      updateEntity({
         tableName: 'board',
         entityData: { id: board.id, starred },
       });
@@ -33,7 +29,7 @@ export default function StarToggleBoard({
       return;
     }
 
-    setIsStarred(starred);
+    updateBoard({ ...board, starred });
   };
 
   return (
@@ -42,11 +38,11 @@ export default function StarToggleBoard({
       type="button"
       onClick={handleStarToggle}
       title={
-        isStarred
+        board.starred
           ? `Click to unstar ${board.name}. It will be removed from your starred list.`
           : `Click to star ${board.name}. It will be added to your starred list.`
       }>
-      {isStarred ? (
+      {board.starred ? (
         <StarFillIcon className="text-yellow-400 hover:scale-125" height={16} />
       ) : (
         <StarIcon className="hover:scale-125" height={16} />
