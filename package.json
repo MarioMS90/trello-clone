@@ -15,6 +15,7 @@
     "@atlaskit/pragmatic-drag-and-drop-hitbox": "^1.0.3",
     "@supabase/ssr": "0.5.2",
     "@supabase/supabase-js": "2.46.1",
+    "@tanstack/react-query": "^5.66.0",
     "@uidotdev/usehooks": "^2.4.1",
     "bind-event-listener": "^3.0.0",
     "clsx": "2.1.1",
@@ -31,6 +32,7 @@
     "zustand": "^5.0.3"
   },
   "devDependencies": {
+    "@tanstack/eslint-plugin-query": "^5.66.1",
     "@types/node": "20",
     "@types/react": "^19.0.4",
     "@types/react-dom": "^19.0.2",

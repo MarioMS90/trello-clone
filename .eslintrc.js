@@ -2,7 +2,13 @@
  * @type {import("eslint").Linter.Config}
  */
 module.exports = {
-  extends: ['airbnb', 'airbnb-typescript', 'eslint-config-prettier', 'next/core-web-vitals'],
+  extends: [
+    'airbnb',
+    'airbnb-typescript',
+    'eslint-config-prettier',
+    'next/core-web-vitals',
+    'plugin:@tanstack/query/recommended',
+  ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 'latest',
