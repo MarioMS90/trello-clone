@@ -1,6 +1,7 @@
-import { TBoard, TList, TPublicSchema, TUser, TWorkspace } from '@/types/types';
+'use server';
+
+import { TList, TWorkspace } from '@/types/types';
 import { createClient } from '@/lib/supabase/server';
-import { Tables } from '@/types/database-types';
 
 async function getUser() {
   const supabase = await createClient();
@@ -14,7 +15,7 @@ async function getUser() {
   return user;
 }
 
-export async function fetchUser(): Promise<TUser> {
+export async function fetchUser() {
   const supabase = await createClient();
   const user = await getUser();
 
@@ -48,14 +49,10 @@ export async function fetchWorkspaces(): Promise<TWorkspace[]> {
   return data;
 }
 
-export async function fetchBoards<ColumnName extends keyof Tables<'board'>>({
-  eq,
-}: {
-  eq: { column: ColumnName; value: NonNullable<Tables<'board'>[ColumnName]> };
-}): Promise<TBoard[]> {
+export async function fetchBoards() {
   const supabase = await createClient();
 
-  const query = supabase
+  const { data, error } = await supabase
     .from('board')
     .select(
       `
@@ -67,12 +64,6 @@ export async function fetchBoards<ColumnName extends keyof Tables<'board'>>({
     `,
     )
     .order('created_at');
-
-  if (eq) {
-    query.eq(eq.column, eq.value);
-  }
-
-  const { data, error } = await query;
 
   if (error) throw new Error(error.message);
 

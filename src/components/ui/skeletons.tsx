@@ -71,7 +71,7 @@ export function SidebarSkeleton() {
   );
 }
 
-export function BoardSkeleton() {
+function BoardSkeleton() {
   return (
     <div className={`${shimmer} h-20 w-44 rounded bg-white pl-4 pt-2`}>
       <div className="h-4 w-32 rounded-md bg-white text-sm font-medium" />
@@ -90,7 +90,7 @@ export function BoardsSkeleton() {
   );
 }
 
-export function ListSkeleton({ className }: { className: string }) {
+function ListSkeleton({ className }: { className: string }) {
   return (
     <div
       className={`${shimmer} w-[272px] rounded-xl bg-white p-2 text-sm text-primary ${className}`}></div>
@@ -103,18 +103,6 @@ export function ListsSkeleton() {
       <ListSkeleton className="h-[350px]" />
       <ListSkeleton className="h-[200px]" />
       <ListSkeleton className="h-[150px]" />
-    </div>
-  );
-}
-
-export function LayoutSkeleton() {
-  return (
-    <div className="flex h-dvh flex-col">
-      <HeaderSkeleton />
-      <main className="z-0 flex grow">
-        <SidebarSkeleton />
-        <div className="grow bg-main-background text-white"></div>
-      </main>
     </div>
   );
 }

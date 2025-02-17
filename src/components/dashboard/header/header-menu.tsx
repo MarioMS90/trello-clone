@@ -6,11 +6,19 @@ import ArrowDownIcon from '@/components/icons/arrow-down';
 import WorkspaceBadge from '@/components/ui/workspace-logo';
 import { CreateBoard } from '@/components/dashboard/board/create-board';
 import StarToggleBoard from '@/components/dashboard/board/star-toggle-board';
-import { useWorkspaces } from '@/providers/main-store-provider';
-import { TBoard } from '@/types/types';
+import { useSuspenseQueries } from '@tanstack/react-query';
+import { fetchBoards, fetchWorkspaces } from '@/lib/data';
 
-export default function HeaderMenu({ starredBoards }: { starredBoards: TBoard[] }) {
-  const workspaces = useWorkspaces();
+export default function HeaderMenu() {
+  const results = useSuspenseQueries({
+    queries: [
+      { queryKey: ['workspaces'], queryFn: fetchWorkspaces },
+      { queryKey: ['boards'], queryFn: fetchBoards },
+    ],
+  });
+  const { data: workspaces } = results[0];
+  const { data: boards } = results[1];
+  const starredBoards = boards?.filter(board => board.starred);
 
   const workspacesContent = (
     <ul className="space-y-1">
@@ -32,9 +40,11 @@ export default function HeaderMenu({ starredBoards }: { starredBoards: TBoard[] 
       <ul className="space-y-1">
         {starredBoards.map(board => (
           <li className="relative rounded-md px-2 py-1 hover:bg-gray-200" key={board.id}>
-            <Link className="" href={`/boards/${board.id}`}>
+            <Link href={`/boards/${board.id}`}>
               <h3 className="font-medium">{board.name}</h3>
-              <p className="text-gray-500">{board.workspaceName}</p>
+              <p className="text-gray-500">
+                {workspaces?.find(w => w.id === board.workspaceId)?.name}
+              </p>
             </Link>
             <StarToggleBoard className="[&]:right-1.5" board={board} />
           </li>

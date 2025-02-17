@@ -8,8 +8,6 @@ import HeaderSearch from '@/components/dashboard/header/header-search';
 import Popover from '../../ui/popover';
 
 export default async function Header() {
-  const starredBoards = await fetchBoards({ eq: { column: 'starred', value: true } });
-
   return (
     <header
       className="
@@ -40,7 +38,7 @@ export default async function Header() {
       </nav>
       <div className="flex flex-1 items-center justify-end gap-4">
         <HeaderSearch placeholder="Search Trello" />
-        <Popover
+        {/* <Popover
           triggerContent={<Avatar />}
           triggerClassName="rounded-full [&]:p-1"
           popoverClassName="right-0 left-auto px-0 [&]:w-40">
@@ -54,7 +52,7 @@ export default async function Header() {
             }}>
             Log out
           </button>
-        </Popover>
+        </Popover> */}
       </div>
     </header>
   );

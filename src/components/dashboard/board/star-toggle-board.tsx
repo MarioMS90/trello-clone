@@ -2,7 +2,6 @@
 
 import { TBoard } from '@/types/types';
 import { updateEntity } from '@/lib/actions';
-import { useWorkspaceActions } from '@/providers/main-store-provider';
 import StarIcon from '../../icons/star';
 import StarFillIcon from '../../icons/star-fill';
 
@@ -13,8 +12,6 @@ export default function StarToggleBoard({
   className?: string;
   board: TBoard;
 }) {
-  const { updateBoard } = useWorkspaceActions();
-
   const handleStarToggle = async () => {
     const starred = !board.starred;
 
@@ -28,8 +25,8 @@ export default function StarToggleBoard({
       alert('An error occurred while updating the element');
       return;
     }
-
-    updateBoard({ ...board, starred });
+    console.log('aa');
+    // updateBoard({ ...board, starred });
   };
 
   return (
