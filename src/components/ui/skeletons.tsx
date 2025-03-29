@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import AppsIcon from '../icons/apps';
 import TrelloWhiteIcon from '../icons/trello-white';
 
@@ -18,7 +17,7 @@ const shimmer = `
 
 export function HeaderSkeleton() {
   return (
-    <header
+    <div
       className={`
       flex 
       h-12 
@@ -31,22 +30,22 @@ export function HeaderSkeleton() {
       p-1.5 
       text-white
     `}>
-      <nav className="flex items-center text-sm [&>a:hover]:bg-button-hovered-background [&>a]:relative [&>a]:h-[32px] [&>a]:rounded">
-        <Link className="w-[32px]" href="/workspaces">
-          <span className="center-xy">
+      <div className="flex items-center text-sm [&>div:hover]:bg-button-hovered-background [&>div]:relative [&>div]:h-[32px] [&>div]:rounded">
+        <div className="w-[32px]">
+          <div className="center-xy">
             <AppsIcon />
-          </span>
-        </Link>
-        <Link className="w-[91px]" href="/workspaces">
-          <span className="center-xy">
+          </div>
+        </div>
+        <div className="w-[91px]">
+          <div className="center-xy">
             <TrelloWhiteIcon />
-          </span>
-        </Link>
-      </nav>
+          </div>
+        </div>
+      </div>
 
       <div
         className={`${shimmer} flex size-6 cursor-pointer items-center justify-center rounded-full bg-primary text-xs text-white`}></div>
-    </header>
+    </div>
   );
 }
 

@@ -1,4 +1,4 @@
-import { TCard, TList, TSubsetWithId } from '@/types/types';
+import { TCard, TList, TSubsetWithId } from '@/types/db';
 import { createContext, useContext } from 'react';
 import invariant from 'tiny-invariant';
 

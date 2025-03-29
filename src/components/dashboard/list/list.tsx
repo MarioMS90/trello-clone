@@ -1,6 +1,6 @@
 'use client';
 
-import { TList } from '@/types/types';
+import { TList } from '@/types/db';
 import DotsIcon from '@/components/icons/dots';
 import PlusIcon from '@/components/icons/plus';
 import { memo, RefObject, useEffect, useRef, useState } from 'react';

@@ -1,6 +1,7 @@
+import { Tables } from '@/types/database-types';
 import { LexoRank } from 'lexorank';
 
-const workspaces = [
+const workspaces: Tables<'workspaces'>[] = [
   {
     id: crypto.randomUUID(),
     name: 'Mario workspace',
@@ -18,60 +19,70 @@ const workspaces = [
   },
 ];
 
-const userWorkspace = [
+const userWorkspace: Omit<Tables<'user_workspaces'>, 'created_at'>[] = [
   {
     user_id: '746a5280-bcc3-4a23-842f-be2ec0334e90',
     workspace_id: workspaces[0].id,
+    role: 'admin',
   },
   {
     user_id: '746a5280-bcc3-4a23-842f-be2ec0334e90',
     workspace_id: workspaces[1].id,
+    role: 'admin',
   },
   {
     user_id: 'ebd8b7ae-b4ee-4ba5-b80c-f46a4a495840',
     workspace_id: workspaces[2].id,
+    role: 'admin',
+  },
+  {
+    user_id: 'ebd8b7ae-b4ee-4ba5-b80c-f46a4a495840',
+    workspace_id: workspaces[0].id,
+    role: 'admin',
   },
 ];
 
-const boards = [
+const boards: Tables<'boards'>[] = [
   {
     id: '0e88de62-4c0a-4696-83d8-952fcde1dee4',
     name: 'My board',
-    starred: true,
     workspace_id: workspaces[0].id,
     created_at: new Date(new Date().getTime() - 3000).toISOString(),
   },
   {
     id: crypto.randomUUID(),
     name: 'Another board',
-    starred: false,
     workspace_id: workspaces[0].id,
     created_at: new Date(new Date().getTime() - 2000).toISOString(),
   },
   {
     id: crypto.randomUUID(),
     name: 'Mario',
-    starred: false,
     workspace_id: workspaces[0].id,
     created_at: new Date(new Date().getTime() - 1000).toISOString(),
   },
   {
     id: crypto.randomUUID(),
     name: 'Work board',
-    starred: false,
     workspace_id: workspaces[1].id,
     created_at: new Date(new Date().getTime() - 1000).toISOString(),
   },
   {
     id: crypto.randomUUID(),
     name: 'Not my board',
-    starred: false,
     workspace_id: workspaces[2].id,
     created_at: new Date(new Date().getTime() - 3000).toISOString(),
   },
 ];
 
-const listsData = [
+const starredBoards: Omit<Tables<'starred_boards'>, 'created_at'>[] = [
+  {
+    user_id: '746a5280-bcc3-4a23-842f-be2ec0334e90',
+    board_id: boards[0].id,
+  },
+];
+
+const listsData: Omit<Tables<'lists'>, 'rank' | 'created_at'>[] = [
   {
     id: crypto.randomUUID(),
     name: 'To do',
@@ -95,12 +106,12 @@ const listsData = [
 ];
 
 let currentRank = LexoRank.middle();
-const lists = listsData.map(list => {
+const lists: Omit<Tables<'lists'>, 'created_at'>[] = listsData.map(list => {
   currentRank = currentRank.genNext();
   return { ...list, rank: currentRank.format() };
 });
 
-const cardsData = [
+const cardsData: Omit<Tables<'cards'>, 'rank' | 'created_at'>[] = [
   {
     id: crypto.randomUUID(),
     name: 'Card with description',
@@ -109,7 +120,7 @@ const cardsData = [
   },
   {
     id: crypto.randomUUID(),
-    name: 'Card with a comment',
+    name: 'Card with two comments',
     description: '',
     list_id: lists[0].id,
   },
@@ -128,12 +139,18 @@ const cardsData = [
 ];
 
 currentRank = LexoRank.middle();
-const cards = cardsData.map(card => {
+const cards: Omit<Tables<'cards'>, 'created_at'>[] = cardsData.map(card => {
   currentRank = currentRank.genNext();
   return { ...card, rank: currentRank.format() };
 });
 
-const comments = [
+const comments: Omit<Tables<'comments'>, 'created_at'>[] = [
+  {
+    id: crypto.randomUUID(),
+    content: 'This is a comment',
+    user_id: '746a5280-bcc3-4a23-842f-be2ec0334e90',
+    card_id: cards[1].id,
+  },
   {
     id: crypto.randomUUID(),
     content: 'This is a comment',
@@ -148,4 +165,4 @@ const comments = [
   },
 ];
 
-export { workspaces, userWorkspace, boards, lists, cards, comments };
+export { workspaces, userWorkspace, boards, lists, cards, comments, starredBoards };

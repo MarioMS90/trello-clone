@@ -1,8 +1,8 @@
 'use client';
 
 import { useActionState, useEffect, useState } from 'react';
-import { createBoard } from '@/lib/actions';
-import { initialActionState, TWorkspace } from '@/types/types';
+import { createBoard } from '@/lib/board/actions';
+import { initialActionState, TWorkspace } from '@/types/db';
 import Popover from '../../ui/popover';
 
 export function CreateBoard({

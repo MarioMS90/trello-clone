@@ -6,19 +6,13 @@ import ArrowDownIcon from '@/components/icons/arrow-down';
 import WorkspaceBadge from '@/components/ui/workspace-logo';
 import { CreateBoard } from '@/components/dashboard/board/create-board';
 import StarToggleBoard from '@/components/dashboard/board/star-toggle-board';
-import { useSuspenseQueries } from '@tanstack/react-query';
-import { fetchBoards, fetchWorkspaces } from '@/lib/data';
+import { useWorkspaces } from '@/lib/workspace/queries';
+import { useBoards, useStarredBoards } from '@/lib/board/queries';
 
 export default function HeaderMenu() {
-  const results = useSuspenseQueries({
-    queries: [
-      { queryKey: ['workspaces'], queryFn: fetchWorkspaces },
-      { queryKey: ['boards'], queryFn: fetchBoards },
-    ],
-  });
-  const { data: workspaces } = results[0];
-  const { data: boards } = results[1];
-  const starredBoards = boards?.filter(board => board.starred);
+  const { data: workspaces } = useWorkspaces();
+  const { data: boards } = useBoards();
+  const { data: starredBoardIds } = useStarredBoards();
 
   const workspacesContent = (
     <ul className="space-y-1">
@@ -35,6 +29,11 @@ export default function HeaderMenu() {
     </ul>
   );
 
+  // const starredBoards = starredBoardIds.map(boardId => {
+  //   const index = boards.findIndex(board => board.id === boardId);
+  //   return boards[index];
+  // });
+  const starredBoards = boards;
   const starredBoardsContent =
     starredBoards.length > 0 ? (
       <ul className="space-y-1">
@@ -43,7 +42,7 @@ export default function HeaderMenu() {
             <Link href={`/boards/${board.id}`}>
               <h3 className="font-medium">{board.name}</h3>
               <p className="text-gray-500">
-                {workspaces?.find(w => w.id === board.workspaceId)?.name}
+                {workspaces.find(w => w.id === board.workspaceId)?.name}
               </p>
             </Link>
             <StarToggleBoard className="[&]:right-1.5" board={board} />
@@ -67,6 +66,7 @@ export default function HeaderMenu() {
       {workspacesContent}
     </Popover>,
     <Popover
+      open
       key="Starred"
       triggerClassName="font-medium mr-3"
       triggerContent={

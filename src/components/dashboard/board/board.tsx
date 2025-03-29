@@ -1,4 +1,4 @@
-import { fetchLists } from '@/lib/data';
+import { fetchLists } from '@/lib/workspace/queries';
 import BoardLists from '@/components/dashboard/list/lists';
 
 export default async function Board({ boardId }: { boardId: string }) {

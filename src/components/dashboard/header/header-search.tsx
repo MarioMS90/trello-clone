@@ -9,7 +9,7 @@ import Loading from '@/components/ui/loading';
 import NoSearchResultsIcon from '@/components/icons/no-search-results';
 import SearchIcon from '@/components/icons/search';
 import WorkspaceBadge from '@/components/ui/workspace-logo';
-import { globalSearchAction } from '@/lib/actions';
+import { globalSearchAction } from '@/lib/workspace/actions';
 import { TSearchResult, TSearchResults } from '@/types/search-types';
 import { useClickAway, useDebounce } from '@uidotdev/usehooks';
 

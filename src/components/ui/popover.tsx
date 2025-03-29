@@ -31,6 +31,10 @@ export default function Popover({
     handleOpenChange(false);
   });
 
+  useEffect(() => {
+    setIsOpen(open);
+  }, [open]);
+
   const handleOpenChange = (openState: boolean) => {
     setIsOpen(openState);
 
@@ -38,10 +42,6 @@ export default function Popover({
       onOpenChange(openState);
     }
   };
-
-  useEffect(() => {
-    setIsOpen(open);
-  }, [open]);
 
   return (
     <div className="popover-wrapper relative" ref={clickAwayRef}>

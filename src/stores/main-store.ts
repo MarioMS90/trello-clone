@@ -1,7 +1,7 @@
 'use client';
 
 import { createStore } from 'zustand';
-import { TUser, TWorkspace } from '@/types/types';
+import { TUser, TWorkspace } from '@/types/db';
 import { getEntitySliceCreator } from './entity-slice';
 
 export type MainStore = {

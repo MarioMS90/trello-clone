@@ -7,7 +7,7 @@ import { CreateWorkspace } from '@/components/dashboard/workspace/create-workspa
 export default function WorkspacesPage() {
   return (
     <div className="main-container">
-      <div className="space-y-12">
+      {/* <div className="space-y-12">
         <Suspense fallback={<BoardsSkeleton />}>
           <StarredBoards />
         </Suspense>
@@ -21,7 +21,7 @@ export default function WorkspacesPage() {
       </div>
       <div className="inline-block">
         <CreateWorkspace />
-      </div>
+      </div> */}
     </div>
   );
 }

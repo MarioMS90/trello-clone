@@ -1,8 +1,8 @@
 'use client';
 
 import { useActionState, useEffect, useState } from 'react';
-import { createWorkspace } from '@/lib/actions';
-import { initialActionState } from '@/types/types';
+import { createWorkspace } from '@/lib/workspace/actions';
+import { initialActionState } from '@/types/db';
 import Popover from '@/components/ui/popover';
 
 export function CreateWorkspace() {

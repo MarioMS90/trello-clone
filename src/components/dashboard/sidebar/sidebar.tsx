@@ -8,7 +8,7 @@ import PlusIcon from '@/components/icons/plus';
 import SidebarLinks from '@/components/dashboard/sidebar/sidebar-links';
 import SidebarBoards from '@/components/dashboard/sidebar/sidebar-boards';
 import { useState } from 'react';
-import { TWorkspace } from '@/types/types';
+import { TWorkspace } from '@/types/db';
 import { cn } from '@/lib/utils/utils';
 import { CreateBoard } from '../board/create-board';
 

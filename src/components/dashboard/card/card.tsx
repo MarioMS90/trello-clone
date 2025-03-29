@@ -2,7 +2,7 @@
 
 import { memo, RefObject, useEffect, useRef, useState } from 'react';
 import PencilIcon from '@/components/icons/pencil';
-import { TCard } from '@/types/types';
+import { TCard } from '@/types/db';
 import invariant from 'tiny-invariant';
 import {
   draggable,

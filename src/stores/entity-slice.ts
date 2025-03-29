@@ -1,6 +1,6 @@
 'use client';
 
-import { TWorkspace } from '@/types/types';
+import { TWorkspace } from '@/types/db';
 import { Draft } from 'immer';
 import { RequireAtLeastOne } from 'type-fest';
 import { StateCreator } from 'zustand';

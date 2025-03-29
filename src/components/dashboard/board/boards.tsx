@@ -1,4 +1,4 @@
-import { TBoard } from '@/types/types';
+import { TBoard } from '@/types/db';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getWorkspace, getStarredBoards } from '@/lib/utils/server-utils';

@@ -1,8 +1,8 @@
 'use server';
 
 import { redirect } from 'next/navigation';
-import { createClient } from '@/lib/supabase/server';
 import { SignInUser, SignUpUser } from '@/schemas/auth-schemas';
+import { getClient } from '../supabase/utils';
 
 export type TSignUpState = {
   errors: {
@@ -20,10 +20,7 @@ export type TSignInState = {
   message?: string | null;
 };
 
-export async function signInAction(
-  prevState: TSignInState,
-  formData: FormData,
-): Promise<TSignInState> {
+export async function signIn(_: TSignInState, formData: FormData): Promise<TSignInState> {
   const validatedFields = SignInUser.safeParse({
     email: formData.get('email'),
     password: formData.get('password'),
@@ -36,7 +33,7 @@ export async function signInAction(
     };
   }
 
-  const supabase = await createClient();
+  const supabase = await getClient();
 
   const data = {
     email: validatedFields.data.email,
@@ -55,10 +52,7 @@ export async function signInAction(
   return redirect('/workspaces');
 }
 
-export async function signUpAction(
-  prevState: TSignUpState,
-  formData: FormData,
-): Promise<TSignUpState> {
+export async function signUp(_: TSignUpState, formData: FormData): Promise<TSignUpState> {
   const validatedFields = SignUpUser.safeParse({
     name: formData.get('name'),
     email: formData.get('email'),
@@ -72,7 +66,7 @@ export async function signUpAction(
     };
   }
 
-  const supabase = await createClient();
+  const supabase = await getClient();
 
   const data = {
     email: validatedFields.data.email,
@@ -98,8 +92,8 @@ export async function signUpAction(
   return redirect('/workspaces');
 }
 
-export const signOutAction = async () => {
-  const supabase = await createClient();
+export const signOut = async () => {
+  const supabase = await getClient();
   await supabase.auth.signOut();
   return redirect('/sign-in');
 };

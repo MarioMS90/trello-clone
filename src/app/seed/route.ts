@@ -1,64 +1,62 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { workspaces, userWorkspace, boards, lists, cards, comments } from '@/lib/placeholder-data';
+import {
+  workspaces,
+  userWorkspace,
+  boards,
+  starredBoards,
+  lists,
+  cards,
+  comments,
+} from '@/dev/placeholder-data';
 import { Database } from '@/types/database-types';
 
 async function seedWorkspaces(supabase: SupabaseClient<Database>) {
-  await supabase.from('workspace').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-  const { data, error } = await supabase.from('workspace').upsert(workspaces).select();
-
-  if (error) {
-    throw new Error(error.message);
-  }
+  await supabase.from('workspaces').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+  const { data } = await supabase.from('workspaces').upsert(workspaces).select().throwOnError();
 
   return data;
 }
 
 async function seedUserWorkspaces(supabase: SupabaseClient<Database>) {
-  const { data, error } = await supabase.from('user_workspace').upsert(userWorkspace).select();
-
-  if (error) {
-    throw new Error(error.message);
-  }
+  const { data } = await supabase
+    .from('user_workspaces')
+    .upsert(userWorkspace)
+    .select()
+    .throwOnError();
 
   return data;
 }
 
 async function seedBoards(supabase: SupabaseClient<Database>) {
-  const { data, error } = await supabase.from('board').upsert(boards).select();
+  const { data } = await supabase.from('boards').upsert(boards).select().throwOnError();
 
-  if (error) {
-    throw new Error(error.message);
-  }
+  return data;
+}
+
+async function seedStarredBoards(supabase: SupabaseClient<Database>) {
+  const { data } = await supabase
+    .from('starred_boards')
+    .upsert(starredBoards)
+    .select()
+    .throwOnError();
 
   return data;
 }
 
 async function seedLists(supabase: SupabaseClient<Database>) {
-  const { data, error } = await supabase.from('list').upsert(lists).select();
-
-  if (error) {
-    throw new Error(error.message);
-  }
+  const { data } = await supabase.from('lists').upsert(lists).select().throwOnError();
 
   return data;
 }
 
 async function seedCards(supabase: SupabaseClient<Database>) {
-  const { data, error } = await supabase.from('card').upsert(cards).select();
-
-  if (error) {
-    throw new Error(error.message);
-  }
+  const { data } = await supabase.from('cards').upsert(cards).select().throwOnError();
 
   return data;
 }
 
 async function seedComments(supabase: SupabaseClient<Database>) {
-  const { data, error } = await supabase.from('comment').upsert(comments).select();
-
-  if (error) {
-    throw new Error(error.message);
-  }
+  const { data } = await supabase.from('comments').upsert(comments).select().throwOnError();
 
   return data;
 }
@@ -74,6 +72,7 @@ export async function GET() {
     await seedWorkspaces(supabase);
     await seedUserWorkspaces(supabase);
     await seedBoards(supabase);
+    await seedStarredBoards(supabase);
     await seedLists(supabase);
     await seedCards(supabase);
     await seedComments(supabase);

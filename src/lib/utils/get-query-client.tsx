@@ -4,10 +4,11 @@ function makeQueryClient() {
   return new QueryClient({
     defaultOptions: {
       queries: {
-        // 15 minutes
-        staleTime: 15 * 60 * 1000,
+        staleTime: Infinity,
+        gcTime: Infinity,
       },
       dehydrate: {
+        // include pending queries in dehydration
         shouldDehydrateQuery: query =>
           defaultShouldDehydrateQuery(query) || query.state.status === 'pending',
       },
@@ -17,7 +18,7 @@ function makeQueryClient() {
 
 let browserQueryClient: QueryClient | undefined;
 
-export function getQueryClient() {
+export default function getQueryClient() {
   if (isServer) {
     return makeQueryClient();
   }

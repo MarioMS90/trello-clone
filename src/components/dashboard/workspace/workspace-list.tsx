@@ -1,14 +1,14 @@
 'use client';
 
 import { BoardList } from '@/components/dashboard/board/boards';
-import { TSubsetWithId, TWorkspace } from '@/types/types';
+import { TSubsetWithId, TWorkspace } from '@/types/db';
 import { useOptimisticList } from '@/hooks/useOptimisticList';
 import BoardsIcon from '@/components/icons/boards';
 import SettingsIcon from '@/components/icons/settings';
 import UserIcon from '@/components/icons/user';
 import Popover from '@/components/ui/popover';
 import WorkspaceBadge from '@/components/ui/workspace-logo';
-import { deleteEntity, updateEntity } from '@/lib/actions';
+import { deleteEntity, updateEntity } from '@/lib/workspace/actions';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import EditableText from '@/components/ui/editable-text';

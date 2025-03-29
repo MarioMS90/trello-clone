@@ -1,7 +1,7 @@
 import { twMerge } from 'tailwind-merge';
 import { clsx, type ClassValue } from 'clsx';
 import { LexoRank } from 'lexorank';
-import { TSubsetWithId } from '@/types/types';
+import { TSubsetWithId } from '@/types/db';
 import { RefObject } from 'react';
 
 export function cn(...inputs: ClassValue[]) {

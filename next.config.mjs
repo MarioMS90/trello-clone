@@ -5,6 +5,12 @@ const nextConfig = {
   //     fullUrl: true,
   //   },
   // },
+  experimental: {
+    staleTimes: {
+      // Max value possible
+      dynamic: 4294967295,
+    },
+  },
   reactStrictMode: false,
 };
 

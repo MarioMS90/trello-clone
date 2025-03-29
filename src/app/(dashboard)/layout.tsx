@@ -1,12 +1,15 @@
 import Header from '@/components/dashboard/header/header';
-import { HeaderSkeleton, LayoutSkeleton } from '@/components/ui/skeletons';
-import { fetchBoards, fetchUser, fetchWorkspaces } from '@/lib/data';
-import { getQueryClient } from '@/providers/get-query-client';
+import { HeaderSkeleton } from '@/components/ui/skeletons';
 import ReactQueryProvider from '@/providers/react-query-provider';
-import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { Suspense } from 'react';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import getQueryClient from '@/lib/utils/get-query-client';
+import { userKeys } from '@/lib/user/queries';
+import { workspaceKeys } from '@/lib/workspace/queries';
+import { boardKeys, starredBoardKeys } from '@/lib/board/queries';
+import { RealTimeProvider } from '@/providers/real-time-provider';
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
   sidebar,
 }: Readonly<{
@@ -15,32 +18,27 @@ export default function DashboardLayout({
 }>) {
   const queryClient = getQueryClient();
 
-  queryClient.prefetchQuery({
-    queryKey: ['user'],
-    queryFn: fetchUser,
-  });
-  queryClient.prefetchQuery({
-    queryKey: ['workspaces'],
-    queryFn: fetchWorkspaces,
-  });
-  queryClient.prefetchQuery({
-    queryKey: ['boards'],
-    queryFn: fetchBoards,
-  });
+  queryClient.prefetchQuery(userKeys.current());
+  queryClient.prefetchQuery(workspaceKeys.list());
+  queryClient.prefetchQuery(boardKeys.list());
+  queryClient.prefetchQuery(starredBoardKeys.list());
 
   return (
     <ReactQueryProvider>
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <div className="flex h-dvh flex-col">
-          <Suspense fallback={<HeaderSkeleton />}>
-            <Header />
-          </Suspense>
+        <RealTimeProvider>
+          <div className="flex h-dvh flex-col">
+            <Suspense fallback={<HeaderSkeleton />}>
+              <Header />
+            </Suspense>
+            {children}
 
-          {/* <main className="z-0 flex grow">
+            {/* <main className="z-0 flex grow">
           {sidebar} Pending
           <div className="grow bg-main-background text-white">{children}</div>
         </main> */}
-        </div>
+          </div>
+        </RealTimeProvider>
       </HydrationBoundary>
     </ReactQueryProvider>
   );

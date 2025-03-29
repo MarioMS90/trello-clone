@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { signOutAction } from '@/lib/auth-actions';
+import { signOut } from '@/lib/auth/actions';
 import AppsIcon from '@/components/icons/apps';
 import Avatar from '@/components/ui/avatar';
 import TrelloWhiteIcon from '@/components/icons/trello-white';
@@ -7,7 +7,7 @@ import HeaderMenu from '@/components/dashboard/header/header-menu';
 import HeaderSearch from '@/components/dashboard/header/header-search';
 import Popover from '../../ui/popover';
 
-export default async function Header() {
+export default function Header() {
   return (
     <header
       className="
@@ -38,7 +38,7 @@ export default async function Header() {
       </nav>
       <div className="flex flex-1 items-center justify-end gap-4">
         <HeaderSearch placeholder="Search Trello" />
-        {/* <Popover
+        <Popover
           triggerContent={<Avatar />}
           triggerClassName="rounded-full [&]:p-1"
           popoverClassName="right-0 left-auto px-0 [&]:w-40">
@@ -48,11 +48,11 @@ export default async function Header() {
             onClick={async () => {
               'use server';
 
-              await signOutAction();
+              await signOut();
             }}>
             Log out
           </button>
-        </Popover> */}
+        </Popover>
       </div>
     </header>
   );

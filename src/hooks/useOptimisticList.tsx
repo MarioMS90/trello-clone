@@ -1,6 +1,6 @@
 'use client';
 
-import { TSubsetWithId } from '@/types/types';
+import { TSubsetWithId } from '@/types/db';
 import { isRedirectError } from 'next/dist/client/components/redirect';
 import { useOptimistic, useTransition } from 'react';
 

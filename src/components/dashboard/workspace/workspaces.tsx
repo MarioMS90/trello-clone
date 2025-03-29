@@ -1,4 +1,4 @@
-import { fetchWorkspaces } from '@/lib/data';
+import { fetchWorkspaces } from '@/lib/workspace/queries';
 import WorkspaceList from './workspace-list';
 
 export async function Workspaces() {

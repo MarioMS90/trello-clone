@@ -3,26 +3,23 @@ export type Json = string | number | boolean | null | { [key: string]: Json | un
 export type Database = {
   public: {
     Tables: {
-      board: {
+      boards: {
         Row: {
           created_at: string;
           id: string;
           name: string;
-          starred: boolean;
           workspace_id: string;
         };
         Insert: {
           created_at?: string;
           id?: string;
           name: string;
-          starred?: boolean;
           workspace_id: string;
         };
         Update: {
           created_at?: string;
           id?: string;
           name?: string;
-          starred?: boolean;
           workspace_id?: string;
         };
         Relationships: [
@@ -30,12 +27,12 @@ export type Database = {
             foreignKeyName: 'board_workspace_id_fkey';
             columns: ['workspace_id'];
             isOneToOne: false;
-            referencedRelation: 'workspace';
+            referencedRelation: 'workspaces';
             referencedColumns: ['id'];
           },
         ];
       };
-      card: {
+      cards: {
         Row: {
           created_at: string;
           description: string;
@@ -65,12 +62,12 @@ export type Database = {
             foreignKeyName: 'card_list_id_fkey';
             columns: ['list_id'];
             isOneToOne: false;
-            referencedRelation: 'list';
+            referencedRelation: 'lists';
             referencedColumns: ['id'];
           },
         ];
       };
-      comment: {
+      comments: {
         Row: {
           card_id: string;
           content: string;
@@ -97,19 +94,19 @@ export type Database = {
             foreignKeyName: 'comment_card_id_fkey';
             columns: ['card_id'];
             isOneToOne: false;
-            referencedRelation: 'card';
+            referencedRelation: 'cards';
             referencedColumns: ['id'];
           },
           {
             foreignKeyName: 'comment_user_id_fkey';
             columns: ['user_id'];
             isOneToOne: false;
-            referencedRelation: 'user';
+            referencedRelation: 'users';
             referencedColumns: ['id'];
           },
         ];
       };
-      list: {
+      lists: {
         Row: {
           board_id: string;
           created_at: string;
@@ -136,12 +133,87 @@ export type Database = {
             foreignKeyName: 'task_list_board_id_fkey';
             columns: ['board_id'];
             isOneToOne: false;
-            referencedRelation: 'board';
+            referencedRelation: 'boards';
             referencedColumns: ['id'];
           },
         ];
       };
-      user: {
+      starred_boards: {
+        Row: {
+          board_id: string;
+          created_at: string;
+          id: string;
+          user_id: string;
+        };
+        Insert: {
+          board_id: string;
+          created_at?: string;
+          id?: string;
+          user_id: string;
+        };
+        Update: {
+          board_id?: string;
+          created_at?: string;
+          id?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'user_board_board_id_fkey';
+            columns: ['board_id'];
+            isOneToOne: false;
+            referencedRelation: 'boards';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'user_board_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      user_workspaces: {
+        Row: {
+          created_at: string;
+          id: string;
+          role: Database['public']['Enums']['role'];
+          user_id: string;
+          workspace_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          role?: Database['public']['Enums']['role'];
+          user_id: string;
+          workspace_id: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          role?: Database['public']['Enums']['role'];
+          user_id?: string;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'user_workspace_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'user_workspace_workspace_id_fkey';
+            columns: ['workspace_id'];
+            isOneToOne: false;
+            referencedRelation: 'workspaces';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      users: {
         Row: {
           created_at: string;
           email: string;
@@ -162,40 +234,7 @@ export type Database = {
         };
         Relationships: [];
       };
-      user_workspace: {
-        Row: {
-          role: Database['public']['Enums']['role'];
-          user_id: string;
-          workspace_id: string;
-        };
-        Insert: {
-          role?: Database['public']['Enums']['role'];
-          user_id: string;
-          workspace_id: string;
-        };
-        Update: {
-          role?: Database['public']['Enums']['role'];
-          user_id?: string;
-          workspace_id?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: 'user_workspace_user_id_fkey';
-            columns: ['user_id'];
-            isOneToOne: false;
-            referencedRelation: 'user';
-            referencedColumns: ['id'];
-          },
-          {
-            foreignKeyName: 'user_workspace_workspace_id_fkey';
-            columns: ['workspace_id'];
-            isOneToOne: false;
-            referencedRelation: 'workspace';
-            referencedColumns: ['id'];
-          },
-        ];
-      };
-      workspace: {
+      workspaces: {
         Row: {
           created_at: string;
           id: string;

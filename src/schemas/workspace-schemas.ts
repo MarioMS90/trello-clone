@@ -46,6 +46,17 @@ const CardSchema = z.object({
 });
 
 export const CreateWorkspaceSchema = WorkspaceSchema.pick({ name: true });
+export const UpdateWorkspaceSchema = WorkspaceSchema.pick({ name: true }).partial();
+
 export const CreateBoardSchema = BoardSchema.pick({ name: true, workspaceId: true });
+export const UpdateBoardSchema = BoardSchema.pick({ name: true, starred: true }).partial();
+
 export const CreateListSchema = ListSchema.pick({ name: true, rank: true, boardId: true });
+export const UpdateListSchema = ListSchema.pick({ name: true, rank: true }).partial();
+
 export const CreateCardSchema = CardSchema.pick({ name: true, rank: true, listId: true });
+export const UpdateCardSchema = CardSchema.pick({
+  name: true,
+  description: true,
+  rank: true,
+}).partial();

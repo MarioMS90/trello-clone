@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { TWorkspace } from '@/types/types';
+import { TWorkspace } from '@/types/db';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils/utils';
 import BoardsIcon from '../../icons/boards';

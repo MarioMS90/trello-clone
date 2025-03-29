@@ -1,7 +1,7 @@
 'use client';
 
 import { createStore } from 'zustand';
-import { TBoard } from '@/types/types';
+import { TBoard } from '@/types/db';
 import { immer } from 'zustand/middleware/immer';
 
 export type MainStore = {

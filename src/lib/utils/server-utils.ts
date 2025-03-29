@@ -1,7 +1,7 @@
 'use server';
 
-import { TWorkspace } from '@/types/types';
-import { fetchWorkspaces } from '../data';
+import { TWorkspace } from '@/types/db';
+import { fetchWorkspaces } from '../workspace/queries';
 
 export async function getWorkspace(
   workspaceId: string | undefined,

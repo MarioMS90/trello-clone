@@ -1,9 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { TBoard, TSubsetWithId } from '@/types/types';
+import { TBoard, TSubsetWithId } from '@/types/db';
 import { useState } from 'react';
-import { deleteEntity, updateEntity } from '@/lib/actions';
+import { deleteEntity, updateEntity } from '@/lib/supabase/utils';
 import { useOptimisticList } from '@/hooks/useOptimisticList';
 import { cn } from '@/lib/utils/utils';
 import EditableText from '@/components/ui/editable-text';

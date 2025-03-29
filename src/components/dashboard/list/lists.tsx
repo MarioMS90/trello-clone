@@ -9,7 +9,7 @@ import { reorder } from '@atlaskit/pragmatic-drag-and-drop/reorder';
 import { autoScrollForElements } from '@atlaskit/pragmatic-drag-and-drop-auto-scroll/element';
 import { bind, bindAll } from 'bind-event-listener';
 import { isCardData, isListData, TCardData, TListData } from '@/types/drag-types';
-import { TCard, TList, TSubsetWithId } from '@/types/types';
+import { TCard, TList, TSubsetWithId } from '@/types/db';
 import {
   useCallback,
   useEffect,
@@ -20,7 +20,7 @@ import {
   useTransition,
 } from 'react';
 import { List } from '@/components/dashboard/list/list';
-import { createList, createCard, deleteEntity, updateEntity } from '@/lib/actions';
+import { createList, createCard, deleteEntity, updateEntity } from '@/lib/workspace/actions';
 import { generateRank, updateElement } from '@/lib/utils/utils';
 import { CleanupFn } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types';
 import { blockBoardPanningAttr } from '@/constants/constants';

@@ -39,6 +39,18 @@ module.exports = {
     'react/jsx-no-useless-fragment': 'off',
     'prefer-arrow-callback': ['error', { allowNamedFunctions: true }],
     'no-param-reassign': ['error', { props: false }],
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      {
+        args: 'all',
+        argsIgnorePattern: '^_',
+        caughtErrors: 'all',
+        caughtErrorsIgnorePattern: '^_',
+        destructuredArrayIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+        ignoreRestSiblings: true,
+      },
+    ],
     'no-alert': 'off', // Temporary
     'react/jsx-props-no-spreading': [
       'error',
