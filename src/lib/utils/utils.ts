@@ -3,6 +3,7 @@ import { clsx, type ClassValue } from 'clsx';
 import { LexoRank } from 'lexorank';
 import { TSubsetWithId } from '@/types/db';
 import { RefObject } from 'react';
+import { CamelCasedProperties } from 'type-fest';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -48,4 +49,26 @@ export function resizeTextarea(textareaRef: RefObject<HTMLTextAreaElement | null
   textarea.style.height = '0px';
   const { scrollHeight } = textarea;
   textarea.style.height = `${scrollHeight}px`;
+}
+
+export function camelize(str: string, separator = '_') {
+  const words = str.split(separator);
+
+  return words.reduce((_str, word, index) => {
+    if (index === 0) {
+      return word.toLowerCase();
+    }
+
+    return _str + word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+  }, '');
+}
+
+export function camelizeKeys<T extends Record<string, unknown>, U extends CamelCasedProperties<T>>(
+  obj: T,
+): U {
+  return Object.keys(obj).reduce<U>((_obj, key) => {
+    const camelizedKey = camelize(key);
+
+    return { ..._obj, [camelizedKey]: obj[key] };
+  }, {} as U);
 }

@@ -1,17 +1,45 @@
 import { QueryClient } from '@tanstack/react-query';
-import { TBoard } from '@/types/db';
-import Strategy from './strategy';
+import { TBoard, TEntity, TEntityName } from '@/types/db';
+import { boardKeys } from '@/lib/board/queries';
+import CacheSyncStrategy from './cache-sync-strategy';
 
-export default class BoardStrategy implements Strategy {
+export default class BoardStrategy implements CacheSyncStrategy {
   queryClient: QueryClient;
 
   constructor(queryClient: QueryClient) {
     this.queryClient = queryClient;
   }
 
-  handleInsert(board: TBoard) {}
+  handleInsert(newEntity: TEntity<TEntityName>) {
+    const newBoard = newEntity as TBoard;
 
-  handleUpdate(board: TBoard) {}
+    this.queryClient.setQueryData(boardKeys.list().queryKey, (oldBoards: TBoard[]) => {
+      if (!oldBoards) {
+        return undefined;
+      }
 
-  handleDelete(boardId: string) {}
+      return [...oldBoards, newBoard];
+    });
+  }
+
+  handleUpdate(updatedEntity: TEntity<TEntityName>) {
+    const updatedBoard = updatedEntity as TBoard;
+
+    this.queryClient.setQueryData(boardKeys.list().queryKey, (oldBoards: TBoard[]) => {
+      if (!oldBoards) {
+        return undefined;
+      }
+      return oldBoards.map(board => (board.id === updatedBoard.id ? updatedBoard : board));
+    });
+  }
+
+  handleDelete(boardId: string) {
+    this.queryClient.setQueryData(boardKeys.list().queryKey, (oldBoards: TBoard[]) => {
+      if (!oldBoards) {
+        return undefined;
+      }
+
+      return oldBoards.filter(board => board.id !== boardId);
+    });
+  }
 }

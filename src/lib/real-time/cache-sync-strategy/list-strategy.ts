@@ -1,17 +1,17 @@
 import { QueryClient } from '@tanstack/react-query';
 import { TList } from '@/types/db';
-import Strategy from './strategy';
+import CacheSyncStrategy from './cache-sync-strategy';
 
-export default class ListStrategy implements Strategy {
+export default class ListStrategy implements CacheSyncStrategy {
   queryClient: QueryClient;
 
   constructor(queryClient: QueryClient) {
     this.queryClient = queryClient;
   }
 
-  handleInsert(list: TList) {}
+  handleInsert(entityData: TEntity<TEntityName>) {}
 
-  handleUpdate(list: TList) {}
+  handleUpdate(entityData: TEntity<TEntityName>) {}
 
   handleDelete(listId: string) {}
 }

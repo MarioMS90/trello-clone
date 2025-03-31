@@ -1,17 +1,17 @@
 import { QueryClient } from '@tanstack/react-query';
 import { TWorkspace } from '@/types/db';
-import Strategy from './strategy';
+import CacheSyncStrategy from './cache-sync-strategy';
 
-export default class WorkspaceStrategy implements Strategy {
+export default class WorkspaceStrategy implements CacheSyncStrategy {
   queryClient: QueryClient;
 
   constructor(queryClient: QueryClient) {
     this.queryClient = queryClient;
   }
 
-  handleInsert(workspace: TWorkspace) {}
+  handleInsert(entityData: TEntity<TEntityName>) {}
 
-  handleUpdate(workspace: TWorkspace) {}
+  handleUpdate(entityData: TEntity<TEntityName>) {}
 
   handleDelete(workspaceId: string) {}
 }

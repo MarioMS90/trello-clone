@@ -20,9 +20,13 @@ export default function createChannel({
 
   return supabase
     .channel(`schema-${entity}-changes`)
-    .on<Tables<T>>('postgres_changes', { event: '*', schema: 'public', table: entity }, payload => {
-      onChanges(payload);
-    })
+    .on<Tables<TEntityName>>(
+      'postgres_changes',
+      { event: '*', schema: 'public', table: entity },
+      payload => {
+        onChanges(payload);
+      },
+    )
     .on('system', {}, payload => {
       if (payload.extension !== 'postgres_changes' || payload.status !== 'ok') {
         return;
@@ -36,7 +40,6 @@ export default function createChannel({
       if (previouslyDisconnected) {
         queryClient.refetchQueries({ queryKey: [entity] });
         previouslyDisconnected = false;
-        console.log('Created channel for', entity);
       }
     })
     .subscribe(status => {

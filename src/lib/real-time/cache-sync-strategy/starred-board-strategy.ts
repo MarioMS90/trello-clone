@@ -1,17 +1,56 @@
 import { QueryClient } from '@tanstack/react-query';
-import { TStarredBoard } from '@/types/db';
-import Strategy from './strategy';
+import { TStarredBoard, TEntity, TEntityName } from '@/types/db';
+import { starredBoardKeys } from '@/lib/board/queries';
+import CacheSyncStrategy from './cache-sync-strategy';
 
-export default class StarredBoardStrategy implements Strategy {
+export default class StarredBoardStrategy implements CacheSyncStrategy {
   queryClient: QueryClient;
 
   constructor(queryClient: QueryClient) {
     this.queryClient = queryClient;
   }
 
-  handleInsert(starredBoard: TStarredBoard) {}
+  handleInsert(newEntity: TEntity<TEntityName>) {
+    const newStarredBoard = newEntity as TStarredBoard;
 
-  handleUpdate(starredBoard: TStarredBoard) {}
+    this.queryClient.setQueryData(
+      starredBoardKeys.list().queryKey,
+      (oldStarredBoards: TStarredBoard[]) => {
+        if (!oldStarredBoards) {
+          return undefined;
+        }
 
-  handleDelete(starredBoardId: string) {}
+        return [...oldStarredBoards, newStarredBoard];
+      },
+    );
+  }
+
+  handleUpdate(updatedEntity: TEntity<TEntityName>) {
+    const updatedStarredBoard = updatedEntity as TStarredBoard;
+
+    this.queryClient.setQueryData(
+      starredBoardKeys.list().queryKey,
+      (oldStarredBoards: TStarredBoard[]) => {
+        if (!oldStarredBoards) {
+          return undefined;
+        }
+        return oldStarredBoards.map(starredBoard =>
+          starredBoard.id === updatedStarredBoard.id ? updatedStarredBoard : starredBoard,
+        );
+      },
+    );
+  }
+
+  handleDelete(starredBoardId: string) {
+    this.queryClient.setQueryData(
+      starredBoardKeys.list().queryKey,
+      (oldStarredBoards: TStarredBoard[]) => {
+        if (!oldStarredBoards) {
+          return undefined;
+        }
+
+        return oldStarredBoards.filter(starredBoard => starredBoard.id !== starredBoardId);
+      },
+    );
+  }
 }

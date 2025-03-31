@@ -1,17 +1,17 @@
 import { QueryClient } from '@tanstack/react-query';
 import { TComment } from '@/types/db';
-import Strategy from './strategy';
+import CacheSyncStrategy from './cache-sync-strategy';
 
-export default class CommentStrategy implements Strategy {
+export default class CommentStrategy implements CacheSyncStrategy {
   queryClient: QueryClient;
 
   constructor(queryClient: QueryClient) {
     this.queryClient = queryClient;
   }
 
-  handleInsert(comment: TComment) {}
+  handleInsert(entityData: TEntity<TEntityName>) {}
 
-  handleUpdate(comment: TComment) {}
+  handleUpdate(entityData: TEntity<TEntityName>) {}
 
   handleDelete(commentId: string) {}
 }
