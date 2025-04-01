@@ -19,7 +19,7 @@ const workspaces: Tables<'workspaces'>[] = [
   },
 ];
 
-const userWorkspace: Omit<Tables<'user_workspaces'>, 'created_at'>[] = [
+const userWorkspace: Omit<Tables<'user_workspaces'>, 'id' | 'created_at'>[] = [
   {
     user_id: '746a5280-bcc3-4a23-842f-be2ec0334e90',
     workspace_id: workspaces[0].id,
@@ -75,7 +75,7 @@ const boards: Tables<'boards'>[] = [
   },
 ];
 
-const starredBoards: Omit<Tables<'starred_boards'>, 'created_at'>[] = [
+const starredBoards: Omit<Tables<'starred_boards'>, 'id' | 'created_at'>[] = [
   {
     user_id: '746a5280-bcc3-4a23-842f-be2ec0334e90',
     board_id: boards[0].id,
@@ -104,11 +104,10 @@ const listsData: Omit<Tables<'lists'>, 'rank' | 'created_at'>[] = [
     board_id: boards[3].id,
   },
 ];
-
-let currentRank = LexoRank.middle();
-const lists: Omit<Tables<'lists'>, 'created_at'>[] = listsData.map(list => {
-  currentRank = currentRank.genNext();
-  return { ...list, rank: currentRank.format() };
+let listsRank = LexoRank.middle();
+const lists = listsData.map(list => {
+  listsRank = listsRank.genNext();
+  return { ...list, rank: listsRank.format() };
 });
 
 const cardsData: Omit<Tables<'cards'>, 'rank' | 'created_at'>[] = [
@@ -137,11 +136,10 @@ const cardsData: Omit<Tables<'cards'>, 'rank' | 'created_at'>[] = [
     list_id: lists[2].id,
   },
 ];
-
-currentRank = LexoRank.middle();
-const cards: Omit<Tables<'cards'>, 'created_at'>[] = cardsData.map(card => {
-  currentRank = currentRank.genNext();
-  return { ...card, rank: currentRank.format() };
+let cardsRank = LexoRank.middle();
+const cards = cardsData.map(card => {
+  cardsRank = cardsRank.genNext();
+  return { ...card, rank: cardsRank.format() };
 });
 
 const comments: Omit<Tables<'comments'>, 'created_at'>[] = [

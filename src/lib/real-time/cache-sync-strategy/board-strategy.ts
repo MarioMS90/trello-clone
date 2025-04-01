@@ -29,6 +29,7 @@ export default class BoardStrategy implements CacheSyncStrategy {
       if (!oldBoards) {
         return undefined;
       }
+
       return oldBoards.map(board => (board.id === updatedBoard.id ? updatedBoard : board));
     });
   }
