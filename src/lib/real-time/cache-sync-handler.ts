@@ -1,57 +1,55 @@
 import { TEntityName } from '@/types/db';
 import { QueryClient } from '@tanstack/react-query';
-import { RealtimePostgresChangesPayload } from '@supabase/supabase-js';
+import {
+  REALTIME_POSTGRES_CHANGES_LISTEN_EVENT,
+  RealtimePostgresChangesPayload,
+} from '@supabase/supabase-js';
 import { Tables } from '@/types/database-types';
-import WorkspaceStrategy from './cache-sync-strategy/workspace-strategy';
-import UserStrategy from './cache-sync-strategy/user-strategy';
-import BoardStrategy from './cache-sync-strategy/board-strategy';
-import ListStrategy from './cache-sync-strategy/list-strategy';
-import CardStrategy from './cache-sync-strategy/card-strategy';
-import CommentStrategy from './cache-sync-strategy/comment-strategy';
-import { CacheSyncContext } from './cache-sync-strategy/context';
-import StarredBoardStrategy from './cache-sync-strategy/starred-board-strategy';
+import { CacheController } from '@/types/cache-types';
+import boardCacheController from './cache-controllers/board-cache-controller';
+import userCacheController from './cache-controllers/user-cache-controller';
+import workspaceCacheController from './cache-controllers/workspace-cache-controller';
+import starredBoardCacheController from './cache-controllers/starred-board-cache-controller';
+import listCacheController from './cache-controllers/list-cache-controller';
+import cardCacheController from './cache-controllers/card-cache-controller';
+import commentCacheController from './cache-controllers/comment-cache-controller';
 
-function cacheSyncFactory(
+function getCacheController(
   queryClient: QueryClient,
   payload: RealtimePostgresChangesPayload<Tables<TEntityName>>,
 ) {
-  switch (payload.table) {
-    case 'users':
-      return new UserStrategy(queryClient);
+  const controllers: Partial<Record<TEntityName, CacheController>> = {
+    users: userCacheController(queryClient),
+    user_workspaces: workspaceCacheController(queryClient),
+    boards: boardCacheController(queryClient),
+    starred_boards: starredBoardCacheController(queryClient),
+    lists: listCacheController(queryClient),
+    cards: cardCacheController(queryClient),
+    comments: commentCacheController(queryClient),
+  };
 
-    case 'user_workspaces':
-      return new WorkspaceStrategy(queryClient);
-
-    case 'boards':
-      return new BoardStrategy(queryClient);
-
-    case 'starred_boards':
-      return new StarredBoardStrategy(queryClient);
-
-    case 'lists':
-      return new ListStrategy(queryClient);
-
-    case 'cards':
-      return new CardStrategy(queryClient);
-
-    case 'comments':
-      return new CommentStrategy(queryClient);
-
-    default:
-      return null;
-  }
+  return controllers[payload.table as TEntityName] || null;
 }
 
 export default function cacheSyncHandler(
   queryClient: QueryClient,
   payload: RealtimePostgresChangesPayload<Tables<TEntityName>>,
 ) {
-  const strategy = cacheSyncFactory(queryClient, payload);
+  const cacheController = getCacheController(queryClient, payload);
 
-  if (!strategy) {
+  if (!cacheController) {
     return;
   }
 
-  const context = new CacheSyncContext(strategy);
-  context.syncQueryCache(payload);
+  if (payload.eventType === REALTIME_POSTGRES_CHANGES_LISTEN_EVENT.INSERT) {
+    cacheController.handleInsert(payload);
+  }
+
+  if (payload.eventType === REALTIME_POSTGRES_CHANGES_LISTEN_EVENT.UPDATE) {
+    cacheController.handleUpdate(payload);
+  }
+
+  if (payload.eventType === REALTIME_POSTGRES_CHANGES_LISTEN_EVENT.DELETE) {
+    cacheController.handleDelete(payload);
+  }
 }

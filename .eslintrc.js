@@ -39,6 +39,7 @@ module.exports = {
     'react/jsx-no-useless-fragment': 'off',
     'prefer-arrow-callback': ['error', { allowNamedFunctions: true }],
     'no-param-reassign': ['error', { props: false }],
+    'class-methods-use-this': 'off',
     '@typescript-eslint/no-unused-vars': [
       'error',
       {

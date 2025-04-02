@@ -142,21 +142,18 @@ const cards = cardsData.map(card => {
   return { ...card, rank: cardsRank.format() };
 });
 
-const comments: Omit<Tables<'comments'>, 'created_at'>[] = [
+const comments: Omit<Tables<'comments'>, 'created_at' | 'id'>[] = [
   {
-    id: crypto.randomUUID(),
     content: 'This is a comment',
     user_id: '746a5280-bcc3-4a23-842f-be2ec0334e90',
     card_id: cards[1].id,
   },
   {
-    id: crypto.randomUUID(),
     content: 'This is a comment',
     user_id: '746a5280-bcc3-4a23-842f-be2ec0334e90',
     card_id: cards[1].id,
   },
   {
-    id: crypto.randomUUID(),
     content: 'This is the second comment',
     user_id: '746a5280-bcc3-4a23-842f-be2ec0334e90',
     card_id: cards[3].id,

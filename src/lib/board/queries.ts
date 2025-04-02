@@ -1,7 +1,5 @@
 import { createQueryKeys } from '@lukemorales/query-key-factory';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { useCallback } from 'react';
-import { TStarredBoard } from '@/types/db';
 import { getAuthUser, getClient } from '../supabase/utils';
 
 async function fetchBoards() {
@@ -72,6 +70,6 @@ export function useBoards() {
 export function useStarredBoards() {
   return useSuspenseQuery({
     ...starredBoardKeys.list(),
-    select: useCallback((data: TStarredBoard[]) => data.map(({ boardId }) => boardId), []),
+    select: data => data.map(({ boardId }) => boardId),
   });
 }

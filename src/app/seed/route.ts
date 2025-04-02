@@ -12,7 +12,7 @@ import { Database } from '@/types/database-types';
 
 async function seedWorkspaces(supabase: SupabaseClient<Database>) {
   await supabase.from('workspaces').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-  const { data } = await supabase.from('workspaces').upsert(workspaces).select().throwOnError();
+  const { data } = await supabase.from('workspaces').insert(workspaces).select().throwOnError();
 
   return data;
 }
@@ -20,7 +20,7 @@ async function seedWorkspaces(supabase: SupabaseClient<Database>) {
 async function seedUserWorkspaces(supabase: SupabaseClient<Database>) {
   const { data } = await supabase
     .from('user_workspaces')
-    .upsert(userWorkspace)
+    .insert(userWorkspace)
     .select()
     .throwOnError();
 
@@ -28,7 +28,7 @@ async function seedUserWorkspaces(supabase: SupabaseClient<Database>) {
 }
 
 async function seedBoards(supabase: SupabaseClient<Database>) {
-  const { data } = await supabase.from('boards').upsert(boards).select().throwOnError();
+  const { data } = await supabase.from('boards').insert(boards).select().throwOnError();
 
   return data;
 }
@@ -36,7 +36,7 @@ async function seedBoards(supabase: SupabaseClient<Database>) {
 async function seedStarredBoards(supabase: SupabaseClient<Database>) {
   const { data } = await supabase
     .from('starred_boards')
-    .upsert(starredBoards)
+    .insert(starredBoards)
     .select()
     .throwOnError();
 
@@ -44,19 +44,19 @@ async function seedStarredBoards(supabase: SupabaseClient<Database>) {
 }
 
 async function seedLists(supabase: SupabaseClient<Database>) {
-  const { data } = await supabase.from('lists').upsert(lists).select().throwOnError();
+  const { data } = await supabase.from('lists').insert(lists).select().throwOnError();
 
   return data;
 }
 
 async function seedCards(supabase: SupabaseClient<Database>) {
-  const { data } = await supabase.from('cards').upsert(cards).select().throwOnError();
+  const { data } = await supabase.from('cards').insert(cards).select().throwOnError();
 
   return data;
 }
 
 async function seedComments(supabase: SupabaseClient<Database>) {
-  const { data } = await supabase.from('comments').upsert(comments).select().throwOnError();
+  const { data } = await supabase.from('comments').insert(comments).select().throwOnError();
 
   return data;
 }
