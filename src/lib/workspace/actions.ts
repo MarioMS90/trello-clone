@@ -2,7 +2,7 @@
 
 import { TActionState, initialActionState } from '@/types/db';
 import { CreateWorkspaceSchema } from '@/schemas/workspace-schemas';
-import { getAuthUser, getClient } from '../supabase/utils';
+import { getClient } from '../supabase/utils';
 
 export async function createWorkspace(_: TActionState, formData: FormData): Promise<TActionState> {
   if (!formData) {
@@ -21,24 +21,24 @@ export async function createWorkspace(_: TActionState, formData: FormData): Prom
   }
 
   const supabase = await getClient();
-  const user = await getAuthUser();
 
-  const newId = crypto.randomUUID();
-  const { error: workspaceError } = await supabase
-    .from('workspaces')
-    .insert({ id: newId, name: validatedFields.data.name });
+  const { error } = await supabase.rpc('create_workspace_with_admin_access', {
+    workspace_name: validatedFields.data.name,
+  });
 
-  if (workspaceError) throw workspaceError;
+  if (error) throw error;
 
-  const { error: userWorkspaceError } = await supabase
-    .from('user_workspaces')
-    .insert({ user_id: user.id, workspace_id: newId })
-    .select();
+  return { success: true };
+}
 
-  if (userWorkspaceError) {
-    await supabase.from('workspaces').delete().eq('id', newId);
-    throw userWorkspaceError;
-  }
+export async function testAction(): Promise<TActionState> {
+  const supabase = await getClient();
+
+  const { error } = await supabase.rpc('create_workspace_with_admin_access', {
+    workspace_name: 'test_workspace',
+  });
+
+  if (error) throw error;
 
   return { success: true };
 }

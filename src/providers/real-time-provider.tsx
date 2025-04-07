@@ -18,7 +18,13 @@ type TRealTimeContextValue = {
 const RealTimeContext = createContext<TRealTimeContextValue | null>(null);
 
 function createInitialChannels(queryClient: QueryClient) {
-  const entities: TEntityName[] = ['users', 'user_workspaces', 'boards', 'starred_boards'];
+  const entities: TEntityName[] = [
+    'users',
+    'workspaces',
+    'user_workspaces',
+    'boards',
+    'starred_boards',
+  ];
 
   return entities.reduce<TChannelsState>((channels, entity) => {
     const channel = createChannel({

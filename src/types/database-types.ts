@@ -297,6 +297,10 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      create_workspace_with_admin_access: {
+        Args: { workspace_name: string };
+        Returns: undefined;
+      };
       get_workspace_id: {
         Args: { board_id_param: string };
         Returns: string;
@@ -311,14 +315,6 @@ export type Database = {
           board: string;
           list: string;
         }[];
-      };
-      user_has_workspace_access: {
-        Args: { workspace_id_param: string };
-        Returns: boolean;
-      };
-      user_is_admin: {
-        Args: { workspace_id_param: string };
-        Returns: boolean;
       };
     };
     Enums: {

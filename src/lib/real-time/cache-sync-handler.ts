@@ -13,6 +13,7 @@ import starredBoardCacheController from './cache-controllers/starred-board-cache
 import listCacheController from './cache-controllers/list-cache-controller';
 import cardCacheController from './cache-controllers/card-cache-controller';
 import commentCacheController from './cache-controllers/comment-cache-controller';
+import userWorkspaceCacheController from './cache-controllers/user-workspace-cache-controller copy';
 
 function getCacheController(
   queryClient: QueryClient,
@@ -20,7 +21,8 @@ function getCacheController(
 ) {
   const controllers: Partial<Record<TEntityName, CacheController>> = {
     users: userCacheController(queryClient),
-    user_workspaces: workspaceCacheController(queryClient),
+    workspaces: workspaceCacheController(queryClient),
+    user_workspaces: userWorkspaceCacheController(queryClient),
     boards: boardCacheController(queryClient),
     starred_boards: starredBoardCacheController(queryClient),
     lists: listCacheController(queryClient),

@@ -21,13 +21,13 @@ export type TWorkspace = TEntity<'workspaces'>;
 
 export type TBoard = TEntity<'boards'>;
 
-export type TStarredBoard = TEntity<'starred_boards'>;
+export type TStarredBoard = Omit<TEntity<'starred_boards'>, 'workspace_id'>;
 
-export type TList = TEntity<'lists'>;
+export type TList = Omit<TEntity<'lists'>, 'workspace_id'>;
 
-export type TCard = TEntity<'cards'>;
+export type TCard = Omit<TEntity<'cards'>, 'workspace_id'>;
 
-export type TComment = TEntity<'comments'>;
+export type TComment = Omit<TEntity<'comments'>, 'workspace_id'>;
 
 export type TActionState<T = unknown> = {
   data?: T;
