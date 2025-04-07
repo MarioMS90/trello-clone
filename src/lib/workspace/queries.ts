@@ -24,6 +24,29 @@ async function fetchWorkspaces() {
   return data;
 }
 
+async function fetchUserWorkspaces() {
+  const supabase = await getClient();
+
+  const workspaces = await fetchWorkspaces();
+  const workspaceIds = workspaces.map(workspace => workspace.id);
+  const { data, error } = await supabase
+    .from('user_workspaces')
+    .select(
+      `
+      userId: user_id,
+      workspaceId: workspace_id,
+      role,
+      createdAt: created_at
+    `,
+    )
+    .in('workspace_id', workspaceIds)
+    .order('created_at');
+
+  if (error) throw error;
+
+  return data;
+}
+
 export const workspaceKeys = createQueryKeys('workspaces', {
   list: () => ({
     queryKey: ['workspaces'],
@@ -31,6 +54,17 @@ export const workspaceKeys = createQueryKeys('workspaces', {
   }),
 });
 
+export const userWorkspaceKeys = createQueryKeys('user_workspaces', {
+  list: () => ({
+    queryKey: ['user_workspaces'],
+    queryFn: async () => fetchUserWorkspaces(),
+  }),
+});
+
 export function useWorkspaces() {
   return useSuspenseQuery(workspaceKeys.list());
+}
+
+export function useUserWorkspaces() {
+  return useSuspenseQuery(userWorkspaceKeys.list());
 }

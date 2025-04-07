@@ -38,7 +38,7 @@ const userWorkspace: Omit<Tables<'user_workspaces'>, 'id' | 'created_at'>[] = [
   {
     user_id: 'ebd8b7ae-b4ee-4ba5-b80c-f46a4a495840',
     workspace_id: workspaces[0].id,
-    role: 'admin',
+    role: 'member',
   },
 ];
 
@@ -75,14 +75,14 @@ const boards: Tables<'boards'>[] = [
   },
 ];
 
-const starredBoards: Omit<Tables<'starred_boards'>, 'id' | 'created_at'>[] = [
+const starredBoards: Omit<Tables<'starred_boards'>, 'id' | 'created_at' | 'workspace_id'>[] = [
   {
     user_id: '746a5280-bcc3-4a23-842f-be2ec0334e90',
     board_id: boards[0].id,
   },
 ];
 
-const listsData: Omit<Tables<'lists'>, 'rank' | 'created_at'>[] = [
+const listsData: Omit<Tables<'lists'>, 'rank' | 'created_at' | 'workspace_id'>[] = [
   {
     id: crypto.randomUUID(),
     name: 'To do',
@@ -110,7 +110,7 @@ const lists = listsData.map(list => {
   return { ...list, rank: listsRank.format() };
 });
 
-const cardsData: Omit<Tables<'cards'>, 'rank' | 'created_at'>[] = [
+const cardsData: Omit<Tables<'cards'>, 'rank' | 'created_at' | 'workspace_id'>[] = [
   {
     id: crypto.randomUUID(),
     name: 'Card with description',
@@ -142,7 +142,7 @@ const cards = cardsData.map(card => {
   return { ...card, rank: cardsRank.format() };
 });
 
-const comments: Omit<Tables<'comments'>, 'created_at' | 'id'>[] = [
+const comments: Omit<Tables<'comments'>, 'created_at' | 'id' | 'workspace_id'>[] = [
   {
     content: 'This is a comment',
     user_id: '746a5280-bcc3-4a23-842f-be2ec0334e90',
