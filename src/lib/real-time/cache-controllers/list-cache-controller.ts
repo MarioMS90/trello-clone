@@ -1,5 +1,5 @@
-import { TBoard } from '@/types/db';
-import { boardKeys } from '@/lib/board/queries';
+import { TList } from '@/types/db';
+import { listKeys } from '@/lib/list/queries';
 import { camelizeKeys } from '@/lib/utils/utils';
 import {
   insertQueryData,
@@ -10,36 +10,38 @@ import { QueryClient } from '@tanstack/react-query';
 import { CacheController } from '@/types/cache-types';
 
 export default function listCacheController(queryClient: QueryClient): CacheController {
+  const sortFn = (a: TList, b: TList) => a.rank.localeCompare(b.rank);
+
   return {
     handleInsert: payload => {
-      const newEntity = camelizeKeys(payload.new) as TBoard;
+      const entity = camelizeKeys(payload.new) as TList;
 
       insertQueryData({
         queryClient,
-        queryKey: boardKeys.list().queryKey,
-        newEntity,
-        sortFn: (a: TBoard, b: TBoard) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        queryKey: listKeys.list(entity.boardId).queryKey,
+        entity,
+        sortFn,
       });
     },
+
     handleUpdate: payload => {
-      const updatedEntity = camelizeKeys(payload.new) as TBoard;
+      const entity = camelizeKeys(payload.new) as TList;
 
       updateQueryData({
         queryClient,
-        queryKey: boardKeys.list().queryKey,
-        updatedEntity,
-        sortFn: (a: TBoard, b: TBoard) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        queryKey: listKeys.list(entity.boardId).queryKey,
+        entity,
+        sortFn,
       });
     },
+
     handleDelete: payload => {
-      const entityId = payload.old.id;
+      const entity = camelizeKeys(payload.old) as TList;
 
       deleteQueryData({
         queryClient,
-        queryKey: boardKeys.list().queryKey,
-        entityId,
+        queryKey: listKeys.list(entity.boardId).queryKey,
+        entityId: entity.id,
       });
     },
   };

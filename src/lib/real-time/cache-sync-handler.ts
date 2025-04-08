@@ -13,45 +13,42 @@ import starredBoardCacheController from './cache-controllers/starred-board-cache
 import listCacheController from './cache-controllers/list-cache-controller';
 import cardCacheController from './cache-controllers/card-cache-controller';
 import commentCacheController from './cache-controllers/comment-cache-controller';
-import userWorkspaceCacheController from './cache-controllers/user-workspace-cache-controller copy';
+import userWorkspaceCacheController from './cache-controllers/user-workspace-cache-controller';
 
-function getCacheController(
-  queryClient: QueryClient,
-  payload: RealtimePostgresChangesPayload<Tables<TEntityName>>,
-) {
-  const controllers: Partial<Record<TEntityName, CacheController>> = {
-    users: userCacheController(queryClient),
-    workspaces: workspaceCacheController(queryClient),
-    user_workspaces: userWorkspaceCacheController(queryClient),
-    boards: boardCacheController(queryClient),
-    starred_boards: starredBoardCacheController(queryClient),
-    lists: listCacheController(queryClient),
-    cards: cardCacheController(queryClient),
-    comments: commentCacheController(queryClient),
+function getCacheController(payload: RealtimePostgresChangesPayload<Tables<TEntityName>>) {
+  const controllers: Partial<Record<string, (queryClient: QueryClient) => CacheController>> = {
+    users: userCacheController,
+    workspaces: workspaceCacheController,
+    user_workspaces: userWorkspaceCacheController,
+    boards: boardCacheController,
+    starred_boards: starredBoardCacheController,
+    lists: listCacheController,
+    cards: cardCacheController,
+    comments: commentCacheController,
   };
 
-  return controllers[payload.table as TEntityName] || null;
+  return controllers[payload.table] || null;
 }
 
 export default function cacheSyncHandler(
   queryClient: QueryClient,
   payload: RealtimePostgresChangesPayload<Tables<TEntityName>>,
 ) {
-  const cacheController = getCacheController(queryClient, payload);
+  const cacheController = getCacheController(payload);
 
   if (!cacheController) {
     return;
   }
 
   if (payload.eventType === REALTIME_POSTGRES_CHANGES_LISTEN_EVENT.INSERT) {
-    cacheController.handleInsert(payload);
+    cacheController(queryClient).handleInsert(payload);
   }
 
   if (payload.eventType === REALTIME_POSTGRES_CHANGES_LISTEN_EVENT.UPDATE) {
-    cacheController.handleUpdate(payload);
+    cacheController(queryClient).handleUpdate(payload);
   }
 
   if (payload.eventType === REALTIME_POSTGRES_CHANGES_LISTEN_EVENT.DELETE) {
-    cacheController.handleDelete(payload);
+    cacheController(queryClient).handleDelete(payload);
   }
 }

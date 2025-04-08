@@ -1,5 +1,4 @@
-import { TBoard } from '@/types/db';
-import { boardKeys } from '@/lib/board/queries';
+import { TWorkspace } from '@/types/db';
 import { camelizeKeys } from '@/lib/utils/utils';
 import {
   insertQueryData,
@@ -8,38 +7,41 @@ import {
 } from '@/lib/utils/react-query/query-data-utils';
 import { QueryClient } from '@tanstack/react-query';
 import { CacheController } from '@/types/cache-types';
+import { workspaceKeys } from '@/lib/workspace/queries';
 
 export default function workspaceCacheController(queryClient: QueryClient): CacheController {
+  const { queryKey } = workspaceKeys.list();
+  const sortFn = (a: TWorkspace, b: TWorkspace) =>
+    new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+
   return {
     handleInsert: payload => {
-      const newEntity = camelizeKeys(payload.new) as TBoard;
+      const entity = camelizeKeys(payload.new) as TWorkspace;
 
       insertQueryData({
         queryClient,
-        queryKey: boardKeys.list().queryKey,
-        newEntity,
-        sortFn: (a: TBoard, b: TBoard) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        queryKey,
+        entity,
+        sortFn,
       });
     },
     handleUpdate: payload => {
-      const updatedEntity = camelizeKeys(payload.new) as TBoard;
+      const entity = camelizeKeys(payload.new) as TWorkspace;
 
       updateQueryData({
         queryClient,
-        queryKey: boardKeys.list().queryKey,
-        updatedEntity,
-        sortFn: (a: TBoard, b: TBoard) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        queryKey,
+        entity,
+        sortFn,
       });
     },
     handleDelete: payload => {
-      const entityId = payload.old.id;
+      const entity = camelizeKeys(payload.old) as TWorkspace;
 
       deleteQueryData({
         queryClient,
-        queryKey: boardKeys.list().queryKey,
-        entityId,
+        queryKey,
+        entityId: entity.id,
       });
     },
   };

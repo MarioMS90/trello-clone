@@ -6,14 +6,13 @@ import ArrowDownIcon from '@/components/icons/arrow-down';
 import WorkspaceBadge from '@/components/ui/workspace-logo';
 import { CreateBoard } from '@/components/dashboard/board/create-board';
 import StarToggleBoard from '@/components/dashboard/board/star-toggle-board';
-import { useUserWorkspaces, useWorkspaces } from '@/lib/workspace/queries';
+import { useWorkspaces } from '@/lib/workspace/queries';
 import { useBoards, useStarredBoards } from '@/lib/board/queries';
 
 export default function HeaderMenu() {
   const { data: workspaces } = useWorkspaces();
   const { data: boards } = useBoards();
   const { data: starredBoardIds } = useStarredBoards();
-  const { data: userWorkspaces } = useUserWorkspaces();
 
   const workspacesContent = (
     <ul className="space-y-1">

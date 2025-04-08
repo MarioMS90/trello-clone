@@ -10,36 +10,38 @@ import { QueryClient } from '@tanstack/react-query';
 import { CacheController } from '@/types/cache-types';
 
 export default function starredBoardCacheController(queryClient: QueryClient): CacheController {
+  const { queryKey } = starredBoardKeys.list();
+  const sortFn = (a: TStarredBoard, b: TStarredBoard) =>
+    new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+
   return {
     handleInsert: payload => {
-      const newEntity = camelizeKeys(payload.new) as TStarredBoard;
+      const entity = camelizeKeys(payload.new) as TStarredBoard;
 
       insertQueryData({
         queryClient,
-        queryKey: starredBoardKeys.list().queryKey,
-        newEntity,
-        sortFn: (a: TStarredBoard, b: TStarredBoard) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        queryKey,
+        entity,
+        sortFn,
       });
     },
     handleUpdate: payload => {
-      const updatedEntity = camelizeKeys(payload.new) as TStarredBoard;
+      const entity = camelizeKeys(payload.new) as TStarredBoard;
 
       updateQueryData({
         queryClient,
-        queryKey: starredBoardKeys.list().queryKey,
-        updatedEntity,
-        sortFn: (a: TStarredBoard, b: TStarredBoard) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        queryKey,
+        entity,
+        sortFn,
       });
     },
     handleDelete: payload => {
-      const entityId = payload.old.id;
+      const entity = camelizeKeys(payload.new) as TStarredBoard;
 
       deleteQueryData({
         queryClient,
-        queryKey: starredBoardKeys.list().queryKey,
-        entityId,
+        queryKey,
+        entityId: entity.id,
       });
     },
   };

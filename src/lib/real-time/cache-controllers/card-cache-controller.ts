@@ -1,5 +1,5 @@
-import { TBoard } from '@/types/db';
-import { boardKeys } from '@/lib/board/queries';
+import { TCard, TComment } from '@/types/db';
+import { cardKeys } from '@/lib/card/queries';
 import { camelizeKeys } from '@/lib/utils/utils';
 import {
   insertQueryData,
@@ -8,38 +8,46 @@ import {
 } from '@/lib/utils/react-query/query-data-utils';
 import { QueryClient } from '@tanstack/react-query';
 import { CacheController } from '@/types/cache-types';
+import { commentKeys } from '@/lib/comment/queries';
 
 export default function cardCacheController(queryClient: QueryClient): CacheController {
+  const sortFn = (a: TCard, b: TCard) => a.rank.localeCompare(b.rank);
+
   return {
     handleInsert: payload => {
-      const newEntity = camelizeKeys(payload.new) as TBoard;
+      const entity = camelizeKeys(payload.new) as TCard;
+
+      // Supabase realtime doesn't provide calculated fields that doesn't belong to the entity,
+      // so we need to get the comments count from the query cache.
+      const comments = queryClient.getQueryData<TComment[]>(commentKeys.list(entity.id).queryKey);
+      const commentCount = comments?.length ?? 0;
 
       insertQueryData({
         queryClient,
-        queryKey: boardKeys.list().queryKey,
-        newEntity,
-        sortFn: (a: TBoard, b: TBoard) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        queryKey: cardKeys.list(entity.listId).queryKey,
+        entity: { ...entity, commentCount },
+        sortFn,
       });
     },
+
     handleUpdate: payload => {
-      const updatedEntity = camelizeKeys(payload.new) as TBoard;
+      const entity = camelizeKeys(payload.new) as TCard;
 
       updateQueryData({
         queryClient,
-        queryKey: boardKeys.list().queryKey,
-        updatedEntity,
-        sortFn: (a: TBoard, b: TBoard) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        queryKey: cardKeys.list(entity.listId).queryKey,
+        entity,
+        sortFn,
       });
     },
+
     handleDelete: payload => {
-      const entityId = payload.old.id;
+      const entity = camelizeKeys(payload.old) as TCard;
 
       deleteQueryData({
         queryClient,
-        queryKey: boardKeys.list().queryKey,
-        entityId,
+        queryKey: cardKeys.list(entity.listId).queryKey,
+        entityId: entity.id,
       });
     },
   };

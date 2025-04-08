@@ -6,7 +6,6 @@ import { TablesUpdate } from '@/types/database-types';
 import { redirect } from 'next/navigation';
 import { createClient } from '../supabase/server';
 import { getAuthUser } from '../supabase/utils';
-import { testAction } from '../workspace/actions';
 
 export async function createBoard(
   workspaceIdParam: string | undefined,
@@ -97,8 +96,6 @@ export async function createStarredBoard(boardId: string) {
 
   if (error) throw error;
 
-  testAction();
-
   return data;
 }
 
@@ -111,8 +108,6 @@ export async function deleteStarredBoard(boardId: string) {
     .delete()
     .eq('user_id', user.id)
     .eq('board_id', boardId);
-
-  testAction();
 
   if (error) throw error;
 }

@@ -1,3 +1,5 @@
+import { createQueryKeys } from '@lukemorales/query-key-factory';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { getClient } from '../supabase/utils';
 
 async function fetchLists(boardId: string) {
@@ -11,6 +13,7 @@ async function fetchLists(boardId: string) {
       name,
       rank,
       boardId: board_id,
+      workspaceId: workspace_id,
       createdAt: created_at
     `,
     )
@@ -20,4 +23,15 @@ async function fetchLists(boardId: string) {
   if (error) throw error;
 
   return data;
+}
+
+export const listKeys = createQueryKeys('lists', {
+  list: (boardId: string) => ({
+    queryKey: ['lists', boardId],
+    queryFn: async () => fetchLists(boardId),
+  }),
+});
+
+export function useLists(boardId: string) {
+  return useSuspenseQuery(listKeys.list(boardId));
 }

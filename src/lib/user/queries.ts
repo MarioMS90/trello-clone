@@ -24,13 +24,44 @@ export async function fetchCurrentUser() {
   return data;
 }
 
+// Needs implementation
+export async function fetchUsers(workspaceId: string) {
+  const supabase = await getClient();
+  const user = await getAuthUser();
+
+  const { data, error } = await supabase
+    .from('users')
+    .select(
+      `
+      id, 
+      name, 
+      email,
+      createdAt: created_at
+    `,
+    )
+    .eq('id', user.id)
+    .single();
+
+  if (error) throw error;
+
+  return data;
+}
+
 export const userKeys = createQueryKeys('users', {
   current: () => ({
     queryKey: ['users'],
     queryFn: async () => fetchCurrentUser(),
   }),
+  list: (workspaceId: string) => ({
+    queryKey: ['users', workspaceId],
+    queryFn: async () => fetchUsers(workspaceId),
+  }),
 });
 
 export function useCurrentUser() {
   return useSuspenseQuery(userKeys.current());
+}
+
+export function useWorkspaceUsers(workspaceId: string) {
+  return useSuspenseQuery(userKeys.list(workspaceId));
 }

@@ -5,7 +5,7 @@ import { Suspense } from 'react';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import getQueryClient from '@/lib/utils/react-query/get-query-client';
 import { userKeys } from '@/lib/user/queries';
-import { userWorkspaceKeys, workspaceKeys } from '@/lib/workspace/queries';
+import { workspaceKeys } from '@/lib/workspace/queries';
 import { boardKeys, starredBoardKeys } from '@/lib/board/queries';
 import { RealTimeProvider } from '@/providers/real-time-provider';
 
@@ -20,7 +20,6 @@ export default async function DashboardLayout({
 
   queryClient.prefetchQuery(userKeys.current());
   queryClient.prefetchQuery(workspaceKeys.list());
-  queryClient.prefetchQuery(userWorkspaceKeys.list());
   queryClient.prefetchQuery(boardKeys.list());
   queryClient.prefetchQuery(starredBoardKeys.list());
 

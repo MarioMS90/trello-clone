@@ -9,9 +9,9 @@ import Loading from '@/components/ui/loading';
 import NoSearchResultsIcon from '@/components/icons/no-search-results';
 import SearchIcon from '@/components/icons/search';
 import WorkspaceBadge from '@/components/ui/workspace-logo';
-import { globalSearchAction } from '@/lib/workspace/actions';
 import { TSearchResult, TSearchResults } from '@/types/search-types';
 import { useClickAway, useDebounce } from '@uidotdev/usehooks';
+import { getClient } from '@/lib/supabase/utils';
 
 export default function HeaderSearch({ placeholder }: { placeholder: string }) {
   const [isInputFocused, setIsInputFocused] = useState(false);
@@ -44,15 +44,21 @@ export default function HeaderSearch({ placeholder }: { placeholder: string }) {
     const performSearch = async () => {
       if (!debouncedSearchTerm) {
         resetSearch();
+
         return;
       }
 
-      const { data: results, error } = await globalSearchAction(debouncedSearchTerm);
+      const supabase = await getClient();
+      const { data: results, error } = await supabase.rpc('search_workspaces_boards_cards', {
+        search_term: debouncedSearchTerm,
+      });
+
       if (error) {
         setSearchResults({ term: debouncedSearchTerm, results: [] });
         setIsLoading(false);
         return;
       }
+
       setSearchResults({ term: debouncedSearchTerm, results });
       setIsLoading(false);
     };
