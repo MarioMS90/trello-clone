@@ -29,12 +29,10 @@ export default function HeaderMenu() {
     </ul>
   );
 
-  // const starredBoards = starredBoardIds.map(boardId => {
-  //   const index = boards.findIndex(board => board.id === boardId);
-  //   return boards[index];
-  // });
-
-  const starredBoards = boards;
+  const starredBoards = starredBoardIds.map(boardId => {
+    const index = boards.findIndex(board => board.id === boardId);
+    return boards[index];
+  });
   const starredBoardsContent =
     starredBoards.length > 0 ? (
       <ul className="space-y-1">
