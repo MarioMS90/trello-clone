@@ -73,6 +73,8 @@ export function deleteQueryData<T extends TEntity<TEntityName>>({
       return undefined;
     }
 
-    return oldEntities.filter((entity: T) => entity.id !== entityId);
+    const filtered = oldEntities.filter((entity: T) => entity.id !== entityId);
+
+    return filtered;
   });
 }

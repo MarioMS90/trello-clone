@@ -7,7 +7,7 @@ import { deleteEntity, updateEntity } from '@/lib/supabase/utils';
 import { useOptimisticList } from '@/hooks/useOptimisticList';
 import { cn } from '@/lib/utils/utils';
 import EditableText from '@/components/ui/editable-text';
-import StarToggleBoard from '../board/star-toggle-board';
+import { StarToggleBoard } from '../board/star-toggle-board';
 import DotsIcon from '../../icons/dots';
 import Popover from '../../ui/popover';
 

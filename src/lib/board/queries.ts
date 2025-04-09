@@ -1,6 +1,5 @@
 import { createQueryKeys } from '@lukemorales/query-key-factory';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { TBoard } from '@/types/db';
 import { getAuthUser, getClient } from '../supabase/utils';
 
 async function fetchBoards() {

@@ -36,7 +36,7 @@ export default function starredBoardCacheController(queryClient: QueryClient): C
       });
     },
     handleDelete: payload => {
-      const entity = camelizeKeys(payload.new) as TStarredBoard;
+      const entity = camelizeKeys(payload.old) as TStarredBoard;
 
       deleteQueryData({
         queryClient,

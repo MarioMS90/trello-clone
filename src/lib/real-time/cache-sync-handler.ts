@@ -15,7 +15,10 @@ import cardCacheController from './cache-controllers/card-cache-controller';
 import commentCacheController from './cache-controllers/comment-cache-controller';
 import userWorkspaceCacheController from './cache-controllers/user-workspace-cache-controller';
 
-function getCacheController(payload: RealtimePostgresChangesPayload<Tables<TEntityName>>) {
+function getCacheController(
+  queryClient: QueryClient,
+  payload: RealtimePostgresChangesPayload<Tables<TEntityName>>,
+) {
   const controllers: Partial<Record<string, (queryClient: QueryClient) => CacheController>> = {
     users: userCacheController,
     workspaces: workspaceCacheController,
@@ -27,28 +30,33 @@ function getCacheController(payload: RealtimePostgresChangesPayload<Tables<TEnti
     comments: commentCacheController,
   };
 
-  return controllers[payload.table] || null;
+  const controller = controllers[payload.table];
+  if (controller) {
+    return controller(queryClient);
+  }
+
+  return undefined;
 }
 
 export default function cacheSyncHandler(
   queryClient: QueryClient,
   payload: RealtimePostgresChangesPayload<Tables<TEntityName>>,
 ) {
-  const cacheController = getCacheController(payload);
+  const cacheController = getCacheController(queryClient, payload);
 
   if (!cacheController) {
     return;
   }
 
   if (payload.eventType === REALTIME_POSTGRES_CHANGES_LISTEN_EVENT.INSERT) {
-    cacheController(queryClient).handleInsert(payload);
+    cacheController.handleInsert(payload);
   }
 
   if (payload.eventType === REALTIME_POSTGRES_CHANGES_LISTEN_EVENT.UPDATE) {
-    cacheController(queryClient).handleUpdate(payload);
+    cacheController.handleUpdate(payload);
   }
 
   if (payload.eventType === REALTIME_POSTGRES_CHANGES_LISTEN_EVENT.DELETE) {
-    cacheController(queryClient).handleDelete(payload);
+    cacheController.handleDelete(payload);
   }
 }
