@@ -80,7 +80,6 @@ export default function Workspaces() {
                   }}
                   editOnClick>
                   <h3>{name}</h3>
-                  <h2>{isMutating ? 'mutating' : 'no'}</h2>
                 </EditableText>
               </div>
               <ul className="flex items-center gap-4 text-sm">
