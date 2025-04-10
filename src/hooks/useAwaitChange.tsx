@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 
-export default function useWaitForChange<T>(state: T) {
+export default function useAwaitChange<T>(state: T) {
   const resolveRef = useRef<((value: null) => void) | null>(null);
 
   useEffect(() => {

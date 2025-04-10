@@ -13,20 +13,23 @@ export default function HeaderMenu() {
   const { data: workspaces } = useWorkspaces();
   const { data: starredBoards } = useStarredBoards();
 
-  const workspacesContent = (
-    <ul className="space-y-1">
-      {workspaces.map(({ id, name }) => (
-        <li key={id}>
-          <Link href={`/workspaces/${id}`}>
-            <div className="flex items-center gap-2 rounded-md px-2 py-1.5 hover:bg-gray-200">
-              <WorkspaceBadge className="size-10" workspaceName={name} />
-              <h3 className="font-medium">{name}</h3>
-            </div>
-          </Link>
-        </li>
-      ))}
-    </ul>
-  );
+  const workspacesContent =
+    starredBoards.length > 0 ? (
+      <ul className="space-y-1">
+        {workspaces.map(({ id, name }) => (
+          <li key={id}>
+            <Link href={`/workspaces/${id}`}>
+              <div className="flex items-center gap-2 rounded-md px-2 py-1.5 hover:bg-gray-200">
+                <WorkspaceBadge className="size-10" workspaceName={name} />
+                <h3 className="font-medium">{name}</h3>
+              </div>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p className="text-center">No workspaces</p>
+    );
 
   const starredBoardsContent =
     starredBoards.length > 0 ? (
