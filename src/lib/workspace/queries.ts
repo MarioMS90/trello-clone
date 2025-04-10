@@ -1,5 +1,6 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createQueryKeys } from '@lukemorales/query-key-factory';
+import { TWorkspace } from '@/types/db';
 import { getAuthUser, getClient } from '../supabase/utils';
 
 async function fetchWorkspaces() {
@@ -61,9 +62,14 @@ export const userWorkspaceKeys = createQueryKeys('user_workspaces', {
   }),
 });
 
-export function useWorkspaces() {
-  return useSuspenseQuery(workspaceKeys.list());
-}
+export const useWorkspaces = <TData = TWorkspace[]>(select?: (data: TWorkspace[]) => TData) =>
+  useSuspenseQuery({ ...workspaceKeys.list(), select });
+
+export const useWorkspace = (workspaceId: string) =>
+  useWorkspaces(workspaces => {
+    const index = workspaces.findIndex(workspace => workspace.id === workspaceId);
+    return workspaces[index];
+  });
 
 export function useUserWorkspaces() {
   return useSuspenseQuery(userWorkspaceKeys.list());

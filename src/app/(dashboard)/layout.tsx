@@ -31,12 +31,11 @@ export default async function DashboardLayout({
             <Suspense fallback={<HeaderSkeleton />}>
               <Header />
             </Suspense>
-            {children}
 
-            {/* <main className="z-0 flex grow">
-          {sidebar} Pending
-          <div className="grow bg-main-background text-white">{children}</div>
-        </main> */}
+            <main className="z-0 flex grow">
+              {sidebar}
+              <div className="grow bg-main-background text-white">{children}</div>
+            </main>
           </div>
         </RealTimeProvider>
       </HydrationBoundary>

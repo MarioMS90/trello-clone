@@ -1,26 +1,32 @@
 'use client';
 
-import { TBoard } from '@/types/db';
-import { toggleStarredBoard } from '@/lib/board/actions';
+import { createStarredBoard, deleteStarredBoard } from '@/lib/board/actions';
 import { useMutation } from '@tanstack/react-query';
 import { memo } from 'react';
 import useWaitForChange from '@/hooks/useMutationResolver';
+import { useBoard, useStarredBoard } from '@/lib/board/queries';
 import StarIcon from '../../icons/star';
 import StarFillIcon from '../../icons/star-fill';
 
 export const StarToggleBoard = memo(function StarToggleBoard({
   className = '',
-  board,
-  starred,
+  boardId,
 }: {
   className?: string;
-  board: TBoard;
-  starred: boolean;
+  boardId: string;
 }) {
-  const waitForChange = useWaitForChange(starred);
+  const { data: board } = useBoard(boardId);
+  const { data: starredBoard } = useStarredBoard(board.id);
+
+  const waitForChange = useWaitForChange(starredBoard);
   const mutation = useMutation({
     mutationFn: async (isStarred: boolean) => {
-      toggleStarredBoard(board.id, isStarred);
+      if (isStarred) {
+        deleteStarredBoard(board.id);
+      } else {
+        createStarredBoard(board.id);
+      }
+
       await waitForChange();
     },
     onError: () => {
@@ -28,7 +34,7 @@ export const StarToggleBoard = memo(function StarToggleBoard({
     },
   });
 
-  const isStarred = mutation.isPending ? !mutation.variables : starred;
+  const isStarred = mutation.isPending ? !mutation.variables : !!starredBoard;
 
   return (
     <>
@@ -49,7 +55,6 @@ export const StarToggleBoard = memo(function StarToggleBoard({
           <StarIcon className="hover:scale-125" height={16} />
         )}
       </button>
-      {mutation.isPending && 'mutation pending'}
     </>
   );
 });

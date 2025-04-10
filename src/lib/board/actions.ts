@@ -111,11 +111,3 @@ export async function deleteStarredBoard(boardId: string) {
 
   if (error) throw error;
 }
-
-export async function toggleStarredBoard(boardId: string, isStarred: boolean) {
-  if (isStarred) {
-    return deleteStarredBoard(boardId);
-  }
-
-  return createStarredBoard(boardId);
-}

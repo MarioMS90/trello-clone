@@ -1,5 +1,6 @@
 import { createQueryKeys } from '@lukemorales/query-key-factory';
 import { useSuspenseQuery } from '@tanstack/react-query';
+import { TBoard, TStarredBoard } from '@/types/db';
 import { getAuthUser, getClient } from '../supabase/utils';
 
 async function fetchBoards() {
@@ -38,6 +39,7 @@ async function fetchStarredBoards() {
       id,
       userId: user_id,
       boardId: board_id,
+      workspaceId: workspace_id,
       createdAt: created_at
     `,
     )
@@ -63,13 +65,38 @@ export const starredBoardKeys = createQueryKeys('starred_boards', {
   }),
 });
 
-export function useBoards() {
-  return useSuspenseQuery(boardKeys.list());
-}
+export const useBoards = <TData = TBoard[]>(select?: (data: TBoard[]) => TData) =>
+  useSuspenseQuery({
+    ...boardKeys.list(),
+    select,
+  });
+
+export const useBoard = (boardId: string) =>
+  useBoards(boards => {
+    const index = boards.findIndex(board => board.id === boardId);
+    return boards[index];
+  });
+
+export const useStarredBoardsQuery = <TData = TStarredBoard[]>(
+  select?: (data: TStarredBoard[]) => TData,
+) =>
+  useSuspenseQuery({
+    ...starredBoardKeys.list(),
+    select,
+  });
 
 export function useStarredBoards() {
-  return useSuspenseQuery({
-    ...starredBoardKeys.list(),
-    select: data => data.map(({ boardId }) => boardId),
-  });
+  const { data: boards } = useBoards();
+  return useStarredBoardsQuery(starredBoards =>
+    starredBoards.map(starred => {
+      const index = boards.findIndex(board => board.id === starred.boardId);
+      return boards[index];
+    }),
+  );
+}
+
+export function useStarredBoard(boardId: string) {
+  return useStarredBoardsQuery(starredBoards =>
+    starredBoards.find(starred => starred.boardId === boardId),
+  );
 }

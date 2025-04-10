@@ -1,13 +1,13 @@
-import { Workspaces } from '@/components/dashboard/workspace/workspaces';
 import { Suspense } from 'react';
 import { BoardsSkeleton } from '@/components/ui/skeletons';
 import { StarredBoards } from '@/components/dashboard/board/boards';
 import { CreateWorkspace } from '@/components/dashboard/workspace/create-workspace';
+import Workspaces from '@/components/dashboard/workspace/workspaces';
 
 export default function WorkspacesPage() {
   return (
     <div className="main-container">
-      {/* <div className="space-y-12">
+      <div className="space-y-12">
         <Suspense fallback={<BoardsSkeleton />}>
           <StarredBoards />
         </Suspense>
@@ -21,7 +21,7 @@ export default function WorkspacesPage() {
       </div>
       <div className="inline-block">
         <CreateWorkspace />
-      </div> */}
+      </div>
     </div>
   );
 }

@@ -7,12 +7,11 @@ import WorkspaceBadge from '@/components/ui/workspace-logo';
 import { CreateBoard } from '@/components/dashboard/board/create-board';
 import { StarToggleBoard } from '@/components/dashboard/board/star-toggle-board';
 import { useWorkspaces } from '@/lib/workspace/queries';
-import { useBoards, useStarredBoards } from '@/lib/board/queries';
+import { useStarredBoards } from '@/lib/board/queries';
 
 export default function HeaderMenu() {
   const { data: workspaces } = useWorkspaces();
-  const { data: boards } = useBoards();
-  const { data: starredBoardIds } = useStarredBoards();
+  const { data: starredBoards } = useStarredBoards();
 
   const workspacesContent = (
     <ul className="space-y-1">
@@ -29,10 +28,6 @@ export default function HeaderMenu() {
     </ul>
   );
 
-  const starredBoards = starredBoardIds.map(boardId => {
-    const index = boards.findIndex(board => board.id === boardId);
-    return boards[index];
-  });
   const starredBoardsContent =
     starredBoards.length > 0 ? (
       <ul className="space-y-1">
@@ -44,11 +39,7 @@ export default function HeaderMenu() {
                 {workspaces.find(w => w.id === board.workspaceId)?.name}
               </p>
             </Link>
-            <StarToggleBoard
-              className="[&]:right-1.5"
-              board={board}
-              starred={starredBoardIds.some(boardId => boardId === board.id)}
-            />
+            <StarToggleBoard className="[&]:right-1.5" boardId={board.id} />
           </li>
         ))}
       </ul>
@@ -69,7 +60,6 @@ export default function HeaderMenu() {
       {workspacesContent}
     </Popover>,
     <Popover
-      open
       key="Starred"
       triggerClassName="font-medium mr-3"
       triggerContent={

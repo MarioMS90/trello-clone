@@ -1,31 +1,31 @@
 'use server';
 
-import { TWorkspace } from '@/types/db';
-import { fetchWorkspaces } from '../workspace/queries';
+// import { TWorkspace } from '@/types/db';
+// import { fetchWorkspaces } from '../workspace/queries';
 
-export async function getWorkspace(
-  workspaceId: string | undefined,
-): Promise<TWorkspace | undefined> {
-  const workspaces = await fetchWorkspaces();
+// export async function getWorkspace(
+//   workspaceId: string | undefined,
+// ): Promise<TWorkspace | undefined> {
+//   const workspaces = await fetchWorkspaces();
 
-  const workspace = workspaces.find(_workspace => _workspace.id === workspaceId);
+//   const workspace = workspaces.find(_workspace => _workspace.id === workspaceId);
 
-  return workspace;
-}
+//   return workspace;
+// }
 
-export async function getWorkspaceIdFromBoard(boardId: string): Promise<string | undefined> {
-  const workspaces = await fetchWorkspaces();
+// export async function getWorkspaceIdFromBoard(boardId: string): Promise<string | undefined> {
+//   const workspaces = await fetchWorkspaces();
 
-  const boards = workspaces.flatMap(workspace => workspace.boards);
-  const board = boards.find(_board => _board.id === boardId);
+//   const boards = workspaces.flatMap(workspace => workspace.boards);
+//   const board = boards.find(_board => _board.id === boardId);
 
-  return board?.workspace_id;
-}
+//   return board?.workspace_id;
+// }
 
-export async function getStarredBoards(workspaces: TWorkspace[]) {
-  return workspaces.flatMap(workspace =>
-    workspace.boards
-      .filter(board => board.starred)
-      .map(board => ({ ...board, workspaceName: workspace.name })),
-  );
-}
+// export async function getStarredBoards(workspaces: TWorkspace[]) {
+//   return workspaces.flatMap(workspace =>
+//     workspace.boards
+//       .filter(board => board.starred)
+//       .map(board => ({ ...board, workspaceName: workspace.name })),
+//   );
+// }

@@ -1,9 +1,10 @@
+'use client';
+
 import { TBoard } from '@/types/db';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getWorkspace, getStarredBoards } from '@/lib/utils/server-utils';
 import { StarToggleBoard } from '@/components/dashboard/board/star-toggle-board';
-import { starredBoards } from '@/dev/placeholder-data';
+import { useStarredBoards } from '@/lib/board/queries';
 import StarIcon from '../../icons/star';
 import { CreateBoard } from './create-board';
 
@@ -24,6 +25,25 @@ export async function Boards({ workspaceId }: { workspaceId: string }) {
         />
       }
     />
+  );
+}
+
+export function StarredBoards() {
+  const { data: starredBoards } = useStarredBoards();
+
+  if (!starredBoards.length) {
+    return null;
+  }
+
+  return (
+    <section>
+      <div className="flex items-center gap-3 font-bold">
+        <StarIcon height={20} />
+        <h2>Starred boards </h2>
+      </div>
+
+      <BoardList boards={starredBoards} />
+    </section>
   );
 }
 
@@ -57,29 +77,10 @@ export function BoardList({
               {board.name}
             </Link>
 
-            <StarToggleBoard className="bottom-3 top-[unset] transform-none" board={board} />
+            <StarToggleBoard className="bottom-3 top-[unset] transform-none" boardId={board.id} />
           </li>
         ))}
       {extraItem && <li>{extraItem}</li>}
     </ul>
-  );
-}
-
-export async function StarredBoards() {
-  const starredBoards = await getStarredBoards();
-
-  if (!starredBoards.length) {
-    return null;
-  }
-
-  return (
-    <section>
-      <div className="flex items-center gap-3 font-bold">
-        <StarIcon height={20} />
-        <h2>Starred boards </h2>
-      </div>
-
-      <BoardList boards={starredBoards} />
-    </section>
   );
 }
