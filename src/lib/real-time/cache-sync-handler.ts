@@ -43,7 +43,6 @@ export default function cacheSyncHandler(
   payload: RealtimePostgresChangesPayload<Tables<TEntityName>>,
 ) {
   const cacheController = getCacheController(queryClient, payload);
-
   if (!cacheController) {
     return;
   }

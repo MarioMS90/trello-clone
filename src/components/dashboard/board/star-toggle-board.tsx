@@ -1,10 +1,9 @@
 'use client';
 
 import { createStarredBoard, deleteStarredBoard } from '@/lib/board/actions';
-import { useMutation } from '@tanstack/react-query';
 import { memo } from 'react';
-import useAwaitChange from '@/hooks/useAwaitChange';
 import { useBoard, useStarredBoard } from '@/lib/board/queries';
+import useOptimisticMutation from '@/hooks/useOptimisticMutation';
 import StarIcon from '../../icons/star';
 import StarFillIcon from '../../icons/star-fill';
 
@@ -19,23 +18,22 @@ export const StarToggleBoard = memo(function StarToggleBoard({
   const { data: starredBoard } = useStarredBoard(board.id);
   const starred = !!starredBoard;
 
-  const waitForChange = useAwaitChange(starredBoard);
-  const { mutate, isPending, variables } = useMutation({
-    mutationFn: async (isStarred: boolean) => {
-      if (isStarred) {
-        deleteStarredBoard(board.id);
-      } else {
-        createStarredBoard(board.id);
-      }
-
-      await waitForChange();
-    },
-    onError: () => {
-      alert('An error occurred while updating the element');
+  const [{ mutate }, optimisticStarred] = useOptimisticMutation({
+    state: starred,
+    updater: (_, variables) => variables,
+    options: {
+      mutationFn: async (create: boolean) => {
+        if (create) {
+          await createStarredBoard(board.id);
+        } else {
+          await deleteStarredBoard(board.id);
+        }
+      },
+      onError: () => {
+        alert('An error occurred while updating the element');
+      },
     },
   });
-
-  const optimisticStarred = isPending ? !variables : starred;
 
   return (
     <>
@@ -43,7 +41,7 @@ export const StarToggleBoard = memo(function StarToggleBoard({
         className={`center-y absolute right-3 ${className}`}
         type="button"
         onClick={() => {
-          mutate(optimisticStarred);
+          mutate(!optimisticStarred);
         }}
         title={
           optimisticStarred
