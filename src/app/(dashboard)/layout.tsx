@@ -8,13 +8,12 @@ import { userKeys } from '@/lib/user/queries';
 import { workspaceKeys } from '@/lib/workspace/queries';
 import { boardKeys, starredBoardKeys } from '@/lib/board/queries';
 import { RealTimeProvider } from '@/providers/real-time-provider';
+import { Sidebar } from '@/components/dashboard/sidebar/sidebar';
 
 export default async function DashboardLayout({
   children,
-  sidebar,
 }: Readonly<{
   children: React.ReactNode;
-  sidebar: React.ReactNode;
 }>) {
   const queryClient = getQueryClient();
 
@@ -33,7 +32,7 @@ export default async function DashboardLayout({
             </Suspense>
 
             <main className="z-0 flex grow">
-              {sidebar}
+              <Sidebar />
               <div className="grow bg-main-background text-white">{children}</div>
             </main>
           </div>

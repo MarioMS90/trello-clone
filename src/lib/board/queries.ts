@@ -71,7 +71,10 @@ export const useBoards = <TData = TBoard[]>(select?: (data: TBoard[]) => TData) 
     select,
   });
 
-export const useBoard = (boardId: string) =>
+export const useBoardsByWorkspaceId = (workspaceId: string | null) =>
+  useBoards(boards => boards.filter(board => board.workspaceId === workspaceId));
+
+export const useBoard = (boardId: string | null) =>
   useBoards(boards => {
     const index = boards.findIndex(board => board.id === boardId);
     return boards[index];
@@ -97,6 +100,6 @@ export function useStarredBoards() {
 
 export function useStarredBoard(boardId: string) {
   return useStarredBoardsQuery(starredBoards =>
-    starredBoards.find(starred => starred.boardId === boardId),
+    starredBoards.some(starred => starred.boardId === boardId),
   );
 }

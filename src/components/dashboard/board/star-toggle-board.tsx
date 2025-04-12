@@ -15,11 +15,10 @@ export const StarToggleBoard = memo(function StarToggleBoard({
   boardId: string;
 }) {
   const { data: board } = useBoard(boardId);
-  const { data: starredBoard } = useStarredBoard(board.id);
-  const starred = !!starredBoard;
+  const { data: isStarred } = useStarredBoard(board.id);
 
   const [{ mutate }, optimisticStarred] = useOptimisticMutation({
-    state: starred,
+    state: isStarred,
     updater: (_, variables) => variables,
     options: {
       mutationFn: async (create: boolean) => {

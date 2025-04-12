@@ -12,6 +12,10 @@ import { TWorkspace } from '@/types/db';
 import { cn } from '@/lib/utils/utils';
 import { CreateBoard } from '../board/create-board';
 
+export function Sidebar() {
+  return <MainSidebar />;
+}
+
 export function MainSidebar() {
   return (
     <nav

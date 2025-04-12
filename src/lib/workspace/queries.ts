@@ -65,7 +65,7 @@ export const userWorkspaceKeys = createQueryKeys('user_workspaces', {
 export const useWorkspaces = <TData = TWorkspace[]>(select?: (data: TWorkspace[]) => TData) =>
   useSuspenseQuery({ ...workspaceKeys.list(), select });
 
-export const useWorkspace = (workspaceId: string) =>
+export const useWorkspace = (workspaceId: string | null) =>
   useWorkspaces(workspaces => {
     const index = workspaces.findIndex(workspace => workspace.id === workspaceId);
     return workspaces[index];

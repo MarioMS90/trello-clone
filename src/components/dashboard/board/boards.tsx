@@ -4,20 +4,22 @@ import { TBoard } from '@/types/db';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { StarToggleBoard } from '@/components/dashboard/board/star-toggle-board';
-import { useStarredBoards } from '@/lib/board/queries';
+import { useBoardsByWorkspaceId, useStarredBoards } from '@/lib/board/queries';
+import { useWorkspaceId } from '@/hooks/useWorkspaceId';
 import StarIcon from '../../icons/star';
 import { CreateBoard } from './create-board';
 
-export async function Boards({ workspaceId }: { workspaceId: string }) {
-  const workspace = await getWorkspace(workspaceId);
+export function Boards() {
+  const workspaceId = useWorkspaceId();
+  const { data: boards } = useBoardsByWorkspaceId(workspaceId);
 
-  if (!workspace) {
+  if (!workspaceId) {
     notFound();
   }
 
   return (
     <BoardList
-      boards={workspace.boards}
+      boards={boards}
       extraItem={
         <CreateBoard
           popoverClassName="[&]:center-y [&]:left-[calc(100%+10px)]"
@@ -39,7 +41,7 @@ export function StarredBoards() {
     <section>
       <div className="flex items-center gap-3 font-bold">
         <StarIcon height={20} />
-        <h2>Starred boards </h2>
+        <h2>Starred boards</h2>
       </div>
 
       <BoardList boards={starredBoards} />
