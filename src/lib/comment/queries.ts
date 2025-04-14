@@ -17,8 +17,7 @@ async function fetchComments(cardId: string) {
       createdAt: created_at
     `,
     )
-    .eq('card_id', cardId)
-    .order('created_at');
+    .eq('card_id', cardId);
 
   if (error) throw error;
 

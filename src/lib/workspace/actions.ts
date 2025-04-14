@@ -13,7 +13,6 @@ export async function createWorkspace(_: TActionState, formData: FormData): Prom
   const validatedFields = CreateWorkspaceSchema.safeParse({
     name: formData.get('name'),
   });
-
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
@@ -34,7 +33,6 @@ export async function createWorkspace(_: TActionState, formData: FormData): Prom
 
 export async function updateWorkspace(workspaceData: TablesUpdate<'workspaces'> & { id: string }) {
   const validatedFields = UpdateWorkspaceSchema.safeParse(workspaceData);
-
   if (!validatedFields.success) {
     throw new Error('Invalid workspace data');
   }

@@ -17,7 +17,7 @@ import useOptimisticMutation from '@/hooks/useOptimisticMutation';
 import { CreateBoard } from '../board/create-board';
 
 export default function Workspaces() {
-  const { data: workspaces } = useWorkspaces();
+  const { data: initialWorkspaces } = useWorkspaces();
   const { data: boards } = useBoards();
   const inputRef = useRef<HTMLInputElement>(null);
   const [editingWorkspaceId, setEditingWorkspaceId] = useState<string | null>(null);
@@ -28,9 +28,9 @@ export default function Workspaces() {
     }
   }, [editingWorkspaceId]);
 
-  const [{ mutate: updateWorkspaceAction }, optimisticWorkspaces] = useOptimisticMutation({
-    state: workspaces,
-    updater: (current, variables) =>
+  const [{ mutate: updateWorkspaceAction }, workspaces] = useOptimisticMutation({
+    state: initialWorkspaces,
+    optimisticUpdater: (current, variables) =>
       current.map(workspace =>
         workspace.id === variables.id ? { ...workspace, name: variables.name } : workspace,
       ),
@@ -58,7 +58,7 @@ export default function Workspaces() {
 
   return (
     <ul className={`mt-6 space-y-12 ${workspaces.length ? 'mb-16' : ''}`}>
-      {optimisticWorkspaces.map(({ id, name }) => (
+      {workspaces.map(({ id, name }) => (
         <li key={id}>
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-3">

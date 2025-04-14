@@ -11,9 +11,6 @@ import { CacheController } from '@/types/cache-types';
 import { cardKeys } from '@/lib/card/queries';
 
 export default function commentCacheController(queryClient: QueryClient): CacheController {
-  const sortFn = (a: TComment, b: TComment) =>
-    new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-
   return {
     handleInsert: payload => {
       const entity = camelizeKeys(payload.new) as TComment;
@@ -22,7 +19,6 @@ export default function commentCacheController(queryClient: QueryClient): CacheC
         queryClient,
         queryKey: commentKeys.list(entity.cardId).queryKey,
         entity,
-        sortFn,
       });
 
       // Update the card with the new comment
@@ -52,7 +48,6 @@ export default function commentCacheController(queryClient: QueryClient): CacheC
         queryClient,
         queryKey: commentKeys.list(entity.cardId).queryKey,
         entity,
-        sortFn,
       });
     },
 

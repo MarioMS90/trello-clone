@@ -2,7 +2,7 @@ import { createQueryKeys } from '@lukemorales/query-key-factory';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { getClient } from '../supabase/utils';
 
-async function fetchCards(listId: string) {
+async function fetchCards(boardId: string) {
   const supabase = await getClient();
 
   const { data, error } = await supabase
@@ -15,26 +15,29 @@ async function fetchCards(listId: string) {
       rank,
       listId: list_id,
       workspaceId: workspace_id,
-      comment(
+      comments(
         count
-      )
+      ),
+      lists!inner()
     `,
     )
-    .eq('list_id', listId)
-    .order('rank');
+    .eq('lists.board_id', boardId);
 
   if (error) throw error;
 
-  return data?.map(card => ({ ...card, commentCount: card.comment[0].count, comment: undefined }));
+  return data?.map(card => ({ ...card, commentCount: card.comments[0].count, comment: undefined }));
 }
 
 export const cardKeys = createQueryKeys('cards', {
-  list: (listId: string) => ({
-    queryKey: ['cards', listId],
-    queryFn: async () => fetchCards(listId),
+  list: (boardId: string) => ({
+    queryKey: ['cards', boardId],
+    queryFn: async () => fetchCards(boardId),
   }),
 });
 
-export function useCards(listId: string) {
-  return useSuspenseQuery(cardKeys.list(listId));
+export function useGroupedCardsByList(boardId: string) {
+  return useSuspenseQuery({
+    ...cardKeys.list(boardId),
+    select: cards => Object.groupBy(cards, ({ listId }) => listId),
+  });
 }

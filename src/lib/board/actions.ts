@@ -1,11 +1,11 @@
 'use server';
 
-import { TActionState, initialActionState, TBoard } from '@/types/db';
+import { TActionState, initialActionState } from '@/types/db';
 import { CreateBoardSchema, UpdateBoardSchema } from '@/schemas/workspace-schemas';
 import { TablesUpdate } from '@/types/database-types';
 import { redirect } from 'next/navigation';
 import { createClient } from '../supabase/server';
-import { getAuthUser } from '../supabase/utils';
+import { deleteEntity, getAuthUser, updateEntity } from '../supabase/utils';
 
 export async function createBoard(
   workspaceIdParam: string | undefined,
@@ -21,7 +21,6 @@ export async function createBoard(
     name: formData.get('name'),
     workspaceId: workspaceIdParam ?? formData.get('workspace-id'),
   });
-
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
@@ -45,43 +44,17 @@ export async function createBoard(
   return { success: true };
 }
 
-export async function updateBoard(
-  boardData: TablesUpdate<'boards'> & { id: string },
-): Promise<TActionState<TBoard>> {
-  const supabase = await createClient();
-
+export async function updateBoard(boardData: TablesUpdate<'boards'> & { id: string }) {
   const validatedFields = UpdateBoardSchema.safeParse(boardData);
-
   if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Failed to update board.',
-    };
+    throw new Error('Invalid board data');
   }
 
-  const { data, error } = await supabase
-    .from('boards')
-    .update(validatedFields.data)
-    .eq('id', boardData.id)
-    .select(
-      `
-      id,
-      name,
-      workspaceId: workspace_id,
-      workspaces!inner(
-        user_workspaces!inner()
-      )
-    `,
-    )
-    .single();
+  return updateEntity({ tableName: 'boards', entityData: boardData });
+}
 
-  if (error) {
-    throw error;
-  }
-
-  return {
-    data,
-  };
+export async function deleteBoard(boardId: string, redirectUrl?: string) {
+  return deleteEntity({ tableName: 'boards', entityId: boardId, redirectUrl });
 }
 
 export async function createStarredBoard(boardId: string) {

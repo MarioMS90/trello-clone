@@ -10,10 +10,15 @@ import SidebarBoards from '@/components/dashboard/sidebar/sidebar-boards';
 import { useState } from 'react';
 import { TWorkspace } from '@/types/db';
 import { cn } from '@/lib/utils/utils';
+import { useWorkspaceId } from '@/hooks/useWorkspaceId';
+import { useWorkspace } from '@/lib/workspace/queries';
 import { CreateBoard } from '../board/create-board';
 
 export function Sidebar() {
-  return <MainSidebar />;
+  const workspaceId = useWorkspaceId();
+  const { data: workspace } = useWorkspace(workspaceId);
+
+  return workspace ? <WorkspaceSidebar workspace={workspace} /> : <MainSidebar />;
 }
 
 export function MainSidebar() {
@@ -39,13 +44,7 @@ export function MainSidebar() {
   );
 }
 
-export function WorkspaceSidebar({
-  workspace,
-  boardId,
-}: {
-  workspace: TWorkspace;
-  boardId?: string;
-}) {
+export function WorkspaceSidebar({ workspace }: { workspace: TWorkspace }) {
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
 
   return (
@@ -92,7 +91,7 @@ export function WorkspaceSidebar({
           </div>
         </div>
         <div className="text-sm">
-          <SidebarLinks workspace={workspace} />
+          <SidebarLinks workspaceId={workspace.id} />
           <div className="flex items-center justify-between pl-4 pr-2.5">
             <h3 className="mb-3 mt-4 font-bold">Your boards</h3>
             <CreateBoard
@@ -101,11 +100,7 @@ export function WorkspaceSidebar({
               buttonText={<PlusIcon height={16} />}
             />
           </div>
-          <SidebarBoards
-            boards={workspace.boards}
-            currentWorkspaceId={workspace.id}
-            currentBoardId={boardId}
-          />
+          <SidebarBoards workspaceId={workspace.id} />
         </div>
       </div>
     </nav>

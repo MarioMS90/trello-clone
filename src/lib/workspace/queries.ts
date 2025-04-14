@@ -17,8 +17,7 @@ async function fetchWorkspaces() {
       user_workspaces!inner()
     `,
     )
-    .eq('user_workspaces.user_id', user.id)
-    .order('created_at');
+    .eq('user_workspaces.user_id', user.id);
 
   if (error) throw error;
 
@@ -40,8 +39,7 @@ async function fetchUserWorkspaces() {
       createdAt: created_at
     `,
     )
-    .in('workspace_id', workspaceIds)
-    .order('created_at');
+    .in('workspace_id', workspaceIds);
 
   if (error) throw error;
 

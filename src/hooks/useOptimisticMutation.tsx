@@ -11,11 +11,11 @@ export default function useOptimisticMutation<
   TContext = unknown,
 >({
   state,
-  updater,
+  optimisticUpdater,
   options,
 }: {
   state: TState;
-  updater: (current: TState, variables: TVariables) => TState;
+  optimisticUpdater: (current: TState, variables: TVariables) => TState;
   options: UseMutationOptions<TData, TError, TVariables, TContext>;
 }) {
   const resolveRef = useRef<((value: null) => void) | null>(null);
@@ -43,7 +43,7 @@ export default function useOptimisticMutation<
     },
   });
 
-  const optimisticState = mutation.isPending ? updater(state, mutation.variables) : state;
+  const optimisticState = mutation.isPending ? optimisticUpdater(state, mutation.variables) : state;
 
   return [mutation, optimisticState] as const;
 }

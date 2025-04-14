@@ -12,7 +12,6 @@ import { CacheController } from '@/types/cache-types';
 export default function userCacheController(queryClient: QueryClient): CacheController {
   // Needs the actual workspace
   const { queryKey } = userKeys.list('');
-  const sortFn = (a: TUser, b: TUser) => a.name.localeCompare(b.name);
 
   return {
     handleInsert: payload => {
@@ -22,7 +21,6 @@ export default function userCacheController(queryClient: QueryClient): CacheCont
         queryClient,
         queryKey,
         entity,
-        sortFn,
       });
     },
 
@@ -33,7 +31,6 @@ export default function userCacheController(queryClient: QueryClient): CacheCont
         queryClient,
         queryKey,
         entity,
-        sortFn,
       });
     },
 

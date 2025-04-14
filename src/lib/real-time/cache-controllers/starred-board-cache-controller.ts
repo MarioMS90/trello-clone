@@ -11,8 +11,6 @@ import { CacheController } from '@/types/cache-types';
 
 export default function starredBoardCacheController(queryClient: QueryClient): CacheController {
   const { queryKey } = starredBoardKeys.list();
-  const sortFn = (a: TStarredBoard, b: TStarredBoard) =>
-    new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
 
   return {
     handleInsert: payload => {
@@ -22,7 +20,6 @@ export default function starredBoardCacheController(queryClient: QueryClient): C
         queryClient,
         queryKey,
         entity,
-        sortFn,
       });
     },
     handleUpdate: payload => {
@@ -32,7 +29,6 @@ export default function starredBoardCacheController(queryClient: QueryClient): C
         queryClient,
         queryKey,
         entity,
-        sortFn,
       });
     },
     handleDelete: payload => {

@@ -10,8 +10,6 @@ import { QueryClient } from '@tanstack/react-query';
 import { CacheController } from '@/types/cache-types';
 
 export default function listCacheController(queryClient: QueryClient): CacheController {
-  const sortFn = (a: TList, b: TList) => a.rank.localeCompare(b.rank);
-
   return {
     handleInsert: payload => {
       const entity = camelizeKeys(payload.new) as TList;
@@ -20,7 +18,6 @@ export default function listCacheController(queryClient: QueryClient): CacheCont
         queryClient,
         queryKey: listKeys.list(entity.boardId).queryKey,
         entity,
-        sortFn,
       });
     },
 
@@ -31,7 +28,6 @@ export default function listCacheController(queryClient: QueryClient): CacheCont
         queryClient,
         queryKey: listKeys.list(entity.boardId).queryKey,
         entity,
-        sortFn,
       });
     },
 

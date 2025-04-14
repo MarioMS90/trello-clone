@@ -20,8 +20,7 @@ async function fetchBoards() {
       )
     `,
     )
-    .eq('workspaces.user_workspaces.user_id', user.id)
-    .order('created_at');
+    .eq('workspaces.user_workspaces.user_id', user.id);
 
   if (error) throw error;
 
@@ -43,8 +42,7 @@ async function fetchStarredBoards() {
       createdAt: created_at
     `,
     )
-    .eq('user_id', user.id)
-    .order('created_at');
+    .eq('user_id', user.id);
 
   if (error) throw error;
 
@@ -98,7 +96,7 @@ export function useStarredBoards() {
   );
 }
 
-export function useStarredBoard(boardId: string) {
+export function useStarredBoard(boardId: string | null) {
   return useStarredBoardsQuery(starredBoards =>
     starredBoards.some(starred => starred.boardId === boardId),
   );

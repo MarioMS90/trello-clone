@@ -17,8 +17,7 @@ async function fetchLists(boardId: string) {
       createdAt: created_at
     `,
     )
-    .eq('board_id', boardId)
-    .order('rank');
+    .eq('board_id', boardId);
 
   if (error) throw error;
 

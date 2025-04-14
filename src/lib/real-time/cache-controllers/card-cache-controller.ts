@@ -11,8 +11,6 @@ import { CacheController } from '@/types/cache-types';
 import { commentKeys } from '@/lib/comment/queries';
 
 export default function cardCacheController(queryClient: QueryClient): CacheController {
-  const sortFn = (a: TCard, b: TCard) => a.rank.localeCompare(b.rank);
-
   return {
     handleInsert: payload => {
       const entity = camelizeKeys(payload.new) as TCard;
@@ -26,7 +24,6 @@ export default function cardCacheController(queryClient: QueryClient): CacheCont
         queryClient,
         queryKey: cardKeys.list(entity.listId).queryKey,
         entity: { ...entity, commentCount },
-        sortFn,
       });
     },
 
@@ -37,7 +34,6 @@ export default function cardCacheController(queryClient: QueryClient): CacheCont
         queryClient,
         queryKey: cardKeys.list(entity.listId).queryKey,
         entity,
-        sortFn,
       });
     },
 

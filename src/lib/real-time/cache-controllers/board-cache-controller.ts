@@ -11,8 +11,6 @@ import { CacheController } from '@/types/cache-types';
 
 export default function boardCacheController(queryClient: QueryClient): CacheController {
   const { queryKey } = boardKeys.list();
-  const sortFn = (a: TBoard, b: TBoard) =>
-    new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
 
   return {
     handleInsert: payload => {
@@ -22,7 +20,6 @@ export default function boardCacheController(queryClient: QueryClient): CacheCon
         queryClient,
         queryKey,
         entity,
-        sortFn,
       });
     },
 

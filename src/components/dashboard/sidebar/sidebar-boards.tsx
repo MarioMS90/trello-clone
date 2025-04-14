@@ -1,79 +1,82 @@
 'use client';
 
 import Link from 'next/link';
-import { TBoard, TSubsetWithId } from '@/types/db';
 import { useState } from 'react';
-import { deleteEntity, updateEntity } from '@/lib/supabase/utils';
-import { useOptimisticList } from '@/hooks/useOptimisticList';
 import { cn } from '@/lib/utils/utils';
 import EditableText from '@/components/ui/editable-text';
+import { useBoardId } from '@/hooks/useBoardId';
+import { useBoardsByWorkspaceId, useStarredBoard } from '@/lib/board/queries';
+import useOptimisticMutation from '@/hooks/useOptimisticMutation';
+import { useMutation } from '@tanstack/react-query';
+import { deleteBoard, updateBoard } from '@/lib/board/actions';
 import { StarToggleBoard } from '../board/star-toggle-board';
 import DotsIcon from '../../icons/dots';
 import Popover from '../../ui/popover';
 
-export default function SidebarBoards({
-  boards,
-  currentWorkspaceId,
-  currentBoardId,
-}: {
-  boards: TBoard[];
-  currentWorkspaceId: string;
-  currentBoardId?: string;
-}) {
+export default function SidebarBoards({ workspaceId }: { workspaceId: string }) {
+  const { data: initialBoards } = useBoardsByWorkspaceId(workspaceId);
+  const currentBoardId = useBoardId();
+  const { data: isStarred } = useStarredBoard(currentBoardId);
   const [editingBoardId, setEditingBoardId] = useState<string | null>(null);
   const [selectedPopover, setSelectedPopover] = useState<string | null>(null);
-  const {
-    optimisticList: optimisticBoards,
-    optimisticUpdate,
-    optimisticDelete,
-  } = useOptimisticList(boards);
 
-  const handleUpdate = (boardData: TSubsetWithId<TBoard>) => {
-    optimisticUpdate(boardData, () => updateEntity({ tableName: 'board', entityData: boardData }));
-  };
+  const [{ mutate: updateBoardAction }, boards] = useOptimisticMutation({
+    state: initialBoards,
+    optimisticUpdater: (current, variables) =>
+      current.map(board =>
+        board.id === variables.id ? { ...board, name: variables.name } : board,
+      ),
+    options: {
+      mutationFn: async (data: { id: string; name: string }) => {
+        updateBoard(data);
+      },
+      onError: () => {
+        alert('An error occurred while updating the element');
+      },
+    },
+  });
 
-  const handleDelete = (boardData: TSubsetWithId<TBoard>) => {
-    let redirectUrl: string | undefined;
-    if (currentBoardId === boardData.id) {
-      redirectUrl = `/workspaces/${currentWorkspaceId}`;
-    }
+  const { mutate: removeBoardAction } = useMutation({
+    mutationFn: async (boardId: string) => {
+      let redirectUrl: string | undefined;
+      if (boardId === currentBoardId) {
+        redirectUrl = `/workspaces/${workspaceId}`;
+      }
 
-    optimisticDelete(boardData, () =>
-      deleteEntity({
-        tableName: 'board',
-        entityId: boardData.id,
-        redirectUrl,
-      }),
-    );
-  };
+      deleteBoard(boardId, redirectUrl);
+    },
+    onError: () => {
+      alert('An error occurred while deleting the element');
+    },
+  });
 
   return (
     <ul>
-      {optimisticBoards.map(board => (
+      {boards.map(({ id, name }) => (
         <li
           className={cn(
             'group relative [&:hover:not(:has(.popover:hover))]:bg-button-hovered-background',
             {
-              'bg-button-hovered-background': currentBoardId === board.id,
+              'bg-button-hovered-background': currentBoardId === id,
             },
           )}
-          key={board.id}>
+          key={id}>
           <EditableText
             className="[&>input:focus]:shadow-none [&>input]:my-0.5 [&>input]:ml-4 [&>input]:mr-[74px] [&>input]:w-full [&>input]:rounded-lg [&>input]:font-semibold [&>input]:text-primary"
-            defaultText={board.name}
-            onEdit={name => handleUpdate({ id: board.id, name })}
-            editing={editingBoardId === board.id}
+            defaultText={name}
+            onEdit={text => updateBoardAction({ id, name: text })}
+            editing={editingBoardId === id}
             onEditingChange={isEditing => {
               if (isEditing) {
-                setEditingBoardId(board.id);
+                setEditingBoardId(id);
               } else {
                 setEditingBoardId(null);
               }
             }}>
             <Link
               className="block overflow-hidden text-ellipsis py-0.5 pl-1.5 pr-[70px] text-white"
-              href={`/boards/${board.id}`}>
-              {board.name}
+              href={`/boards/${id}`}>
+              {name}
             </Link>
           </EditableText>
           <div className="center-y absolute right-11 z-10 hidden group-hover:block has-[.popover]:block">
@@ -81,10 +84,10 @@ export default function SidebarBoards({
               triggerContent={<DotsIcon height={16} />}
               triggerClassName="[&]:p-1"
               popoverClassName="px-0 [&]:w-40"
-              open={selectedPopover === board.id}
+              open={selectedPopover === id}
               onOpenChange={isOpen => {
                 if (isOpen) {
-                  setSelectedPopover(board.id);
+                  setSelectedPopover(id);
                 } else {
                   setSelectedPopover(null);
                 }
@@ -94,14 +97,14 @@ export default function SidebarBoards({
                   <button
                     type="button"
                     onClick={() => {
-                      setEditingBoardId(board.id);
+                      setEditingBoardId(id);
                       setSelectedPopover(null);
                     }}>
                     Rename board
                   </button>
                 </li>
                 <li>
-                  <button type="button" onClick={() => handleDelete(board)}>
+                  <button type="button" onClick={() => removeBoardAction(id)}>
                     Delete board
                   </button>
                 </li>
@@ -111,9 +114,9 @@ export default function SidebarBoards({
 
           <StarToggleBoard
             className={cn('z-10 hidden group-[:hover:not(:has(.popover:hover))]:block', {
-              '[&]:block': board.starred,
+              '[&]:block': isStarred,
             })}
-            board={board}
+            boardId={id}
           />
         </li>
       ))}

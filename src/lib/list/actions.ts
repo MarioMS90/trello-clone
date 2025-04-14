@@ -1,8 +1,10 @@
 'use server';
 
-import { TList } from '@/types/db';
-import { CreateListSchema } from '@/schemas/workspace-schemas';
+import { TActionState } from '@/types/db';
+import { CreateListSchema, UpdateListSchema } from '@/schemas/workspace-schemas';
+import { TablesUpdate } from '@/types/database-types';
 import { createClient } from '../supabase/server';
+import { deleteEntity, updateEntity } from '../supabase/utils';
 
 export async function createList({
   boardId,
@@ -12,7 +14,7 @@ export async function createList({
   boardId: string;
   name: string;
   rank: string;
-}): Promise<TList> {
+}): Promise<TActionState> {
   const validatedFields = CreateListSchema.safeParse({
     boardId,
     name,
@@ -23,7 +25,7 @@ export async function createList({
   }
 
   const supabase = await createClient();
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from('lists')
     .insert({
       name: validatedFields.data.name,
@@ -45,5 +47,19 @@ export async function createList({
 
   if (error) throw error;
 
-  return data;
+  return { success: true };
+}
+
+export async function updateList(listData: TablesUpdate<'lists'> & { id: string }) {
+  const validatedFields = UpdateListSchema.safeParse(listData);
+
+  if (!validatedFields.success) {
+    throw new Error('Invalid list data');
+  }
+
+  return updateEntity({ tableName: 'lists', entityData: listData });
+}
+
+export async function deleteList(listId: string) {
+  return deleteEntity({ tableName: 'lists', entityId: listId });
 }

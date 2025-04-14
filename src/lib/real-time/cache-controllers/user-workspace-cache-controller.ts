@@ -11,8 +11,6 @@ import { userWorkspaceKeys } from '@/lib/workspace/queries';
 
 export default function userWorkspaceCacheController(queryClient: QueryClient): CacheController {
   const { queryKey } = userWorkspaceKeys.list();
-  const sortFn = (a: TUserWorkspace, b: TUserWorkspace) =>
-    new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
 
   return {
     handleInsert: payload => {
@@ -22,7 +20,6 @@ export default function userWorkspaceCacheController(queryClient: QueryClient): 
         queryClient,
         queryKey,
         entity,
-        sortFn,
       });
     },
     handleUpdate: payload => {
@@ -32,7 +29,6 @@ export default function userWorkspaceCacheController(queryClient: QueryClient): 
         queryClient,
         queryKey,
         entity,
-        sortFn,
       });
     },
     handleDelete: payload => {
