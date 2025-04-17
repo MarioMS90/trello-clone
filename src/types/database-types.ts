@@ -8,18 +8,21 @@ export type Database = {
           created_at: string;
           id: string;
           name: string;
+          updated_at: string;
           workspace_id: string;
         };
         Insert: {
           created_at?: string;
           id?: string;
           name: string;
+          updated_at?: string;
           workspace_id: string;
         };
         Update: {
           created_at?: string;
           id?: string;
           name?: string;
+          updated_at?: string;
           workspace_id?: string;
         };
         Relationships: [
@@ -40,6 +43,7 @@ export type Database = {
           list_id: string;
           name: string;
           rank: string;
+          updated_at: string;
           workspace_id: string | null;
         };
         Insert: {
@@ -49,6 +53,7 @@ export type Database = {
           list_id?: string;
           name: string;
           rank: string;
+          updated_at?: string;
           workspace_id?: string | null;
         };
         Update: {
@@ -58,6 +63,7 @@ export type Database = {
           list_id?: string;
           name?: string;
           rank?: string;
+          updated_at?: string;
           workspace_id?: string | null;
         };
         Relationships: [
@@ -83,6 +89,7 @@ export type Database = {
           content: string;
           created_at: string;
           id: string;
+          updated_at: string;
           user_id: string;
           workspace_id: string | null;
         };
@@ -91,6 +98,7 @@ export type Database = {
           content: string;
           created_at?: string;
           id?: string;
+          updated_at?: string;
           user_id: string;
           workspace_id?: string | null;
         };
@@ -99,6 +107,7 @@ export type Database = {
           content?: string;
           created_at?: string;
           id?: string;
+          updated_at?: string;
           user_id?: string;
           workspace_id?: string | null;
         };
@@ -133,6 +142,7 @@ export type Database = {
           id: string;
           name: string;
           rank: string;
+          updated_at: string;
           workspace_id: string | null;
         };
         Insert: {
@@ -141,6 +151,7 @@ export type Database = {
           id?: string;
           name: string;
           rank: string;
+          updated_at?: string;
           workspace_id?: string | null;
         };
         Update: {
@@ -149,6 +160,7 @@ export type Database = {
           id?: string;
           name?: string;
           rank?: string;
+          updated_at?: string;
           workspace_id?: string | null;
         };
         Relationships: [
@@ -173,6 +185,7 @@ export type Database = {
           board_id: string;
           created_at: string;
           id: string;
+          updated_at: string;
           user_id: string;
           workspace_id: string | null;
         };
@@ -180,6 +193,7 @@ export type Database = {
           board_id: string;
           created_at?: string;
           id?: string;
+          updated_at?: string;
           user_id: string;
           workspace_id?: string | null;
         };
@@ -187,6 +201,7 @@ export type Database = {
           board_id?: string;
           created_at?: string;
           id?: string;
+          updated_at?: string;
           user_id?: string;
           workspace_id?: string | null;
         };
@@ -219,6 +234,7 @@ export type Database = {
           created_at: string;
           id: string;
           role: Database['public']['Enums']['role'];
+          updated_at: string;
           user_id: string;
           workspace_id: string;
         };
@@ -226,6 +242,7 @@ export type Database = {
           created_at?: string;
           id?: string;
           role?: Database['public']['Enums']['role'];
+          updated_at?: string;
           user_id: string;
           workspace_id: string;
         };
@@ -233,6 +250,7 @@ export type Database = {
           created_at?: string;
           id?: string;
           role?: Database['public']['Enums']['role'];
+          updated_at?: string;
           user_id?: string;
           workspace_id?: string;
         };
@@ -259,18 +277,21 @@ export type Database = {
           email: string;
           id: string;
           name: string;
+          updated_at: string;
         };
         Insert: {
           created_at?: string;
           email: string;
           id: string;
           name: string;
+          updated_at?: string;
         };
         Update: {
           created_at?: string;
           email?: string;
           id?: string;
           name?: string;
+          updated_at?: string;
         };
         Relationships: [];
       };
@@ -279,16 +300,19 @@ export type Database = {
           created_at: string;
           id: string;
           name: string;
+          updated_at: string;
         };
         Insert: {
           created_at?: string;
           id?: string;
           name: string;
+          updated_at?: string;
         };
         Update: {
           created_at?: string;
           id?: string;
           name?: string;
+          updated_at?: string;
         };
         Relationships: [];
       };
@@ -299,7 +323,7 @@ export type Database = {
     Functions: {
       create_workspace_with_admin_access: {
         Args: { workspace_name: string };
-        Returns: undefined;
+        Returns: string;
       };
       get_workspace_id: {
         Args: { board_id_param: string };

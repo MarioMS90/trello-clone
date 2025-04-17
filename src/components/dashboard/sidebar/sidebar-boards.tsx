@@ -5,36 +5,23 @@ import { useState } from 'react';
 import { cn } from '@/lib/utils/utils';
 import EditableText from '@/components/ui/editable-text';
 import { useBoardId } from '@/hooks/useBoardId';
-import { useBoardsByWorkspaceId, useStarredBoard } from '@/lib/board/queries';
-import useOptimisticMutation from '@/hooks/useOptimisticMutation';
+import { useBoardsByWorkspaceId, useStarredBoards } from '@/lib/board/queries';
 import { useMutation } from '@tanstack/react-query';
 import { deleteBoard, updateBoard } from '@/lib/board/actions';
+import { useRealTimeContext } from '@/providers/real-time-provider';
+import { MutationType } from '@/types/db';
 import { StarToggleBoard } from '../board/star-toggle-board';
 import DotsIcon from '../../icons/dots';
 import Popover from '../../ui/popover';
 
 export default function SidebarBoards({ workspaceId }: { workspaceId: string }) {
+  const { awaitCacheSync } = useRealTimeContext();
   const { data: initialBoards } = useBoardsByWorkspaceId(workspaceId);
   const currentBoardId = useBoardId();
-  const { data: isStarred } = useStarredBoard(currentBoardId);
+  const { data: starredBoards } = useStarredBoards();
+
   const [editingBoardId, setEditingBoardId] = useState<string | null>(null);
   const [selectedPopover, setSelectedPopover] = useState<string | null>(null);
-
-  const [{ mutate: updateBoardAction }, boards] = useOptimisticMutation({
-    state: initialBoards,
-    optimisticUpdater: (current, variables) =>
-      current.map(board =>
-        board.id === variables.id ? { ...board, name: variables.name } : board,
-      ),
-    options: {
-      mutationFn: async (data: { id: string; name: string }) => {
-        updateBoard(data);
-      },
-      onError: () => {
-        alert('An error occurred while updating the element');
-      },
-    },
-  });
 
   const { mutate: removeBoardAction } = useMutation({
     mutationFn: async (boardId: string) => {
@@ -49,6 +36,34 @@ export default function SidebarBoards({ workspaceId }: { workspaceId: string }) 
       alert('An error occurred while deleting the element');
     },
   });
+
+  const {
+    mutate: updateBoardAction,
+    isPending: isPendingUpdate,
+    variables: variablesUpdate,
+  } = useMutation({
+    mutationFn: async (data: { id: string; name: string }) => updateBoard(data),
+    onSuccess: async ({ data }) => {
+      if (!data) {
+        throw new Error('Invalid response data');
+      }
+
+      return awaitCacheSync({
+        entityName: 'starred_boards',
+        mutationType: MutationType.UPDATE,
+        match: data,
+      });
+    },
+    onError: () => {
+      alert('An error occurred while updating the element');
+    },
+  });
+
+  const boards = isPendingUpdate
+    ? initialBoards.map(board =>
+        board.id === variablesUpdate.id ? { ...board, name: variablesUpdate.name } : board,
+      )
+    : initialBoards;
 
   return (
     <ul>
@@ -114,7 +129,7 @@ export default function SidebarBoards({ workspaceId }: { workspaceId: string }) 
 
           <StarToggleBoard
             className={cn('z-10 hidden group-[:hover:not(:has(.popover:hover))]:block', {
-              '[&]:block': isStarred,
+              '[&]:block': starredBoards.some(starred => starred.id === id),
             })}
             boardId={id}
           />

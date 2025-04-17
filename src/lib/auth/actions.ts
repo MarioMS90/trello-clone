@@ -4,6 +4,11 @@ import { redirect } from 'next/navigation';
 import { SignInUser, SignUpUser } from '@/schemas/auth-schemas';
 import { getClient } from '../supabase/utils';
 
+export type TSignInState = {
+  error: boolean;
+  message?: string | null;
+};
+
 export type TSignUpState = {
   errors: {
     name?: string[];
@@ -13,11 +18,6 @@ export type TSignUpState = {
     signIn?: string[];
   };
   message: string | null;
-};
-
-export type TSignInState = {
-  error: boolean;
-  message?: string | null;
 };
 
 export async function signIn(_: TSignInState, formData: FormData): Promise<TSignInState> {

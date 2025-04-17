@@ -39,7 +39,7 @@ export default function HeaderMenu() {
             <Link href={`/boards/${board.id}`}>
               <h3 className="font-medium">{board.name}</h3>
               <p className="text-gray-500">
-                {workspaces.find(w => w.id === board.workspaceId)?.name}
+                {workspaces.find(workspace => workspace.id === board.workspaceId)?.name}
               </p>
             </Link>
             <StarToggleBoard className="[&]:right-1.5" boardId={board.id} />

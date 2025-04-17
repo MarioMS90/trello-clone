@@ -1,43 +1,36 @@
 import { TList } from '@/types/db';
 import { listKeys } from '@/lib/list/queries';
-import { camelizeKeys } from '@/lib/utils/utils';
 import {
   insertQueryData,
   updateQueryData,
   deleteQueryData,
 } from '@/lib/utils/react-query/query-data-utils';
 import { QueryClient } from '@tanstack/react-query';
-import { CacheController } from '@/types/cache-types';
+import { CacheHandlers } from '../cache-types';
 
-export default function listCacheController(queryClient: QueryClient): CacheController {
+export default function listCacheController(queryClient: QueryClient): CacheHandlers<TList> {
   return {
-    handleInsert: payload => {
-      const entity = camelizeKeys(payload.new) as TList;
-
+    handleInsert: list => {
       insertQueryData({
         queryClient,
-        queryKey: listKeys.list(entity.boardId).queryKey,
-        entity,
+        queryKey: listKeys.list(list.boardId).queryKey,
+        entity: list,
       });
     },
 
-    handleUpdate: payload => {
-      const entity = camelizeKeys(payload.new) as TList;
-
+    handleUpdate: list => {
       updateQueryData({
         queryClient,
-        queryKey: listKeys.list(entity.boardId).queryKey,
-        entity,
+        queryKey: listKeys.list(list.boardId).queryKey,
+        entity: list,
       });
     },
 
-    handleDelete: payload => {
-      const entity = camelizeKeys(payload.old) as TList;
-
+    handleDelete: list => {
       deleteQueryData({
         queryClient,
-        queryKey: listKeys.list(entity.boardId).queryKey,
-        entityId: entity.id,
+        queryKey: listKeys.list(list.boardId).queryKey,
+        entityId: list.id,
       });
     },
   };

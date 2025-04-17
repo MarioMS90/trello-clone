@@ -13,10 +13,12 @@ import { useWorkspaces } from '@/lib/workspace/queries';
 import { useMutation } from '@tanstack/react-query';
 import { deleteWorkspace, updateWorkspace } from '@/lib/workspace/actions';
 import { useBoards } from '@/lib/board/queries';
-import useOptimisticMutation from '@/hooks/useOptimisticMutation';
+import { useRealTimeContext } from '@/providers/real-time-provider';
+import { MutationType } from '@/types/db';
 import { CreateBoard } from '../board/create-board';
 
 export default function Workspaces() {
+  const { awaitCacheSync } = useRealTimeContext();
   const { data: initialWorkspaces } = useWorkspaces();
   const { data: boards } = useBoards();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -28,22 +30,6 @@ export default function Workspaces() {
     }
   }, [editingWorkspaceId]);
 
-  const [{ mutate: updateWorkspaceAction }, workspaces] = useOptimisticMutation({
-    state: initialWorkspaces,
-    optimisticUpdater: (current, variables) =>
-      current.map(workspace =>
-        workspace.id === variables.id ? { ...workspace, name: variables.name } : workspace,
-      ),
-    options: {
-      mutationFn: async (data: { id: string; name: string }) => {
-        updateWorkspace(data);
-      },
-      onError: () => {
-        alert('An error occurred while updating the element');
-      },
-    },
-  });
-
   const { mutate: removeWorkspaceAction } = useMutation({
     mutationFn: async (workspaceId: string) => {
       deleteWorkspace(workspaceId);
@@ -52,6 +38,34 @@ export default function Workspaces() {
       alert('An error occurred while deleting the element');
     },
   });
+
+  const {
+    mutate: updateWorkspaceAction,
+    isPending: isPendingUpdate,
+    variables: variablesUpdate,
+  } = useMutation({
+    mutationFn: async (data: { id: string; name: string }) => updateWorkspace(data),
+    onSuccess: async ({ data }) => {
+      if (!data) {
+        throw new Error('Invalid response data');
+      }
+
+      return awaitCacheSync({
+        entityName: 'starred_boards',
+        mutationType: MutationType.UPDATE,
+        match: data,
+      });
+    },
+    onError: () => {
+      alert('An error occurred while updating the element');
+    },
+  });
+
+  const workspaces = isPendingUpdate
+    ? initialWorkspaces.map(board =>
+        board.id === variablesUpdate.id ? { ...board, name: variablesUpdate.name } : board,
+      )
+    : initialWorkspaces;
 
   const btnClassName =
     'flex items-center gap-1.5 rounded bg-gray-300 px-3 py-1.5 text-primary hover:bg-opacity-90 hover:bg-gray-300';

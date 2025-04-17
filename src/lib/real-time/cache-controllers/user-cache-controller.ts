@@ -1,46 +1,39 @@
 import { TUser } from '@/types/db';
 import { userKeys } from '@/lib/user/queries';
-import { camelizeKeys } from '@/lib/utils/utils';
 import {
   insertQueryData,
   updateQueryData,
   deleteQueryData,
 } from '@/lib/utils/react-query/query-data-utils';
 import { QueryClient } from '@tanstack/react-query';
-import { CacheController } from '@/types/cache-types';
+import { CacheHandlers } from '../cache-types';
 
-export default function userCacheController(queryClient: QueryClient): CacheController {
+export default function userCacheController(queryClient: QueryClient): CacheHandlers<TUser> {
   // Needs the actual workspace
   const { queryKey } = userKeys.list('');
 
   return {
-    handleInsert: payload => {
-      const entity = camelizeKeys(payload.new) as TUser;
-
+    handleInsert: user => {
       insertQueryData({
         queryClient,
         queryKey,
-        entity,
+        entity: user,
       });
     },
 
-    handleUpdate: payload => {
-      const entity = camelizeKeys(payload.new) as TUser;
-
+    handleUpdate: user => {
       updateQueryData({
         queryClient,
         queryKey,
-        entity,
+        entity: user,
       });
     },
 
-    handleDelete: payload => {
-      const entity = camelizeKeys(payload.old) as TUser;
-
+    handleDelete: user => {
       deleteQueryData({
         queryClient,
         queryKey,
-        entityId: entity.id,
+        entityId: user.id,
       });
     },
   };

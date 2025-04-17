@@ -1,6 +1,6 @@
 'use client';
 
-import { TList } from '@/types/db';
+import { TCard, TList } from '@/types/db';
 import DotsIcon from '@/components/icons/dots';
 import PlusIcon from '@/components/icons/plus';
 import { memo, RefObject, useEffect, useRef, useState } from 'react';
@@ -79,6 +79,7 @@ function ListShadow({ dragging }: { dragging: DOMRect }) {
 
 const ListDisplay = memo(function ListDisplay({
   list,
+  cards,
   state,
   outerFullHeightRef,
   innerRef,
@@ -86,6 +87,7 @@ const ListDisplay = memo(function ListDisplay({
   scrollableRef,
 }: {
   list: TList;
+  cards: TCard[];
   state: TListState;
   outerFullHeightRef?: RefObject<HTMLLIElement | null>;
   innerRef?: RefObject<HTMLDivElement | null>;
@@ -179,7 +181,7 @@ const ListDisplay = memo(function ListDisplay({
               className="overflow-y-auto [overflow-anchor:none] [scrollbar-width:thin] has-[li]:mt-1.5"
               ref={scrollableRef}>
               <ul className="flex flex-col gap-2 has-[li]:py-0.5">
-                {list.cards.map(card => (
+                {cards.map(card => (
                   <Card card={card} key={card.id} />
                 ))}
                 {isCreatingCard && (
@@ -215,7 +217,7 @@ const ListDisplay = memo(function ListDisplay({
   );
 });
 
-export const List = memo(function List({ list }: { list: TList }) {
+export const List = memo(function List({ list, cards }: { list: TList; cards: TCard[] }) {
   const [state, setState] = useState<TListState>(idle);
   const outerFullHeightRef = useRef<HTMLLIElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
@@ -381,9 +383,11 @@ export const List = memo(function List({ list }: { list: TList }) {
 
   return (
     <>
-      <ListDisplay {...{ list, state, outerFullHeightRef, innerRef, headerRef, scrollableRef }} />
+      <ListDisplay
+        {...{ list, cards, state, outerFullHeightRef, innerRef, headerRef, scrollableRef }}
+      />
       {state.type === 'preview'
-        ? createPortal(<ListDisplay {...{ list, state }} />, state.container)
+        ? createPortal(<ListDisplay {...{ list, cards, state }} />, state.container)
         : null}
     </>
   );

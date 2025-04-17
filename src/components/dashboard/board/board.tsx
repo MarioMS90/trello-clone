@@ -10,36 +10,48 @@ import { autoScrollForElements } from '@atlaskit/pragmatic-drag-and-drop-auto-sc
 import { bind, bindAll } from 'bind-event-listener';
 import { isCardData, isListData, TCardData, TListData } from '@/types/drag-types';
 import { TCard, TList, TSubsetWithId } from '@/types/db';
-import { useCallback, useEffect, useMemo, useOptimistic, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { List } from '@/components/dashboard/list/list';
-import { generateRank, updateElement } from '@/lib/utils/utils';
+import { generateRank } from '@/lib/utils/utils';
 import { CleanupFn } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types';
 import { blockBoardPanningAttr } from '@/constants/constants';
 import { useBoardId } from '@/hooks/useBoardId';
 import { useLists } from '@/lib/list/queries';
 import { redirect } from 'next/navigation';
 import { useWorkspaceId } from '@/hooks/useWorkspaceId';
-import { useGroupedCardsByList } from '@/lib/card/queries';
+import { useCardsGroupedByList } from '@/lib/card/queries';
+import { useRealTimeContext } from '@/providers/real-time-provider';
 import { BoardContext, BoardContextValue } from './board-context';
 import { CreateList } from '../list/create-list';
 
 export default function Board() {
+  const { registerChannel } = useRealTimeContext();
   const boardId = useBoardId();
   const workspaceId = useWorkspaceId();
+  const scrollableRef = useRef<HTMLUListElement | null>(null);
 
   if (!boardId) {
     redirect(`/workspaces/${workspaceId}`);
   }
 
-  const { data: lists } = useLists(boardId);
-  const { data: cardsMap } = useGroupedCardsByList(boardId);
+  const { data: initialLists } = useLists(boardId);
+  const { data: initialCards } = useCardsGroupedByList(boardId);
+  const [lists, setLists] = useState<TList[]>(initialLists);
+  const [cards, setCards] = useState<Record<string, TCard[]>>(initialCards);
 
-  const [orderedListIds, setOrderedListIds] = useState<string[]>(() => lists.map(({ id }) => id));
-  const scrollableRef = useRef<HTMLUListElement | null>(null);
-  const [optimisticLists, setOptimisticLists] = useOptimistic<
-    TList[],
-    (currentLists: TList[]) => TList[]
-  >(lists, (currentLists, callback) => callback(currentLists));
+  useEffect(() => {
+    setLists(initialLists);
+  }, [initialLists]);
+
+  useEffect(() => {
+    setCards(initialCards);
+  }, [initialCards]);
+
+  useEffect(() => {
+    registerChannel('lists');
+    registerChannel('cards');
+    registerChannel('comments');
+  }, [registerChannel]);
 
   const reorderElement = useCallback(
     <T extends { id: string; rank: string }>({
@@ -78,33 +90,34 @@ export default function Board() {
 
   const getPositionIndices = useCallback(
     <T extends { id: string }>({
-      sourceElements,
-      destinationElements,
+      source,
+      destination,
       dragging,
       dropTarget,
       axis,
-      isReorder = false,
     }: {
-      sourceElements: T[];
-      destinationElements: T[];
+      source: T[];
+      destination?: T[];
       dragging: TListData | TCardData;
       dropTarget: TListData | TCardData | null;
       axis: 'horizontal' | 'vertical';
-      isReorder?: boolean;
     }) => {
-      const startIndex = sourceElements.findIndex(element => element.id === dragging.id);
+      const startIndex = source.findIndex(element => element.id === dragging.id);
+      const isReorder = !destination;
 
       if (!dropTarget) {
         return {
           startIndex,
-          finishIndex: !isReorder ? destinationElements.length : destinationElements.length - 1,
+          finishIndex: !isReorder ? destination.length : source.length - 1,
         };
       }
 
-      const indexOfTarget = destinationElements.findIndex(element => element.id === dropTarget.id);
+      const indexOfTarget = isReorder
+        ? source.findIndex(element => element.id === dropTarget.id)
+        : destination.findIndex(element => element.id === dropTarget.id);
       const closestEdgeOfTarget = extractClosestEdge(dropTarget);
 
-      if (isReorder) {
+      if (!isReorder) {
         const finishIndex = getReorderDestinationIndex({
           startIndex,
           indexOfTarget,
@@ -179,15 +192,13 @@ export default function Board() {
     }) => {
       const sourceListIndex = lists.findIndex(list => list.id === dragging.listId);
       const destinationListIndex = lists.findIndex(list => list.id === listTarget.id);
-      const sourceList = lists[sourceListIndex];
       const isReorder = sourceListIndex === destinationListIndex;
       const { startIndex, finishIndex } = getPositionIndices({
-        sourceElements: sourceList.cards,
-        destinationElements: lists[destinationListIndex].cards,
+        source: cards[dragging.listId],
+        destination: !isReorder ? cards[listTarget.listId] : undefined,
         dragging,
         dropTarget: cardTarget,
         axis: 'vertical',
-        isReorder,
       });
 
       if (!isReorder) {
@@ -394,116 +405,124 @@ export default function Board() {
   }, []);
 
   const addList = useCallback(
-    (name: string) => {
-      const temporalId = crypto.randomUUID();
-      const rank = generateRank({ elements: lists, leftIndex: lists.length - 1 }).format();
+    // (name: string) => {
+    //   const temporalId = crypto.randomUUID();
+    //   const rank = generateRank({ elements: lists, leftIndex: lists.length - 1 }).format();
 
-      startTransition(async () => {
-        setOptimisticLists(current => [
-          ...current,
-          { id: temporalId, name, rank, board_id: boardId, cards: [], created_at: '' },
-        ]);
+    //   startTransition(async () => {
+    //     setOptimisticLists(current => [
+    //       ...current,
+    //       { id: temporalId, name, rank, board_id: boardId, cards: [], created_at: '' },
+    //     ]);
 
-        try {
-          const list = await createList({ boardId, name, rank });
-          startTransition(async () => setLists(current => [...current, list]));
-        } catch (error) {
-          // TODO: Show error with a toast
-          alert('An error occurred while creating the element');
-        }
-      });
-    },
-    [lists, setOptimisticLists, boardId],
+    //     try {
+    //       const list = await createList({ boardId, name, rank });
+    //       startTransition(async () => setLists(current => [...current, list]));
+    //     } catch (error) {
+    //       // TODO: Show error with a toast
+    //       alert('An error occurred while creating the element');
+    //     }
+    //   });
+    // },
+    // [lists, setOptimisticLists, boardId],
+    () => {},
+    [],
   );
 
   const updateList = useCallback(
-    (listData: TSubsetWithId<TList>) => {
-      startTransition(async () => {
-        setOptimisticLists(current => updateElement(current, listData));
+    // (listData: TSubsetWithId<TList>) => {
+    //   startTransition(async () => {
+    //     setOptimisticLists(current => updateElement(current, listData));
 
-        try {
-          await updateEntity({
-            tableName: 'list',
-            entityData: listData,
-          });
-        } catch (error) {
-          // TODO: Show error with a toast
-          alert('An error occurred while updating the element');
-        }
-      });
-    },
-    [startTransition, setOptimisticLists],
+    //     try {
+    //       await updateEntity({
+    //         tableName: 'list',
+    //         entityData: listData,
+    //       });
+    //     } catch (error) {
+    //       // TODO: Show error with a toast
+    //       alert('An error occurred while updating the element');
+    //     }
+    //   });
+    // },
+    // [startTransition, setOptimisticLists],
+    () => {},
+    [],
   );
 
   const deleteList = useCallback(
-    (id: string) => {
-      startTransition(async () => {
-        setOptimisticLists(current => current.filter(list => list.id !== id));
+    // (id: string) => {
+    //   startTransition(async () => {
+    //     setOptimisticLists(current => current.filter(list => list.id !== id));
 
-        try {
-          await deleteEntity({
-            tableName: 'list',
-            entityId: id,
-          });
-          startTransition(async () => setLists(current => current.filter(list => list.id !== id)));
-        } catch (error) {
-          // TODO: Show error with a toast
-          alert('An error occurred while deleting the element');
-        }
-      });
-    },
-    [startTransition, setOptimisticLists],
+    //     try {
+    //       await deleteEntity({
+    //         tableName: 'list',
+    //         entityId: id,
+    //       });
+    //       startTransition(async () => setLists(current => current.filter(list => list.id !== id)));
+    //     } catch (error) {
+    //       // TODO: Show error with a toast
+    //       alert('An error occurred while deleting the element');
+    //     }
+    //   });
+    // },
+    // [startTransition, setOptimisticLists],
+    () => {},
+    [],
   );
 
   const addCard = useCallback(
-    (listId: string, name: string) => {
-      const temporalId = crypto.randomUUID();
-      const listIndex = lists.findIndex(list => list.id === listId);
-      const rank = generateRank({
-        elements: lists[listIndex].cards,
-        leftIndex: lists[listIndex].cards.length - 1,
-      }).format();
+    // (listId: string, name: string) => {
+    //   const temporalId = crypto.randomUUID();
+    //   const listIndex = lists.findIndex(list => list.id === listId);
+    //   const rank = generateRank({
+    //     elements: lists[listIndex].cards,
+    //     leftIndex: lists[listIndex].cards.length - 1,
+    //   }).format();
 
-      startTransition(async () => {
-        setOptimisticLists(current => {
-          const updated = current.with(listIndex, {
-            ...current[listIndex],
-            cards: [
-              ...current[listIndex].cards,
-              {
-                id: temporalId,
-                name,
-                description: '',
-                rank,
-                list_id: listId,
-                comments: [],
-                created_at: '',
-              },
-            ],
-          });
+    //   startTransition(async () => {
+    //     setOptimisticLists(current => {
+    //       const updated = current.with(listIndex, {
+    //         ...current[listIndex],
+    //         cards: [
+    //           ...current[listIndex].cards,
+    //           {
+    //             id: temporalId,
+    //             name,
+    //             description: '',
+    //             rank,
+    //             list_id: listId,
+    //             comments: [],
+    //             created_at: '',
+    //           },
+    //         ],
+    //       });
 
-          return updated;
-        });
+    //       return updated;
+    //     });
 
-        try {
-          const card = await createCard({ listId, name, rank });
-          startTransition(async () =>
-            setLists(current => {
-              const updated = current.with(listIndex, {
-                ...current[listIndex],
-                cards: [...current[listIndex].cards, card],
-              });
+    //     try {
+    //       const card = await createCard({ listId, name, rank });
+    //       startTransition(async () =>
+    //         setLists(current => {
+    //           const updated = current.with(listIndex, {
+    //             ...current[listIndex],
+    //             cards: [...current[listIndex].cards, card],
+    //           });
 
-              return updated;
-            }),
-          );
-        } catch (error) {
-          // TODO: Show error with a toast
-          alert('An error occurred while creating the element');
-        }
-      });
-    },
-    [lists, setOptimisticLists],
+    //           return updated;
+    //         }),
+    //       );
+    //     } catch (error) {
+    //       // TODO: Show error with a toast
+    //       alert('An error occurred while creating the element');
+    //     }
+    //   });
+    // },
+    // [lists, setOptimisticLists],
+    () => {},
+    [],
   );
 
   const updateCard = useCallback((cardData: TSubsetWithId<TCard>) => {}, []);
@@ -531,10 +550,10 @@ export default function Board() {
             className="scrollbar-transparent [-webkit-user-drag: none] flex h-full select-none overflow-x-auto px-2 pb-2 pt-3"
             ref={scrollableRef}
             draggable={false}>
-            {optimisticLists.map(list => (
-              <List list={list} key={list.id} />
+            {lists.map(list => (
+              <List list={list} cards={cards[list.id]} key={list.id} />
             ))}
-            <CreateList buttonText={optimisticLists.length ? 'Add another list' : 'Add a list'} />
+            <CreateList buttonText={lists.length ? 'Add another list' : 'Add a list'} />
           </ul>
         </div>
       </div>

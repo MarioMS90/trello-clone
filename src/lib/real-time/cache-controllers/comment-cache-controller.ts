@@ -1,24 +1,21 @@
 import { TCard, TComment } from '@/types/db';
 import { commentKeys } from '@/lib/comment/queries';
-import { camelizeKeys } from '@/lib/utils/utils';
 import {
   insertQueryData,
   updateQueryData,
   deleteQueryData,
 } from '@/lib/utils/react-query/query-data-utils';
 import { QueryClient } from '@tanstack/react-query';
-import { CacheController } from '@/types/cache-types';
 import { cardKeys } from '@/lib/card/queries';
+import { CacheHandlers } from '../cache-types';
 
-export default function commentCacheController(queryClient: QueryClient): CacheController {
+export default function commentCacheController(queryClient: QueryClient): CacheHandlers<TComment> {
   return {
-    handleInsert: payload => {
-      const entity = camelizeKeys(payload.new) as TComment;
-
+    handleInsert: comment => {
       insertQueryData({
         queryClient,
-        queryKey: commentKeys.list(entity.cardId).queryKey,
-        entity,
+        queryKey: commentKeys.list(comment.cardId).queryKey,
+        entity: comment,
       });
 
       // Update the card with the new comment
@@ -28,7 +25,7 @@ export default function commentCacheController(queryClient: QueryClient): CacheC
       });
       const card = queryData
         .flatMap(([_, cards]) => cards ?? [])
-        .find(_card => _card.id === entity.cardId);
+        .find(_card => _card.id === comment.cardId);
 
       if (!card) {
         return;
@@ -41,23 +38,19 @@ export default function commentCacheController(queryClient: QueryClient): CacheC
       });
     },
 
-    handleUpdate: payload => {
-      const entity = camelizeKeys(payload.new) as TComment;
-
+    handleUpdate: comment => {
       updateQueryData({
         queryClient,
-        queryKey: commentKeys.list(entity.cardId).queryKey,
-        entity,
+        queryKey: commentKeys.list(comment.cardId).queryKey,
+        entity: comment,
       });
     },
 
-    handleDelete: payload => {
-      const entity = camelizeKeys(payload.old) as TComment;
-
+    handleDelete: comment => {
       deleteQueryData({
         queryClient,
-        queryKey: commentKeys.list(entity.cardId).queryKey,
-        entityId: entity.id,
+        queryKey: commentKeys.list(comment.cardId).queryKey,
+        entityId: comment.id,
       });
     },
   };

@@ -1,7 +1,7 @@
 import { Tables } from '@/types/database-types';
 import { LexoRank } from 'lexorank';
 
-const workspaces: Tables<'workspaces'>[] = [
+const workspaces: Omit<Tables<'workspaces'>, 'updated_at'>[] = [
   {
     id: crypto.randomUUID(),
     name: 'Mario workspace',
@@ -19,7 +19,7 @@ const workspaces: Tables<'workspaces'>[] = [
   },
 ];
 
-const userWorkspace: Omit<Tables<'user_workspaces'>, 'id' | 'created_at'>[] = [
+const userWorkspace: Omit<Tables<'user_workspaces'>, 'id' | 'created_at' | 'updated_at'>[] = [
   {
     user_id: '746a5280-bcc3-4a23-842f-be2ec0334e90',
     workspace_id: workspaces[0].id,
@@ -42,7 +42,7 @@ const userWorkspace: Omit<Tables<'user_workspaces'>, 'id' | 'created_at'>[] = [
   },
 ];
 
-const boards: Tables<'boards'>[] = [
+const boards: Omit<Tables<'boards'>, 'updated_at'>[] = [
   {
     id: '0e88de62-4c0a-4696-83d8-952fcde1dee4',
     name: 'My board',
@@ -75,14 +75,17 @@ const boards: Tables<'boards'>[] = [
   },
 ];
 
-const starredBoards: Omit<Tables<'starred_boards'>, 'id' | 'created_at' | 'workspace_id'>[] = [
+const starredBoards: Omit<
+  Tables<'starred_boards'>,
+  'id' | 'created_at' | 'workspace_id' | 'updated_at'
+>[] = [
   {
     user_id: '746a5280-bcc3-4a23-842f-be2ec0334e90',
     board_id: boards[0].id,
   },
 ];
 
-const listsData: Omit<Tables<'lists'>, 'rank' | 'created_at' | 'workspace_id'>[] = [
+const listsData: Omit<Tables<'lists'>, 'rank' | 'created_at' | 'workspace_id' | 'updated_at'>[] = [
   {
     id: crypto.randomUUID(),
     name: 'To do',
@@ -110,7 +113,7 @@ const lists = listsData.map(list => {
   return { ...list, rank: listsRank.format() };
 });
 
-const cardsData: Omit<Tables<'cards'>, 'rank' | 'created_at' | 'workspace_id'>[] = [
+const cardsData: Omit<Tables<'cards'>, 'rank' | 'created_at' | 'workspace_id' | 'updated_at'>[] = [
   {
     id: crypto.randomUUID(),
     name: 'Card with description',
@@ -142,7 +145,7 @@ const cards = cardsData.map(card => {
   return { ...card, rank: cardsRank.format() };
 });
 
-const comments: Omit<Tables<'comments'>, 'created_at' | 'id' | 'workspace_id'>[] = [
+const comments: Omit<Tables<'comments'>, 'created_at' | 'id' | 'workspace_id' | 'updated_at'>[] = [
   {
     content: 'This is a comment',
     user_id: '746a5280-bcc3-4a23-842f-be2ec0334e90',

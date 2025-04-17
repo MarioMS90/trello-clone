@@ -96,8 +96,9 @@ export function useStarredBoards() {
   );
 }
 
-export function useStarredBoard(boardId: string | null) {
-  return useStarredBoardsQuery(starredBoards =>
-    starredBoards.some(starred => starred.boardId === boardId),
-  );
+export function useStarredBoardId(boardId: string | null) {
+  return useStarredBoardsQuery(starredBoards => {
+    const index = starredBoards.findIndex(starred => starred.boardId === boardId);
+    return starredBoards[index]?.id;
+  });
 }

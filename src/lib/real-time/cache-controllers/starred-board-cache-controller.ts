@@ -1,43 +1,40 @@
 import { TStarredBoard } from '@/types/db';
 import { starredBoardKeys } from '@/lib/board/queries';
-import { camelizeKeys } from '@/lib/utils/utils';
 import {
   insertQueryData,
   updateQueryData,
   deleteQueryData,
 } from '@/lib/utils/react-query/query-data-utils';
 import { QueryClient } from '@tanstack/react-query';
-import { CacheController } from '@/types/cache-types';
+import { CacheHandlers } from '../cache-types';
 
-export default function starredBoardCacheController(queryClient: QueryClient): CacheController {
+export default function starredBoardCacheController(
+  queryClient: QueryClient,
+): CacheHandlers<TStarredBoard> {
   const { queryKey } = starredBoardKeys.list();
 
   return {
-    handleInsert: payload => {
-      const entity = camelizeKeys(payload.new) as TStarredBoard;
-
+    handleInsert: starredBoard => {
       insertQueryData({
         queryClient,
         queryKey,
-        entity,
+        entity: starredBoard,
       });
     },
-    handleUpdate: payload => {
-      const entity = camelizeKeys(payload.new) as TStarredBoard;
 
+    handleUpdate: starredBoard => {
       updateQueryData({
         queryClient,
         queryKey,
-        entity,
+        entity: starredBoard,
       });
     },
-    handleDelete: payload => {
-      const entity = camelizeKeys(payload.old) as TStarredBoard;
 
+    handleDelete: starredBoard => {
       deleteQueryData({
         queryClient,
         queryKey,
-        entityId: entity.id,
+        entityId: starredBoard.id,
       });
     },
   };

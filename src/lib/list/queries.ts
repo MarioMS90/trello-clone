@@ -1,5 +1,7 @@
 import { createQueryKeys } from '@lukemorales/query-key-factory';
 import { useSuspenseQuery } from '@tanstack/react-query';
+import { useCallback } from 'react';
+import { TList } from '@/types/db';
 import { getClient } from '../supabase/utils';
 
 async function fetchLists(boardId: string) {
@@ -32,5 +34,11 @@ export const listKeys = createQueryKeys('lists', {
 });
 
 export function useLists(boardId: string) {
-  return useSuspenseQuery(listKeys.list(boardId));
+  return useSuspenseQuery({
+    ...listKeys.list(boardId),
+    select: useCallback(
+      (lists: TList[]) => lists.toSorted((a, b) => a.rank.localeCompare(b.rank)),
+      [],
+    ),
+  });
 }

@@ -1,21 +1,38 @@
 'use client';
 
-import { useActionState, useEffect, useState } from 'react';
-import { createWorkspace } from '@/lib/workspace/actions';
-import { initialActionState } from '@/types/db';
+import { useState } from 'react';
 import Popover from '@/components/ui/popover';
+import { useMutation } from '@tanstack/react-query';
+import { createWorkspace } from '@/lib/workspace/actions';
 
 export function CreateWorkspace() {
-  const [formState, formAction, isPending] = useActionState(createWorkspace, initialActionState);
   const [isValidForm, setIsValidForm] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const {
+    mutate: createWorkspaceAction,
+    isPending,
+    data,
+  } = useMutation({
+    mutationFn: async (name: string) => createWorkspace({ name }),
+    onSuccess: async ({ errors }) => {
+      if (!errors) {
+        setIsValidForm(false);
+        setIsPopoverOpen(false);
+      }
+    },
+    onError: () => {
+      alert('An error occurred while creating the element');
+    },
+  });
 
-  useEffect(() => {
-    if (formState.success) {
-      setIsValidForm(false);
-      setIsPopoverOpen(false);
+  const formAction = (formData: FormData) => {
+    const name = formData.get('name')?.toString().trim();
+    if (!name) {
+      return;
     }
-  }, [formState.success]);
+
+    createWorkspaceAction(name);
+  };
 
   return (
     <Popover
@@ -52,9 +69,7 @@ export function CreateWorkspace() {
               type="text"
             />
           </label>
-          {formState.errors?.name && (
-            <p className="text-xs text-red-500">{formState.errors.name}</p>
-          )}
+          {data?.errors?.name && <p className="text-xs text-red-500">{data.errors.name}</p>}
           <button
             className="
             mt-3 

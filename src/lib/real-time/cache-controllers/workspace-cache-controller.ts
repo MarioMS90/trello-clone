@@ -1,43 +1,40 @@
 import { TWorkspace } from '@/types/db';
-import { camelizeKeys } from '@/lib/utils/utils';
 import {
   insertQueryData,
   updateQueryData,
   deleteQueryData,
 } from '@/lib/utils/react-query/query-data-utils';
 import { QueryClient } from '@tanstack/react-query';
-import { CacheController } from '@/types/cache-types';
 import { workspaceKeys } from '@/lib/workspace/queries';
+import { CacheHandlers } from '../cache-types';
 
-export default function workspaceCacheController(queryClient: QueryClient): CacheController {
+export default function workspaceCacheController(
+  queryClient: QueryClient,
+): CacheHandlers<TWorkspace> {
   const { queryKey } = workspaceKeys.list();
 
   return {
-    handleInsert: payload => {
-      const entity = camelizeKeys(payload.new) as TWorkspace;
-
+    handleInsert: workspace => {
       insertQueryData({
         queryClient,
         queryKey,
-        entity,
+        entity: workspace,
       });
     },
-    handleUpdate: payload => {
-      const entity = camelizeKeys(payload.new) as TWorkspace;
 
+    handleUpdate: workspace => {
       updateQueryData({
         queryClient,
         queryKey,
-        entity,
+        entity: workspace,
       });
     },
-    handleDelete: payload => {
-      const entity = camelizeKeys(payload.old) as TWorkspace;
 
+    handleDelete: workspace => {
       deleteQueryData({
         queryClient,
         queryKey,
-        entityId: entity.id,
+        entityId: workspace.id,
       });
     },
   };

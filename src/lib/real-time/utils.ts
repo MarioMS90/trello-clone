@@ -1,16 +1,20 @@
 import { TEntityName } from '@/types/db';
-import { QueryClient } from '@tanstack/react-query';
 import { Tables } from '@/types/database-types';
 import { RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 import { createClient } from '../supabase/client';
 
-export default function createChannel({
-  queryClient,
+export function getChannels() {
+  const supabase = createClient();
+  return supabase.getChannels();
+}
+
+export function createChannel({
   entity,
+  onSubscription,
   onChanges,
 }: {
-  queryClient: QueryClient;
   entity: TEntityName;
+  onSubscription: () => void;
   onChanges: (payload: RealtimePostgresChangesPayload<Tables<TEntityName>>) => void;
 }) {
   const supabase = createClient();
@@ -27,7 +31,7 @@ export default function createChannel({
         onChanges(payload);
       },
     )
-    .on('system', {}, payload => {
+    .on('system', {}, async payload => {
       if (payload.extension !== 'postgres_changes' || payload.status !== 'ok') {
         return;
       }
@@ -38,7 +42,8 @@ export default function createChannel({
       }
 
       if (previouslyDisconnected) {
-        queryClient.refetchQueries({ queryKey: [entity] });
+        // At this point the suscription is already established
+        onSubscription();
         previouslyDisconnected = false;
       }
     })

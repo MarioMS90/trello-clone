@@ -1,11 +1,8 @@
 import { TPublicSchema } from '@/types/db';
-import { redirect } from 'next/navigation';
-import { TablesUpdate } from '@/types/database-types';
+import { TablesInsert, TablesUpdate } from '@/types/database-types';
 import { createClient } from './client';
 
 const isServer = typeof window === 'undefined';
-
-export const revalidate = 60;
 
 export async function getClient() {
   if (isServer) {
@@ -27,39 +24,57 @@ export async function getAuthUser() {
   return user;
 }
 
-export async function updateEntity<TableName extends keyof TPublicSchema['Tables']>({
+export async function insertEntity<TableName extends keyof TPublicSchema['Tables']>({
   tableName,
   entityData,
-  redirectUrl,
 }: {
   tableName: keyof TPublicSchema['Tables'];
-  entityData: TablesUpdate<TableName> & { id: string };
-  redirectUrl?: string;
+  entityData: TablesInsert<TableName>;
 }) {
   const supabase = await getClient();
 
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from(tableName as keyof TPublicSchema['Tables'])
-    .update(entityData)
-    .eq('id', entityData.id);
+    .insert(entityData)
+    .select('id')
+    .single();
 
   if (error) {
     throw error;
   }
 
-  if (redirectUrl) {
-    redirect(redirectUrl);
+  return data.id;
+}
+
+export async function updateEntity<TableName extends keyof TPublicSchema['Tables']>({
+  tableName,
+  entityData,
+}: {
+  tableName: keyof TPublicSchema['Tables'];
+  entityData: TablesUpdate<TableName> & { id: string };
+}) {
+  const supabase = await getClient();
+
+  const { data, error } = await supabase
+    .from(tableName as keyof TPublicSchema['Tables'])
+    .update(entityData)
+    .eq('id', entityData.id)
+    .select('updated_at')
+    .single();
+
+  if (error) {
+    throw error;
   }
+
+  return data.updated_at;
 }
 
 export async function deleteEntity<TableName extends keyof TPublicSchema['Tables']>({
   tableName,
   entityId,
-  redirectUrl,
 }: {
   tableName: TableName;
   entityId: string;
-  redirectUrl?: string;
 }) {
   const supabase = await getClient();
 
@@ -67,9 +82,5 @@ export async function deleteEntity<TableName extends keyof TPublicSchema['Tables
 
   if (error) {
     throw error;
-  }
-
-  if (redirectUrl) {
-    redirect(redirectUrl);
   }
 }

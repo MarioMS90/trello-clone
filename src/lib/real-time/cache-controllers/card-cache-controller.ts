@@ -1,49 +1,42 @@
 import { TCard, TComment } from '@/types/db';
 import { cardKeys } from '@/lib/card/queries';
-import { camelizeKeys } from '@/lib/utils/utils';
 import {
   insertQueryData,
   updateQueryData,
   deleteQueryData,
 } from '@/lib/utils/react-query/query-data-utils';
 import { QueryClient } from '@tanstack/react-query';
-import { CacheController } from '@/types/cache-types';
 import { commentKeys } from '@/lib/comment/queries';
+import { CacheHandlers } from '../cache-types';
 
-export default function cardCacheController(queryClient: QueryClient): CacheController {
+export default function cardCacheController(queryClient: QueryClient): CacheHandlers<TCard> {
   return {
-    handleInsert: payload => {
-      const entity = camelizeKeys(payload.new) as TCard;
-
-      // Supabase realtime doesn't provide calculated fields that doesn't belong to the entity,
+    handleInsert: card => {
+      // Supabase realtime doesn't provide calculated fields that don't belong to the entity,
       // so we need to get the comments count from the query cache.
-      const comments = queryClient.getQueryData<TComment[]>(commentKeys.list(entity.id).queryKey);
+      const comments = queryClient.getQueryData<TComment[]>(commentKeys.list(card.id).queryKey);
       const commentCount = comments?.length ?? 0;
 
       insertQueryData({
         queryClient,
-        queryKey: cardKeys.list(entity.listId).queryKey,
-        entity: { ...entity, commentCount },
+        queryKey: cardKeys.list(card.listId).queryKey,
+        entity: { ...card, commentCount },
       });
     },
 
-    handleUpdate: payload => {
-      const entity = camelizeKeys(payload.new) as TCard;
-
+    handleUpdate: card => {
       updateQueryData({
         queryClient,
-        queryKey: cardKeys.list(entity.listId).queryKey,
-        entity,
+        queryKey: cardKeys.list(card.listId).queryKey,
+        entity: card,
       });
     },
 
-    handleDelete: payload => {
-      const entity = camelizeKeys(payload.old) as TCard;
-
+    handleDelete: card => {
       deleteQueryData({
         queryClient,
-        queryKey: cardKeys.list(entity.listId).queryKey,
-        entityId: entity.id,
+        queryKey: cardKeys.list(card.listId).queryKey,
+        entityId: card.id,
       });
     },
   };

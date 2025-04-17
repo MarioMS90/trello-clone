@@ -1,45 +1,38 @@
-import { TBoard } from '@/types/db';
 import { boardKeys } from '@/lib/board/queries';
-import { camelizeKeys } from '@/lib/utils/utils';
 import {
   insertQueryData,
   updateQueryData,
   deleteQueryData,
 } from '@/lib/utils/react-query/query-data-utils';
 import { QueryClient } from '@tanstack/react-query';
-import { CacheController } from '@/types/cache-types';
+import { TBoard } from '@/types/db';
+import { CacheHandlers } from '../cache-types';
 
-export default function boardCacheController(queryClient: QueryClient): CacheController {
+export default function boardCacheController(queryClient: QueryClient): CacheHandlers<TBoard> {
   const { queryKey } = boardKeys.list();
 
   return {
-    handleInsert: payload => {
-      const entity = camelizeKeys(payload.new) as TBoard;
-
+    handleInsert: board => {
       insertQueryData({
         queryClient,
         queryKey,
-        entity,
+        entity: board,
       });
     },
 
-    handleUpdate: payload => {
-      const entity = camelizeKeys(payload.new) as TBoard;
-
+    handleUpdate: board => {
       updateQueryData({
         queryClient,
         queryKey,
-        entity,
+        entity: board,
       });
     },
 
-    handleDelete: payload => {
-      const entity = camelizeKeys(payload.old) as TBoard;
-
+    handleDelete: board => {
       deleteQueryData({
         queryClient,
         queryKey,
-        entityId: entity.id,
+        entityId: board.id,
       });
     },
   };

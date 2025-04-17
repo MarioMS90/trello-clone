@@ -1,8 +1,9 @@
 'use client';
 
-import { useActionState, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { createBoard } from '@/lib/board/actions';
-import { initialActionState, TWorkspace } from '@/types/db';
+import { TWorkspace } from '@/types/db';
+import { useMutation } from '@tanstack/react-query';
 import Popover from '../../ui/popover';
 
 export function CreateBoard({
@@ -20,17 +21,47 @@ export function CreateBoard({
   buttonText?: React.ReactNode;
   redirectToNewBoard?: boolean;
 }) {
-  const createBoardWithId = createBoard.bind(null, workspaceId, redirectToNewBoard);
-  const [formState, formAction, isPending] = useActionState(createBoardWithId, initialActionState);
   const [isValidForm, setIsValidForm] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const {
+    mutate: createWorkspaceAction,
+    isPending,
+    data,
+  } = useMutation({
+    mutationFn: async ({
+      name,
+      selectedWorkspaceId,
+    }: {
+      name: string;
+      selectedWorkspaceId?: string;
+    }) => {
+      const targetWorkspaceId = workspaceId ?? selectedWorkspaceId;
+      if (!targetWorkspaceId) {
+        throw new Error('No workspace selected');
+      }
 
-  useEffect(() => {
-    if (formState.success) {
-      setIsValidForm(false);
-      setIsPopoverOpen(false);
+      return createBoard({ name, workspace_id: targetWorkspaceId }, redirectToNewBoard);
+    },
+    onSuccess: async ({ errors }) => {
+      if (!errors) {
+        setIsValidForm(false);
+        setIsPopoverOpen(false);
+      }
+    },
+    onError: () => {
+      alert('An error occurred while creating the element');
+    },
+  });
+
+  const formAction = (formData: FormData) => {
+    const name = formData.get('name')?.toString().trim();
+    const selectedWorkspaceId = formData.get('workspace-id')?.toString().trim();
+    if (!name) {
+      return;
     }
-  }, [formState.success]);
+
+    createWorkspaceAction({ name, selectedWorkspaceId });
+  };
 
   return (
     <div className="inline-block">
@@ -90,9 +121,7 @@ export function CreateBoard({
                 type="text"
               />
             </label>
-            {formState?.errors?.name && (
-              <p className="text-xs text-red-500">{formState.errors.name}</p>
-            )}
+            {data?.errors?.name && <p className="text-xs text-red-500">{data.errors.name}</p>}
             <button
               className="
             mt-3 

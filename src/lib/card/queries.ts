@@ -1,8 +1,10 @@
 import { createQueryKeys } from '@lukemorales/query-key-factory';
 import { useSuspenseQuery } from '@tanstack/react-query';
+import { TCard } from '@/types/db';
+import { useCallback } from 'react';
 import { getClient } from '../supabase/utils';
 
-async function fetchCards(boardId: string) {
+async function fetchCards(boardId: string): Promise<TCard[]> {
   const supabase = await getClient();
 
   const { data, error } = await supabase
@@ -18,6 +20,7 @@ async function fetchCards(boardId: string) {
       comments(
         count
       ),
+      createdAt: created_at,
       lists!inner()
     `,
     )
@@ -35,9 +38,24 @@ export const cardKeys = createQueryKeys('cards', {
   }),
 });
 
-export function useGroupedCardsByList(boardId: string) {
+export function useCardsGroupedByList(boardId: string) {
   return useSuspenseQuery({
     ...cardKeys.list(boardId),
-    select: cards => Object.groupBy(cards, ({ listId }) => listId),
+    select: useCallback((cards: TCard[]) => {
+      const grouped = cards.reduce<Record<string, TCard[]>>(
+        (_cards, card) => ({
+          ..._cards,
+          [card.listId]: [...(_cards[card.listId] ?? []), card],
+        }),
+        {},
+      );
+
+      return Object.fromEntries(
+        Object.entries(grouped).map(([listId, group]) => [
+          listId,
+          group.slice().toSorted((a, b) => a.rank.localeCompare(b.rank)),
+        ]),
+      );
+    }, []),
   });
 }

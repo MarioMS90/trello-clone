@@ -1,25 +1,18 @@
 'use server';
 
-import { TActionState, initialActionState } from '@/types/db';
+import { TMutationInsert, TMutationUpdate, TMutationDelete } from '@/types/db';
 import { CreateBoardSchema, UpdateBoardSchema } from '@/schemas/workspace-schemas';
-import { TablesUpdate } from '@/types/database-types';
+import { TablesInsert, TablesUpdate } from '@/types/database-types';
 import { redirect } from 'next/navigation';
-import { createClient } from '../supabase/server';
-import { deleteEntity, getAuthUser, updateEntity } from '../supabase/utils';
+import { deleteEntity, getAuthUser, insertEntity, updateEntity } from '../supabase/utils';
 
 export async function createBoard(
-  workspaceIdParam: string | undefined,
+  boardData: TablesInsert<'boards'>,
   redirectToNewBoard: boolean,
-  _: TActionState,
-  formData: FormData,
-): Promise<TActionState> {
-  if (!formData) {
-    return initialActionState;
-  }
-
+): Promise<TMutationInsert> {
   const validatedFields = CreateBoardSchema.safeParse({
-    name: formData.get('name'),
-    workspaceId: workspaceIdParam ?? formData.get('workspace-id'),
+    name: boardData.name,
+    workspaceId: boardData.workspace_id,
   });
   if (!validatedFields.success) {
     return {
@@ -28,59 +21,57 @@ export async function createBoard(
     };
   }
 
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from('boards')
-    .insert({ name: validatedFields.data.name, workspace_id: validatedFields.data.workspaceId })
-    .select()
-    .single();
-
-  if (error) throw error;
+  const id = await insertEntity({
+    tableName: 'boards',
+    entityData: {
+      name: validatedFields.data.name,
+      workspace_id: validatedFields.data.workspaceId,
+    },
+  });
 
   if (redirectToNewBoard) {
-    redirect(`/boards/${data.id}`);
+    redirect(`/boards/${id}`);
   }
 
-  return { success: true };
+  return { data: { id } };
 }
 
-export async function updateBoard(boardData: TablesUpdate<'boards'> & { id: string }) {
+export async function updateBoard(
+  boardData: TablesUpdate<'boards'> & { id: string },
+): Promise<TMutationUpdate> {
   const validatedFields = UpdateBoardSchema.safeParse(boardData);
   if (!validatedFields.success) {
     throw new Error('Invalid board data');
   }
 
-  return updateEntity({ tableName: 'boards', entityData: boardData });
+  const updatedAt = await updateEntity({ tableName: 'boards', entityData: boardData });
+
+  return { data: { id: boardData.id, updatedAt } };
 }
 
-export async function deleteBoard(boardId: string, redirectUrl?: string) {
-  return deleteEntity({ tableName: 'boards', entityId: boardId, redirectUrl });
+export async function deleteBoard(boardId: string, redirectUrl?: string): Promise<TMutationDelete> {
+  await deleteEntity({ tableName: 'boards', entityId: boardId });
+
+  if (redirectUrl) {
+    redirect(redirectUrl);
+  }
+
+  return { data: { id: boardId } };
 }
 
-export async function createStarredBoard(boardId: string) {
-  const supabase = await createClient();
+export async function createStarredBoard(boardId: string): Promise<TMutationInsert> {
   const user = await getAuthUser();
 
-  const { data, error } = await supabase
-    .from('starred_boards')
-    .insert({ user_id: user.id, board_id: boardId })
-    .select('id')
-    .single();
+  const id = await insertEntity({
+    tableName: 'starred_boards',
+    entityData: { user_id: user.id, board_id: boardId },
+  });
 
-  if (error) throw error;
-
-  return data;
+  return { data: { id } };
 }
 
-export async function deleteStarredBoard(boardId: string) {
-  const supabase = await createClient();
-  const user = await getAuthUser();
+export async function deleteStarredBoard(starredBoardId: string): Promise<TMutationDelete> {
+  await deleteEntity({ tableName: 'starred_boards', entityId: starredBoardId });
 
-  const { error } = await supabase
-    .from('starred_boards')
-    .delete()
-    .eq('user_id', user.id)
-    .eq('board_id', boardId);
-
-  if (error) throw error;
+  return { data: { id: starredBoardId } };
 }
