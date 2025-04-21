@@ -1,10 +1,9 @@
 'use server';
 
-import { TActionState } from '@/types/db';
+import { TList, TMutation, TMutationDelete } from '@/types/db';
 import { CreateListSchema, UpdateListSchema } from '@/schemas/workspace-schemas';
 import { TablesUpdate } from '@/types/database-types';
-import { createClient } from '../supabase/server';
-import { deleteEntity, updateEntity } from '../supabase/utils';
+import { deleteEntity, insertEntity, updateEntity } from '../supabase/utils';
 
 export async function createList({
   boardId,
@@ -14,7 +13,7 @@ export async function createList({
   boardId: string;
   name: string;
   rank: string;
-}): Promise<TActionState> {
+}): Promise<TMutation<TList>> {
   const validatedFields = CreateListSchema.safeParse({
     boardId,
     name,
@@ -24,42 +23,34 @@ export async function createList({
     throw new Error('Failed to create list.');
   }
 
-  const supabase = await createClient();
-  const { error } = await supabase
-    .from('lists')
-    .insert({
+  const list = await insertEntity({
+    tableName: 'lists',
+    entityData: {
       name: validatedFields.data.name,
       rank: validatedFields.data.rank,
       board_id: validatedFields.data.boardId,
-    })
-    .select(
-      ` 
-      *,
-      cards: card(
-        *,
-        comments: comment(
-          *
-        )
-      )
-    `,
-    )
-    .single();
+    },
+  });
 
-  if (error) throw error;
-
-  return { success: true };
+  return { data: list };
 }
 
-export async function updateList(listData: TablesUpdate<'lists'> & { id: string }) {
+export async function updateList(
+  listData: TablesUpdate<'lists'> & { id: string },
+): Promise<TMutation<TList>> {
   const validatedFields = UpdateListSchema.safeParse(listData);
 
   if (!validatedFields.success) {
     throw new Error('Invalid list data');
   }
 
-  return updateEntity({ tableName: 'lists', entityData: listData });
+  const list = await updateEntity({ tableName: 'lists', entityData: listData });
+
+  return { data: list };
 }
 
-export async function deleteList(listId: string) {
-  return deleteEntity({ tableName: 'lists', entityId: listId });
+export async function deleteList(listId: string): Promise<TMutationDelete> {
+  const id = await deleteEntity({ tableName: 'lists', entityId: listId });
+
+  return { data: { id } };
 }

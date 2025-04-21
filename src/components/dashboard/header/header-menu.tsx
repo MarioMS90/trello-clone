@@ -14,7 +14,7 @@ export default function HeaderMenu() {
   const { data: starredBoards } = useStarredBoards();
 
   const workspacesContent =
-    starredBoards.length > 0 ? (
+    workspaces.length > 0 ? (
       <ul className="space-y-1">
         {workspaces.map(({ id, name }) => (
           <li key={id}>

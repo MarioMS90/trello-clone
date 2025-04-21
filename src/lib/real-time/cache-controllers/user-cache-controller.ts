@@ -4,7 +4,7 @@ import {
   insertQueryData,
   updateQueryData,
   deleteQueryData,
-} from '@/lib/utils/react-query/query-data-utils';
+} from '@/lib/react-query/query-data-utils';
 import { QueryClient } from '@tanstack/react-query';
 import { CacheHandlers } from '../cache-types';
 

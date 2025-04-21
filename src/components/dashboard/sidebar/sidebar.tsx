@@ -100,7 +100,7 @@ export function WorkspaceSidebar({ workspace }: { workspace: TWorkspace }) {
               buttonText={<PlusIcon height={16} />}
             />
           </div>
-          <SidebarBoards workspaceId={workspace.id} />
+          <SidebarBoards />
         </div>
       </div>
     </nav>

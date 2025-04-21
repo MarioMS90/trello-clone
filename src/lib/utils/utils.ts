@@ -63,9 +63,10 @@ export function camelize(str: string, separator = '_') {
   }, '');
 }
 
-export function camelizeKeys<T extends Record<string, unknown>, U extends CamelCasedProperties<T>>(
-  obj: T,
-): U {
+export function camelizeKeys<
+  T extends Record<string, unknown | null>,
+  U extends CamelCasedProperties<T>,
+>(obj: T): U {
   return Object.keys(obj).reduce<U>((_obj, key) => {
     const camelizedKey = camelize(key);
 

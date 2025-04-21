@@ -4,7 +4,7 @@ import {
   insertQueryData,
   updateQueryData,
   deleteQueryData,
-} from '@/lib/utils/react-query/query-data-utils';
+} from '@/lib/react-query/query-data-utils';
 import { QueryClient } from '@tanstack/react-query';
 import { cardKeys } from '@/lib/card/queries';
 import { CacheHandlers } from '../cache-types';
@@ -18,7 +18,9 @@ export default function commentCacheController(queryClient: QueryClient): CacheH
         entity: comment,
       });
 
-      // Update the card with the new comment
+      // Supabase realtime doesn't provide calculated fields that
+      // don't belong to the entity, so we need to update the
+      // card's comment count manually.
       const queryData = queryClient.getQueriesData<TCard[]>({
         queryKey: ['cards'],
         type: 'active',

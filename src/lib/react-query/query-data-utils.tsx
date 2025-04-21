@@ -10,9 +10,13 @@ export function insertQueryData<T extends TEntity<TEntityName>>({
   queryKey: QueryKey;
   entity: T;
 }): void {
-  queryClient.setQueryData<T[]>(queryKey, (oldEntities: T[] | undefined) => {
+  queryClient.setQueryData<T[]>(queryKey, oldEntities => {
     if (!oldEntities) {
       return undefined;
+    }
+
+    if (oldEntities.some(oldEntity => oldEntity.id === entity.id)) {
+      return oldEntities;
     }
 
     return [...oldEntities, entity];
@@ -28,9 +32,13 @@ export function updateQueryData<T extends TEntity<TEntityName>>({
   queryKey: QueryKey;
   entity: T;
 }) {
-  queryClient.setQueryData<T[]>(queryKey, (oldEntities: T[] | undefined) => {
+  queryClient.setQueryData<T[]>(queryKey, oldEntities => {
     if (!oldEntities) {
       return undefined;
+    }
+
+    if (oldEntities.some(oldEntity => oldEntity.updatedAt === entity.updatedAt)) {
+      return oldEntities;
     }
 
     return oldEntities.map(oldEntity =>
@@ -46,11 +54,15 @@ export function deleteQueryData<T extends TEntity<TEntityName>>({
 }: {
   queryClient: QueryClient;
   queryKey: QueryKey;
-  entityId: string | undefined;
+  entityId: string;
 }) {
-  queryClient.setQueryData<T[]>(queryKey, (oldEntities: T[] | undefined) => {
+  queryClient.setQueryData<T[]>(queryKey, oldEntities => {
     if (!oldEntities) {
       return undefined;
+    }
+
+    if (!oldEntities.some(e => e.id === entityId)) {
+      return oldEntities;
     }
 
     return oldEntities.filter((entity: T) => entity.id !== entityId);

@@ -1,10 +1,10 @@
 import { createQueryKeys } from '@lukemorales/query-key-factory';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { TCard } from '@/types/db';
+import { TCard, TCardWithComments } from '@/types/db';
 import { useCallback } from 'react';
 import { getClient } from '../supabase/utils';
 
-async function fetchCards(boardId: string): Promise<TCard[]> {
+async function fetchCards(boardId: string): Promise<TCardWithComments[]> {
   const supabase = await getClient();
 
   const { data, error } = await supabase
@@ -17,10 +17,11 @@ async function fetchCards(boardId: string): Promise<TCard[]> {
       rank,
       listId: list_id,
       workspaceId: workspace_id,
+      createdAt: created_at,
+      updatedAt: updated_at,
       comments(
         count
       ),
-      createdAt: created_at,
       lists!inner()
     `,
     )

@@ -2,7 +2,7 @@
 
 import { memo, RefObject, useEffect, useRef, useState } from 'react';
 import PencilIcon from '@/components/icons/pencil';
-import { TCard } from '@/types/db';
+import { TCard, TCardWithComments } from '@/types/db';
 import invariant from 'tiny-invariant';
 import {
   draggable,
@@ -71,7 +71,7 @@ const CardDisplay = memo(function CardDisplay({
   outerRef,
   innerRef,
 }: {
-  card: TCard;
+  card: TCardWithComments;
   state: TCardState;
   outerRef?: RefObject<HTMLLIElement | null>;
   innerRef?: RefObject<HTMLDivElement | null>;
@@ -114,10 +114,10 @@ const CardDisplay = memo(function CardDisplay({
                 <DescriptionIcon width={16} height={16} />
               </span>
             )}
-            {card.comments?.length > 0 && (
+            {card.commentCount > 0 && (
               <span className="flex items-center gap-1" title="Comments">
                 <CommentIcon width={16} height={16} />
-                <span className="text-xs">{card.comments.length}</span>
+                <span className="text-xs">{card.commentCount}</span>
               </span>
             )}
           </div>

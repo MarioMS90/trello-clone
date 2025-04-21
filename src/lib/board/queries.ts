@@ -15,12 +15,14 @@ async function fetchBoards() {
       name,
       workspaceId: workspace_id,
       createdAt: created_at,
+      updatedAt: updated_at,
       workspaces!inner(
         user_workspaces!inner()
       )
     `,
     )
-    .eq('workspaces.user_workspaces.user_id', user.id);
+    .eq('workspaces.user_workspaces.user_id', user.id)
+    .order('created_at');
 
   if (error) throw error;
 
@@ -39,10 +41,12 @@ async function fetchStarredBoards() {
       userId: user_id,
       boardId: board_id,
       workspaceId: workspace_id,
-      createdAt: created_at
+      createdAt: created_at,
+      updatedAt: updated_at
     `,
     )
-    .eq('user_id', user.id);
+    .eq('user_id', user.id)
+    .order('created_at');
 
   if (error) throw error;
 

@@ -2,10 +2,10 @@
 
 import { createStarredBoard, deleteStarredBoard } from '@/lib/board/actions';
 import { memo } from 'react';
-import { useBoard, useStarredBoardId } from '@/lib/board/queries';
-import { useRealTimeContext } from '@/providers/real-time-provider';
-import { useMutation } from '@tanstack/react-query';
-import { MutationType } from '@/types/db';
+import { starredBoardKeys, useBoard, useStarredBoardId } from '@/lib/board/queries';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { TStarredBoard } from '@/types/db';
+import invariant from 'tiny-invariant';
 import StarIcon from '../../icons/star';
 import StarFillIcon from '../../icons/star-fill';
 
@@ -16,22 +16,17 @@ export const StarToggleBoard = memo(function StarToggleBoard({
   className?: string;
   boardId: string;
 }) {
-  const { awaitCacheSync } = useRealTimeContext();
+  const queryClient = useQueryClient();
   const { data: board } = useBoard(boardId);
   const { data: starredBoardId } = useStarredBoardId(board.id);
 
+  const { queryKey } = starredBoardKeys.list();
   const addStarred = useMutation({
     mutationFn: async () => createStarredBoard(board.id),
     onSuccess: async ({ data }) => {
-      if (!data) {
-        throw new Error('Invalid response data');
-      }
+      invariant(data);
 
-      return awaitCacheSync({
-        entityName: 'starred_boards',
-        mutationType: MutationType.INSERT,
-        match: data,
-      });
+      return queryClient.setQueryData(queryKey, (old: TStarredBoard[]) => [...old, data]);
     },
     onError: () => {
       alert('An error occurred while updating the element');
@@ -41,15 +36,11 @@ export const StarToggleBoard = memo(function StarToggleBoard({
   const removeStarred = useMutation({
     mutationFn: async () => deleteStarredBoard(starredBoardId),
     onSuccess: async ({ data }) => {
-      if (!data) {
-        throw new Error('Invalid response data');
-      }
+      invariant(data);
 
-      return awaitCacheSync({
-        entityName: 'starred_boards',
-        mutationType: MutationType.DELETE,
-        match: data,
-      });
+      return queryClient.setQueryData(queryKey, (old: TStarredBoard[]) =>
+        old.filter(_starred => _starred.id !== data.id),
+      );
     },
     onError: () => {
       alert('An error occurred while updating the element');

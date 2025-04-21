@@ -2,8 +2,11 @@
 
 import { useState } from 'react';
 import { createBoard } from '@/lib/board/actions';
-import { TWorkspace } from '@/types/db';
-import { useMutation } from '@tanstack/react-query';
+import { TBoard, TWorkspace } from '@/types/db';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { boardKeys } from '@/lib/board/queries';
+import invariant from 'tiny-invariant';
+import { useRouter } from 'next/navigation';
 import Popover from '../../ui/popover';
 
 export function CreateBoard({
@@ -21,12 +24,16 @@ export function CreateBoard({
   buttonText?: React.ReactNode;
   redirectToNewBoard?: boolean;
 }) {
+  const router = useRouter();
+  const queryClient = useQueryClient();
   const [isValidForm, setIsValidForm] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const { queryKey } = boardKeys.list();
+
   const {
-    mutate: createWorkspaceAction,
+    mutate: createBoardMutation,
     isPending,
-    data,
+    data: result,
   } = useMutation({
     mutationFn: async ({
       name,
@@ -40,13 +47,21 @@ export function CreateBoard({
         throw new Error('No workspace selected');
       }
 
-      return createBoard({ name, workspace_id: targetWorkspaceId }, redirectToNewBoard);
+      return createBoard({ name, workspace_id: targetWorkspaceId });
     },
-    onSuccess: async ({ errors }) => {
+    onSuccess: async ({ data, errors }) => {
+      invariant(data);
+
+      if (redirectToNewBoard) {
+        router.push(`/boards/${data.id}`);
+      }
+
       if (!errors) {
         setIsValidForm(false);
         setIsPopoverOpen(false);
       }
+
+      return queryClient.setQueryData(queryKey, (old: TBoard[]) => [...old, { ...data }]);
     },
     onError: () => {
       alert('An error occurred while creating the element');
@@ -60,7 +75,7 @@ export function CreateBoard({
       return;
     }
 
-    createWorkspaceAction({ name, selectedWorkspaceId });
+    createBoardMutation({ name, selectedWorkspaceId });
   };
 
   return (
@@ -121,7 +136,7 @@ export function CreateBoard({
                 type="text"
               />
             </label>
-            {data?.errors?.name && <p className="text-xs text-red-500">{data.errors.name}</p>}
+            {result?.errors?.name && <p className="text-xs text-red-500">{result.errors.name}</p>}
             <button
               className="
             mt-3 

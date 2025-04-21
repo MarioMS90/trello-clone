@@ -3,7 +3,7 @@ import { HeaderSkeleton } from '@/components/ui/skeletons';
 import ReactQueryProvider from '@/providers/react-query-provider';
 import { Suspense } from 'react';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
-import getQueryClient from '@/lib/utils/react-query/get-query-client';
+import getQueryClient from '@/lib/react-query/get-query-client';
 import { userKeys } from '@/lib/user/queries';
 import { workspaceKeys } from '@/lib/workspace/queries';
 import { boardKeys, starredBoardKeys } from '@/lib/board/queries';

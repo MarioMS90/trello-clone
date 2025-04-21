@@ -14,10 +14,12 @@ async function fetchWorkspaces() {
       id,
       name,
       createdAt: created_at,
-      user_workspaces!inner()
+      user_workspaces!inner(),
+      updatedAt: updated_at
     `,
     )
-    .eq('user_workspaces.user_id', user.id);
+    .eq('user_workspaces.user_id', user.id)
+    .order('created_at');
 
   if (error) throw error;
 
@@ -36,10 +38,12 @@ async function fetchUserWorkspaces() {
       userId: user_id,
       workspaceId: workspace_id,
       role,
-      createdAt: created_at
+      createdAt: created_at,
+      updatedAt: updated_at
     `,
     )
-    .in('workspace_id', workspaceIds);
+    .in('workspace_id', workspaceIds)
+    .order('created_at');
 
   if (error) throw error;
 

@@ -34,18 +34,8 @@ export default function Board() {
     redirect(`/workspaces/${workspaceId}`);
   }
 
-  const { data: initialLists } = useLists(boardId);
-  const { data: initialCards } = useCardsGroupedByList(boardId);
-  const [lists, setLists] = useState<TList[]>(initialLists);
-  const [cards, setCards] = useState<Record<string, TCard[]>>(initialCards);
-
-  useEffect(() => {
-    setLists(initialLists);
-  }, [initialLists]);
-
-  useEffect(() => {
-    setCards(initialCards);
-  }, [initialCards]);
+  const { data: lists } = useLists(boardId);
+  const { data: cards } = useCardsGroupedByList(boardId);
 
   useEffect(() => {
     registerChannel('lists');

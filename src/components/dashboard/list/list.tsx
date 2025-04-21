@@ -1,6 +1,6 @@
 'use client';
 
-import { TCard, TList } from '@/types/db';
+import { TCard, TCardWithComments, TList } from '@/types/db';
 import DotsIcon from '@/components/icons/dots';
 import PlusIcon from '@/components/icons/plus';
 import { memo, RefObject, useEffect, useRef, useState } from 'react';
@@ -87,7 +87,7 @@ const ListDisplay = memo(function ListDisplay({
   scrollableRef,
 }: {
   list: TList;
-  cards: TCard[];
+  cards: TCardWithComments[];
   state: TListState;
   outerFullHeightRef?: RefObject<HTMLLIElement | null>;
   innerRef?: RefObject<HTMLDivElement | null>;

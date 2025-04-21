@@ -1,5 +1,4 @@
 import {
-  MutationType,
   TBoard,
   TCard,
   TComment,
@@ -11,7 +10,10 @@ import {
   TWorkspace,
 } from '@/types/db';
 import { QueryClient } from '@tanstack/react-query';
-import { RealtimePostgresChangesPayload } from '@supabase/supabase-js';
+import {
+  REALTIME_POSTGRES_CHANGES_LISTEN_EVENT,
+  RealtimePostgresChangesPayload,
+} from '@supabase/supabase-js';
 import { Tables } from '@/types/database-types';
 import boardCacheController from './cache-controllers/board-cache-controller';
 import userCacheController from './cache-controllers/user-cache-controller';
@@ -69,15 +71,15 @@ export default function cacheSyncHandler(
     return;
   }
 
-  if (payload.eventType === MutationType.INSERT) {
+  if (payload.eventType === REALTIME_POSTGRES_CHANGES_LISTEN_EVENT.INSERT) {
     cacheController.handleInsert(camelizeKeys(payload.new));
   }
 
-  if (payload.eventType === MutationType.UPDATE) {
-    cacheController.handleUpdate(camelizeKeys(payload.old));
+  if (payload.eventType === REALTIME_POSTGRES_CHANGES_LISTEN_EVENT.UPDATE) {
+    cacheController.handleUpdate(camelizeKeys(payload.new));
   }
 
-  if (payload.eventType === MutationType.DELETE) {
+  if (payload.eventType === REALTIME_POSTGRES_CHANGES_LISTEN_EVENT.DELETE) {
     cacheController.handleDelete(camelizeKeys(payload.old));
   }
 }

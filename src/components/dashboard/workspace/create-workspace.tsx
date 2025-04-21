@@ -2,23 +2,43 @@
 
 import { useState } from 'react';
 import Popover from '@/components/ui/popover';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createWorkspace } from '@/lib/workspace/actions';
+import invariant from 'tiny-invariant';
+import { userWorkspaceKeys, workspaceKeys } from '@/lib/workspace/queries';
+import { TUserWorkspace, TWorkspace } from '@/types/db';
 
 export function CreateWorkspace() {
+  const queryClient = useQueryClient();
   const [isValidForm, setIsValidForm] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const { queryKey } = workspaceKeys.list();
+
   const {
     mutate: createWorkspaceAction,
     isPending,
-    data,
+    data: result,
   } = useMutation({
     mutationFn: async (name: string) => createWorkspace({ name }),
-    onSuccess: async ({ errors }) => {
+    onSuccess: async ({ data, errors }) => {
+      invariant(data);
+
       if (!errors) {
         setIsValidForm(false);
         setIsPopoverOpen(false);
       }
+
+      queryClient.setQueryData(queryKey, (old: TWorkspace[]) => [...old, { ...data.workspace }]);
+      return queryClient.setQueryData(
+        userWorkspaceKeys.list().queryKey,
+        (old: TUserWorkspace[]) => {
+          if (!old) {
+            return undefined;
+          }
+
+          return [...old, { ...data.userWorkspace }];
+        },
+      );
     },
     onError: () => {
       alert('An error occurred while creating the element');
@@ -69,7 +89,7 @@ export function CreateWorkspace() {
               type="text"
             />
           </label>
-          {data?.errors?.name && <p className="text-xs text-red-500">{data.errors.name}</p>}
+          {result?.errors?.name && <p className="text-xs text-red-500">{result.errors.name}</p>}
           <button
             className="
             mt-3 

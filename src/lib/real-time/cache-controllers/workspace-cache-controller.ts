@@ -3,7 +3,7 @@ import {
   insertQueryData,
   updateQueryData,
   deleteQueryData,
-} from '@/lib/utils/react-query/query-data-utils';
+} from '@/lib/react-query/query-data-utils';
 import { QueryClient } from '@tanstack/react-query';
 import { workspaceKeys } from '@/lib/workspace/queries';
 import { CacheHandlers } from '../cache-types';

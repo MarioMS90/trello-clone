@@ -16,7 +16,8 @@ async function fetchLists(boardId: string) {
       rank,
       boardId: board_id,
       workspaceId: workspace_id,
-      createdAt: created_at
+      createdAt: created_at,
+      updatedAt: updated_at
     `,
     )
     .eq('board_id', boardId);

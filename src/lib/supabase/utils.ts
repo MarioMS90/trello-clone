@@ -1,6 +1,7 @@
-import { TPublicSchema } from '@/types/db';
+import { TEntity, TEntityName, TPublicSchema } from '@/types/db';
 import { TablesInsert, TablesUpdate } from '@/types/database-types';
 import { createClient } from './client';
+import { camelizeKeys } from '../utils/utils';
 
 const isServer = typeof window === 'undefined';
 
@@ -24,52 +25,52 @@ export async function getAuthUser() {
   return user;
 }
 
-export async function insertEntity<TableName extends keyof TPublicSchema['Tables']>({
+export async function insertEntity<TableName extends TEntityName>({
   tableName,
   entityData,
 }: {
-  tableName: keyof TPublicSchema['Tables'];
+  tableName: TableName;
   entityData: TablesInsert<TableName>;
-}) {
+}): Promise<TEntity<TableName>> {
   const supabase = await getClient();
 
   const { data, error } = await supabase
     .from(tableName as keyof TPublicSchema['Tables'])
     .insert(entityData)
-    .select('id')
+    .select('*')
     .single();
 
   if (error) {
     throw error;
   }
 
-  return data.id;
+  return camelizeKeys(data) as TEntity<TableName>;
 }
 
-export async function updateEntity<TableName extends keyof TPublicSchema['Tables']>({
+export async function updateEntity<TableName extends TEntityName>({
   tableName,
   entityData,
 }: {
-  tableName: keyof TPublicSchema['Tables'];
+  tableName: TableName;
   entityData: TablesUpdate<TableName> & { id: string };
-}) {
+}): Promise<TEntity<TableName>> {
   const supabase = await getClient();
 
   const { data, error } = await supabase
     .from(tableName as keyof TPublicSchema['Tables'])
     .update(entityData)
     .eq('id', entityData.id)
-    .select('updated_at')
+    .select('*')
     .single();
 
   if (error) {
     throw error;
   }
 
-  return data.updated_at;
+  return camelizeKeys(data) as TEntity<TableName>;
 }
 
-export async function deleteEntity<TableName extends keyof TPublicSchema['Tables']>({
+export async function deleteEntity<TableName extends TEntityName>({
   tableName,
   entityId,
 }: {
@@ -83,4 +84,6 @@ export async function deleteEntity<TableName extends keyof TPublicSchema['Tables
   if (error) {
     throw error;
   }
+
+  return entityId;
 }

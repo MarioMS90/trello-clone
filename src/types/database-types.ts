@@ -323,7 +323,7 @@ export type Database = {
     Functions: {
       create_workspace_with_admin_access: {
         Args: { workspace_name: string };
-        Returns: string;
+        Returns: Json;
       };
       get_workspace_id: {
         Args: { board_id_param: string };
