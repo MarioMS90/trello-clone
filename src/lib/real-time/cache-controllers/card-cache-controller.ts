@@ -39,13 +39,24 @@ export default function cardCacheController(queryClient: QueryClient): CacheHand
       });
     },
 
-    handleDelete: card => {
-      const queryKey = getQueryKey(card.listId) ?? [];
+    handleDelete: id => {
+      const queriesData = queryClient.getQueriesData<TCard[]>({
+        queryKey: ['cards'],
+      });
+      const oldCard = queriesData
+        .flatMap(([_, cards]) => cards ?? [])
+        .find(_oldCard => _oldCard.id === id);
+
+      if (!oldCard) {
+        return;
+      }
+
+      const queryKey = getQueryKey(oldCard.listId) ?? [];
 
       deleteQueryData({
         queryClient,
         queryKey,
-        entityId: card.id,
+        entityId: id,
       });
     },
   };

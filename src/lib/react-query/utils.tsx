@@ -61,7 +61,7 @@ export function deleteQueryData<T extends TEntity<TEntityName>>({
       return undefined;
     }
 
-    if (!oldEntities.some(e => e.id === entityId)) {
+    if (!oldEntities.some(oldEntity => oldEntity.id === entityId)) {
       return oldEntities;
     }
 

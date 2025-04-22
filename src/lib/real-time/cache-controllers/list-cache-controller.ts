@@ -22,11 +22,22 @@ export default function listCacheController(queryClient: QueryClient): CacheHand
       });
     },
 
-    handleDelete: list => {
+    handleDelete: id => {
+      const queriesData = queryClient.getQueriesData<TList[]>({
+        queryKey: ['lists'],
+      });
+      const oldList = queriesData
+        .flatMap(([_, lists]) => lists ?? [])
+        .find(_oldList => _oldList.id === id);
+
+      if (!oldList) {
+        return;
+      }
+
       deleteQueryData({
         queryClient,
-        queryKey: listKeys.list(list.boardId).queryKey,
-        entityId: list.id,
+        queryKey: listKeys.list(oldList.boardId).queryKey,
+        entityId: id,
       });
     },
   };

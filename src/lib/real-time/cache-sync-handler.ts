@@ -80,6 +80,6 @@ export default function cacheSyncHandler(
   }
 
   if (payload.eventType === REALTIME_POSTGRES_CHANGES_LISTEN_EVENT.DELETE) {
-    cacheController.handleDelete(camelizeKeys(payload.old));
+    cacheController.handleDelete(payload.old.id as string);
   }
 }

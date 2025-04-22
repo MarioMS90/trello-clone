@@ -25,11 +25,11 @@ export default function userCacheController(queryClient: QueryClient): CacheHand
       });
     },
 
-    handleDelete: user => {
+    handleDelete: id => {
       deleteQueryData({
         queryClient,
         queryKey,
-        entityId: user.id,
+        entityId: id,
       });
     },
   };

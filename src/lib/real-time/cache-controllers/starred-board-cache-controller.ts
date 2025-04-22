@@ -26,11 +26,11 @@ export default function starredBoardCacheController(
       });
     },
 
-    handleDelete: starredBoard => {
+    handleDelete: id => {
       deleteQueryData({
         queryClient,
         queryKey,
-        entityId: starredBoard.id,
+        entityId: id,
       });
     },
   };

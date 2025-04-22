@@ -26,11 +26,11 @@ export default function userWorkspaceCacheController(
       });
     },
 
-    handleDelete: userWorkspace => {
+    handleDelete: id => {
       deleteQueryData({
         queryClient,
         queryKey,
-        entityId: userWorkspace.id,
+        entityId: id,
       });
     },
   };
