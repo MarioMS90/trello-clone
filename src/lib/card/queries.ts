@@ -48,25 +48,21 @@ export const useCardsQuery = <TData = TCardWithComments[]>(
     select,
   });
 
-export function useCardsGroupedByList(boardId: string) {
+export function useCardsGroupedByList(boardId: string, listIds: string[]) {
   return useCardsQuery(
     boardId,
-    useCallback((cards: TCardWithComments[]) => {
-      const grouped = cards.reduce<Record<string, TCardWithComments[]>>(
-        (_cards, card) => ({
-          ..._cards,
-          [card.listId]: [...(_cards[card.listId] ?? []), card],
-        }),
-        {},
-      );
-
-      return Object.fromEntries(
-        Object.entries(grouped).map(([listId, group]) => [
-          listId,
-          group.slice().toSorted((a, b) => a.rank.localeCompare(b.rank)),
-        ]),
-      );
-    }, []),
+    useCallback(
+      (cards: TCardWithComments[]) =>
+        Object.fromEntries(
+          listIds.map(listId => [
+            listId,
+            cards
+              .filter(card => card.listId === listId)
+              .toSorted((a, b) => a.rank.localeCompare(b.rank)),
+          ]),
+        ),
+      [listIds],
+    ),
   );
 }
 

@@ -1,14 +1,6 @@
 import { CamelCasedProperties } from 'type-fest';
 import { Database, Tables } from './database-types';
 
-export type TSubset<T> = {
-  [K in keyof T]?: T[K];
-};
-
-export type TSubsetWithId<T extends { id: string }> = {
-  id: T['id'];
-} & TSubset<T>;
-
 export type TPublicSchema = Database[Extract<keyof Database, 'public'>];
 
 export type TEntityName = keyof TPublicSchema['Tables'];

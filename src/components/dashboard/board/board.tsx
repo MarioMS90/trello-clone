@@ -5,25 +5,28 @@ import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
 import { monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
 import { getReorderDestinationIndex } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index';
-import { reorder } from '@atlaskit/pragmatic-drag-and-drop/reorder';
 import { autoScrollForElements } from '@atlaskit/pragmatic-drag-and-drop-auto-scroll/element';
 import { bind, bindAll } from 'bind-event-listener';
 import { isCardData, isListData, TCardData, TListData } from '@/types/drag-types';
 import { TCardWithComments, TList } from '@/types/db';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { List } from '@/components/dashboard/list/list';
 import { generateRank } from '@/lib/utils/utils';
 import { CleanupFn } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types';
 import { blockBoardPanningAttr } from '@/constants/constants';
-import { useLists } from '@/lib/list/queries';
+import { listKeys, useLists } from '@/lib/list/queries';
 import { redirect } from 'next/navigation';
-import { useCardsGroupedByList } from '@/lib/card/queries';
+import { cardKeys, useCardsGroupedByList } from '@/lib/card/queries';
 import { useRealTimeContext } from '@/providers/real-time-provider';
 import { useBoard } from '@/lib/board/queries';
 import { useWorkspaceId } from '@/hooks/useWorkspaceId';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { updateList } from '@/lib/list/actions';
+import { updateCard } from '@/lib/card/actions';
 import { CreateList } from '../list/create-list';
 
 export default function Board({ boardId }: { boardId: string }) {
+  const queryClient = useQueryClient();
   const { data: board } = useBoard(boardId);
   const workspaceId = useWorkspaceId();
   const { registerChannel } = useRealTimeContext();
@@ -33,52 +36,101 @@ export default function Board({ boardId }: { boardId: string }) {
     redirect(`/workspaces/${workspaceId}`);
   }
 
-  const { data: lists } = useLists(boardId);
-  // const { data: cards } = useCardsGroupedByList(boardId);
-
   useEffect(() => {
     registerChannel('lists');
     registerChannel('cards');
     registerChannel('comments');
   }, [registerChannel]);
 
-  const reorderElement = useCallback(
-    <T extends { id: string; rank: string }>({
-      elements,
-      startIndex,
-      finishIndex,
-    }: {
-      elements: T[];
-      startIndex: number;
-      finishIndex: number;
-    }) => {
-      if (startIndex === finishIndex) {
-        return elements;
-      }
-
-      const rank = generateRank(
-        elements,
-        startIndex < finishIndex ? finishIndex : finishIndex - 1,
-      ).format();
-
-      const updated = elements.with(startIndex, {
-        ...elements[startIndex],
-        rank,
-      });
-
-      const reordered = reorder({
-        list: updated,
-        startIndex,
-        finishIndex,
-      });
-
-      return reordered;
-    },
-    [],
+  const { data: lists } = useLists(boardId);
+  const { data: cards } = useCardsGroupedByList(
+    boardId,
+    lists.map(list => list.id),
   );
 
-  const getPositionIndices = useCallback(
-    <T extends { id: string }>({
+  const { queryKey: listsKey } = listKeys.list(boardId);
+  const { mutate: moveList } = useMutation({
+    mutationFn: async ({ listId, rank }: { listId: string; rank: string }) =>
+      updateList({ id: listId, rank }),
+    onMutate: async ({ listId, rank }: { listId: string; rank: string }) => {
+      await queryClient.cancelQueries({ queryKey: listsKey });
+
+      const previous = queryClient.getQueryData<TList[]>(listsKey);
+      const previousList = previous?.find(list => list.id === listId);
+      invariant(previousList);
+
+      queryClient.setQueryData(listsKey, (old: TList[]) =>
+        old.map(list => (list.id === listId ? { ...list, rank } : list)),
+      );
+
+      return { previousList };
+    },
+    onSuccess: async ({ data }) => {
+      invariant(data);
+      queryClient.setQueryData(listsKey, (old: TList[]) =>
+        old.map(list => (list.id === data.id ? { ...list, ...data } : list)),
+      );
+    },
+    onError: (_error, _variables, context) => {
+      invariant(context);
+      queryClient.setQueryData(listsKey, (old: TList[]) =>
+        old.map(list => (list.id === context.previousList.id ? context.previousList : list)),
+      );
+
+      alert('An error occurred while updating the element');
+    },
+  });
+
+  const { queryKey: cardsKey } = cardKeys.list(boardId);
+  const { mutate: moveCard } = useMutation({
+    mutationFn: async ({
+      cardId,
+      rank,
+      listId,
+    }: {
+      cardId: string;
+      rank: string;
+      listId: string;
+    }) => updateCard({ id: cardId, rank, list_id: listId }),
+    onMutate: async ({
+      cardId,
+      rank,
+      listId,
+    }: {
+      cardId: string;
+      rank: string;
+      listId: string;
+    }) => {
+      await queryClient.cancelQueries({ queryKey: cardsKey });
+
+      const previous = queryClient.getQueryData<TCardWithComments[]>(cardsKey);
+      const previousCard = previous?.find(card => card.id === cardId);
+      invariant(previousCard);
+
+      queryClient.setQueryData(cardsKey, (old: TCardWithComments[]) =>
+        old.map(card => (card.id === cardId ? { ...card, rank, listId } : card)),
+      );
+
+      return { previousCard };
+    },
+    onSuccess: async ({ data }) => {
+      invariant(data);
+      queryClient.setQueryData(cardsKey, (old: TCardWithComments[]) =>
+        old.map(card => (card.id === data.id ? { ...card, ...data } : card)),
+      );
+    },
+    onError: (_error, _variables, context) => {
+      invariant(context);
+      queryClient.setQueryData(cardsKey, (old: TCardWithComments[]) =>
+        old.map(card => (card.id === context.previousCard.id ? context.previousCard : card)),
+      );
+
+      alert('An error occurred while updating the element');
+    },
+  });
+
+  const getRank = useCallback(
+    <T extends { id: string; rank: string }>({
       source,
       destination,
       dragging,
@@ -95,125 +147,43 @@ export default function Board({ boardId }: { boardId: string }) {
       const isReorder = !destination;
 
       if (!dropTarget) {
-        return {
-          startIndex,
-          finishIndex: !isReorder ? destination.length : source.length - 1,
-        };
+        const lastIndex = source.length - 1;
+
+        if (isReorder && startIndex === lastIndex) {
+          return undefined;
+        }
+
+        return generateRank(source, lastIndex).format();
       }
 
-      const indexOfTarget = isReorder
-        ? source.findIndex(element => element.id === dropTarget.id)
-        : destination.findIndex(element => element.id === dropTarget.id);
+      const destinationList = destination ?? source;
+      const indexOfTarget = destinationList.findIndex(element => element.id === dropTarget.id);
       const closestEdgeOfTarget = extractClosestEdge(dropTarget);
 
       if (!isReorder) {
-        const finishIndex = getReorderDestinationIndex({
-          startIndex,
-          indexOfTarget,
-          closestEdgeOfTarget,
-          axis,
-        });
-
-        return { startIndex, finishIndex };
+        return generateRank(
+          source,
+          closestEdgeOfTarget === 'top' ? indexOfTarget - 1 : indexOfTarget,
+        ).format();
       }
 
-      return {
+      const finishIndex = getReorderDestinationIndex({
         startIndex,
-        finishIndex: closestEdgeOfTarget === 'top' ? indexOfTarget : indexOfTarget + 1,
-      };
-    },
-    [],
-  );
-
-  const moveCard = useCallback(
-    ({
-      cardId,
-      destinationIndex,
-      sourceListIndex,
-      destinationListIndex,
-    }: {
-      cardId: string;
-      destinationIndex: number;
-      sourceListIndex: number;
-      destinationListIndex: number;
-    }) => {
-      const sourceList = lists[sourceListIndex];
-      const destinationList = lists[destinationListIndex];
-      const draggingCard = sourceList.cards.find(card => card.id === cardId);
-
-      if (!draggingCard) {
-        return undefined;
-      }
-
-      const rank = generateRank(destinationList.cards, destinationIndex - 1).format();
-
-      const filtered = lists.with(sourceListIndex, {
-        ...sourceList,
-        cards: sourceList.cards.filter(card => card.id !== cardId),
+        indexOfTarget,
+        closestEdgeOfTarget,
+        axis,
       });
-
-      const updated = filtered.with(destinationListIndex, {
-        ...destinationList,
-        cards: destinationList.cards.toSpliced(destinationIndex, 0, {
-          ...draggingCard,
-          list_id: destinationList.id,
-          rank,
-        }),
-      });
-
-      return updated;
-    },
-    [lists],
-  );
-
-  const positionCard = useCallback(
-    ({
-      dragging,
-      listTarget,
-      cardTarget,
-    }: {
-      dragging: TCardData;
-      listTarget: TListData;
-      cardTarget: TCardData | null;
-    }) => {
-      const sourceListIndex = lists.findIndex(list => list.id === dragging.listId);
-      const destinationListIndex = lists.findIndex(list => list.id === listTarget.id);
-      const isReorder = sourceListIndex === destinationListIndex;
-      const { startIndex, finishIndex } = getPositionIndices({
-        source: cards[dragging.listId],
-        destination: !isReorder ? cards[listTarget.listId] : undefined,
-        dragging,
-        dropTarget: cardTarget,
-        axis: 'vertical',
-      });
-
-      if (!isReorder) {
-        return moveCard({
-          cardId: dragging.id,
-          destinationIndex: finishIndex,
-          sourceListIndex,
-          destinationListIndex,
-        });
-      }
 
       if (startIndex === finishIndex) {
         return undefined;
       }
 
-      const reordered = reorderElement({
-        elements: sourceList.cards,
-        startIndex,
-        finishIndex,
-      });
-
-      const updated = lists.with(sourceListIndex, {
-        ...sourceList,
-        cards: reordered,
-      });
-
-      return updated;
+      return generateRank(
+        source,
+        startIndex < finishIndex ? finishIndex : finishIndex - 1,
+      ).format();
     },
-    [lists, moveCard, getPositionIndices, reorderElement],
+    [],
   );
 
   useEffect(() => {
@@ -231,38 +201,18 @@ export default function Board({ boardId }: { boardId: string }) {
             return;
           }
 
-          const { startIndex, finishIndex } = getPositionIndices({
+          const rank = getRank({
             source: lists,
             dragging,
             dropTarget: listTarget,
             axis: 'horizontal',
           });
 
-          if (startIndex === finishIndex) {
+          if (!rank) {
             return;
           }
 
-          const updatedLists = reorderElement({
-            elements: lists,
-            startIndex,
-            finishIndex,
-          });
-
-          startTransition(async () => {
-            setOptimisticLists(() => updatedLists);
-
-            try {
-              const { rank } = updatedLists[finishIndex];
-
-              await updateEntity({
-                tableName: 'list',
-                entityData: { id: dragging.id, rank },
-              });
-              startTransition(async () => setLists(updatedLists));
-            } catch (error) {
-              alert('An error occurred while updating the element');
-            }
-          });
+          moveList({ listId: dragging.id, rank });
         },
       }),
       monitorForElements({
@@ -277,35 +227,20 @@ export default function Board({ boardId }: { boardId: string }) {
             return;
           }
 
-          const updatedLists = positionCard({
+          const destination = dragging.listId !== listTarget.id ? cards[listTarget.id] : undefined;
+          const rank = getRank({
+            source: cards[listTarget.id],
+            destination,
             dragging,
-            listTarget,
-            cardTarget,
+            dropTarget: cardTarget,
+            axis: 'vertical',
           });
 
-          if (!updatedLists) {
+          if (!rank) {
             return;
           }
 
-          startTransition(async () => {
-            setOptimisticLists(() => updatedLists);
-
-            try {
-              const listIndex = updatedLists.findIndex(list =>
-                list.cards.some(card => card.id === dragging.id),
-              );
-              const list = updatedLists[listIndex];
-              const cardIndex = list.cards.findIndex(card => card.id === dragging.id);
-
-              await updateEntity({
-                tableName: 'card',
-                entityData: { id: dragging.id, list_id: list.id, rank: list.cards[cardIndex].rank },
-              });
-              startTransition(async () => setLists(updatedLists));
-            } catch (error) {
-              alert('An error occurred while updating the element');
-            }
-          });
+          moveCard({ cardId: dragging.id, rank, listId: listTarget.id });
         },
       }),
       autoScrollForElements({
@@ -314,7 +249,7 @@ export default function Board({ boardId }: { boardId: string }) {
         element: scrollable,
       }),
     );
-  }, [lists, getPositionIndices, reorderElement, positionCard, setOptimisticLists]);
+  }, [lists, cards, getRank, moveList, moveCard]);
 
   // Panning the board
   useEffect(() => {

@@ -46,7 +46,7 @@ export function CreateList({ boardId }: { boardId: string }) {
     onSuccess: async ({ data }, _variables, context) => {
       invariant(data);
       queryClient.setQueryData(queryKey, (old: TList[]) =>
-        old.map(list => (list.id === context.optimisticList.id ? data : list)),
+        old.map(list => (list.id === context.optimisticList.id ? { ...list, ...data } : list)),
       );
     },
     onError: (_error, _variables, context) => {
@@ -55,7 +55,7 @@ export function CreateList({ boardId }: { boardId: string }) {
         old.filter(list => list.id !== context.optimisticList.id),
       );
 
-      alert('An error occurred while deleting the element');
+      alert('An error occurred while creating the element');
     },
   });
 
@@ -69,7 +69,7 @@ export function CreateList({ boardId }: { boardId: string }) {
     }
 
     const rank = generateRank(lists, lists.length - 1);
-    addList({ name, rank: rank.toString() });
+    addList({ name, rank: rank.format() });
     textarea.value = '';
     textarea.focus();
   };

@@ -1,7 +1,6 @@
 import { twMerge } from 'tailwind-merge';
 import { clsx, type ClassValue } from 'clsx';
 import { LexoRank } from 'lexorank';
-import { TSubsetWithId } from '@/types/db';
 import { RefObject } from 'react';
 import { CamelCasedProperties } from 'type-fest';
 
@@ -25,13 +24,6 @@ export function generateRank<T extends { rank: string }>(elements: T[], leftInde
   const leftRank = LexoRank.parse(elements[leftIndex].rank);
   const rightRank = LexoRank.parse(elements[leftIndex + 1].rank);
   return leftRank.between(rightRank);
-}
-
-export function updateElement<T extends { id: string }, U extends TSubsetWithId<T>>(
-  elements: T[],
-  obj: U,
-): T[] {
-  return elements.map(element => (element.id === obj.id ? { ...element, ...obj } : element));
 }
 
 export function resizeTextarea(textareaRef: RefObject<HTMLTextAreaElement | null>) {

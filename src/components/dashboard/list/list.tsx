@@ -118,7 +118,6 @@ const ListDisplay = memo(function ListDisplay({
 
   const updateListName = useMutation({
     mutationFn: async (variables: { id: string; name: string }) => updateList(variables),
-
     onSuccess: async ({ data }) => {
       invariant(data);
       return queryClient.setQueryData(queryKey, (old: TList[]) =>

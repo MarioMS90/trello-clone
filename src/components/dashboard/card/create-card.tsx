@@ -48,7 +48,7 @@ export function CreateCard({ listId, onCancel }: { listId: string; onCancel: () 
     onSuccess: async ({ data }, _variables, context) => {
       invariant(data);
       queryClient.setQueryData(queryKey, (old: TCardWithComments[]) =>
-        old.map(card => (card.id === context.optimisticCard.id ? data : card)),
+        old.map(card => (card.id === context.optimisticCard.id ? { ...card, ...data } : card)),
       );
     },
     onError: (_error, _variables, context) => {
@@ -57,7 +57,7 @@ export function CreateCard({ listId, onCancel }: { listId: string; onCancel: () 
         old.filter(card => card.id !== context.optimisticCard.id),
       );
 
-      alert('An error occurred while deleting the element');
+      alert('An error occurred while creating the element');
     },
   });
 
@@ -72,7 +72,7 @@ export function CreateCard({ listId, onCancel }: { listId: string; onCancel: () 
     }
 
     const rank = generateRank(cards, cards.length - 1);
-    addCard({ name, rank: rank.toString() });
+    addCard({ name, rank: rank.format() });
     textarea.value = '';
     textarea.focus();
   };
