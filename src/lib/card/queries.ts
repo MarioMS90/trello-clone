@@ -1,6 +1,6 @@
 import { createQueryKeys } from '@lukemorales/query-key-factory';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { TCard, TCardWithComments } from '@/types/db';
+import { TCardWithComments } from '@/types/db';
 import { useCallback } from 'react';
 import { getClient } from '../supabase/utils';
 
@@ -39,11 +39,20 @@ export const cardKeys = createQueryKeys('cards', {
   }),
 });
 
-export function useCardsGroupedByList(boardId: string) {
-  return useSuspenseQuery({
+export const useCardsQuery = <TData = TCardWithComments[]>(
+  boardId: string,
+  select?: (data: TCardWithComments[]) => TData,
+) =>
+  useSuspenseQuery({
     ...cardKeys.list(boardId),
-    select: useCallback((cards: TCard[]) => {
-      const grouped = cards.reduce<Record<string, TCard[]>>(
+    select,
+  });
+
+export function useCardsGroupedByList(boardId: string) {
+  return useCardsQuery(
+    boardId,
+    useCallback((cards: TCardWithComments[]) => {
+      const grouped = cards.reduce<Record<string, TCardWithComments[]>>(
         (_cards, card) => ({
           ..._cards,
           [card.listId]: [...(_cards[card.listId] ?? []), card],
@@ -58,5 +67,11 @@ export function useCardsGroupedByList(boardId: string) {
         ]),
       );
     }, []),
-  });
+  );
+}
+
+export function useCards(boardId: string, listId: string) {
+  return useCardsQuery(boardId, (cards: TCardWithComments[]) =>
+    cards.filter(card => card.listId === listId).toSorted((a, b) => a.rank.localeCompare(b.rank)),
+  );
 }

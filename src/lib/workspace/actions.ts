@@ -9,7 +9,8 @@ import {
 } from '@/types/db';
 import { CreateWorkspaceSchema, UpdateWorkspaceSchema } from '@/schemas/workspace-schemas';
 import { TablesInsert, TablesUpdate } from '@/types/database-types';
-import { deleteEntity, getClient, updateEntity } from '../supabase/utils';
+import { getClient } from '../supabase/utils';
+import { deleteEntity, updateEntity } from '../supabase/server-utils';
 
 export async function createWorkspace(
   workspaceData: TablesInsert<'workspaces'>,

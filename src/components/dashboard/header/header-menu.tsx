@@ -52,33 +52,33 @@ export default function HeaderMenu() {
 
   const menuItems = [
     <Popover
-      key="workspaces"
       triggerClassName="font-medium"
       triggerContent={
         <>
           Workspaces
           <ArrowDownIcon height={16} />
         </>
-      }>
+      }
+      key="workspaces">
       {workspacesContent}
     </Popover>,
     <Popover
-      key="Starred"
       triggerClassName="font-medium mr-3"
       triggerContent={
         <>
           Starred
           <ArrowDownIcon height={16} />
         </>
-      }>
+      }
+      key="Starred">
       {starredBoardsContent}
     </Popover>,
     <CreateBoard
-      key="Create board"
       triggerClassName="font-medium bg-white bg-opacity-20 px-3 py-1.5 text-white hover:bg-opacity-30"
       workspaces={workspaces}
       buttonText="Create board"
       redirectToNewBoard
+      key="Create board"
     />,
   ];
 

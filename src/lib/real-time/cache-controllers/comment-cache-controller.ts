@@ -1,10 +1,6 @@
 import { TCard, TComment } from '@/types/db';
 import { commentKeys } from '@/lib/comment/queries';
-import {
-  insertQueryData,
-  updateQueryData,
-  deleteQueryData,
-} from '@/lib/react-query/query-data-utils';
+import { insertQueryData, updateQueryData, deleteQueryData } from '@/lib/react-query/utils';
 import { QueryClient } from '@tanstack/react-query';
 import { cardKeys } from '@/lib/card/queries';
 import { CacheHandlers } from '../cache-types';

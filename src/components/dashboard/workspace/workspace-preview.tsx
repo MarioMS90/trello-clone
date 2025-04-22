@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { memo, useState } from 'react';
 import EditableText from '@/components/ui/editable-text';
-import { useBoardsByWorkspaceId } from '@/lib/board/queries';
+import { useBoards } from '@/lib/board/queries';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { TWorkspace } from '@/types/db';
 import invariant from 'tiny-invariant';
@@ -23,7 +23,7 @@ export const WorkspacePreview = memo(function WorkspacePreview({
   workspace: TWorkspace;
 }) {
   const queryClient = useQueryClient();
-  const { data: boards } = useBoardsByWorkspaceId(workspace.id);
+  const { data: boards } = useBoards(workspace.id);
   const [isEditingName, setIsEditingName] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const { queryKey } = workspaceKeys.list();
@@ -124,7 +124,7 @@ export const WorkspacePreview = memo(function WorkspacePreview({
       </div>
       <ul className="mt-6 flex flex-wrap gap-4">
         {boards.map(board => (
-          <BoardPreview key={board.id} board={board} />
+          <BoardPreview board={board} key={board.id} />
         ))}
         <li>
           <CreateBoard

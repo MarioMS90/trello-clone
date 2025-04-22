@@ -3,18 +3,63 @@
 import { useRef } from 'react';
 import CloseIcon from '@/components/icons/close';
 import invariant from 'tiny-invariant';
-import { resizeTextarea } from '@/lib/utils/utils';
+import { generateRank, resizeTextarea } from '@/lib/utils/utils';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { createCard } from '@/lib/card/actions';
+import { useClickAway } from '@uidotdev/usehooks';
+import { cardKeys, useCards } from '@/lib/card/queries';
+import { useBoardId } from '@/hooks/useBoardId';
+import { TCardWithComments } from '@/types/db';
 
-export function CreateCard({
-  onCardCreated,
-  onCancel,
-  ref,
-}: {
-  onCardCreated: (name: string) => void;
-  onCancel: () => void;
-  ref: React.RefObject<HTMLLIElement>;
-}) {
+export function CreateCard({ listId, onCancel }: { listId: string; onCancel: () => void }) {
+  const queryClient = useQueryClient();
+  const boardId = useBoardId();
+  invariant(boardId);
+  const { data: cards } = useCards(boardId, listId);
+
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const clickAwayRef = useClickAway<HTMLLIElement>(() => {
+    onCancel();
+  });
+
+  const { queryKey } = cardKeys.list(boardId);
+  const { mutate: addCard } = useMutation({
+    mutationFn: async ({ name, rank }: { name: string; rank: string }) =>
+      createCard({ listId, name, rank }),
+    onMutate: async ({ name, rank }: { name: string; rank: string }) => {
+      await queryClient.cancelQueries({ queryKey });
+
+      const optimisticCard: TCardWithComments = {
+        id: crypto.randomUUID(),
+        description: '',
+        name,
+        rank,
+        listId,
+        commentCount: 0,
+        createdAt: '',
+        updatedAt: '',
+        workspaceId: '',
+      };
+
+      queryClient.setQueryData(queryKey, (old: TCardWithComments[]) => [...old, optimisticCard]);
+
+      return { optimisticCard };
+    },
+    onSuccess: async ({ data }, _variables, context) => {
+      invariant(data);
+      queryClient.setQueryData(queryKey, (old: TCardWithComments[]) =>
+        old.map(card => (card.id === context.optimisticCard.id ? data : card)),
+      );
+    },
+    onError: (_error, _variables, context) => {
+      invariant(context);
+      queryClient.setQueryData(queryKey, (old: TCardWithComments[]) =>
+        old.filter(card => card.id !== context.optimisticCard.id),
+      );
+
+      alert('An error occurred while deleting the element');
+    },
+  });
 
   const handleCardCreated = () => {
     const textarea = textareaRef.current;
@@ -26,13 +71,16 @@ export function CreateCard({
       return;
     }
 
-    onCardCreated(name);
+    const rank = generateRank(cards, cards.length - 1);
+    addCard({ name, rank: rank.toString() });
     textarea.value = '';
     textarea.focus();
   };
 
   return (
-    <li className="flex flex-shrink-0 flex-col gap-2 px-2 pt-1 text-sm text-primary" ref={ref}>
+    <li
+      className="flex flex-shrink-0 flex-col gap-2 px-2 pt-1 text-sm text-primary"
+      ref={clickAwayRef}>
       <textarea
         className="card-shadow focus:shadow-transition focus:shadow-transition-effect min-h-14 resize-none overflow-hidden rounded-lg bg-white p-3 py-2 placeholder-gray-500 outline-none"
         placeholder="Enter a title for this card"

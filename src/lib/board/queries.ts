@@ -67,17 +67,17 @@ export const starredBoardKeys = createQueryKeys('starred_boards', {
   }),
 });
 
-export const useBoards = <TData = TBoard[]>(select?: (data: TBoard[]) => TData) =>
+export const useBoardsQuery = <TData = TBoard[]>(select?: (data: TBoard[]) => TData) =>
   useSuspenseQuery({
     ...boardKeys.list(),
     select,
   });
 
-export const useBoardsByWorkspaceId = (workspaceId: string | null) =>
-  useBoards(boards => boards.filter(board => board.workspaceId === workspaceId));
+export const useBoards = (workspaceId: string | null) =>
+  useBoardsQuery(boards => boards.filter(board => board.workspaceId === workspaceId));
 
 export const useBoard = (boardId: string | null) =>
-  useBoards(boards => {
+  useBoardsQuery(boards => {
     const index = boards.findIndex(board => board.id === boardId);
     return boards[index];
   });
@@ -91,7 +91,7 @@ export const useStarredBoardsQuery = <TData = TStarredBoard[]>(
   });
 
 export function useStarredBoards() {
-  const { data: boards } = useBoards();
+  const { data: boards } = useBoardsQuery();
   return useStarredBoardsQuery(starredBoards =>
     starredBoards.map(starred => {
       const index = boards.findIndex(board => board.id === starred.boardId);

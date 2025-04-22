@@ -26,7 +26,7 @@ export default function SidebarLinks({ workspaceId }: { workspaceId: string }) {
     <ul className="pt-4">
       {links.map(link => (
         <li key={link.name}>
-          <Link key={link.name} href={link.href}>
+          <Link href={link.href} key={link.name}>
             <div
               className={cn('py-2 hover:bg-button-hovered-background', {
                 'bg-button-selected-background': pathname === link.href,

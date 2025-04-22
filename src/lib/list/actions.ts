@@ -3,7 +3,7 @@
 import { TList, TMutation, TMutationDelete } from '@/types/db';
 import { CreateListSchema, UpdateListSchema } from '@/schemas/workspace-schemas';
 import { TablesUpdate } from '@/types/database-types';
-import { deleteEntity, insertEntity, updateEntity } from '../supabase/utils';
+import { deleteEntity, insertEntity, updateEntity } from '../supabase/server-utils';
 
 export async function createList({
   boardId,

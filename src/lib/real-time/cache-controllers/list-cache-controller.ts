@@ -1,10 +1,6 @@
 import { TList } from '@/types/db';
 import { listKeys } from '@/lib/list/queries';
-import {
-  insertQueryData,
-  updateQueryData,
-  deleteQueryData,
-} from '@/lib/react-query/query-data-utils';
+import { insertQueryData, updateQueryData, deleteQueryData } from '@/lib/react-query/utils';
 import { QueryClient } from '@tanstack/react-query';
 import { CacheHandlers } from '../cache-types';
 

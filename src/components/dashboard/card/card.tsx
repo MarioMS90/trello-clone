@@ -2,7 +2,7 @@
 
 import { memo, RefObject, useEffect, useRef, useState } from 'react';
 import PencilIcon from '@/components/icons/pencil';
-import { TCard, TCardWithComments } from '@/types/db';
+import { TCardWithComments } from '@/types/db';
 import invariant from 'tiny-invariant';
 import {
   draggable,
@@ -130,7 +130,7 @@ const CardDisplay = memo(function CardDisplay({
   );
 });
 
-export const Card = memo(function Card({ card }: { card: TCard }) {
+export const Card = memo(function Card({ card }: { card: TCardWithComments }) {
   const [state, setState] = useState<TCardState>(idle);
   const outerRef = useRef<HTMLLIElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
@@ -145,7 +145,7 @@ export const Card = memo(function Card({ card }: { card: TCard }) {
     const data: TCardData = {
       type: 'card',
       id: card.id,
-      listId: card.list_id,
+      listId: card.listId,
       rect: inner.getBoundingClientRect(),
     };
 

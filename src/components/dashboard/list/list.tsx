@@ -1,6 +1,6 @@
 'use client';
 
-import { TCard, TCardWithComments, TList } from '@/types/db';
+import { TCardWithComments, TList } from '@/types/db';
 import DotsIcon from '@/components/icons/dots';
 import PlusIcon from '@/components/icons/plus';
 import { memo, RefObject, useEffect, useRef, useState } from 'react';
@@ -27,10 +27,12 @@ import { blockBoardPanningAttr, blockListDraggingAttr } from '@/constants/consta
 import { createPortal } from 'react-dom';
 import EditableText from '@/components/ui/editable-text';
 import { isShallowEqual } from '@/lib/utils/is-shallow-equal';
-import { useClickAway } from '@uidotdev/usehooks';
-import { Card, CardShadow } from '../card/card';
-import { useBoardContext } from '../board/board-context';
+import { useCards } from '@/lib/card/queries';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { deleteList, updateList } from '@/lib/list/actions';
+import { listKeys } from '@/lib/list/queries';
 import { CreateCard } from '../card/create-card';
+import { Card, CardShadow } from '../card/card';
 
 type TListState =
   | { type: 'idle' }
@@ -72,7 +74,7 @@ const outerStyles: { [Key in TListState['type']]?: string } = {
 function ListShadow({ dragging }: { dragging: DOMRect }) {
   return (
     <div
-      className="mx-2 flex-shrink-0 rounded-xl opacity-60 [&]:bg-secondary-background"
+      className="mx-1.5 flex-shrink-0 rounded-xl opacity-60 [&]:bg-secondary-background"
       style={{ width: dragging.width, height: dragging.height }}></div>
   );
 }
@@ -94,15 +96,41 @@ const ListDisplay = memo(function ListDisplay({
   headerRef?: RefObject<HTMLDivElement | null>;
   scrollableRef?: RefObject<HTMLDivElement | null>;
 }) {
+  const queryClient = useQueryClient();
   const [isEditing, setIsEditing] = useState(false);
   const [isOpenPopover, setIsOpenPopover] = useState(false);
   const [isCreatingCard, setIsCreatingCard] = useState(false);
-  const { updateList, deleteList, addCard } = useBoardContext();
-  const clickAwayRef = useClickAway<HTMLLIElement>(() => {
-    if (isCreatingCard) {
-      setIsCreatingCard(false);
-    }
+
+  const { queryKey } = listKeys.list(list.boardId);
+  const { mutate: removeList } = useMutation({
+    mutationFn: async (id: string) => deleteList(id),
+    onSuccess: async ({ data }) => {
+      invariant(data);
+
+      return queryClient.setQueryData(queryKey, (old: TList[]) =>
+        old.filter(_list => _list.id !== data.id),
+      );
+    },
+    onError: () => {
+      alert('An error occurred while deleting the element');
+    },
   });
+
+  const updateListName = useMutation({
+    mutationFn: async (variables: { id: string; name: string }) => updateList(variables),
+
+    onSuccess: async ({ data }) => {
+      invariant(data);
+      return queryClient.setQueryData(queryKey, (old: TList[]) =>
+        old.map(_list => (_list.id === data.id ? data : _list)),
+      );
+    },
+    onError: () => {
+      alert('An error occurred while updating the element');
+    },
+  });
+
+  const name = updateListName.isPending ? updateListName.variables.name : list.name;
 
   return (
     <>
@@ -133,13 +161,13 @@ const ListDisplay = memo(function ListDisplay({
               {...(isEditing && { [blockListDraggingAttr]: true })}>
               <EditableText
                 className="font-semibold [&>button]:px-3 [&>textarea]:px-3"
-                defaultText={list.name}
-                onEdit={name => updateList({ id: list.id, name })}
+                defaultText={name}
+                onEdit={text => updateListName.mutate({ id: list.id, name: text })}
                 autoResize
                 editOnClick
                 editing={isEditing}
                 onEditingChange={setIsEditing}>
-                <h3 className="[overflow-wrap:anywhere]">{list.name}</h3>
+                <h3 className="[overflow-wrap:anywhere]">{name}</h3>
               </EditableText>
               <Popover
                 triggerContent={
@@ -168,7 +196,7 @@ const ListDisplay = memo(function ListDisplay({
                     <button
                       type="button"
                       onClick={() => {
-                        deleteList(list.id);
+                        removeList(list.id);
                         setIsOpenPopover(false);
                       }}>
                       Delete list
@@ -185,11 +213,7 @@ const ListDisplay = memo(function ListDisplay({
                   <Card card={card} key={card.id} />
                 ))}
                 {isCreatingCard && (
-                  <CreateCard
-                    onCardCreated={cardName => addCard(list.id, cardName)}
-                    onCancel={() => setIsCreatingCard(false)}
-                    ref={clickAwayRef}
-                  />
+                  <CreateCard listId={list.id} onCancel={() => setIsCreatingCard(false)} />
                 )}
                 {state.type === 'is-card-over' && !state.isOverChildCard ? (
                   <CardShadow dragging={state.dragging} />
@@ -217,7 +241,8 @@ const ListDisplay = memo(function ListDisplay({
   );
 });
 
-export const List = memo(function List({ list, cards }: { list: TList; cards: TCard[] }) {
+export const List = memo(function List({ list }: { list: TList }) {
+  const { data: cards } = useCards(list.boardId, list.id);
   const [state, setState] = useState<TListState>(idle);
   const outerFullHeightRef = useRef<HTMLLIElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
@@ -384,7 +409,15 @@ export const List = memo(function List({ list, cards }: { list: TList; cards: TC
   return (
     <>
       <ListDisplay
-        {...{ list, cards, state, outerFullHeightRef, innerRef, headerRef, scrollableRef }}
+        {...{
+          list,
+          cards,
+          state,
+          outerFullHeightRef,
+          innerRef,
+          headerRef,
+          scrollableRef,
+        }}
       />
       {state.type === 'preview'
         ? createPortal(<ListDisplay {...{ list, cards, state }} />, state.container)

@@ -1,17 +1,15 @@
 'use client';
 
 import { redirect } from 'next/navigation';
-import { useBoardsByWorkspaceId, useStarredBoards } from '@/lib/board/queries';
-import { useWorkspaceId } from '@/hooks/useWorkspaceId';
+import { useBoards, useStarredBoards } from '@/lib/board/queries';
 import { useWorkspace } from '@/lib/workspace/queries';
 import StarIcon from '../../icons/star';
 import { CreateBoard } from './create-board';
 import { BoardPreview } from './board-preview';
 
-export function Boards() {
-  const workspaceId = useWorkspaceId();
+export function Boards({ workspaceId }: { workspaceId: string }) {
   const { data: workspace } = useWorkspace(workspaceId);
-  const { data: boards } = useBoardsByWorkspaceId(workspaceId);
+  const { data: boards } = useBoards(workspaceId);
 
   if (!workspace) {
     redirect('/workspaces');
@@ -20,7 +18,7 @@ export function Boards() {
   return (
     <ul className="mt-4 flex flex-wrap gap-4">
       {boards.map(board => (
-        <BoardPreview key={board.id} board={board} />
+        <BoardPreview board={board} key={board.id} />
       ))}
       <li>
         <CreateBoard
@@ -48,7 +46,7 @@ export function StarredBoards() {
 
       <ul className="mt-4 flex flex-wrap gap-4">
         {starredBoards.map(board => (
-          <BoardPreview key={board.id} board={board} />
+          <BoardPreview board={board} key={board.id} />
         ))}
       </ul>
     </section>

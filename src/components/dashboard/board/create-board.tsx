@@ -117,7 +117,7 @@ export function CreateBoard({
                   }}>
                   <option value="">Select a workspace</option>
                   {workspaces.map(({ id, name }) => (
-                    <option key={id} value={id}>
+                    <option value={id} key={id}>
                       {name}
                     </option>
                   ))}

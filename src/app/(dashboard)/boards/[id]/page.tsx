@@ -20,7 +20,7 @@ export default async function BoardPage({ params }: { params: Promise<{ id: stri
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Suspense fallback={<ListsSkeleton />}>
-        <Board />
+        <Board boardId={boardId} />
       </Suspense>
     </HydrationBoundary>
   );

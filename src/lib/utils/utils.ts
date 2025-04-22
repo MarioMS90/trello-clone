@@ -9,13 +9,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function generateRank<T extends { rank: string }>({
-  elements,
-  leftIndex,
-}: {
-  elements: T[];
-  leftIndex: number;
-}) {
+export function generateRank<T extends { rank: string }>(elements: T[], leftIndex: number) {
   if (!elements.length) {
     return LexoRank.middle();
   }

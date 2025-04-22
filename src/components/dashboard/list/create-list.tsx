@@ -5,15 +5,58 @@ import CloseIcon from '@/components/icons/close';
 import invariant from 'tiny-invariant';
 import PlusIcon from '@/components/icons/plus';
 import { useClickAway } from '@uidotdev/usehooks';
-import { resizeTextarea } from '@/lib/utils/utils';
-import { useBoardContext } from '../board/board-context';
+import { generateRank, resizeTextarea } from '@/lib/utils/utils';
+import { listKeys, useLists } from '@/lib/list/queries';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { createList } from '@/lib/list/actions';
+import { TList } from '@/types/db';
 
-export function CreateList({ buttonText }: { buttonText: string }) {
+export function CreateList({ boardId }: { boardId: string }) {
+  const queryClient = useQueryClient();
+  invariant(boardId);
+  const { data: lists } = useLists(boardId);
   const [isCreatingList, setIsCreatingList] = useState(false);
+
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const { addList } = useBoardContext();
   const clickAwayRef = useClickAway<HTMLDivElement>(() => {
     setIsCreatingList(false);
+  });
+
+  const { queryKey } = listKeys.list(boardId);
+  const { mutate: addList } = useMutation({
+    mutationFn: async ({ name, rank }: { name: string; rank: string }) =>
+      createList({ boardId, name, rank }),
+    onMutate: async ({ name, rank }: { name: string; rank: string }) => {
+      await queryClient.cancelQueries({ queryKey });
+
+      const optimisticList: TList = {
+        id: crypto.randomUUID(),
+        name,
+        rank,
+        boardId,
+        createdAt: '',
+        updatedAt: '',
+        workspaceId: '',
+      };
+
+      queryClient.setQueryData(queryKey, (old: TList[]) => [...old, optimisticList]);
+
+      return { optimisticList };
+    },
+    onSuccess: async ({ data }, _variables, context) => {
+      invariant(data);
+      queryClient.setQueryData(queryKey, (old: TList[]) =>
+        old.map(list => (list.id === context.optimisticList.id ? data : list)),
+      );
+    },
+    onError: (_error, _variables, context) => {
+      invariant(context);
+      queryClient.setQueryData(queryKey, (old: TList[]) =>
+        old.filter(list => list.id !== context.optimisticList.id),
+      );
+
+      alert('An error occurred while deleting the element');
+    },
   });
 
   const handleListCreated = () => {
@@ -25,7 +68,8 @@ export function CreateList({ buttonText }: { buttonText: string }) {
       return;
     }
 
-    addList(name);
+    const rank = generateRank(lists, lists.length - 1);
+    addList({ name, rank: rank.toString() });
     textarea.value = '';
     textarea.focus();
   };
@@ -54,7 +98,7 @@ export function CreateList({ buttonText }: { buttonText: string }) {
           "
             onClick={() => setIsCreatingList(true)}>
             <PlusIcon width={16} height={16} />
-            {buttonText}
+            {lists.length ? 'Add another list' : 'Add a list'}
           </button>
         </li>
       ) : (

@@ -26,10 +26,10 @@ export default function EditableText({
   const [isEditing, setIsEditing] = useState(editing);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const usedRef = autoResize ? textareaRef : inputRef;
+  const activeRef = autoResize ? textareaRef : inputRef;
 
   useEffect(() => {
-    const currentRef = usedRef.current;
+    const currentRef = activeRef.current;
     invariant(currentRef);
 
     if (editing) {
@@ -37,10 +37,10 @@ export default function EditableText({
     }
 
     setIsEditing(editing);
-  }, [usedRef, editing]);
+  }, [activeRef, editing]);
 
   const handleEditingChange = (editingState: boolean) => {
-    const currentRef = usedRef.current;
+    const currentRef = activeRef.current;
     invariant(currentRef);
 
     if (editingState) {

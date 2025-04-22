@@ -9,33 +9,32 @@ import { reorder } from '@atlaskit/pragmatic-drag-and-drop/reorder';
 import { autoScrollForElements } from '@atlaskit/pragmatic-drag-and-drop-auto-scroll/element';
 import { bind, bindAll } from 'bind-event-listener';
 import { isCardData, isListData, TCardData, TListData } from '@/types/drag-types';
-import { TCard, TList, TSubsetWithId } from '@/types/db';
+import { TCardWithComments, TList } from '@/types/db';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { List } from '@/components/dashboard/list/list';
 import { generateRank } from '@/lib/utils/utils';
 import { CleanupFn } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types';
 import { blockBoardPanningAttr } from '@/constants/constants';
-import { useBoardId } from '@/hooks/useBoardId';
 import { useLists } from '@/lib/list/queries';
 import { redirect } from 'next/navigation';
-import { useWorkspaceId } from '@/hooks/useWorkspaceId';
 import { useCardsGroupedByList } from '@/lib/card/queries';
 import { useRealTimeContext } from '@/providers/real-time-provider';
-import { BoardContext, BoardContextValue } from './board-context';
+import { useBoard } from '@/lib/board/queries';
+import { useWorkspaceId } from '@/hooks/useWorkspaceId';
 import { CreateList } from '../list/create-list';
 
-export default function Board() {
-  const { registerChannel } = useRealTimeContext();
-  const boardId = useBoardId();
+export default function Board({ boardId }: { boardId: string }) {
+  const { data: board } = useBoard(boardId);
   const workspaceId = useWorkspaceId();
+  const { registerChannel } = useRealTimeContext();
   const scrollableRef = useRef<HTMLUListElement | null>(null);
 
-  if (!boardId) {
+  if (!board) {
     redirect(`/workspaces/${workspaceId}`);
   }
 
   const { data: lists } = useLists(boardId);
-  const { data: cards } = useCardsGroupedByList(boardId);
+  // const { data: cards } = useCardsGroupedByList(boardId);
 
   useEffect(() => {
     registerChannel('lists');
@@ -57,10 +56,10 @@ export default function Board() {
         return elements;
       }
 
-      const rank = generateRank({
+      const rank = generateRank(
         elements,
-        leftIndex: startIndex < finishIndex ? finishIndex : finishIndex - 1,
-      }).format();
+        startIndex < finishIndex ? finishIndex : finishIndex - 1,
+      ).format();
 
       const updated = elements.with(startIndex, {
         ...elements[startIndex],
@@ -146,10 +145,7 @@ export default function Board() {
         return undefined;
       }
 
-      const rank = generateRank({
-        elements: destinationList.cards,
-        leftIndex: destinationIndex - 1,
-      }).format();
+      const rank = generateRank(destinationList.cards, destinationIndex - 1).format();
 
       const filtered = lists.with(sourceListIndex, {
         ...sourceList,
@@ -236,12 +232,10 @@ export default function Board() {
           }
 
           const { startIndex, finishIndex } = getPositionIndices({
-            sourceElements: lists,
-            destinationElements: lists,
+            source: lists,
             dragging,
             dropTarget: listTarget,
             axis: 'horizontal',
-            isReorder: true,
           });
 
           if (startIndex === finishIndex) {
@@ -394,159 +388,20 @@ export default function Board() {
     };
   }, []);
 
-  const addList = useCallback(
-    // (name: string) => {
-    //   const temporalId = crypto.randomUUID();
-    //   const rank = generateRank({ elements: lists, leftIndex: lists.length - 1 }).format();
-
-    //   startTransition(async () => {
-    //     setOptimisticLists(current => [
-    //       ...current,
-    //       { id: temporalId, name, rank, board_id: boardId, cards: [], created_at: '' },
-    //     ]);
-
-    //     try {
-    //       const list = await createList({ boardId, name, rank });
-    //       startTransition(async () => setLists(current => [...current, list]));
-    //     } catch (error) {
-    //       // TODO: Show error with a toast
-    //       alert('An error occurred while creating the element');
-    //     }
-    //   });
-    // },
-    // [lists, setOptimisticLists, boardId],
-    () => {},
-    [],
-  );
-
-  const updateList = useCallback(
-    // (listData: TSubsetWithId<TList>) => {
-    //   startTransition(async () => {
-    //     setOptimisticLists(current => updateElement(current, listData));
-
-    //     try {
-    //       await updateEntity({
-    //         tableName: 'list',
-    //         entityData: listData,
-    //       });
-    //     } catch (error) {
-    //       // TODO: Show error with a toast
-    //       alert('An error occurred while updating the element');
-    //     }
-    //   });
-    // },
-    // [startTransition, setOptimisticLists],
-    () => {},
-    [],
-  );
-
-  const deleteList = useCallback(
-    // (id: string) => {
-    //   startTransition(async () => {
-    //     setOptimisticLists(current => current.filter(list => list.id !== id));
-
-    //     try {
-    //       await deleteEntity({
-    //         tableName: 'list',
-    //         entityId: id,
-    //       });
-    //       startTransition(async () => setLists(current => current.filter(list => list.id !== id)));
-    //     } catch (error) {
-    //       // TODO: Show error with a toast
-    //       alert('An error occurred while deleting the element');
-    //     }
-    //   });
-    // },
-    // [startTransition, setOptimisticLists],
-    () => {},
-    [],
-  );
-
-  const addCard = useCallback(
-    // (listId: string, name: string) => {
-    //   const temporalId = crypto.randomUUID();
-    //   const listIndex = lists.findIndex(list => list.id === listId);
-    //   const rank = generateRank({
-    //     elements: lists[listIndex].cards,
-    //     leftIndex: lists[listIndex].cards.length - 1,
-    //   }).format();
-
-    //   startTransition(async () => {
-    //     setOptimisticLists(current => {
-    //       const updated = current.with(listIndex, {
-    //         ...current[listIndex],
-    //         cards: [
-    //           ...current[listIndex].cards,
-    //           {
-    //             id: temporalId,
-    //             name,
-    //             description: '',
-    //             rank,
-    //             list_id: listId,
-    //             comments: [],
-    //             created_at: '',
-    //           },
-    //         ],
-    //       });
-
-    //       return updated;
-    //     });
-
-    //     try {
-    //       const card = await createCard({ listId, name, rank });
-    //       startTransition(async () =>
-    //         setLists(current => {
-    //           const updated = current.with(listIndex, {
-    //             ...current[listIndex],
-    //             cards: [...current[listIndex].cards, card],
-    //           });
-
-    //           return updated;
-    //         }),
-    //       );
-    //     } catch (error) {
-    //       // TODO: Show error with a toast
-    //       alert('An error occurred while creating the element');
-    //     }
-    //   });
-    // },
-    // [lists, setOptimisticLists],
-    () => {},
-    [],
-  );
-
-  const updateCard = useCallback((cardData: TSubsetWithId<TCard>) => {}, []);
-
-  const deleteCard = useCallback((id: string) => {}, []);
-
-  const contextValue: BoardContextValue = useMemo(
-    () => ({
-      addList,
-      updateList,
-      deleteList,
-      addCard,
-      updateCard,
-      deleteCard,
-    }),
-    [addList, updateList, deleteList, addCard, updateCard, deleteCard],
-  );
-
   return (
-    <BoardContext.Provider value={contextValue}>
-      <div className="relative h-[calc(100%-8px)]">
-        {/* position: absolute needed for max-height:100% to be respected internally */}
-        <div className="absolute inset-0">
-          <ul
-            className="scrollbar-transparent [-webkit-user-drag: none] flex h-full select-none overflow-x-auto px-2 pb-2 pt-3"
-            ref={scrollableRef}
-            draggable={false}>
-            {lists.map(list => (
-              <List list={list} cards={cards[list.id]} key={list.id} />
-            ))}
-            <CreateList buttonText={lists.length ? 'Add another list' : 'Add a list'} />
-          </ul>
-        </div>
+    <div className="relative h-[calc(100%-8px)]">
+      {/* position: absolute needed for max-height:100% to be respected internally */}
+      <div className="absolute inset-0">
+        <ul
+          className="scrollbar-transparent [-webkit-user-drag: none] flex h-full select-none overflow-x-auto px-2 pb-2 pt-3"
+          ref={scrollableRef}
+          draggable={false}>
+          {lists.map(list => (
+            <List list={list} key={list.id} />
+          ))}
+          <CreateList boardId={boardId} />
+        </ul>
       </div>
-    </BoardContext.Provider>
+    </div>
   );
 }

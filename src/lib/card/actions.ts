@@ -3,7 +3,7 @@
 import { TCard, TMutation, TMutationDelete } from '@/types/db';
 import { CreateCardSchema, UpdateCardSchema } from '@/schemas/workspace-schemas';
 import { TablesUpdate } from '@/types/database-types';
-import { deleteEntity, insertEntity, updateEntity } from '../supabase/utils';
+import { deleteEntity, insertEntity, updateEntity } from '../supabase/server-utils';
 
 export async function createCard({
   listId,
@@ -50,7 +50,7 @@ export async function updateCard(
   return { data: card };
 }
 
-export async function deleteList(cardId: string): Promise<TMutationDelete> {
+export async function deleteCard(cardId: string): Promise<TMutationDelete> {
   const id = await deleteEntity({ tableName: 'cards', entityId: cardId });
 
   return { data: { id } };

@@ -1,9 +1,5 @@
 import { TUserWorkspace } from '@/types/db';
-import {
-  insertQueryData,
-  updateQueryData,
-  deleteQueryData,
-} from '@/lib/react-query/query-data-utils';
+import { insertQueryData, updateQueryData, deleteQueryData } from '@/lib/react-query/utils';
 import { QueryClient } from '@tanstack/react-query';
 import { userWorkspaceKeys } from '@/lib/workspace/queries';
 import { CacheHandlers } from '../cache-types';

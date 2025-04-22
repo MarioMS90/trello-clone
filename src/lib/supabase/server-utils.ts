@@ -1,0 +1,69 @@
+'use server';
+
+import { TEntity, TEntityName } from '@/types/db';
+import { TablesInsert, TablesUpdate } from '@/types/database-types';
+import { camelizeKeys } from '../utils/utils';
+import { getClient } from './utils';
+
+export async function insertEntity<TableName extends TEntityName>({
+  tableName,
+  entityData,
+}: {
+  tableName: TableName;
+  entityData: TablesInsert<TableName>;
+}): Promise<TEntity<TableName>> {
+  const supabase = await getClient();
+
+  const { data, error } = await supabase
+    .from(tableName as TEntityName)
+    .insert(entityData)
+    .select('*')
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return camelizeKeys(data) as TEntity<TableName>;
+}
+
+export async function updateEntity<TableName extends TEntityName>({
+  tableName,
+  entityData,
+}: {
+  tableName: TableName;
+  entityData: TablesUpdate<TableName> & { id: string };
+}): Promise<TEntity<TableName>> {
+  const supabase = await getClient();
+
+  const { data, error } = await supabase
+    .from(tableName as TEntityName)
+    .update(entityData)
+    .eq('id', entityData.id)
+    .select('*')
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return camelizeKeys(data) as TEntity<TableName>;
+}
+
+export async function deleteEntity<TableName extends TEntityName>({
+  tableName,
+  entityId,
+}: {
+  tableName: TableName;
+  entityId: string;
+}) {
+  const supabase = await getClient();
+
+  const { error } = await supabase.from(tableName).delete().eq('id', entityId);
+
+  if (error) {
+    throw error;
+  }
+
+  return entityId;
+}
