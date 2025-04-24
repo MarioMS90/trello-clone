@@ -7,6 +7,7 @@ import { createWorkspace } from '@/lib/workspace/actions';
 import invariant from 'tiny-invariant';
 import { userWorkspaceKeys, workspaceKeys } from '@/lib/workspace/queries';
 import { TUserWorkspace, TWorkspace } from '@/types/db';
+import CloseIcon from '@/components/icons/close';
 
 export function CreateWorkspace() {
   const queryClient = useQueryClient();
@@ -57,23 +58,18 @@ export function CreateWorkspace() {
   return (
     <Popover
       popoverClassName="[&]:center-y [&]:left-[calc(100%+10px)]"
-      triggerClassName="
-                rounded 
-                px-2 
-                py-1.5 
-                h-20 
-                w-44 
-                bg-gray-300 
-                text-sm 
-                text-primary 
-                justify-center 
-                hover:opacity-90 
-                hover:bg-gray-300 
-              "
+      triggerClassName="rounded px-2 py-1.5 h-20 w-44 bg-gray-300 text-sm text-primary justify-center hover:opacity-90 hover:bg-gray-300"
       triggerContent="Create a new workspace"
       open={isPopoverOpen}
-      onOpenChange={setIsPopoverOpen}
-      addCloseButton>
+      onOpenChange={setIsPopoverOpen}>
+      <button
+        className="close-popover absolute right-2 top-2 flex size-7 items-center justify-center rounded-md hover:bg-gray-300"
+        type="button"
+        onMouseUp={() => setIsPopoverOpen(false)}>
+        <span className="pointer-events-none">
+          <CloseIcon height={16} />
+        </span>
+      </button>
       <div className="flex flex-col text-sm text-gray-700">
         <h2 className="mb-1 text-center font-semibold">Create workspace</h2>
         <form action={formAction}>
@@ -91,20 +87,7 @@ export function CreateWorkspace() {
           </label>
           {result?.errors?.name && <p className="text-xs text-red-500">{result.errors.name}</p>}
           <button
-            className="
-            mt-3 
-            w-full 
-            rounded 
-            bg-secondary 
-            px-3 
-            py-2 
-            text-sm 
-            font-medium 
-            text-white 
-            disabled:cursor-not-allowed 
-            disabled:bg-gray-200 
-            disabled:text-gray-400
-          "
+            className="mt-3 w-full rounded bg-secondary px-3 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400"
             type="submit"
             disabled={!isValidForm || isPending}>
             Create

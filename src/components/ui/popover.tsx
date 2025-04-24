@@ -1,16 +1,26 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useClickAway } from '@uidotdev/usehooks';
 import { cn } from '@/lib/utils/utils';
-import CloseIcon from '../icons/close';
+import {
+  useFloating,
+  autoUpdate,
+  offset,
+  flip,
+  shift,
+  useClick,
+  useRole,
+  useInteractions,
+  FloatingPortal,
+  FloatingFocusManager,
+  useDismiss,
+} from '@floating-ui/react';
 
 export default function Popover({
   triggerContent,
   triggerClassName,
   popoverClassName,
   children: popoverContent,
-  addCloseButton,
   open = false,
   onOpenChange,
 }: {
@@ -18,60 +28,59 @@ export default function Popover({
   triggerClassName?: string;
   popoverClassName?: string;
   children: React.ReactNode;
-  addCloseButton?: boolean;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
 }) {
   const [isOpen, setIsOpen] = useState(open);
-  const clickAwayRef = useClickAway<HTMLDivElement>(() => {
-    if (!isOpen) {
-      return;
-    }
+  const { refs, floatingStyles, context } = useFloating({
+    open: isOpen,
+    onOpenChange: (openState: boolean) => {
+      setIsOpen(openState);
 
-    handleOpenChange(false);
+      if (onOpenChange) {
+        onOpenChange(openState);
+      }
+    },
+    middleware: [offset(10), flip(), shift()],
+    whileElementsMounted: autoUpdate,
+    placement: 'bottom-start',
   });
+  const click = useClick(context);
+  const dismiss = useDismiss(context);
+  const role = useRole(context);
+  const { getReferenceProps, getFloatingProps } = useInteractions([click, dismiss, role]);
 
   useEffect(() => {
     setIsOpen(open);
   }, [open]);
 
-  const handleOpenChange = (openState: boolean) => {
-    setIsOpen(openState);
-
-    if (onOpenChange) {
-      onOpenChange(openState);
-    }
-  };
-
   return (
-    <div className="popover-wrapper relative" ref={clickAwayRef}>
+    <div className="popover-wrapper">
       <button
+        {...getReferenceProps()}
         className={cn(
           'flex items-center gap-2 rounded px-3 py-1.5 hover:bg-button-hovered-background',
           triggerClassName,
         )}
         type="button"
-        onClick={() => handleOpenChange(!isOpen)}>
+        ref={refs.setReference}>
         {triggerContent}
       </button>
       {isOpen && (
-        <dialog
-          className={cn(
-            'popover absolute left-0 top-[calc(100%+5px)] z-20 flex w-72 flex-col rounded-lg bg-white p-3 text-primary shadow-lg outline-none',
-            popoverClassName,
-          )}>
-          {addCloseButton && (
-            <button
-              className="close-popover absolute right-2 top-2 flex size-7 items-center justify-center rounded-md hover:bg-gray-300"
-              type="button"
-              onMouseUp={() => handleOpenChange(false)}>
-              <span className="pointer-events-none">
-                <CloseIcon height={16} />
-              </span>
-            </button>
-          )}
-          {popoverContent}
-        </dialog>
+        <FloatingPortal>
+          <FloatingFocusManager context={context} modal={false}>
+            <div
+              className={cn(
+                'popover z-20 flex w-72 flex-col rounded-lg bg-white p-3 text-primary shadow-lg outline-none',
+                popoverClassName,
+              )}
+              style={floatingStyles}
+              {...getFloatingProps()}
+              ref={refs.setFloating}>
+              {popoverContent}
+            </div>
+          </FloatingFocusManager>
+        </FloatingPortal>
       )}
     </div>
   );

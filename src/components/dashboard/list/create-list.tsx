@@ -13,7 +13,6 @@ import { TList } from '@/types/db';
 
 export function CreateList({ boardId }: { boardId: string }) {
   const queryClient = useQueryClient();
-  invariant(boardId);
   const { data: lists } = useLists(boardId);
   const [isCreatingList, setIsCreatingList] = useState(false);
 

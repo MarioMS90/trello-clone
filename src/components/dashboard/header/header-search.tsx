@@ -90,7 +90,7 @@ function SearchResultsContent({ searchResults }: { searchResults: SearchResult[]
   }[] = [
     { title: 'Cards', content: generateContent('card') },
     { title: 'Boards', content: generateContent('board') },
-    { title: 'Workspace', content: generateContent('workspace') },
+    { title: 'Workspaces', content: generateContent('workspace') },
   ];
 
   return (

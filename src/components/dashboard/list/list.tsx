@@ -32,7 +32,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteList, updateList } from '@/lib/list/actions';
 import { listKeys } from '@/lib/list/queries';
 import { CreateCard } from '../card/create-card';
-import { Card, CardShadow } from '../card/card';
+import { CardPreview, CardShadow } from '../card/card-preview';
 
 type TListState =
   | { type: 'idle' }
@@ -209,7 +209,7 @@ const ListDisplay = memo(function ListDisplay({
               ref={scrollableRef}>
               <ul className="flex flex-col gap-2 has-[li]:py-0.5">
                 {cards.map(card => (
-                  <Card card={card} key={card.id} />
+                  <CardPreview card={card} key={card.id} />
                 ))}
                 {isCreatingCard && (
                   <CreateCard listId={list.id} onCancel={() => setIsCreatingCard(false)} />

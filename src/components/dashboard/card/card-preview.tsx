@@ -1,7 +1,6 @@
 'use client';
 
 import { memo, RefObject, useEffect, useRef, useState } from 'react';
-import PencilIcon from '@/components/icons/pencil';
 import { TCardWithComments } from '@/types/db';
 import invariant from 'tiny-invariant';
 import {
@@ -24,6 +23,14 @@ import { cn } from '@/lib/utils/utils';
 import { isShallowEqual } from '@/lib/utils/is-shallow-equal';
 import DescriptionIcon from '@/components/icons/description';
 import CommentIcon from '@/components/icons/comment';
+import EditableText from '@/components/ui/editable-text';
+import Popover from '@/components/ui/popover';
+import PencilIcon from '@/components/icons/pencil';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { cardKeys } from '@/lib/card/queries';
+import { useBoardId } from '@/hooks/useBoardId';
+import { deleteCard, updateCard } from '@/lib/card/actions';
+import { blockCardDraggingAttr } from '@/constants/constants';
 
 type TCardState =
   | { type: 'idle' }
@@ -76,6 +83,43 @@ const CardDisplay = memo(function CardDisplay({
   outerRef?: RefObject<HTMLLIElement | null>;
   innerRef?: RefObject<HTMLDivElement | null>;
 }) {
+  const queryClient = useQueryClient();
+  const boardId = useBoardId();
+  invariant(boardId);
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+
+  const { queryKey } = cardKeys.list(boardId);
+  const { mutate: removeCard } = useMutation({
+    mutationFn: async (id: string) => deleteCard(id),
+    onSuccess: async ({ data }) => {
+      invariant(data);
+
+      return queryClient.setQueryData(queryKey, (old: TCardWithComments[]) =>
+        old.filter(_card => _card.id !== data.id),
+      );
+    },
+    onError: () => {
+      alert('An error occurred while deleting the element');
+    },
+  });
+
+  const updateCardName = useMutation({
+    mutationFn: async (variables: { id: string; name: string }) => updateCard(variables),
+    onSuccess: async ({ data }) => {
+      invariant(data);
+      return queryClient.setQueryData(queryKey, (old: TCardWithComments[]) =>
+        old.map(_card => (_card.id === data.id ? data : _card)),
+      );
+    },
+    onError: () => {
+      alert('An error occurred while updating the element');
+    },
+  });
+
+  const name = updateCardName.isPending ? updateCardName.variables.name : card.name;
+
   return (
     <>
       {state.type === 'is-over' && state.closestEdge === 'top' ? (
@@ -89,7 +133,7 @@ const CardDisplay = memo(function CardDisplay({
         ref={outerRef}>
         <div
           className={cn(
-            'card-shadow hover:shadow-transition-effect relative rounded-lg bg-white p-3 py-2',
+            'card-shadow hover:shadow-transition-effect group relative rounded-lg bg-white p-4 py-2.5',
             innerStyles[state.type],
           )}
           style={
@@ -101,13 +145,55 @@ const CardDisplay = memo(function CardDisplay({
                 }
               : undefined
           }
-          ref={innerRef}>
-          <h2>{card.name}</h2>
-          <span className="absolute right-1 top-1 hidden size-7 rounded-full hover:bg-gray-200 group-hover:block">
-            <span className="center-xy">
-              <PencilIcon width={11} height={11} />
-            </span>
-          </span>
+          ref={innerRef}
+          {...(isEditing && { [blockCardDraggingAttr]: true })}>
+          <EditableText
+            className="[&&>button]:p-0 [&&>textarea]:rounded-[3px] [&&>textarea]:p-0 [&&>textarea]:shadow-none"
+            defaultText={name}
+            onEdit={text => updateCardName.mutate({ id: card.id, name: text })}
+            autoResize
+            editing={isEditing}
+            onEditingChange={setIsEditing}>
+            <h2>{name}</h2>
+          </EditableText>
+          <div
+            className={cn('absolute right-1 top-1 z-10 hidden group-hover:block', {
+              block: isPopoverOpen,
+            })}>
+            <Popover
+              triggerContent={
+                <span className="center-xy">
+                  <PencilIcon width={11} height={11} />
+                </span>
+              }
+              triggerClassName="size-7 rounded-full hover:bg-gray-200 p-0"
+              popoverClassName="px-0 [&]:w-40"
+              open={isPopoverOpen}
+              onOpenChange={setIsPopoverOpen}>
+              <ul className="text-sm [&>li>button:hover]:bg-gray-200 [&>li>button]:w-full [&>li>button]:px-3 [&>li>button]:py-2 [&>li>button]:text-left">
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsEditing(true);
+                      setIsPopoverOpen(false);
+                    }}>
+                    Rename card
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      removeCard(card.id);
+                      setIsPopoverOpen(false);
+                    }}>
+                    Delete card
+                  </button>
+                </li>
+              </ul>
+            </Popover>
+          </div>
           <div className="flex items-center gap-3 has-[span]:p-1">
             {card.description && (
               <span title="This card has a description">
@@ -130,7 +216,7 @@ const CardDisplay = memo(function CardDisplay({
   );
 });
 
-export const Card = memo(function Card({ card }: { card: TCardWithComments }) {
+export const CardPreview = memo(function CardPreview({ card }: { card: TCardWithComments }) {
   const [state, setState] = useState<TCardState>(idle);
   const outerRef = useRef<HTMLLIElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
@@ -152,7 +238,7 @@ export const Card = memo(function Card({ card }: { card: TCardWithComments }) {
     return combine(
       draggable({
         element: inner,
-        canDrag: () => true,
+        canDrag: ({ element }) => !element.getAttribute(blockCardDraggingAttr),
         getInitialData: () => data,
         onGenerateDragPreview: ({ location, nativeSetDragImage }) => {
           setCustomNativeDragPreview({

@@ -44,7 +44,7 @@ export default function cardCacheController(queryClient: QueryClient): CacheHand
         queryKey: ['cards'],
       });
       const oldCard = queriesData
-        .flatMap(([_, cards]) => cards ?? [])
+        .flatMap(([_, cards = []]) => cards)
         .find(_oldCard => _oldCard.id === id);
 
       if (!oldCard) {

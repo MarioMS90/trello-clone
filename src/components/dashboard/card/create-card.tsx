@@ -31,11 +31,11 @@ export function CreateCard({ listId, onCancel }: { listId: string; onCancel: () 
 
       const optimisticCard: TCardWithComments = {
         id: crypto.randomUUID(),
-        description: '',
         name,
         rank,
         listId,
         commentCount: 0,
+        description: '',
         createdAt: '',
         updatedAt: '',
         workspaceId: '',
@@ -61,7 +61,7 @@ export function CreateCard({ listId, onCancel }: { listId: string; onCancel: () 
     },
   });
 
-  const handleCardCreated = () => {
+  const createNewCard = () => {
     const textarea = textareaRef.current;
     invariant(textarea);
     const name = textarea.value.trim();
@@ -88,7 +88,7 @@ export function CreateCard({ listId, onCancel }: { listId: string; onCancel: () 
         onKeyDown={e => {
           if (e.key === 'Enter') {
             e.preventDefault();
-            handleCardCreated();
+            createNewCard();
           }
         }}
         onKeyUp={e => {
@@ -116,7 +116,7 @@ export function CreateCard({ listId, onCancel }: { listId: string; onCancel: () 
               disabled:text-gray-400
             "
           type="button"
-          onClick={handleCardCreated}>
+          onClick={createNewCard}>
           Add card
         </button>
         <button className="h-full rounded p-1.5 hover:bg-gray-300" type="button" onClick={onCancel}>

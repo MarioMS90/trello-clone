@@ -83,7 +83,10 @@ export const SidebarBoard = memo(function SidebarBoard({ board }: { board: TBoar
           {name}
         </Link>
       </EditableText>
-      <div className="center-y absolute right-11 z-10 hidden group-hover:block has-[.popover]:block">
+      <div
+        className={cn('center-y absolute right-11 z-10 hidden group-hover:block', {
+          block: isPopoverOpen,
+        })}>
         <Popover
           triggerContent={<DotsIcon height={16} />}
           triggerClassName="[&]:p-1"

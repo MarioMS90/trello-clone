@@ -27,7 +27,7 @@ export default function listCacheController(queryClient: QueryClient): CacheHand
         queryKey: ['lists'],
       });
       const oldList = queriesData
-        .flatMap(([_, lists]) => lists ?? [])
+        .flatMap(([_, lists = []]) => lists)
         .find(_oldList => _oldList.id === id);
 
       if (!oldList) {

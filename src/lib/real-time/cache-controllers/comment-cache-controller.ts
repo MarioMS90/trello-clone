@@ -21,7 +21,7 @@ export default function commentCacheController(queryClient: QueryClient): CacheH
         queryKey: ['cards'],
       });
       const card = queriesData
-        .flatMap(([_, cards]) => cards ?? [])
+        .flatMap(([_, cards = []]) => cards)
         .find(_card => _card.id === comment.cardId);
 
       if (!card) {

@@ -84,23 +84,15 @@ export default function EditableText({
 
   return (
     <div className={cn('relative flex grow text-sm', className)}>
-      {editOnClick ? (
-        <button
-          type="button"
-          className={cn('z-[2] h-full grow px-2 py-1.5 text-left', {
-            hidden: isEditing,
-          })}
-          onMouseUp={() => handleEditingChange(true)}>
-          {children}
-        </button>
-      ) : (
-        <div
-          className={cn('z-[2] h-full grow px-2 py-1.5 text-left', {
-            hidden: isEditing,
-          })}>
-          {children}
-        </div>
-      )}
+      <button
+        type="button"
+        className={cn('z-[2] h-full grow overflow-hidden break-words px-2 py-1.5 text-left', {
+          hidden: isEditing,
+        })}
+        onMouseUp={() => editOnClick && handleEditingChange(true)}>
+        {children}
+      </button>
+
       {autoResize ? (
         <textarea
           ref={textareaRef}
