@@ -21,9 +21,9 @@ export default function BoardHeader() {
   }
 
   return (
-    <div className="bold flex bg-secondary-background p-3.5 ">
+    <div className="flex items-center justify-between bg-secondary-background p-3 font-medium">
       <EditableText
-        className="[&>input:focus]:shadow-none [&>input]:my-0.5 [&>input]:ml-4 [&>input]:mr-[74px] [&>input]:w-full [&>input]:rounded-lg [&>input]:font-semibold [&>input]:text-primary [&>span]:p-0"
+        className="inline-block grow-0 [&>button]:p-0 [&>input:focus]:shadow-none [&>input]:m-0 [&>input]:w-auto [&>input]:px-3 [&>input]:py-1 [&>input]:text-lg [&>input]:font-bold"
         defaultText={name}
         onEdit={text => {
           updateBoardName.mutate({ id: board.id, name: text });
@@ -31,11 +31,9 @@ export default function BoardHeader() {
         editing={isEditingName}
         onEditingChange={setIsEditingName}
         editOnClick>
-        <Link
-          className="block overflow-hidden text-ellipsis py-2 pl-3.5 pr-[70px] text-white"
-          href={`/boards/${board.id}`}>
+        <h2 className="inline-block overflow-hidden rounded-sm px-3 py-1 text-lg font-bold text-white hover:bg-button-hovered-background">
           {name}
-        </Link>
+        </h2>
       </EditableText>
     </div>
   );
