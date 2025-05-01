@@ -78,23 +78,8 @@ export function CreateList({ boardId }: { boardId: string }) {
       {!isCreatingList ? (
         <li>
           <button
+            className="mx-1.5 flex w-[272px] cursor-pointer items-center gap-2 rounded-xl bg-white/10 p-3 text-sm text-white shadow hover:bg-white/15"
             type="button"
-            className="
-            mx-1.5 
-            flex 
-            w-[272px] 
-            items-center 
-            gap-2 
-            rounded-xl 
-            bg-white 
-            bg-opacity-10 
-            p-3 
-            text-sm 
-            text-primary 
-            text-white 
-            shadow
-            hover:bg-opacity-15
-          "
             onClick={() => setIsCreatingList(true)}>
             <PlusIcon width={16} height={16} />
             {lists.length ? 'Add another list' : 'Add a list'}
@@ -102,10 +87,10 @@ export function CreateList({ boardId }: { boardId: string }) {
         </li>
       ) : (
         <div
-          className="mx-1.5 flex h-max w-[272px] flex-shrink-0 flex-col gap-2 rounded-xl bg-gray-200 p-2 text-sm text-primary"
+          className="text-primary mx-1.5 flex h-max w-[272px] shrink-0 cursor-pointer flex-col gap-2 rounded-xl bg-gray-200 p-2 text-sm"
           ref={clickAwayRef}>
           <textarea
-            className="shadow-transition focus:shadow-transition-effect resize-none overflow-hidden rounded-md bg-white px-2.5 py-1.5 font-semibold outline-none"
+            className="shadow-transition focus:shadow-transition-effect resize-none overflow-hidden rounded-md bg-white px-2.5 py-1.5 font-semibold outline-hidden"
             onChange={() => resizeTextarea(textareaRef)}
             onKeyDown={e => {
               if (e.key === 'Enter') {
@@ -124,25 +109,13 @@ export function CreateList({ boardId }: { boardId: string }) {
           />
           <div className="flex gap-2">
             <button
-              className="
-                rounded 
-                bg-secondary 
-                px-3 
-                py-1.5 
-                text-sm 
-                font-medium 
-                text-white 
-                hover:opacity-80
-                disabled:cursor-not-allowed 
-                disabled:bg-gray-200 
-                disabled:text-gray-400
-              "
+              className="bg-secondary cursor-pointer rounded px-3 py-1.5 text-sm font-medium text-white hover:opacity-80 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400"
               type="button"
               onClick={handleListCreated}>
               Add list
             </button>
             <button
-              className="h-full rounded p-1.5 hover:bg-gray-300"
+              className="h-full cursor-pointer rounded-sm p-1.5 hover:bg-gray-300"
               type="button"
               onClick={() => {
                 setIsCreatingList(false);

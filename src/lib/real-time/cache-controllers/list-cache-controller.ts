@@ -5,13 +5,13 @@ import { QueryClient } from '@tanstack/react-query';
 import { CacheHandlers } from '../cache-types';
 
 export default function listCacheController(queryClient: QueryClient): CacheHandlers<TList> {
-  const queryKey = listKeys._def;
+  const defQueryKey = listKeys._def;
 
   return {
     handleInsert: list => {
       insertQueryData({
         queryClient,
-        queryKey,
+        defQueryKey,
         entity: list,
       });
     },
@@ -19,7 +19,7 @@ export default function listCacheController(queryClient: QueryClient): CacheHand
     handleUpdate: list => {
       updateQueryData({
         queryClient,
-        queryKey,
+        defQueryKey,
         entity: list,
       });
     },
@@ -27,7 +27,7 @@ export default function listCacheController(queryClient: QueryClient): CacheHand
     handleDelete: id => {
       deleteQueryData({
         queryClient,
-        queryKey,
+        defQueryKey,
         entityId: id,
       });
     },

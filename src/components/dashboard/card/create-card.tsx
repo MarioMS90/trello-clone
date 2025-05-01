@@ -78,11 +78,9 @@ export function CreateCard({ listId, onCancel }: { listId: string; onCancel: () 
   };
 
   return (
-    <li
-      className="flex flex-shrink-0 flex-col gap-2 px-2 pt-1 text-sm text-primary"
-      ref={clickAwayRef}>
+    <li className="text-primary flex shrink-0 flex-col gap-2 px-2 pt-1 text-sm" ref={clickAwayRef}>
       <textarea
-        className="card-shadow focus:shadow-transition focus:shadow-transition-effect min-h-14 resize-none overflow-hidden rounded-lg bg-white p-3 py-2 placeholder-gray-500 outline-none"
+        className="card-shadow focus:shadow-transition focus:shadow-transition-effect min-h-14 resize-none overflow-hidden rounded-lg bg-white p-3 py-2 placeholder-gray-500 outline-hidden"
         placeholder="Enter a title for this card"
         onChange={() => resizeTextarea(textareaRef)}
         onKeyDown={e => {
@@ -102,24 +100,15 @@ export function CreateCard({ listId, onCancel }: { listId: string; onCancel: () 
       />
       <div className="mt-1 flex gap-2">
         <button
-          className="
-              rounded 
-              bg-secondary 
-              px-3 
-              py-1.5 
-              text-sm 
-              font-medium 
-              text-white
-              hover:opacity-80 
-              disabled:cursor-not-allowed 
-              disabled:bg-gray-200 
-              disabled:text-gray-400
-            "
+          className="bg-secondary cursor-pointer rounded px-3 py-1.5 text-sm font-medium text-white hover:opacity-80 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400"
           type="button"
           onClick={createNewCard}>
           Add card
         </button>
-        <button className="h-full rounded p-1.5 hover:bg-gray-300" type="button" onClick={onCancel}>
+        <button
+          className="h-full cursor-pointer rounded-sm p-1.5 hover:bg-gray-300"
+          type="button"
+          onClick={onCancel}>
           <span className="pointer-events-none">
             <CloseIcon height={20} />
           </span>

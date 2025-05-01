@@ -32,6 +32,8 @@ import { useBoardId } from '@/hooks/useBoardId';
 import { deleteCard, updateCard } from '@/lib/card/actions';
 import { blockCardDraggingAttr } from '@/constants/constants';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { commentKeys } from '@/lib/comment/queries';
 
 type TCardState =
   | { type: 'idle' }
@@ -68,7 +70,7 @@ const outerStyles: { [Key in TCardState['type']]?: string } = {
 export function CardShadow({ dragging }: { dragging: DOMRect }) {
   return (
     <div
-      className="mx-2 my-1 flex-shrink-0 rounded-lg opacity-60 [&]:bg-gray-300"
+      className="mx-2 my-1 shrink-0 rounded-lg opacity-60 [&]:bg-gray-300"
       style={{ width: dragging.width, height: dragging.height }}></div>
   );
 }
@@ -82,22 +84,24 @@ const CardDisplay = memo(function CardDisplay({
   card: TCardWithComments;
   state: TCardState;
   outerRef?: RefObject<HTMLLIElement | null>;
-  innerRef?: RefObject<HTMLDivElement | null>;
+  innerRef?: RefObject<HTMLButtonElement | null>;
 }) {
   const queryClient = useQueryClient();
   const boardId = useBoardId();
   invariant(boardId);
 
+  const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
-  const { queryKey } = cardKeys.list(boardId);
   const { mutate: removeCard } = useMutation({
     mutationFn: async (id: string) => deleteCard(id),
     onSuccess: async ({ data }) => {
       invariant(data);
 
-      return queryClient.setQueryData(queryKey, (old: TCardWithComments[]) =>
+      queryClient.removeQueries({ queryKey: cardKeys.detail(card.id).queryKey, exact: true });
+      queryClient.removeQueries({ queryKey: commentKeys.list(card.id).queryKey, exact: true });
+      return queryClient.setQueryData(cardKeys.list(boardId).queryKey, (old: TCardWithComments[]) =>
         old.filter(_card => _card.id !== data.id),
       );
     },
@@ -110,7 +114,9 @@ const CardDisplay = memo(function CardDisplay({
     mutationFn: async (variables: { id: string; name: string }) => updateCard(variables),
     onSuccess: async ({ data }) => {
       invariant(data);
-      return queryClient.setQueryData(queryKey, (old: TCardWithComments[]) =>
+
+      queryClient.setQueryData(cardKeys.detail(data.id).queryKey, data);
+      return queryClient.setQueryData(cardKeys.list(boardId).queryKey, (old: TCardWithComments[]) =>
         old.map(_card => (_card.id === data.id ? data : _card)),
       );
     },
@@ -128,13 +134,14 @@ const CardDisplay = memo(function CardDisplay({
       ) : null}
       <li
         className={cn(
-          'group flex flex-shrink-0 cursor-pointer flex-col px-2',
+          'group relative flex shrink-0 cursor-pointer flex-col px-2',
           outerStyles[state.type],
         )}
         ref={outerRef}>
-        <div
+        <button
+          type="button"
           className={cn(
-            'card-shadow hover:shadow-transition-effect group relative rounded-lg bg-white p-4 py-2.5',
+            'card-shadow hover:shadow-transition-effect group cursor-pointer rounded-lg bg-white p-4 py-2.5',
             innerStyles[state.type],
           )}
           style={
@@ -147,7 +154,8 @@ const CardDisplay = memo(function CardDisplay({
               : undefined
           }
           ref={innerRef}
-          {...(isEditing && { [blockCardDraggingAttr]: true })}>
+          {...(isEditing && { [blockCardDraggingAttr]: true })}
+          onClick={() => !isEditing && router.push(`/cards/${card.id}`)}>
           <EditableText
             className="[&&>span]:p-0 [&&>textarea]:rounded-[3px] [&&>textarea]:p-0 [&&>textarea]:shadow-none"
             defaultText={name}
@@ -155,49 +163,9 @@ const CardDisplay = memo(function CardDisplay({
             autoResize
             editing={isEditing}
             onEditingChange={setIsEditing}>
-            <h2>{name}</h2>
+            <Link href={`/cards/${card.id}`}>{name}</Link>
           </EditableText>
-          {!isEditing && (
-            <Link className="absolute right-0 top-0 z-10 size-full" href={`/cards/${card.id}`} />
-          )}
-          <div
-            className={cn('absolute right-1 top-1 z-20 hidden group-hover:block', {
-              block: isPopoverOpen,
-            })}>
-            <Popover
-              triggerContent={
-                <span className="center-xy">
-                  <PencilIcon width={11} height={11} />
-                </span>
-              }
-              triggerClassName="size-7 rounded-full hover:bg-gray-200 p-0"
-              popoverClassName="px-0 [&]:w-40"
-              open={isPopoverOpen}
-              onOpenChange={setIsPopoverOpen}>
-              <ul className="text-sm [&>li>button:hover]:bg-gray-200 [&>li>button]:w-full [&>li>button]:px-3 [&>li>button]:py-2 [&>li>button]:text-left">
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsEditing(true);
-                      setIsPopoverOpen(false);
-                    }}>
-                    Rename card
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      removeCard(card.id);
-                      setIsPopoverOpen(false);
-                    }}>
-                    Delete card
-                  </button>
-                </li>
-              </ul>
-            </Popover>
-          </div>
+
           <div className="flex items-center gap-3 has-[span]:py-1">
             {card.description && (
               <span title="This card has a description">
@@ -211,6 +179,46 @@ const CardDisplay = memo(function CardDisplay({
               </span>
             )}
           </div>
+        </button>
+        <div
+          className={cn('absolute top-1 right-3 z-20 hidden group-hover:block', {
+            block: isPopoverOpen,
+          })}>
+          <Popover
+            triggerContent={
+              <span className="center-xy">
+                <PencilIcon width={11} height={11} />
+              </span>
+            }
+            triggerClassName="size-7 rounded-full hover:bg-gray-200 p-0"
+            popoverClassName="px-0 [&]:w-40"
+            open={isPopoverOpen}
+            onOpenChange={setIsPopoverOpen}>
+            <ul className="text-sm [&>li>button]:w-full [&>li>button]:px-3 [&>li>button]:py-2 [&>li>button]:text-left [&>li>button:hover]:bg-gray-200">
+              <li>
+                <button
+                  className="cursor-pointer"
+                  type="button"
+                  onClick={() => {
+                    setIsEditing(true);
+                    setIsPopoverOpen(false);
+                  }}>
+                  Rename card
+                </button>
+              </li>
+              <li>
+                <button
+                  className="cursor-pointer"
+                  type="button"
+                  onClick={() => {
+                    removeCard(card.id);
+                    setIsPopoverOpen(false);
+                  }}>
+                  Delete card
+                </button>
+              </li>
+            </ul>
+          </Popover>
         </div>
       </li>
       {state.type === 'is-over' && state.closestEdge === 'bottom' ? (
@@ -223,7 +231,7 @@ const CardDisplay = memo(function CardDisplay({
 export const CardPreview = memo(function CardPreview({ card }: { card: TCardWithComments }) {
   const [state, setState] = useState<TCardState>(idle);
   const outerRef = useRef<HTMLLIElement>(null);
-  const innerRef = useRef<HTMLDivElement>(null);
+  const innerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const outer = outerRef.current;

@@ -60,7 +60,7 @@ export const WorkspacePreview = memo(function WorkspacePreview({
   const name = updateWorkspaceName.isPending ? updateWorkspaceName.variables.name : workspace.name;
 
   const btnClassName =
-    'flex items-center gap-1.5 rounded bg-gray-300 px-3 py-1.5 text-primary hover:bg-opacity-90 hover:bg-gray-300';
+    'flex items-center gap-1.5 rounded-sm bg-gray-300 px-3 py-1.5 text-primary hover:bg-gray-300/90';
 
   return (
     <li>
@@ -68,7 +68,7 @@ export const WorkspacePreview = memo(function WorkspacePreview({
         <div className="flex items-center gap-3">
           <WorkspaceBadge workspaceName={name} />
           <EditableText
-            className="text-base font-bold text-white [&>input:focus]:shadow-none [&>input]:w-48 [&>input]:rounded-lg"
+            className="text-base font-bold text-white [&>input]:rounded-lg [&>input:focus]:shadow-none"
             defaultText={name}
             onEdit={text => updateWorkspaceName.mutate({ id: workspace.id, name: text })}
             editing={isEditingName}
@@ -89,9 +89,10 @@ export const WorkspacePreview = memo(function WorkspacePreview({
               popoverClassName="px-0 [&]:w-48"
               open={isPopoverOpen}
               onOpenChange={setIsPopoverOpen}>
-              <ul className="text-sm [&>li>button:hover]:bg-gray-200 [&>li>button]:w-full [&>li>button]:px-3 [&>li>button]:py-2 [&>li>button]:text-left">
+              <ul className="text-sm [&>li>button]:w-full [&>li>button]:px-3 [&>li>button]:py-2 [&>li>button]:text-left [&>li>button:hover]:bg-gray-200">
                 <li>
                   <button
+                    className="cursor-pointer"
                     type="button"
                     onClick={() => {
                       setIsEditingName(true);
@@ -101,7 +102,10 @@ export const WorkspacePreview = memo(function WorkspacePreview({
                   </button>
                 </li>
                 <li>
-                  <button type="button" onClick={() => removeWorkspace(workspace.id)}>
+                  <button
+                    className="cursor-pointer"
+                    type="button"
+                    onClick={() => removeWorkspace(workspace.id)}>
                     Delete workspace
                   </button>
                 </li>

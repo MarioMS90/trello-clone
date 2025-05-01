@@ -36,14 +36,14 @@ export default function SignUpForm() {
       <form action={formAction}>
         <h5 className="pb-3 font-semibold">Sign up to continue</h5>
         <input
-          className="mb-2 block h-4 w-full rounded border border-gray-500 px-2 py-5 text-sm outline-secondary"
+          className="outline-secondary mb-2 block h-4 w-full rounded-sm border border-gray-500 px-2 py-5 text-sm"
           type="text"
           name="name"
           placeholder="Enter your name"
           value={user.name}
           onChange={e => setUser({ ...user, name: e.target.value })}></input>
         <input
-          className="mb-2 block h-4 w-full rounded border border-gray-500 px-2 py-5 text-sm outline-secondary"
+          className="outline-secondary mb-2 block h-4 w-full rounded-sm border border-gray-500 px-2 py-5 text-sm"
           type="email"
           name="email"
           placeholder="Enter your email"
@@ -58,7 +58,7 @@ export default function SignUpForm() {
             setUser({ ...user, password: e.target.value });
             setIsGeneratedUser(false);
           }}
-          className="mb-2 block h-4 w-full rounded border border-gray-500 px-2 py-5 text-sm outline-secondary"></input>
+          className="outline-secondary mb-2 block h-4 w-full rounded-sm border border-gray-500 px-2 py-5 text-sm"></input>
         <div id="password-error" aria-live="polite" aria-atomic="true">
           {formErrors.map((error: string) => (
             <p className="mb-2 text-sm text-red-500" key={error}>
@@ -67,13 +67,13 @@ export default function SignUpForm() {
           ))}
         </div>
         <button
-          type="submit"
-          className="block w-full rounded bg-secondary py-2 text-sm font-medium text-white hover:bg-[#0055cc]">
+          className="bg-secondary block w-full cursor-pointer rounded-sm py-2 text-sm font-medium text-white hover:bg-[#0055cc]"
+          type="submit">
           Sign Up
         </button>
       </form>
       <button
-        className="my-2 block w-full rounded bg-primary py-2 text-sm font-medium text-white hover:opacity-90"
+        className="bg-primary my-2 block w-full cursor-pointer rounded-sm py-2 text-sm font-medium text-white hover:opacity-90"
         type="button"
         onClick={generateRandomUser}
         aria-disabled={isPending}

@@ -67,7 +67,7 @@ export const StarToggleBoard = memo(function StarToggleBoard({
   return (
     <>
       <button
-        className={`center-y absolute right-3 ${className}`}
+        className={`center-y absolute right-3 cursor-pointer ${className}`}
         type="button"
         onClick={() => {
           toggleStarredBoard(!isStarred);

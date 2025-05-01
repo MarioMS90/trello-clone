@@ -27,7 +27,7 @@ import { blockBoardPanningAttr, blockListDraggingAttr } from '@/constants/consta
 import { createPortal } from 'react-dom';
 import EditableText from '@/components/ui/editable-text';
 import { isShallowEqual } from '@/lib/utils/is-shallow-equal';
-import { useCards } from '@/lib/card/queries';
+import { cardKeys, useCards } from '@/lib/card/queries';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteList, updateList } from '@/lib/list/actions';
 import { listKeys } from '@/lib/list/queries';
@@ -74,7 +74,7 @@ const outerStyles: { [Key in TListState['type']]?: string } = {
 function ListShadow({ dragging }: { dragging: DOMRect }) {
   return (
     <div
-      className="mx-1.5 flex-shrink-0 rounded-xl opacity-60 [&]:bg-secondary-background"
+      className="[&]:bg-secondary-background mx-1.5 shrink-0 rounded-xl opacity-60"
       style={{ width: dragging.width, height: dragging.height }}></div>
   );
 }
@@ -101,13 +101,16 @@ const ListDisplay = memo(function ListDisplay({
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [isCreatingCard, setIsCreatingCard] = useState(false);
 
-  const { queryKey } = listKeys.list(list.boardId);
   const { mutate: removeList } = useMutation({
     mutationFn: async (id: string) => deleteList(id),
     onSuccess: async ({ data }) => {
       invariant(data);
 
-      return queryClient.setQueryData(queryKey, (old: TList[]) =>
+      queryClient.removeQueries({ queryKey: listKeys.detail(list.id).queryKey, exact: true });
+      queryClient.setQueryData(cardKeys.list(list.boardId).queryKey, (old: TCardWithComments[]) =>
+        old.filter(_card => _card.listId !== data.id),
+      );
+      return queryClient.setQueryData(listKeys.list(list.boardId).queryKey, (old: TList[]) =>
         old.filter(_list => _list.id !== data.id),
       );
     },
@@ -120,7 +123,9 @@ const ListDisplay = memo(function ListDisplay({
     mutationFn: async (variables: { id: string; name: string }) => updateList(variables),
     onSuccess: async ({ data }) => {
       invariant(data);
-      return queryClient.setQueryData(queryKey, (old: TList[]) =>
+
+      queryClient.setQueryData(listKeys.detail(data.id).queryKey, data);
+      return queryClient.setQueryData(listKeys.list(list.boardId).queryKey, (old: TList[]) =>
         old.map(_list => (_list.id === data.id ? data : _list)),
       );
     },
@@ -137,11 +142,11 @@ const ListDisplay = memo(function ListDisplay({
         <ListShadow dragging={state.dragging} />
       ) : null}
       <li
-        className={cn('flex flex-shrink-0 flex-col px-1.5', outerStyles[state.type])}
+        className={cn('flex shrink-0 flex-col px-1.5', outerStyles[state.type])}
         ref={outerFullHeightRef}>
         <div
           className={cn(
-            'flex max-h-full w-[272px] flex-col rounded-xl bg-[#f1f2f4] pb-2 text-sm text-primary',
+            'text-primary flex max-h-full w-[272px] flex-col rounded-xl bg-[#f1f2f4] pb-2 text-sm',
             innerStyles[state.type],
           )}
           style={
@@ -180,9 +185,10 @@ const ListDisplay = memo(function ListDisplay({
                 popoverClassName="px-0 [&]:w-40"
                 open={isPopoverOpen}
                 onOpenChange={setIsPopoverOpen}>
-                <ul className="text-sm [&>li>button:hover]:bg-gray-200 [&>li>button]:w-full [&>li>button]:px-3 [&>li>button]:py-2 [&>li>button]:text-left">
+                <ul className="text-sm [&>li>button]:w-full [&>li>button]:px-3 [&>li>button]:py-2 [&>li>button]:text-left [&>li>button:hover]:bg-gray-200">
                   <li>
                     <button
+                      className="cursor-pointer"
                       type="button"
                       onClick={() => {
                         setIsEditing(true);
@@ -193,6 +199,7 @@ const ListDisplay = memo(function ListDisplay({
                   </li>
                   <li>
                     <button
+                      className="cursor-pointer"
                       type="button"
                       onClick={() => {
                         removeList(list.id);
@@ -222,8 +229,8 @@ const ListDisplay = memo(function ListDisplay({
             {!isCreatingCard && (
               <div className="px-2 pt-2">
                 <button
+                  className="flex w-full cursor-pointer items-center gap-2 rounded-lg p-1.5 text-sm hover:bg-gray-300"
                   type="button"
-                  className="flex w-full items-center gap-2 rounded-lg p-1.5 text-sm hover:bg-gray-300"
                   onClick={() => setIsCreatingCard(true)}>
                   <PlusIcon width={16} height={16} />
                   Add a card

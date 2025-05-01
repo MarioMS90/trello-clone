@@ -11,12 +11,12 @@ export default function SignInForm() {
     <form action={formAction}>
       <h5 className="pb-3 font-semibold">Sign in to continue</h5>
       <input
-        className="mb-2 block h-4 w-full rounded border border-gray-500 px-2 py-5 text-sm outline-secondary"
+        className="outline-secondary mb-2 block h-4 w-full rounded-sm border border-gray-500 px-2 py-5 text-sm"
         type="email"
         name="email"
         placeholder="Enter your email"></input>
       <input
-        className="mb-2 block h-4 w-full rounded border border-gray-500 px-2 py-5 text-sm outline-secondary"
+        className="outline-secondary mb-2 block h-4 w-full rounded-sm border border-gray-500 px-2 py-5 text-sm"
         type="password"
         name="password"
         placeholder="Enter your password"></input>
@@ -24,7 +24,7 @@ export default function SignInForm() {
         {state.error && <p className="mb-2 text-sm text-red-500">{state.message}</p>}
       </div>
       <button
-        className="block w-full rounded bg-secondary py-2 text-sm font-medium text-white hover:bg-[#0055cc]"
+        className="bg-secondary block w-full cursor-pointer rounded-sm py-2 text-sm font-medium text-white hover:bg-[#0055cc]"
         type="submit"
         aria-disabled={isPending}
         disabled={isPending}>

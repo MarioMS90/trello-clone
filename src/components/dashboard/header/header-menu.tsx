@@ -74,7 +74,7 @@ export default function HeaderMenu() {
       {starredBoardsContent}
     </Popover>,
     <CreateBoard
-      triggerClassName="font-medium bg-white bg-opacity-20 px-3 py-1.5 text-white hover:bg-opacity-30"
+      triggerClassName="font-medium bg-white/20 px-3 py-1.5 text-white hover:bg-white/30"
       workspaces={workspaces}
       buttonText="Create board"
       redirectToNewBoard

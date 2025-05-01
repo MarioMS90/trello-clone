@@ -99,7 +99,7 @@ function SearchResultsContent({ searchResults }: { searchResults: SearchResult[]
         ({ title, content }) =>
           content && (
             <li key={title}>
-              <h2 className="mb-1 px-4 text-[11px] font-semibold uppercase text-gray-500">
+              <h2 className="mb-1 px-4 text-[11px] font-semibold text-gray-500 uppercase">
                 {title}
               </h2>
               {content}
@@ -187,7 +187,7 @@ export default function HeaderSearch({ placeholder }: { placeholder: string }) {
     <div
       className={`relative h-7 ${searchResults || isInputFocused ? 'w-2/4' : 'w-72'}`}
       ref={clickAwayRef}>
-      <span className="absolute left-2 top-1/2 -translate-y-1/2 transform">
+      <span className="absolute top-1/2 left-2 -translate-y-1/2 transform">
         <SearchIcon height={17} />
       </span>
       <input
@@ -196,14 +196,13 @@ export default function HeaderSearch({ placeholder }: { placeholder: string }) {
           rounded 
           border 
           border-gray-400 
-          bg-white 
-          bg-opacity-20 
+          bg-white/20 
           pl-8 
           text-sm 
           text-white 
           placeholder-white 
-          outline-none 
-          hover:bg-opacity-30 
+          outline-hidden 
+          hover:bg-white/30 
           ${searchResults || isInputFocused ? 'search-box-shadow' : ''}
         `}
         type="text"
@@ -217,8 +216,9 @@ export default function HeaderSearch({ placeholder }: { placeholder: string }) {
       {(searchResults || isLoading) && (
         <div
           className="
+            text-primary
             absolute
-            inset-x-0
+            inset-x-0 
             top-[calc(100%+10px)] 
             z-10 
             flex 
@@ -226,9 +226,8 @@ export default function HeaderSearch({ placeholder }: { placeholder: string }) {
             flex-col 
             rounded 
             bg-white 
-            pb-4 
             pt-2 
-            text-primary 
+            pb-4 
             shadow-xl 
           ">
           {isLoading && (

@@ -5,13 +5,13 @@ import { TBoard } from '@/types/db';
 import { CacheHandlers } from '../cache-types';
 
 export default function boardCacheController(queryClient: QueryClient): CacheHandlers<TBoard> {
-  const queryKey = boardKeys._def;
+  const defQueryKey = boardKeys._def;
 
   return {
     handleInsert: board => {
       insertQueryData({
         queryClient,
-        queryKey,
+        defQueryKey,
         entity: board,
       });
     },
@@ -19,7 +19,7 @@ export default function boardCacheController(queryClient: QueryClient): CacheHan
     handleUpdate: board => {
       updateQueryData({
         queryClient,
-        queryKey,
+        defQueryKey,
         entity: board,
       });
     },
@@ -27,7 +27,7 @@ export default function boardCacheController(queryClient: QueryClient): CacheHan
     handleDelete: id => {
       deleteQueryData({
         queryClient,
-        queryKey,
+        defQueryKey,
         entityId: id,
       });
     },

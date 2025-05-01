@@ -59,7 +59,7 @@ export default function Popover({
       <button
         {...getReferenceProps()}
         className={cn(
-          'flex items-center gap-2 rounded px-3 py-1.5 hover:bg-button-hovered-background',
+          'hover:bg-button-hovered-background flex cursor-pointer items-center gap-2 rounded-sm px-3 py-1.5',
           triggerClassName,
         )}
         type="button"
@@ -71,7 +71,7 @@ export default function Popover({
           <FloatingFocusManager context={context} modal={false}>
             <div
               className={cn(
-                'popover z-20 flex w-72 flex-col rounded-lg bg-white p-3 text-primary shadow-lg outline-none',
+                'popover text-primary z-20 flex w-72 flex-col rounded-lg bg-white p-3 shadow-lg outline-hidden',
                 popoverClassName,
               )}
               style={floatingStyles}

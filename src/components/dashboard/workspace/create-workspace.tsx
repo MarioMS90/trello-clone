@@ -60,12 +60,12 @@ export function CreateWorkspace() {
   return (
     <Popover
       popoverClassName="[&]:center-y [&]:left-[calc(100%+10px)]"
-      triggerClassName="rounded px-2 py-1.5 h-20 w-44 bg-gray-300 text-sm text-primary justify-center hover:opacity-90 hover:bg-gray-300"
+      triggerClassName="rounded-sm px-2 py-1.5 h-20 w-44 bg-gray-300 text-sm text-primary justify-center hover:opacity-90 hover:bg-gray-300"
       triggerContent="Create a new workspace"
       open={isPopoverOpen}
       onOpenChange={setIsPopoverOpen}>
       <button
-        className="close-popover absolute right-2 top-2 flex size-7 items-center justify-center rounded-md hover:bg-gray-300"
+        className="close-popover absolute top-2 right-2 flex size-7 cursor-pointer items-center justify-center rounded-md hover:bg-gray-300"
         type="button"
         onMouseUp={() => setIsPopoverOpen(false)}>
         <span className="pointer-events-none">
@@ -79,7 +79,7 @@ export function CreateWorkspace() {
             Workspace title <span className="text-red-500">*</span>
             <input
               name="name"
-              className="mb-1 mt-1 w-full rounded border border-gray-500 px-3 py-2 outline-secondary"
+              className="outline-secondary mt-1 mb-1 w-full rounded-sm border border-gray-500 px-3 py-2"
               required
               onInput={e => {
                 setIsValidForm(Boolean(e.currentTarget.value.trim()));
@@ -89,7 +89,7 @@ export function CreateWorkspace() {
           </label>
           {result?.errors?.name && <p className="text-xs text-red-500">{result.errors.name}</p>}
           <button
-            className="mt-3 w-full rounded bg-secondary px-3 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400"
+            className="bg-secondary mt-3 w-full cursor-pointer rounded-sm px-3 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400"
             type="submit"
             disabled={!isValidForm || isPending}>
             Create

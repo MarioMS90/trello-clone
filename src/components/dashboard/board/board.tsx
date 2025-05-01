@@ -317,11 +317,11 @@ export default function Board({ boardId }: { boardId: string }) {
   }, []);
 
   return (
-    <div className="relative h-[calc(100%-8px)]">
+    <div className="relative h-[calc(100%-60px)]">
       {/* position: absolute needed for max-height:100% to be respected internally */}
       <div className="absolute inset-0">
         <ul
-          className="scrollbar-transparent [-webkit-user-drag: none] flex h-full select-none overflow-x-auto px-2 pb-2 pt-3"
+          className="scrollbar-transparent [-webkit-user-drag: none] flex h-full overflow-x-auto px-2 pt-3 pb-2 select-none"
           ref={scrollableRef}
           draggable={false}>
           {lists.map(list => (

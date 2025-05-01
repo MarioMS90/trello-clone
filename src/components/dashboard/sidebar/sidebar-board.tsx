@@ -24,14 +24,14 @@ export const SidebarBoard = memo(function SidebarBoard({ board }: { board: TBoar
   return (
     <li
       className={cn(
-        'group relative [&:hover:not(:has(.popover:hover))]:bg-button-hovered-background',
+        'group [&:hover:not(:has(.popover:hover))]:bg-button-hovered-background relative',
         {
           'bg-button-hovered-background': currentBoardId === board.id,
         },
       )}
       key={board.id}>
       <EditableText
-        className="[&>input:focus]:shadow-none [&>input]:my-0.5 [&>input]:ml-1.5 [&>input]:mr-[74px] [&>input]:w-full [&>input]:font-semibold [&>span]:p-0"
+        className="[&>input]:my-0.5 [&>input]:mr-[74px] [&>input]:ml-1.5 [&>input]:w-full [&>input]:font-semibold [&>input:focus]:shadow-none [&>span]:p-0"
         defaultText={name}
         onEdit={text => {
           updateBoardName.mutate({ id: board.id, name: text });
@@ -39,7 +39,7 @@ export const SidebarBoard = memo(function SidebarBoard({ board }: { board: TBoar
         editing={isEditingName}
         onEditingChange={setIsEditingName}>
         <Link
-          className="block overflow-hidden text-ellipsis py-2 pl-3.5 pr-[70px] text-white"
+          className="block overflow-hidden py-2 pr-[70px] pl-3.5 text-ellipsis text-white"
           href={`/boards/${board.id}`}>
           {name}
         </Link>
@@ -54,9 +54,10 @@ export const SidebarBoard = memo(function SidebarBoard({ board }: { board: TBoar
           popoverClassName="px-0 [&]:w-40"
           open={isPopoverOpen}
           onOpenChange={setIsPopoverOpen}>
-          <ul className="text-sm [&>li>button:hover]:bg-gray-200 [&>li>button]:w-full [&>li>button]:px-3 [&>li>button]:py-2 [&>li>button]:text-left">
+          <ul className="text-sm [&>li>button]:w-full [&>li>button]:px-3 [&>li>button]:py-2 [&>li>button]:text-left [&>li>button:hover]:bg-gray-200">
             <li>
               <button
+                className="cursor-pointer"
                 type="button"
                 onClick={() => {
                   setIsEditingName(true);
@@ -66,7 +67,10 @@ export const SidebarBoard = memo(function SidebarBoard({ board }: { board: TBoar
               </button>
             </li>
             <li>
-              <button type="button" onClick={() => removeBoard.mutate(board.id)}>
+              <button
+                className="cursor-pointer"
+                type="button"
+                onClick={() => removeBoard.mutate(board.id)}>
                 Delete board
               </button>
             </li>
@@ -75,7 +79,7 @@ export const SidebarBoard = memo(function SidebarBoard({ board }: { board: TBoar
       </div>
 
       <StarToggleBoard
-        className={cn('z-[5] hidden group-[:hover:not(:has(.popover:hover))]:block', {
+        className={cn('z-5 hidden group-[:hover:not(:has(.popover:hover))]:block', {
           '[&]:block': isStarred,
         })}
         boardId={board.id}

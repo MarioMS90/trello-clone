@@ -7,13 +7,13 @@ import { CacheHandlers } from '../cache-types';
 export default function starredBoardCacheController(
   queryClient: QueryClient,
 ): CacheHandlers<TStarredBoard> {
-  const queryKey = starredBoardKeys._def;
+  const defQueryKey = starredBoardKeys._def;
 
   return {
     handleInsert: starredBoard => {
       insertQueryData({
         queryClient,
-        queryKey,
+        defQueryKey,
         entity: starredBoard,
       });
     },
@@ -21,7 +21,7 @@ export default function starredBoardCacheController(
     handleUpdate: starredBoard => {
       updateQueryData({
         queryClient,
-        queryKey,
+        defQueryKey,
         entity: starredBoard,
       });
     },
@@ -29,7 +29,7 @@ export default function starredBoardCacheController(
     handleDelete: id => {
       deleteQueryData({
         queryClient,
-        queryKey,
+        defQueryKey,
         entityId: id,
       });
     },

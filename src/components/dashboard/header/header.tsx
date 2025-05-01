@@ -9,21 +9,8 @@ import Popover from '../../ui/popover';
 
 export default function Header() {
   return (
-    <header
-      className="
-        z-10 
-        flex 
-        h-12
-        items-center 
-        justify-between 
-        border-b 
-        border-b-white 
-        border-opacity-30 
-        bg-primary-background
-        p-2 
-        text-white
-      ">
-      <nav className="flex items-center text-sm [&>a:hover]:bg-button-hovered-background [&>a]:relative [&>a]:h-[32px] [&>a]:rounded">
+    <header className="bg-primary-background z-10 flex h-12 items-center justify-between border-b border-b-white/30 p-2 text-white">
+      <nav className="[&>a:hover]:bg-button-hovered-background flex items-center text-sm [&>a]:relative [&>a]:h-[32px] [&>a]:rounded-sm">
         <Link className="w-[32px]" href="/workspaces">
           <span className="center-xy">
             <AppsIcon />
@@ -43,7 +30,7 @@ export default function Header() {
           triggerClassName="rounded-full [&]:p-1"
           popoverClassName="right-0 left-auto px-0 [&]:w-40">
           <button
-            className="px-3 py-2 text-left text-sm hover:bg-gray-200"
+            className="cursor-pointer px-3 py-2 text-left text-sm hover:bg-gray-200"
             type="button"
             onClick={async () => {
               'use server';

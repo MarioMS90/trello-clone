@@ -5,13 +5,13 @@ import { QueryClient } from '@tanstack/react-query';
 import { CacheHandlers } from '../cache-types';
 
 export default function userCacheController(queryClient: QueryClient): CacheHandlers<TUser> {
-  const queryKey = userKeys._def;
+  const defQueryKey = userKeys._def;
 
   return {
     handleInsert: user => {
       insertQueryData({
         queryClient,
-        queryKey,
+        defQueryKey,
         entity: user,
       });
     },
@@ -19,7 +19,7 @@ export default function userCacheController(queryClient: QueryClient): CacheHand
     handleUpdate: user => {
       updateQueryData({
         queryClient,
-        queryKey,
+        defQueryKey,
         entity: user,
       });
     },
@@ -27,7 +27,7 @@ export default function userCacheController(queryClient: QueryClient): CacheHand
     handleDelete: id => {
       deleteQueryData({
         queryClient,
-        queryKey,
+        defQueryKey,
         entityId: id,
       });
     },

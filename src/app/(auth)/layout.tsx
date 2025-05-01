@@ -13,7 +13,7 @@ export default function Layout({
       <div className="login-background"></div>
       <section
         role="main"
-        className="flex w-[400px] flex-col rounded bg-white p-7 text-center shadow-md">
+        className="flex w-[400px] flex-col rounded-sm bg-white p-7 text-center shadow-md">
         <TrelloIcon height={40} />
         {children}
         <footer className="mt-4 flex flex-col border-t border-gray-300 pt-6 text-xs [&>*>a]:text-secondary">

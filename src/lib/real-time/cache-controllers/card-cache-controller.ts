@@ -5,13 +5,13 @@ import { QueryClient } from '@tanstack/react-query';
 import { CacheHandlers } from '../cache-types';
 
 export default function cardCacheController(queryClient: QueryClient): CacheHandlers<TCard> {
-  const queryKey = cardKeys._def;
+  const defQueryKey = cardKeys._def;
 
   return {
     handleInsert: card => {
       insertQueryData({
         queryClient,
-        queryKey,
+        defQueryKey,
         entity: { ...card, commentCount: 0 },
       });
     },
@@ -19,7 +19,7 @@ export default function cardCacheController(queryClient: QueryClient): CacheHand
     handleUpdate: card => {
       updateQueryData({
         queryClient,
-        queryKey,
+        defQueryKey,
         entity: card,
       });
     },
@@ -27,7 +27,7 @@ export default function cardCacheController(queryClient: QueryClient): CacheHand
     handleDelete: id => {
       deleteQueryData({
         queryClient,
-        queryKey,
+        defQueryKey,
         entityId: id,
       });
     },

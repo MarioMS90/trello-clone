@@ -9,6 +9,8 @@ import { cardKeys } from '@/lib/card/queries';
 import { boardKeys } from '@/lib/board/queries';
 import { userKeys } from '@/lib/user/queries';
 import { notFound } from 'next/navigation';
+import BoardHeader from '@/components/dashboard/board/board-header';
+import { ErrorBoundary } from 'react-error-boundary';
 
 export const metadata: Metadata = {
   title: 'Board',
@@ -29,6 +31,11 @@ export default async function BoardPage({ params }: { params: Promise<{ id: stri
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
+      <ErrorBoundary fallback={null}>
+        <Suspense fallback={<>Skeleton board</>}>
+          <BoardHeader />
+        </Suspense>
+      </ErrorBoundary>
       <Suspense fallback={<ListsSkeleton />}>
         <Board boardId={boardId} />
       </Suspense>

@@ -8,13 +8,13 @@ export default function WorkspaceBadge({
   return (
     <div
       className={`
+        bg-secondary 
+        text-md 
         flex 
         size-8 
         items-center 
         justify-center 
         rounded 
-        bg-secondary 
-        text-xl 
         font-bold 
         text-white 
         ${className}

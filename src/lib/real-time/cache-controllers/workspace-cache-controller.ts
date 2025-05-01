@@ -7,13 +7,13 @@ import { CacheHandlers } from '../cache-types';
 export default function workspaceCacheController(
   queryClient: QueryClient,
 ): CacheHandlers<TWorkspace> {
-  const queryKey = workspaceKeys._def;
+  const defQueryKey = workspaceKeys._def;
 
   return {
     handleInsert: workspace => {
       insertQueryData({
         queryClient,
-        queryKey,
+        defQueryKey,
         entity: workspace,
       });
     },
@@ -21,7 +21,7 @@ export default function workspaceCacheController(
     handleUpdate: workspace => {
       updateQueryData({
         queryClient,
-        queryKey,
+        defQueryKey,
         entity: workspace,
       });
     },
@@ -29,7 +29,7 @@ export default function workspaceCacheController(
     handleDelete: id => {
       deleteQueryData({
         queryClient,
-        queryKey,
+        defQueryKey,
         entityId: id,
       });
     },

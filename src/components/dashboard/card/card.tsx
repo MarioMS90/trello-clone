@@ -4,13 +4,15 @@ import { useCard } from '@/lib/card/queries';
 import { useList } from '@/lib/list/queries';
 import { useClickAway } from '@uidotdev/usehooks';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import invariant from 'tiny-invariant';
+import { notFound, useRouter } from 'next/navigation';
 
 export default function Card({ cardId }: { cardId: string }) {
   const router = useRouter();
   const { data: card } = useCard(cardId);
-  invariant(card);
+  if (!card) {
+    notFound();
+  }
+
   const { data: list } = useList(card.listId);
 
   const clickAwayRef = useClickAway<HTMLDivElement>(event => {
@@ -27,7 +29,7 @@ export default function Card({ cardId }: { cardId: string }) {
 
   return (
     <div className="card-wrapper">
-      <div className="scrollbar-stable fixed left-0 top-0 z-50 h-dvh w-dvw bg-black/75 text-primary">
+      <div className="scrollbar-stable text-primary fixed top-0 left-0 z-50 h-dvh w-dvw bg-black/75">
         <div
           className="center-xy fixed w-auto rounded-xl  bg-neutral-200 p-4 md:w-[768px]"
           ref={clickAwayRef}>
