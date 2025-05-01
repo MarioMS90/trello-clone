@@ -6,13 +6,14 @@ import ArrowDownIcon from '@/components/icons/arrow-down';
 import WorkspaceBadge from '@/components/ui/workspace-logo';
 import PlusIcon from '@/components/icons/plus';
 import SidebarLinks from '@/components/dashboard/sidebar/sidebar-links';
-import SidebarBoards from '@/components/dashboard/sidebar/sidebar-boards';
 import { useState } from 'react';
 import { TWorkspace } from '@/types/db';
 import { cn } from '@/lib/utils/utils';
 import { useWorkspaceId } from '@/hooks/useWorkspaceId';
 import { useWorkspace } from '@/lib/workspace/queries';
+import { useBoards } from '@/lib/board/queries';
 import { CreateBoard } from '../board/create-board';
+import { SidebarBoard } from './sidebar-board';
 
 export function Sidebar() {
   const workspaceId = useWorkspaceId();
@@ -44,7 +45,8 @@ export function MainSidebar() {
   );
 }
 
-export function WorkspaceSidebar({ workspace }: { workspace: TWorkspace }) {
+function WorkspaceSidebar({ workspace }: { workspace: TWorkspace }) {
+  const { data: boards } = useBoards(workspace.id);
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
 
   return (
@@ -100,7 +102,11 @@ export function WorkspaceSidebar({ workspace }: { workspace: TWorkspace }) {
               buttonText={<PlusIcon height={16} />}
             />
           </div>
-          <SidebarBoards />
+          <ul>
+            {boards.map(board => (
+              <SidebarBoard board={board} key={board.id} />
+            ))}
+          </ul>
         </div>
       </div>
     </nav>

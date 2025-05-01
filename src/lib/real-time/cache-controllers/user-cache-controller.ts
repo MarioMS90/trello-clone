@@ -5,8 +5,7 @@ import { QueryClient } from '@tanstack/react-query';
 import { CacheHandlers } from '../cache-types';
 
 export default function userCacheController(queryClient: QueryClient): CacheHandlers<TUser> {
-  // Needs the actual workspace
-  const { queryKey } = userKeys.list('');
+  const queryKey = userKeys._def;
 
   return {
     handleInsert: user => {

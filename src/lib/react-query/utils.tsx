@@ -10,16 +10,16 @@ export function insertQueryData<T extends TEntity<TEntityName>>({
   queryKey: QueryKey;
   entity: T;
 }): void {
-  queryClient.setQueryData<T[]>(queryKey, oldEntities => {
-    if (!oldEntities) {
+  queryClient.setQueriesData<T | T[]>({ queryKey, exact: false }, old => {
+    if (!old || !Array.isArray(old)) {
       return undefined;
     }
 
-    if (oldEntities.some(oldEntity => oldEntity.id === entity.id)) {
-      return oldEntities;
+    if (old.some(oldEntity => oldEntity.id === entity.id)) {
+      return old;
     }
 
-    return [...oldEntities, entity];
+    return [...old, entity];
   });
 }
 
@@ -32,16 +32,20 @@ export function updateQueryData<T extends TEntity<TEntityName>>({
   queryKey: QueryKey;
   entity: T;
 }) {
-  queryClient.setQueryData<T[]>(queryKey, oldEntities => {
-    if (!oldEntities) {
+  queryClient.setQueriesData<T | T[]>({ queryKey, exact: false }, old => {
+    if (!old) {
       return undefined;
     }
 
-    if (oldEntities.some(oldEntity => oldEntity.updatedAt === entity.updatedAt)) {
-      return oldEntities;
+    if (!Array.isArray(old)) {
+      return { ...old, ...entity };
     }
 
-    return oldEntities.map(oldEntity =>
+    if (old.some(oldEntity => oldEntity.updatedAt === entity.updatedAt)) {
+      return old;
+    }
+
+    return old.map(oldEntity =>
       oldEntity.id === entity.id ? { ...oldEntity, ...entity } : oldEntity,
     );
   });
@@ -56,15 +60,21 @@ export function deleteQueryData<T extends TEntity<TEntityName>>({
   queryKey: QueryKey;
   entityId: string;
 }) {
-  queryClient.setQueryData<T[]>(queryKey, oldEntities => {
-    if (!oldEntities) {
+  const data = queryClient.getQueriesData<T | T[]>({ queryKey, exact: false });
+
+  queryClient.setQueriesData<T | T[]>({ queryKey, exact: false }, old => {
+    if (!old) {
       return undefined;
     }
 
-    if (!oldEntities.some(oldEntity => oldEntity.id === entityId)) {
-      return oldEntities;
+    if (!Array.isArray(old)) {
+      return [];
     }
 
-    return oldEntities.filter((entity: T) => entity.id !== entityId);
+    if (!old.some(oldEntity => oldEntity.id === entityId)) {
+      return old;
+    }
+
+    return old.filter((entity: T) => entity.id !== entityId);
   });
 }

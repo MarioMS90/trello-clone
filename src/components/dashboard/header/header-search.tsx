@@ -11,7 +11,7 @@ import SearchIcon from '@/components/icons/search';
 import WorkspaceBadge from '@/components/ui/workspace-logo';
 import { SearchResult } from '@/types/search-types';
 import { useClickAway, useDebounce } from '@uidotdev/usehooks';
-import { getClient } from '@/lib/supabase/utils';
+import { getClient } from '@/lib/supabase/get-client';
 
 const generateSearchResult = <T extends SearchResult['kind']>(
   searchResult: Extract<SearchResult, { kind: T }>,

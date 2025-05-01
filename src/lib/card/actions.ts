@@ -33,7 +33,7 @@ export async function createCard({
     },
   });
 
-  return { data: { ...card } };
+  return { data: card };
 }
 
 export async function updateCard(

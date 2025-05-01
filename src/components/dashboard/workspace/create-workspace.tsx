@@ -8,12 +8,14 @@ import invariant from 'tiny-invariant';
 import { userWorkspaceKeys, workspaceKeys } from '@/lib/workspace/queries';
 import { TUserWorkspace, TWorkspace } from '@/types/db';
 import CloseIcon from '@/components/icons/close';
+import { useCurrentUser } from '@/lib/user/queries';
 
 export function CreateWorkspace() {
   const queryClient = useQueryClient();
   const [isValidForm, setIsValidForm] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const { queryKey } = workspaceKeys.list();
+  const { data: user } = useCurrentUser();
+  const { queryKey } = workspaceKeys.list(user.id);
 
   const {
     mutate: createWorkspaceAction,
@@ -31,7 +33,7 @@ export function CreateWorkspace() {
 
       queryClient.setQueryData(queryKey, (old: TWorkspace[]) => [...old, { ...data.workspace }]);
       return queryClient.setQueryData(
-        userWorkspaceKeys.list().queryKey,
+        userWorkspaceKeys.list(user.id).queryKey,
         (old: TUserWorkspace[]) => {
           if (!old) {
             return undefined;

@@ -9,15 +9,3 @@ export async function getClient() {
 
   return createClient();
 }
-
-export async function getAuthUser() {
-  const supabase = await getClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) throw new Error('User not logged in');
-
-  return user;
-}

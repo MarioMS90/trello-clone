@@ -5,7 +5,7 @@ import { TBoard } from '@/types/db';
 import { CacheHandlers } from '../cache-types';
 
 export default function boardCacheController(queryClient: QueryClient): CacheHandlers<TBoard> {
-  const { queryKey } = boardKeys.list();
+  const queryKey = boardKeys._def;
 
   return {
     handleInsert: board => {

@@ -13,6 +13,7 @@ import { workspaceKeys } from '@/lib/workspace/queries';
 import WorkspaceBadge from '@/components/ui/workspace-logo';
 import BoardsIcon from '@/components/icons/boards';
 import UserIcon from '@/components/icons/user';
+import { useCurrentUser } from '@/lib/user/queries';
 import Popover from '../../ui/popover';
 import { CreateBoard } from '../board/create-board';
 import { BoardPreview } from '../board/board-preview';
@@ -23,10 +24,11 @@ export const WorkspacePreview = memo(function WorkspacePreview({
   workspace: TWorkspace;
 }) {
   const queryClient = useQueryClient();
+  const { data: user } = useCurrentUser();
   const { data: boards } = useBoards(workspace.id);
   const [isEditingName, setIsEditingName] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const { queryKey } = workspaceKeys.list();
+  const { queryKey } = workspaceKeys.list(user.id);
 
   const { mutate: removeWorkspace } = useMutation({
     mutationFn: async (id: string) => deleteWorkspace(id),

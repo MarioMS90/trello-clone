@@ -6,6 +6,7 @@ import { starredBoardKeys, useBoard, useStarredBoardId } from '@/lib/board/queri
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { TStarredBoard } from '@/types/db';
 import invariant from 'tiny-invariant';
+import { useCurrentUser } from '@/lib/user/queries';
 import StarIcon from '../../icons/star';
 import StarFillIcon from '../../icons/star-fill';
 
@@ -19,10 +20,11 @@ export const StarToggleBoard = memo(function StarToggleBoard({
   const queryClient = useQueryClient();
   const { data: board } = useBoard(boardId);
   const { data: starredBoardId } = useStarredBoardId(board.id);
+  const { data: user } = useCurrentUser();
+  const { queryKey } = starredBoardKeys.list(user.id);
 
-  const { queryKey } = starredBoardKeys.list();
   const addStarred = useMutation({
-    mutationFn: async () => createStarredBoard(board.id),
+    mutationFn: async () => createStarredBoard(user.id, board.id),
     onSuccess: async ({ data }) => {
       invariant(data);
 

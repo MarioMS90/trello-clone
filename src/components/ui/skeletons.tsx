@@ -19,17 +19,17 @@ export function HeaderSkeleton() {
   return (
     <div
       className={`
-      flex 
-      h-12 
-      items-center 
-      justify-between 
-      border-b 
-      border-b-white 
-      border-opacity-30 
-      bg-primary-background 
-      p-1.5 
-      text-white
-    `}>
+        flex 
+        h-12 
+        items-center 
+        justify-between 
+        border-b 
+        border-b-white 
+        border-opacity-30 
+        bg-primary-background 
+        p-1.5 
+        text-white
+      `}>
       <div className="flex items-center text-sm [&>div:hover]:bg-button-hovered-background [&>div]:relative [&>div]:h-[32px] [&>div]:rounded">
         <div className="w-[32px]">
           <div className="center-xy">
@@ -53,13 +53,13 @@ export function SidebarSkeleton() {
   return (
     <nav
       className={`
-      w-[260px] 
-      border-r 
-      border-r-white 
-      border-opacity-30 
-      bg-secondary-background 
-      text-white
-    `}>
+        w-[260px] 
+        border-r 
+        border-r-white 
+        border-opacity-30 
+        bg-secondary-background 
+        text-white
+      `}>
       <div className="border-b border-b-white border-opacity-20 p-4">
         <div className="flex items-center gap-2">
           <div className={`${shimmer} h-8 w-8 rounded bg-white`} />
@@ -102,6 +102,16 @@ export function ListsSkeleton() {
       <ListSkeleton className="h-[350px]" />
       <ListSkeleton className="h-[200px]" />
       <ListSkeleton className="h-[150px]" />
+    </div>
+  );
+}
+
+export function CardSkeleton() {
+  return (
+    <div className="scrollbar-stable fixed left-0 top-0 z-50 h-dvh w-dvw bg-black/75">
+      <div className="center-xy fixed w-auto rounded-xl  bg-neutral-200 p-4 md:w-[768px]">
+        <div>Card Skeleton</div>
+      </div>
     </div>
   );
 }

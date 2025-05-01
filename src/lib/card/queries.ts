@@ -2,9 +2,9 @@ import { createQueryKeys } from '@lukemorales/query-key-factory';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { TCardWithComments } from '@/types/db';
 import { useCallback } from 'react';
-import { getClient } from '../supabase/utils';
+import { getClient } from '../supabase/get-client';
 
-async function fetchCards(boardId: string): Promise<TCardWithComments[]> {
+const fetchCards = async (boardId: string) => {
   const supabase = await getClient();
 
   const { data, error } = await supabase
@@ -30,12 +30,41 @@ async function fetchCards(boardId: string): Promise<TCardWithComments[]> {
   if (error) throw error;
 
   return data?.map(card => ({ ...card, commentCount: card.comments[0].count, comment: undefined }));
-}
+};
+
+export const fetchCard = async (cardId: string) => {
+  const supabase = await getClient();
+
+  const { data, error } = await supabase
+    .from('cards')
+    .select(
+      `
+      id,
+      name,
+      description,
+      rank,
+      listId: list_id,
+      workspaceId: workspace_id,
+      createdAt: created_at,
+      updatedAt: updated_at
+    `,
+    )
+    .eq('id', cardId)
+    .maybeSingle();
+
+  if (error) throw error;
+
+  return data;
+};
 
 export const cardKeys = createQueryKeys('cards', {
   list: (boardId: string) => ({
     queryKey: ['cards', boardId],
     queryFn: async () => fetchCards(boardId),
+  }),
+  detail: (cardId: string) => ({
+    queryKey: [cardId],
+    queryFn: async () => fetchCard(cardId),
   }),
 });
 
@@ -48,8 +77,8 @@ export const useCardsQuery = <TData = TCardWithComments[]>(
     select,
   });
 
-export function useCardsGroupedByList(boardId: string, listIds: string[]) {
-  return useCardsQuery(
+export const useCardsGroupedByList = (boardId: string, listIds: string[]) =>
+  useCardsQuery(
     boardId,
     useCallback(
       (cards: TCardWithComments[]) =>
@@ -64,10 +93,10 @@ export function useCardsGroupedByList(boardId: string, listIds: string[]) {
       [listIds],
     ),
   );
-}
 
-export function useCards(boardId: string, listId: string) {
-  return useCardsQuery(boardId, (cards: TCardWithComments[]) =>
+export const useCards = (boardId: string, listId: string) =>
+  useCardsQuery(boardId, (cards: TCardWithComments[]) =>
     cards.filter(card => card.listId === listId).toSorted((a, b) => a.rank.localeCompare(b.rank)),
   );
-}
+
+export const useCard = (cardId: string) => useSuspenseQuery(cardKeys.detail(cardId));

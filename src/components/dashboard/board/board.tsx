@@ -15,11 +15,9 @@ import { generateRank } from '@/lib/utils/utils';
 import { CleanupFn } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types';
 import { blockBoardPanningAttr } from '@/constants/constants';
 import { listKeys, useLists } from '@/lib/list/queries';
-import { redirect } from 'next/navigation';
 import { cardKeys, useCardsGroupedByList } from '@/lib/card/queries';
 import { useRealTimeContext } from '@/providers/real-time-provider';
-import { useBoard } from '@/lib/board/queries';
-import { useWorkspaceId } from '@/hooks/useWorkspaceId';
+// import { useBoard } from '@/lib/board/queries';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateList } from '@/lib/list/actions';
 import { updateCard } from '@/lib/card/actions';
@@ -27,14 +25,9 @@ import { CreateList } from '../list/create-list';
 
 export default function Board({ boardId }: { boardId: string }) {
   const queryClient = useQueryClient();
-  const { data: board } = useBoard(boardId);
-  const workspaceId = useWorkspaceId();
+  // const { data: board } = useBoard(boardId);
   const { registerChannel } = useRealTimeContext();
   const scrollableRef = useRef<HTMLUListElement | null>(null);
-
-  if (!board) {
-    redirect(`/workspaces/${workspaceId}`);
-  }
 
   useEffect(() => {
     registerChannel('lists');

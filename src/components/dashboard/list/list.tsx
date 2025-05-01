@@ -98,7 +98,7 @@ const ListDisplay = memo(function ListDisplay({
 }) {
   const queryClient = useQueryClient();
   const [isEditing, setIsEditing] = useState(false);
-  const [isOpenPopover, setIsOpenPopover] = useState(false);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [isCreatingCard, setIsCreatingCard] = useState(false);
 
   const { queryKey } = listKeys.list(list.boardId);
@@ -178,15 +178,15 @@ const ListDisplay = memo(function ListDisplay({
                 }
                 triggerClassName="[&]:p-0"
                 popoverClassName="px-0 [&]:w-40"
-                open={isOpenPopover}
-                onOpenChange={setIsOpenPopover}>
+                open={isPopoverOpen}
+                onOpenChange={setIsPopoverOpen}>
                 <ul className="text-sm [&>li>button:hover]:bg-gray-200 [&>li>button]:w-full [&>li>button]:px-3 [&>li>button]:py-2 [&>li>button]:text-left">
                   <li>
                     <button
                       type="button"
                       onClick={() => {
                         setIsEditing(true);
-                        setIsOpenPopover(false);
+                        setIsPopoverOpen(false);
                       }}>
                       Rename list
                     </button>
@@ -196,7 +196,7 @@ const ListDisplay = memo(function ListDisplay({
                       type="button"
                       onClick={() => {
                         removeList(list.id);
-                        setIsOpenPopover(false);
+                        setIsPopoverOpen(false);
                       }}>
                       Delete list
                     </button>

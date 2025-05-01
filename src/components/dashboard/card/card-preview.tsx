@@ -31,6 +31,7 @@ import { cardKeys } from '@/lib/card/queries';
 import { useBoardId } from '@/hooks/useBoardId';
 import { deleteCard, updateCard } from '@/lib/card/actions';
 import { blockCardDraggingAttr } from '@/constants/constants';
+import Link from 'next/link';
 
 type TCardState =
   | { type: 'idle' }
@@ -148,7 +149,7 @@ const CardDisplay = memo(function CardDisplay({
           ref={innerRef}
           {...(isEditing && { [blockCardDraggingAttr]: true })}>
           <EditableText
-            className="[&&>button]:p-0 [&&>textarea]:rounded-[3px] [&&>textarea]:p-0 [&&>textarea]:shadow-none"
+            className="[&&>span]:p-0 [&&>textarea]:rounded-[3px] [&&>textarea]:p-0 [&&>textarea]:shadow-none"
             defaultText={name}
             onEdit={text => updateCardName.mutate({ id: card.id, name: text })}
             autoResize
@@ -156,8 +157,11 @@ const CardDisplay = memo(function CardDisplay({
             onEditingChange={setIsEditing}>
             <h2>{name}</h2>
           </EditableText>
+          {!isEditing && (
+            <Link className="absolute right-0 top-0 z-10 size-full" href={`/cards/${card.id}`} />
+          )}
           <div
-            className={cn('absolute right-1 top-1 z-10 hidden group-hover:block', {
+            className={cn('absolute right-1 top-1 z-20 hidden group-hover:block', {
               block: isPopoverOpen,
             })}>
             <Popover
@@ -194,7 +198,7 @@ const CardDisplay = memo(function CardDisplay({
               </ul>
             </Popover>
           </div>
-          <div className="flex items-center gap-3 has-[span]:p-1">
+          <div className="flex items-center gap-3 has-[span]:py-1">
             {card.description && (
               <span title="This card has a description">
                 <DescriptionIcon width={16} height={16} />

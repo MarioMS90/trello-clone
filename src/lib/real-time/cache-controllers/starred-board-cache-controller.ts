@@ -7,7 +7,7 @@ import { CacheHandlers } from '../cache-types';
 export default function starredBoardCacheController(
   queryClient: QueryClient,
 ): CacheHandlers<TStarredBoard> {
-  const { queryKey } = starredBoardKeys.list();
+  const queryKey = starredBoardKeys._def;
 
   return {
     handleInsert: starredBoard => {

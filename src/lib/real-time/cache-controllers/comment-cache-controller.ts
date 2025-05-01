@@ -6,11 +6,13 @@ import { cardKeys } from '@/lib/card/queries';
 import { CacheHandlers } from '../cache-types';
 
 export default function commentCacheController(queryClient: QueryClient): CacheHandlers<TComment> {
+  const queryKey = commentKeys._def;
+
   return {
     handleInsert: comment => {
       insertQueryData({
         queryClient,
-        queryKey: commentKeys.list(comment.cardId).queryKey,
+        queryKey,
         entity: comment,
       });
 
@@ -30,7 +32,7 @@ export default function commentCacheController(queryClient: QueryClient): CacheH
 
       updateQueryData({
         queryClient,
-        queryKey: cardKeys.list(card.listId).queryKey,
+        queryKey: cardKeys._def,
         entity: card,
       });
     },
@@ -38,7 +40,7 @@ export default function commentCacheController(queryClient: QueryClient): CacheH
     handleUpdate: comment => {
       updateQueryData({
         queryClient,
-        queryKey: commentKeys.list(comment.cardId).queryKey,
+        queryKey,
         entity: comment,
       });
     },
@@ -46,7 +48,7 @@ export default function commentCacheController(queryClient: QueryClient): CacheH
     handleDelete: id => {
       deleteQueryData({
         queryClient,
-        queryKey: commentKeys.list(id).queryKey,
+        queryKey,
         entityId: id,
       });
     },

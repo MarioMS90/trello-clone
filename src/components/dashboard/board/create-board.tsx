@@ -8,6 +8,7 @@ import { boardKeys } from '@/lib/board/queries';
 import invariant from 'tiny-invariant';
 import { useRouter } from 'next/navigation';
 import CloseIcon from '@/components/icons/close';
+import { useCurrentUser } from '@/lib/user/queries';
 import Popover from '../../ui/popover';
 
 export function CreateBoard({
@@ -29,7 +30,8 @@ export function CreateBoard({
   const queryClient = useQueryClient();
   const [isValidForm, setIsValidForm] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const { queryKey } = boardKeys.list();
+  const { data: user } = useCurrentUser();
+  const { queryKey } = boardKeys.list(user.id);
 
   const {
     mutate: createBoardMutation,

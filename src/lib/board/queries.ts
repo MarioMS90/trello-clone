@@ -1,11 +1,11 @@
-import { createQueryKeys } from '@lukemorales/query-key-factory';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { TBoard, TStarredBoard } from '@/types/db';
-import { getAuthUser, getClient } from '../supabase/utils';
+import { createQueryKeys } from '@lukemorales/query-key-factory';
+import { getClient } from '../supabase/get-client';
+import { useCurrentUser } from '../user/queries';
 
-async function fetchBoards() {
+const fetchBoards = async (userId: string) => {
   const supabase = await getClient();
-  const user = await getAuthUser();
 
   const { data, error } = await supabase
     .from('boards')
@@ -21,17 +21,16 @@ async function fetchBoards() {
       )
     `,
     )
-    .eq('workspaces.user_workspaces.user_id', user.id)
+    .eq('workspaces.user_workspaces.user_id', userId)
     .order('created_at');
 
   if (error) throw error;
 
   return data;
-}
+};
 
-async function fetchStarredBoards() {
+const fetchStarredBoards = async (userId: string) => {
   const supabase = await getClient();
-  const user = await getAuthUser();
 
   const { data, error } = await supabase
     .from('starred_boards')
@@ -45,38 +44,41 @@ async function fetchStarredBoards() {
       updatedAt: updated_at
     `,
     )
-    .eq('user_id', user.id)
+    .eq('user_id', userId)
     .order('created_at');
 
   if (error) throw error;
 
   return data;
-}
+};
 
 export const boardKeys = createQueryKeys('boards', {
-  list: () => ({
-    queryKey: ['boards'],
-    queryFn: async () => fetchBoards(),
+  list: (userId: string) => ({
+    queryKey: [userId],
+    queryFn: async () => fetchBoards(userId),
   }),
 });
 
-export const starredBoardKeys = createQueryKeys('starred_boards', {
-  list: () => ({
-    queryKey: ['starred_boards'],
-    queryFn: async () => fetchStarredBoards(),
+export const starredBoardKeys = createQueryKeys('starred-boards', {
+  list: (userId: string) => ({
+    queryKey: [userId],
+    queryFn: async () => fetchStarredBoards(userId),
   }),
 });
 
-export const useBoardsQuery = <TData = TBoard[]>(select?: (data: TBoard[]) => TData) =>
-  useSuspenseQuery({
-    ...boardKeys.list(),
+const useBoardsQuery = <TData = TBoard[]>(select?: (data: TBoard[]) => TData) => {
+  const { data: user } = useCurrentUser();
+
+  return useSuspenseQuery({
+    ...boardKeys.list(user.id),
     select,
   });
+};
 
-export const useBoards = (workspaceId: string | null) =>
+export const useBoards = (workspaceId: string) =>
   useBoardsQuery(boards => boards.filter(board => board.workspaceId === workspaceId));
 
-export const useBoard = (boardId: string | null) =>
+export const useBoard = (boardId: string) =>
   useBoardsQuery(boards => {
     const index = boards.findIndex(board => board.id === boardId);
     return boards[index];
@@ -84,13 +86,16 @@ export const useBoard = (boardId: string | null) =>
 
 export const useStarredBoardsQuery = <TData = TStarredBoard[]>(
   select?: (data: TStarredBoard[]) => TData,
-) =>
-  useSuspenseQuery({
-    ...starredBoardKeys.list(),
+) => {
+  const { data: user } = useCurrentUser();
+
+  return useSuspenseQuery({
+    ...starredBoardKeys.list(user.id),
     select,
   });
+};
 
-export function useStarredBoards() {
+export const useStarredBoards = () => {
   const { data: boards } = useBoardsQuery();
   return useStarredBoardsQuery(starredBoards =>
     starredBoards.map(starred => {
@@ -98,11 +103,10 @@ export function useStarredBoards() {
       return boards[index];
     }),
   );
-}
+};
 
-export function useStarredBoardId(boardId: string | null) {
-  return useStarredBoardsQuery(starredBoards => {
+export const useStarredBoardId = (boardId: string) =>
+  useStarredBoardsQuery(starredBoards => {
     const index = starredBoards.findIndex(starred => starred.boardId === boardId);
     return starredBoards[index]?.id;
   });
-}

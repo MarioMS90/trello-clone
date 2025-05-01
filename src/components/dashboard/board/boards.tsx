@@ -1,6 +1,6 @@
 'use client';
 
-import { redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { useBoards, useStarredBoards } from '@/lib/board/queries';
 import { useWorkspace } from '@/lib/workspace/queries';
 import StarIcon from '../../icons/star';
@@ -12,7 +12,7 @@ export function Boards({ workspaceId }: { workspaceId: string }) {
   const { data: boards } = useBoards(workspaceId);
 
   if (!workspace) {
-    redirect('/workspaces');
+    notFound();
   }
 
   return (

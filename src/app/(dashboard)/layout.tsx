@@ -1,5 +1,5 @@
 import Header from '@/components/dashboard/header/header';
-import { HeaderSkeleton } from '@/components/ui/skeletons';
+import { HeaderSkeleton, SidebarSkeleton } from '@/components/ui/skeletons';
 import ReactQueryProvider from '@/providers/react-query-provider';
 import { Suspense } from 'react';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
@@ -8,7 +8,8 @@ import { userKeys } from '@/lib/user/queries';
 import { workspaceKeys } from '@/lib/workspace/queries';
 import { boardKeys, starredBoardKeys } from '@/lib/board/queries';
 import { RealTimeProvider } from '@/providers/real-time-provider';
-import { Sidebar } from '@/components/dashboard/sidebar/sidebar';
+import { MainSidebar, Sidebar } from '@/components/dashboard/sidebar/sidebar';
+import { ErrorBoundary } from 'react-error-boundary';
 
 export default async function DashboardLayout({
   children,
@@ -16,10 +17,11 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }>) {
   const queryClient = getQueryClient();
-  queryClient.prefetchQuery(userKeys.current());
-  queryClient.prefetchQuery(workspaceKeys.list());
-  queryClient.prefetchQuery(boardKeys.list());
-  queryClient.prefetchQuery(starredBoardKeys.list());
+  const user = await queryClient.fetchQuery({ ...userKeys.auth(), staleTime: 0 });
+  queryClient.prefetchQuery(userKeys.detail(user.id));
+  queryClient.prefetchQuery(workspaceKeys.list(user.id));
+  queryClient.prefetchQuery(boardKeys.list(user.id));
+  queryClient.prefetchQuery(starredBoardKeys.list(user.id));
 
   return (
     <ReactQueryProvider>
@@ -30,8 +32,12 @@ export default async function DashboardLayout({
               <Header />
             </Suspense>
 
-            <main className="z-0 flex grow">
-              <Sidebar />
+            <main className="flex grow">
+              <ErrorBoundary fallback={<MainSidebar />}>
+                <Suspense fallback={<SidebarSkeleton />}>
+                  <Sidebar />
+                </Suspense>
+              </ErrorBoundary>
               <div className="grow bg-main-background text-white">{children}</div>
             </main>
           </div>

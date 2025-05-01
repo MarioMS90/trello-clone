@@ -1,11 +1,11 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { createQueryKeys } from '@lukemorales/query-key-factory';
 import { TWorkspace } from '@/types/db';
-import { getAuthUser, getClient } from '../supabase/utils';
+import { createQueryKeys } from '@lukemorales/query-key-factory';
+import { getClient } from '../supabase/get-client';
+import { useCurrentUser } from '../user/queries';
 
-async function fetchWorkspaces() {
+const fetchWorkspaces = async (userId: string) => {
   const supabase = await getClient();
-  const user = await getAuthUser();
 
   const { data, error } = await supabase
     .from('workspaces')
@@ -18,19 +18,17 @@ async function fetchWorkspaces() {
       updatedAt: updated_at
     `,
     )
-    .eq('user_workspaces.user_id', user.id)
+    .eq('user_workspaces.user_id', userId)
     .order('created_at');
 
   if (error) throw error;
 
   return data;
-}
+};
 
-async function fetchUserWorkspaces() {
+const fetchUserWorkspaces = async (workspaceId: string) => {
   const supabase = await getClient();
 
-  const workspaces = await fetchWorkspaces();
-  const workspaceIds = workspaces.map(workspace => workspace.id);
   const { data, error } = await supabase
     .from('user_workspaces')
     .select(
@@ -42,37 +40,42 @@ async function fetchUserWorkspaces() {
       updatedAt: updated_at
     `,
     )
-    .in('workspace_id', workspaceIds)
+    .eq('workspace_id', workspaceId)
     .order('created_at');
 
   if (error) throw error;
 
   return data;
-}
+};
 
 export const workspaceKeys = createQueryKeys('workspaces', {
-  list: () => ({
-    queryKey: ['workspaces'],
-    queryFn: async () => fetchWorkspaces(),
+  list: (userId: string) => ({
+    queryKey: [userId],
+    queryFn: async () => fetchWorkspaces(userId),
   }),
 });
 
-export const userWorkspaceKeys = createQueryKeys('user_workspaces', {
-  list: () => ({
-    queryKey: ['user_workspaces'],
-    queryFn: async () => fetchUserWorkspaces(),
+export const userWorkspaceKeys = createQueryKeys('user-workspaces', {
+  list: (workspaceId: string) => ({
+    queryKey: [workspaceId],
+    queryFn: async () => fetchUserWorkspaces(workspaceId),
   }),
 });
 
-export const useWorkspaces = <TData = TWorkspace[]>(select?: (data: TWorkspace[]) => TData) =>
-  useSuspenseQuery({ ...workspaceKeys.list(), select });
+export const useWorkspaces = <TData = TWorkspace[]>(select?: (data: TWorkspace[]) => TData) => {
+  const { data: user } = useCurrentUser();
 
-export const useWorkspace = (workspaceId: string | null) =>
+  return useSuspenseQuery({
+    ...workspaceKeys.list(user.id),
+    select,
+  });
+};
+
+export const useWorkspace = (workspaceId: string) =>
   useWorkspaces(workspaces => {
     const index = workspaces.findIndex(workspace => workspace.id === workspaceId);
     return workspaces[index];
   });
 
-export function useUserWorkspaces() {
-  return useSuspenseQuery(userWorkspaceKeys.list());
-}
+export const useUserWorkspaces = (workspaceId: string) =>
+  useSuspenseQuery(userWorkspaceKeys.list(workspaceId));

@@ -7,7 +7,7 @@ import { CacheHandlers } from '../cache-types';
 export default function userWorkspaceCacheController(
   queryClient: QueryClient,
 ): CacheHandlers<TUserWorkspace> {
-  const { queryKey } = userWorkspaceKeys.list();
+  const queryKey = userWorkspaceKeys._def;
 
   return {
     handleInsert: userWorkspace => {
