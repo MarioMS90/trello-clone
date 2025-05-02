@@ -2,7 +2,7 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { TBoard, TStarredBoard } from '@/types/db';
 import { createQueryKeys } from '@lukemorales/query-key-factory';
 import { getClient } from '../supabase/get-client';
-import { useCurrentUser } from '../user/queries';
+import { useAuthUser } from '../auth/queries';
 
 const fetchBoards = async (userId: string) => {
   const supabase = await getClient();
@@ -67,7 +67,7 @@ export const starredBoardKeys = createQueryKeys('starred-boards', {
 });
 
 const useBoardsQuery = <TData = TBoard[]>(select?: (data: TBoard[]) => TData) => {
-  const { data: user } = useCurrentUser();
+  const { data: user } = useAuthUser();
 
   return useSuspenseQuery({
     ...boardKeys.list(user.id),
@@ -87,7 +87,7 @@ export const useBoard = (boardId: string) =>
 export const useStarredBoardsQuery = <TData = TStarredBoard[]>(
   select?: (data: TStarredBoard[]) => TData,
 ) => {
-  const { data: user } = useCurrentUser();
+  const { data: user } = useAuthUser();
 
   return useSuspenseQuery({
     ...starredBoardKeys.list(user.id),
@@ -98,10 +98,10 @@ export const useStarredBoardsQuery = <TData = TStarredBoard[]>(
 export const useStarredBoards = () => {
   const { data: boards } = useBoardsQuery();
   return useStarredBoardsQuery(starredBoards =>
-    starredBoards.map(starred => {
+    starredBoards.reduce<TBoard[]>((_boards, starred) => {
       const index = boards.findIndex(board => board.id === starred.boardId);
-      return boards[index];
-    }),
+      return index !== -1 ? [..._boards, boards[index]] : _boards;
+    }, []),
   );
 };
 

@@ -26,18 +26,35 @@ const userWorkspace: Omit<Tables<'user_workspaces'>, 'id' | 'created_at' | 'upda
     role: 'admin',
   },
   {
+    user_id: 'a5145c04-b2de-4110-bb61-fe4b3e8809c2',
+    workspace_id: workspaces[0].id,
+    role: 'member',
+  },
+
+  {
     user_id: '746a5280-bcc3-4a23-842f-be2ec0334e90',
     workspace_id: workspaces[1].id,
     role: 'admin',
   },
   {
-    user_id: 'ebd8b7ae-b4ee-4ba5-b80c-f46a4a495840',
+    user_id: 'a5145c04-b2de-4110-bb61-fe4b3e8809c2',
+    workspace_id: workspaces[1].id,
+    role: 'member',
+  },
+  {
+    user_id: 'ab9d9743-4c35-4195-a2fa-b274ff706bc6',
+    workspace_id: workspaces[1].id,
+    role: 'member',
+  },
+
+  {
+    user_id: 'a5145c04-b2de-4110-bb61-fe4b3e8809c2',
     workspace_id: workspaces[2].id,
     role: 'admin',
   },
   {
-    user_id: 'ebd8b7ae-b4ee-4ba5-b80c-f46a4a495840',
-    workspace_id: workspaces[0].id,
+    user_id: 'ab9d9743-4c35-4195-a2fa-b274ff706bc6',
+    workspace_id: workspaces[2].id,
     role: 'member',
   },
 ];

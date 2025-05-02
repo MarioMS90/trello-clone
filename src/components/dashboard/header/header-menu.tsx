@@ -20,7 +20,7 @@ export default function HeaderMenu() {
           <li key={id}>
             <Link href={`/workspaces/${id}`}>
               <div className="flex items-center gap-2 rounded-md px-2 py-1.5 hover:bg-gray-200">
-                <WorkspaceBadge className="size-10" workspaceName={name} />
+                <WorkspaceBadge className="size-10" workspaceId={id} />
                 <h3 className="font-medium">{name}</h3>
               </div>
             </Link>
@@ -42,7 +42,7 @@ export default function HeaderMenu() {
                 {workspaces.find(workspace => workspace.id === board.workspaceId)?.name}
               </p>
             </Link>
-            <StarToggleBoard className="[&]:right-1.5" boardId={board.id} />
+            <StarToggleBoard className="center-y absolute right-1.5" board={board} />
           </li>
         ))}
       </ul>

@@ -1,10 +1,16 @@
+import { useWorkspace } from '@/lib/workspace/queries';
+import uniqolor from 'uniqolor';
+
 export default function WorkspaceBadge({
   className,
-  workspaceName,
+  workspaceId,
 }: {
   className?: string;
-  workspaceName: string;
+  workspaceId: string;
 }) {
+  const { data: workspace } = useWorkspace(workspaceId);
+  const { color: bgColor } = uniqolor(workspace.id, { format: 'hex' });
+
   return (
     <div
       className={`
@@ -18,8 +24,9 @@ export default function WorkspaceBadge({
         font-bold 
         text-white 
         ${className}
-      `}>
-      {workspaceName[0].toUpperCase()}
+      `}
+      style={{ backgroundColor: bgColor }}>
+      {workspace.name[0].toUpperCase()}
     </div>
   );
 }

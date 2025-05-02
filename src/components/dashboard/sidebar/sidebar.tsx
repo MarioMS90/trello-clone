@@ -65,10 +65,10 @@ function WorkspaceSidebar({ workspace }: { workspace: TWorkspace }) {
             '-translate-x-full': !sidebarExpanded,
           },
         )}>
-        <div className="border-b border-b-white/20 px-4 py-3.5">
+        <div className="border-b border-b-white/20 px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <WorkspaceBadge workspaceName={workspace.name} />
+              <WorkspaceBadge workspaceId={workspace.id} />
               <h2 className="pr-4 text-sm font-bold">{workspace.name}</h2>
             </div>
             {sidebarExpanded && (

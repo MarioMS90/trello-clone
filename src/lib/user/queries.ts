@@ -1,36 +1,26 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
-import invariant from 'tiny-invariant';
 import { createQueryKeys } from '@lukemorales/query-key-factory';
+import { TUser } from '@/types/db';
 import { getClient } from '../supabase/get-client';
+import { useWorkspaces } from '../workspace/queries';
+import { useAuthUser } from '../auth/queries';
 
-export const getAuthUser = async () => {
-  const supabase = await getClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) throw new Error('User not logged in');
-
-  return user;
-};
-
-// Needs implementation
-export const fetchUsers = async (workspaceId: string) => {
+export const fetchUsers = async (workspaceIds: string[]) => {
   const supabase = await getClient();
 
   const { data, error } = await supabase
     .from('users')
     .select(
       `
-      id, 
-      name, 
+      id,
+      name,
       email,
-      createdAt: created_at
+      createdAt: created_at,
+      updatedAt: updated_at,
+      user_workspaces!inner()
     `,
     )
-    .eq('workspace-id', workspaceId)
-    .single();
+    .in('user_workspaces.workspace_id', workspaceIds);
 
   if (error) throw error;
 
@@ -44,10 +34,11 @@ export const fetchUser = async (userId: string) => {
     .from('users')
     .select(
       `
-      id, 
-      name, 
+      id,
+      name,
       email,
-      createdAt: created_at
+      createdAt: created_at,
+      updatedAt: updated_at
     `,
     )
     .eq('id', userId)
@@ -59,13 +50,9 @@ export const fetchUser = async (userId: string) => {
 };
 
 export const userKeys = createQueryKeys('users', {
-  auth: () => ({
-    queryKey: ['auth'],
-    queryFn: getAuthUser,
-  }),
-  list: (workspaceId: string) => ({
-    queryKey: [workspaceId],
-    queryFn: async () => fetchUsers(workspaceId),
+  list: (workspaceIds: string[]) => ({
+    queryKey: [workspaceIds],
+    queryFn: async () => fetchUsers(workspaceIds),
   }),
   detail: (userId: string) => ({
     queryKey: [userId],
@@ -73,17 +60,31 @@ export const userKeys = createQueryKeys('users', {
   }),
 });
 
-const useAuthUser = () =>
-  useSuspenseQuery({
-    ...userKeys.auth(),
-    staleTime: 0,
+const useUsersQuery = <TData = TUser[]>(select?: (data: TUser[]) => TData) => {
+  const { data: workspaces } = useWorkspaces();
+
+  return useSuspenseQuery({
+    ...userKeys.list(workspaces.map(workspace => workspace.id)),
+    select,
   });
+};
 
 export const useCurrentUser = () => {
   const { data: user } = useAuthUser();
-  invariant(user);
 
-  return useSuspenseQuery(userKeys.detail(user.id));
+  return useSuspenseQuery({ ...userKeys.detail(user.id), staleTime: 0 });
 };
 
-export const useUsers = (workspaceId: string) => useSuspenseQuery(userKeys.detail(workspaceId));
+export const useUsers = (userIds: string[]) =>
+  useUsersQuery(users =>
+    userIds.map(userId => {
+      const index = users.findIndex(user => user.id === userId);
+      return users[index];
+    }),
+  );
+
+export const useUser = (userId: string) =>
+  useUsersQuery(users => {
+    const index = users.findIndex(user => user.id === userId);
+    return users[index];
+  });

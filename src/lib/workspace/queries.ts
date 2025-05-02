@@ -2,7 +2,7 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { TWorkspace } from '@/types/db';
 import { createQueryKeys } from '@lukemorales/query-key-factory';
 import { getClient } from '../supabase/get-client';
-import { useCurrentUser } from '../user/queries';
+import { useAuthUser } from '../auth/queries';
 
 const fetchWorkspaces = async (userId: string) => {
   const supabase = await getClient();
@@ -26,7 +26,7 @@ const fetchWorkspaces = async (userId: string) => {
   return data;
 };
 
-const fetchUserWorkspaces = async (workspaceId: string) => {
+const fetchUserWorkspaces = async (workspaceIds: string[]) => {
   const supabase = await getClient();
 
   const { data, error } = await supabase
@@ -40,7 +40,7 @@ const fetchUserWorkspaces = async (workspaceId: string) => {
       updatedAt: updated_at
     `,
     )
-    .eq('workspace_id', workspaceId)
+    .in('workspace_id', workspaceIds)
     .order('created_at');
 
   if (error) throw error;
@@ -56,14 +56,14 @@ export const workspaceKeys = createQueryKeys('workspaces', {
 });
 
 export const userWorkspaceKeys = createQueryKeys('user-workspaces', {
-  list: (workspaceId: string) => ({
-    queryKey: [workspaceId],
-    queryFn: async () => fetchUserWorkspaces(workspaceId),
+  list: (workspaceIds: string[]) => ({
+    queryKey: [workspaceIds],
+    queryFn: async () => fetchUserWorkspaces(workspaceIds),
   }),
 });
 
 export const useWorkspaces = <TData = TWorkspace[]>(select?: (data: TWorkspace[]) => TData) => {
-  const { data: user } = useCurrentUser();
+  const { data: user } = useAuthUser();
 
   return useSuspenseQuery({
     ...workspaceKeys.list(user.id),
@@ -77,5 +77,12 @@ export const useWorkspace = (workspaceId: string) =>
     return workspaces[index];
   });
 
-export const useUserWorkspaces = (workspaceId: string) =>
-  useSuspenseQuery(userWorkspaceKeys.list(workspaceId));
+export const useUserWorkspaces = (workspaceId: string) => {
+  const { data: workspaces } = useWorkspaces();
+
+  return useSuspenseQuery({
+    ...userWorkspaceKeys.list(workspaces.map(workspace => workspace.id)),
+    select: userWorkspaces =>
+      userWorkspaces.filter(userWorkspace => userWorkspace.workspaceId === workspaceId),
+  });
+};

@@ -7,10 +7,9 @@ import { listKeys } from '@/lib/list/queries';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { cardKeys } from '@/lib/card/queries';
 import { boardKeys } from '@/lib/board/queries';
-import { userKeys } from '@/lib/user/queries';
 import { notFound } from 'next/navigation';
 import BoardHeader from '@/components/dashboard/board/board-header';
-import { ErrorBoundary } from 'react-error-boundary';
+import { authKeys } from '@/lib/auth/queries';
 
 export const metadata: Metadata = {
   title: 'Board',
@@ -19,7 +18,7 @@ export const metadata: Metadata = {
 export default async function BoardPage({ params }: { params: Promise<{ id: string }> }) {
   const { id: boardId } = await params;
   const queryClient = getQueryClient();
-  const user = await queryClient.fetchQuery({ ...userKeys.auth(), staleTime: 0 });
+  const user = await queryClient.fetchQuery({ ...authKeys.user(), staleTime: 0 });
   const boards = await queryClient.fetchQuery(boardKeys.list(user.id));
   const board = boards.find(_board => _board.id === boardId);
   if (!board) {
@@ -31,11 +30,9 @@ export default async function BoardPage({ params }: { params: Promise<{ id: stri
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <ErrorBoundary fallback={null}>
-        <Suspense fallback={<>Skeleton board</>}>
-          <BoardHeader />
-        </Suspense>
-      </ErrorBoundary>
+      <Suspense fallback={<>Skeleton board</>}>
+        <BoardHeader />
+      </Suspense>
       <Suspense fallback={<ListsSkeleton />}>
         <Board boardId={boardId} />
       </Suspense>

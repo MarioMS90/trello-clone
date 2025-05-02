@@ -14,7 +14,7 @@ export const BoardPreview = memo(function BoardPreview({ board }: { board: TBoar
         {board.name}
       </Link>
 
-      <StarToggleBoard className="top-[unset] bottom-3 transform-none" boardId={board.id} />
+      <StarToggleBoard className="absolute right-3 bottom-3 transform-none" board={board} />
     </li>
   );
 });

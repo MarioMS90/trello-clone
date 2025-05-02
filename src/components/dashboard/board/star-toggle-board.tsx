@@ -2,23 +2,23 @@
 
 import { createStarredBoard, deleteStarredBoard } from '@/lib/board/actions';
 import { memo } from 'react';
-import { starredBoardKeys, useBoard, useStarredBoardId } from '@/lib/board/queries';
+import { starredBoardKeys, useStarredBoardId } from '@/lib/board/queries';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { TStarredBoard } from '@/types/db';
+import { TBoard, TStarredBoard } from '@/types/db';
 import invariant from 'tiny-invariant';
 import { useCurrentUser } from '@/lib/user/queries';
+import { cn } from '@/lib/utils/utils';
 import StarIcon from '../../icons/star';
 import StarFillIcon from '../../icons/star-fill';
 
 export const StarToggleBoard = memo(function StarToggleBoard({
   className = '',
-  boardId,
+  board,
 }: {
   className?: string;
-  boardId: string;
+  board: TBoard;
 }) {
   const queryClient = useQueryClient();
-  const { data: board } = useBoard(boardId);
   const { data: starredBoardId } = useStarredBoardId(board.id);
   const { data: user } = useCurrentUser();
   const { queryKey } = starredBoardKeys.list(user.id);
@@ -67,7 +67,7 @@ export const StarToggleBoard = memo(function StarToggleBoard({
   return (
     <>
       <button
-        className={`center-y absolute right-3 cursor-pointer ${className}`}
+        className={cn('cursor-pointer hover:scale-125', className)}
         type="button"
         onClick={() => {
           toggleStarredBoard(!isStarred);
@@ -78,9 +78,9 @@ export const StarToggleBoard = memo(function StarToggleBoard({
             : `Click to star ${board.name}. It will be added to your starred list.`
         }>
         {isStarred ? (
-          <StarFillIcon className="text-yellow-400 hover:scale-125" height={16} />
+          <StarFillIcon className="text-yellow-400" height={16} />
         ) : (
-          <StarIcon className="hover:scale-125" height={16} />
+          <StarIcon height={16} />
         )}
       </button>
     </>

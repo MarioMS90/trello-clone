@@ -66,7 +66,7 @@ export const WorkspacePreview = memo(function WorkspacePreview({
     <li>
       <div className="flex items-center gap-6">
         <div className="flex items-center gap-3">
-          <WorkspaceBadge workspaceName={name} />
+          <WorkspaceBadge workspaceId={workspace.id} />
           <EditableText
             className="text-base font-bold text-white [&>input]:rounded-lg [&>input:focus]:shadow-none"
             defaultText={name}

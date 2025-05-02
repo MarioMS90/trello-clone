@@ -14,7 +14,6 @@ import { TCardWithComments } from '@/types/db';
 export function CreateCard({ listId, onCancel }: { listId: string; onCancel: () => void }) {
   const queryClient = useQueryClient();
   const boardId = useBoardId();
-  invariant(boardId);
   const { data: cards } = useCards(boardId, listId);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);

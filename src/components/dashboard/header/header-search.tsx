@@ -46,7 +46,7 @@ const generateSearchResult = <T extends SearchResult['kind']>(
     workspace: ({ id, name }) => (
       <Link className="block hover:bg-gray-200" href={`/workspaces/${id}`}>
         <div className="flex items-center gap-2 px-4 py-2">
-          <WorkspaceBadge className="[&]:size-6 [&]:text-sm" workspaceName={name} />
+          <WorkspaceBadge className="[&]:size-6 [&]:text-sm" workspaceId={id} />
           <div>
             <h3 className="text-sm leading-4">{name}</h3>
           </div>

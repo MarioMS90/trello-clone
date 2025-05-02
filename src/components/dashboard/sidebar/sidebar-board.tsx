@@ -79,10 +79,13 @@ export const SidebarBoard = memo(function SidebarBoard({ board }: { board: TBoar
       </div>
 
       <StarToggleBoard
-        className={cn('z-5 hidden group-[:hover:not(:has(.popover:hover))]:block', {
-          '[&]:block': isStarred,
-        })}
-        boardId={board.id}
+        className={cn(
+          'center-y absolute right-3 z-5  hidden group-[:hover:not(:has(.popover:hover))]:block',
+          {
+            '[&]:block': isStarred,
+          },
+        )}
+        board={board}
       />
     </li>
   );
