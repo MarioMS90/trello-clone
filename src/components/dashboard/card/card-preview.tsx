@@ -31,7 +31,6 @@ import { cardKeys } from '@/lib/card/queries';
 import { useBoardId } from '@/hooks/useBoardId';
 import { deleteCard, updateCard } from '@/lib/card/actions';
 import { blockCardDraggingAttr } from '@/constants/constants';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { commentKeys } from '@/lib/comment/queries';
 
@@ -155,7 +154,7 @@ const CardDisplay = memo(function CardDisplay({
           }
           ref={innerRef}
           {...(isEditing && { [blockCardDraggingAttr]: true })}
-          onClick={() => !isEditing && router.push(`/cards/${card.id}`)}>
+          onClick={() => !isEditing && router.push(`/cards/${card.id}`, { scroll: false })}>
           <EditableText
             className="[&&>span]:p-0 [&&>textarea]:rounded-[3px] [&&>textarea]:p-0 [&&>textarea]:shadow-none"
             defaultText={name}
@@ -163,7 +162,7 @@ const CardDisplay = memo(function CardDisplay({
             autoResize
             editing={isEditing}
             onEditingChange={setIsEditing}>
-            <Link href={`/cards/${card.id}`}>{name}</Link>
+            <h2>{name}</h2>
           </EditableText>
 
           <div className="flex items-center gap-3 has-[span]:py-1">

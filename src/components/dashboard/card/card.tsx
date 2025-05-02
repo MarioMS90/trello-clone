@@ -28,17 +28,15 @@ export default function Card({ cardId }: { cardId: string }) {
   });
 
   return (
-    <div className="card-wrapper">
-      <div className="scrollbar-stable text-primary fixed top-0 left-0 z-50 h-dvh w-dvw bg-black/75">
-        <div
-          className="center-xy fixed w-auto rounded-xl  bg-neutral-200 p-4 md:w-[768px]"
-          ref={clickAwayRef}>
-          <div>Card ID: {cardId}</div>
-          <div>List ID: {list.id}</div>
-          <Link href={`/boards/${list.boardId}`} className="">
-            Pruebaaaa
-          </Link>
-        </div>
+    <div className="scrollbar-stable text-primary fixed top-0 left-0 z-50 h-dvh w-dvw bg-black/75">
+      <div
+        className="center-xy fixed w-auto rounded-xl  bg-neutral-200 p-4 md:w-[768px]"
+        ref={clickAwayRef}>
+        <div>Card ID: {cardId}</div>
+        <div>List ID: {list.id}</div>
+        <Link href={`/boards/${list.boardId}`} className="">
+          Pruebaaaa
+        </Link>
       </div>
     </div>
   );
