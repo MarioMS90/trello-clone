@@ -2,12 +2,12 @@ import { createQueryKeys } from '@lukemorales/query-key-factory';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useCallback } from 'react';
 import { TList } from '@/types/db';
-import { getClient } from '../supabase/get-client';
+import { getClient } from '../supabase/utils';
 
 const fetchLists = async (boardId: string) => {
   const supabase = await getClient();
 
-  const { data, error } = await supabase
+  const { data } = await supabase
     .from('lists')
     .select(
       ` 
@@ -20,9 +20,8 @@ const fetchLists = async (boardId: string) => {
       updatedAt: updated_at
     `,
     )
-    .eq('board_id', boardId);
-
-  if (error) throw error;
+    .eq('board_id', boardId)
+    .throwOnError();
 
   return data;
 };
@@ -30,7 +29,7 @@ const fetchLists = async (boardId: string) => {
 export const fetchList = async (listId: string) => {
   const supabase = await getClient();
 
-  const { data, error } = await supabase
+  const { data } = await supabase
     .from('lists')
     .select(
       ` 
@@ -44,21 +43,20 @@ export const fetchList = async (listId: string) => {
     `,
     )
     .eq('id', listId)
-    .single();
-
-  if (error) throw error;
+    .single()
+    .throwOnError();
 
   return data;
 };
 
 export const listKeys = createQueryKeys('lists', {
   list: (boardId: string) => ({
-    queryKey: ['lists', boardId],
-    queryFn: async () => fetchLists(boardId),
+    queryKey: [boardId],
+    queryFn: () => fetchLists(boardId),
   }),
   detail: (listId: string) => ({
     queryKey: [listId],
-    queryFn: async () => fetchList(listId),
+    queryFn: () => fetchList(listId),
   }),
 });
 

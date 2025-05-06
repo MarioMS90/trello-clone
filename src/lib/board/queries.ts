@@ -1,13 +1,14 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { TBoard, TStarredBoard } from '@/types/db';
 import { createQueryKeys } from '@lukemorales/query-key-factory';
-import { getClient } from '../supabase/get-client';
-import { useAuthUser } from '../auth/queries';
+import { useMemo } from 'react';
+import { getAuthUser, getClient } from '../supabase/utils';
 
-const fetchBoards = async (userId: string) => {
+const fetchBoards = async () => {
   const supabase = await getClient();
+  const user = await getAuthUser();
 
-  const { data, error } = await supabase
+  const { data } = await supabase
     .from('boards')
     .select(
       `
@@ -17,22 +18,22 @@ const fetchBoards = async (userId: string) => {
       createdAt: created_at,
       updatedAt: updated_at,
       workspaces!inner(
-        user_workspaces!inner()
+        users!inner()
       )
     `,
     )
-    .eq('workspaces.user_workspaces.user_id', userId)
-    .order('created_at');
-
-  if (error) throw error;
+    .eq('workspaces.users.id', user.id)
+    .order('created_at')
+    .throwOnError();
 
   return data;
 };
 
-const fetchStarredBoards = async (userId: string) => {
+const fetchStarredBoards = async () => {
   const supabase = await getClient();
+  const user = await getAuthUser();
 
-  const { data, error } = await supabase
+  const { data } = await supabase
     .from('starred_boards')
     .select(
       `
@@ -44,36 +45,32 @@ const fetchStarredBoards = async (userId: string) => {
       updatedAt: updated_at
     `,
     )
-    .eq('user_id', userId)
-    .order('created_at');
-
-  if (error) throw error;
+    .eq('user_id', user.id)
+    .order('created_at')
+    .throwOnError();
 
   return data;
 };
 
 export const boardKeys = createQueryKeys('boards', {
-  list: (userId: string) => ({
-    queryKey: [userId],
-    queryFn: async () => fetchBoards(userId),
-  }),
+  list: {
+    queryKey: null,
+    queryFn: () => fetchBoards(),
+  },
 });
 
 export const starredBoardKeys = createQueryKeys('starred-boards', {
-  list: (userId: string) => ({
-    queryKey: [userId],
-    queryFn: async () => fetchStarredBoards(userId),
-  }),
+  list: {
+    queryKey: null,
+    queryFn: () => fetchStarredBoards(),
+  },
 });
 
-const useBoardsQuery = <TData = TBoard[]>(select?: (data: TBoard[]) => TData) => {
-  const { data: user } = useAuthUser();
-
-  return useSuspenseQuery({
-    ...boardKeys.list(user.id),
+const useBoardsQuery = <TData = TBoard[]>(select?: (data: TBoard[]) => TData) =>
+  useSuspenseQuery({
+    ...boardKeys.list,
     select,
   });
-};
 
 export const useBoards = (workspaceId: string) =>
   useBoardsQuery(boards => boards.filter(board => board.workspaceId === workspaceId));
@@ -86,23 +83,20 @@ export const useBoard = (boardId: string) =>
 
 export const useStarredBoardsQuery = <TData = TStarredBoard[]>(
   select?: (data: TStarredBoard[]) => TData,
-) => {
-  const { data: user } = useAuthUser();
-
-  return useSuspenseQuery({
-    ...starredBoardKeys.list(user.id),
+) =>
+  useSuspenseQuery({
+    ...starredBoardKeys.list,
     select,
   });
-};
 
 export const useStarredBoards = () => {
-  const { data: boards } = useBoardsQuery();
-  return useStarredBoardsQuery(starredBoards =>
-    starredBoards.reduce<TBoard[]>((_boards, starred) => {
-      const index = boards.findIndex(board => board.id === starred.boardId);
-      return index !== -1 ? [..._boards, boards[index]] : _boards;
-    }, []),
+  const { data: starredBoards } = useStarredBoardsQuery();
+  const starredIds = useMemo(
+    () => new Set(starredBoards.map(starred => starred.boardId)),
+    [starredBoards],
   );
+
+  return useBoardsQuery(boards => boards.filter(board => starredIds.has(board.id)));
 };
 
 export const useStarredBoardId = (boardId: string) =>

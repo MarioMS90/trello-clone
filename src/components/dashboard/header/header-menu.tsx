@@ -21,7 +21,7 @@ export default function HeaderMenu() {
             <Link href={`/workspaces/${id}`}>
               <div className="flex items-center gap-2 rounded-md px-2 py-1.5 hover:bg-gray-200">
                 <WorkspaceBadge className="size-10" workspaceId={id} />
-                <h3 className="font-medium">{name}</h3>
+                <h3 className="text-sm font-medium">{name}</h3>
               </div>
             </Link>
           </li>

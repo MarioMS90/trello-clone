@@ -21,7 +21,7 @@ import {
   extractClosestEdge,
 } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
 import { isSafari } from '@/lib/utils/is-safari';
-import { TListData, isCardData, isListData } from '@/types/drag-types';
+import { TListData, isCardData, isListData } from '@/types/board-types';
 import { cn } from '@/lib/utils/utils';
 import { blockBoardPanningAttr, blockListDraggingAttr } from '@/constants/constants';
 import { createPortal } from 'react-dom';
@@ -102,8 +102,8 @@ const ListDisplay = memo(function ListDisplay({
   const [isCreatingCard, setIsCreatingCard] = useState(false);
 
   const { mutate: removeList } = useMutation({
-    mutationFn: async (id: string) => deleteList(id),
-    onSuccess: async ({ data }) => {
+    mutationFn: (id: string) => deleteList(id),
+    onSuccess: ({ data }) => {
       invariant(data);
 
       queryClient.removeQueries({ queryKey: listKeys.detail(list.id).queryKey, exact: true });
@@ -120,8 +120,8 @@ const ListDisplay = memo(function ListDisplay({
   });
 
   const updateListName = useMutation({
-    mutationFn: async (variables: { id: string; name: string }) => updateList(variables),
-    onSuccess: async ({ data }) => {
+    mutationFn: (variables: { id: string; name: string }) => updateList(variables),
+    onSuccess: ({ data }) => {
       invariant(data);
 
       queryClient.setQueryData(listKeys.detail(data.id).queryKey, data);

@@ -4,7 +4,7 @@ import { LexoRank } from 'lexorank';
 const workspaces: Omit<Tables<'workspaces'>, 'updated_at'>[] = [
   {
     id: crypto.randomUUID(),
-    name: 'Mario workspace',
+    name: 'Example workspace',
     created_at: new Date(new Date().getTime() - 2000).toISOString(),
   },
   {
@@ -14,14 +14,14 @@ const workspaces: Omit<Tables<'workspaces'>, 'updated_at'>[] = [
   },
   {
     id: crypto.randomUUID(),
-    name: 'Not Mario workspace',
+    name: 'Other workspace',
     created_at: new Date().toISOString(),
   },
 ];
 
-const userWorkspace: Omit<Tables<'user_workspaces'>, 'id' | 'created_at' | 'updated_at'>[] = [
+const roles: Omit<Tables<'roles'>, 'id' | 'created_at' | 'updated_at'>[] = [
   {
-    user_id: '746a5280-bcc3-4a23-842f-be2ec0334e90',
+    user_id: 'b5f2b58b-d973-4102-98bb-26543067da41',
     workspace_id: workspaces[0].id,
     role: 'admin',
   },
@@ -32,7 +32,7 @@ const userWorkspace: Omit<Tables<'user_workspaces'>, 'id' | 'created_at' | 'upda
   },
 
   {
-    user_id: '746a5280-bcc3-4a23-842f-be2ec0334e90',
+    user_id: 'b5f2b58b-d973-4102-98bb-26543067da41',
     workspace_id: workspaces[1].id,
     role: 'admin',
   },
@@ -97,7 +97,7 @@ const starredBoards: Omit<
   'id' | 'created_at' | 'workspace_id' | 'updated_at'
 >[] = [
   {
-    user_id: '746a5280-bcc3-4a23-842f-be2ec0334e90',
+    user_id: 'b5f2b58b-d973-4102-98bb-26543067da41',
     board_id: boards[0].id,
   },
 ];
@@ -165,19 +165,19 @@ const cards = cardsData.map(card => {
 const comments: Omit<Tables<'comments'>, 'created_at' | 'id' | 'workspace_id' | 'updated_at'>[] = [
   {
     content: 'This is a comment',
-    user_id: '746a5280-bcc3-4a23-842f-be2ec0334e90',
+    user_id: 'b5f2b58b-d973-4102-98bb-26543067da41',
     card_id: cards[1].id,
   },
   {
     content: 'This is a comment',
-    user_id: '746a5280-bcc3-4a23-842f-be2ec0334e90',
+    user_id: 'b5f2b58b-d973-4102-98bb-26543067da41',
     card_id: cards[1].id,
   },
   {
     content: 'This is the second comment',
-    user_id: '746a5280-bcc3-4a23-842f-be2ec0334e90',
+    user_id: 'b5f2b58b-d973-4102-98bb-26543067da41',
     card_id: cards[3].id,
   },
 ];
 
-export { workspaces, userWorkspace, boards, lists, cards, comments, starredBoards };
+export { workspaces, roles, boards, lists, cards, comments, starredBoards };

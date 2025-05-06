@@ -52,6 +52,10 @@ export function updateQueryData<T extends TEntity<TEntityName>>({
     }
 
     if (!Array.isArray(data)) {
+      if (data.updatedAt === entity.updatedAt) {
+        return;
+      }
+
       queryClient.setQueryData(queryKey, { ...data, ...entity });
       return;
     }
@@ -98,11 +102,7 @@ export function deleteQueryData<T extends TEntity<TEntityName>>({
         return undefined;
       }
 
-      if (!old.some(oldEntity => oldEntity.id === entityId)) {
-        return old;
-      }
-
-      return old.filter((entity: T) => entity.id !== entityId);
+      return old.filter(entity => entity.id !== entityId);
     });
   });
 }

@@ -6,7 +6,6 @@ import { starredBoardKeys, useStarredBoardId } from '@/lib/board/queries';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { TBoard, TStarredBoard } from '@/types/db';
 import invariant from 'tiny-invariant';
-import { useCurrentUser } from '@/lib/user/queries';
 import { cn } from '@/lib/utils/utils';
 import StarIcon from '../../icons/star';
 import StarFillIcon from '../../icons/star-fill';
@@ -20,12 +19,11 @@ export const StarToggleBoard = memo(function StarToggleBoard({
 }) {
   const queryClient = useQueryClient();
   const { data: starredBoardId } = useStarredBoardId(board.id);
-  const { data: user } = useCurrentUser();
-  const { queryKey } = starredBoardKeys.list(user.id);
+  const { queryKey } = starredBoardKeys.list;
 
   const addStarred = useMutation({
-    mutationFn: async () => createStarredBoard(user.id, board.id),
-    onSuccess: async ({ data }) => {
+    mutationFn: () => createStarredBoard(board.id),
+    onSuccess: ({ data }) => {
       invariant(data);
 
       return queryClient.setQueryData(queryKey, (old: TStarredBoard[]) => [...old, data]);
@@ -36,8 +34,8 @@ export const StarToggleBoard = memo(function StarToggleBoard({
   });
 
   const removeStarred = useMutation({
-    mutationFn: async () => deleteStarredBoard(starredBoardId),
-    onSuccess: async ({ data }) => {
+    mutationFn: () => deleteStarredBoard(starredBoardId),
+    onSuccess: ({ data }) => {
       invariant(data);
 
       return queryClient.setQueryData(queryKey, (old: TStarredBoard[]) =>

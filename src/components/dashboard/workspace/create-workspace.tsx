@@ -5,46 +5,37 @@ import Popover from '@/components/ui/popover';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createWorkspace } from '@/lib/workspace/actions';
 import invariant from 'tiny-invariant';
-import { userWorkspaceKeys, workspaceKeys } from '@/lib/workspace/queries';
-import { TUserWorkspace, TWorkspace } from '@/types/db';
+import { workspaceKeys } from '@/lib/workspace/queries';
+import { TRole, TWorkspace } from '@/types/db';
 import CloseIcon from '@/components/icons/close';
-import { useCurrentUser } from '@/lib/user/queries';
+import { rolesKeys } from '@/lib/user/queries';
 
 export function CreateWorkspace() {
   const queryClient = useQueryClient();
   const [isValidForm, setIsValidForm] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const { data: user } = useCurrentUser();
-  const { queryKey } = workspaceKeys.list(user.id);
+  const { queryKey } = workspaceKeys.list;
 
   const {
     mutate: createWorkspaceAction,
     isPending,
-    data: result,
+    isError,
+    error,
   } = useMutation({
-    mutationFn: async (name: string) => createWorkspace({ name }),
-    onSuccess: async ({ data, errors }) => {
+    mutationFn: (name: string) => createWorkspace({ name }),
+    onSuccess: ({ data }) => {
       invariant(data);
 
-      if (!errors) {
-        setIsValidForm(false);
-        setIsPopoverOpen(false);
-      }
-
+      setIsValidForm(false);
+      setIsPopoverOpen(false);
       queryClient.setQueryData(queryKey, (old: TWorkspace[]) => [...old, { ...data.workspace }]);
-      return queryClient.setQueryData(
-        userWorkspaceKeys.list(user.id).queryKey,
-        (old: TUserWorkspace[]) => {
-          if (!old) {
-            return undefined;
-          }
+      return queryClient.setQueryData(rolesKeys.list.queryKey, (old: TRole[]) => {
+        if (!old) {
+          return undefined;
+        }
 
-          return [...old, { ...data.userWorkspace }];
-        },
-      );
-    },
-    onError: () => {
-      alert('An error occurred while creating the element');
+        return [...old, data.role];
+      });
     },
   });
 
@@ -87,7 +78,7 @@ export function CreateWorkspace() {
               type="text"
             />
           </label>
-          {result?.errors?.name && <p className="text-xs text-red-500">{result.errors.name}</p>}
+          {isError && <p className="text-xs text-red-500">{error.message}</p>}
           <button
             className="bg-secondary mt-3 w-full cursor-pointer rounded-sm px-3 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400"
             type="submit"

@@ -1,7 +1,7 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import {
   workspaces,
-  userWorkspace,
+  roles,
   boards,
   starredBoards,
   lists,
@@ -17,12 +17,8 @@ async function seedWorkspaces(supabase: SupabaseClient<Database>) {
   return data;
 }
 
-async function seedUserWorkspaces(supabase: SupabaseClient<Database>) {
-  const { data } = await supabase
-    .from('user_workspaces')
-    .insert(userWorkspace)
-    .select()
-    .throwOnError();
+async function seedRoles(supabase: SupabaseClient<Database>) {
+  const { data } = await supabase.from('roles').insert(roles).select().throwOnError();
 
   return data;
 }
@@ -70,7 +66,7 @@ export async function GET() {
 
   try {
     await seedWorkspaces(supabase);
-    await seedUserWorkspaces(supabase);
+    await seedRoles(supabase);
     await seedBoards(supabase);
     await seedStarredBoards(supabase);
     await seedLists(supabase);

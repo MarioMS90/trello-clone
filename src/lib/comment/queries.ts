@@ -1,11 +1,11 @@
 import { createQueryKeys } from '@lukemorales/query-key-factory';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { getClient } from '../supabase/get-client';
+import { getClient } from '../supabase/utils';
 
 const fetchComments = async (cardId: string) => {
   const supabase = await getClient();
 
-  const { data, error } = await supabase
+  const { data } = await supabase
     .from('comments')
     .select(
       ` 
@@ -14,20 +14,20 @@ const fetchComments = async (cardId: string) => {
       userId: user_id,
       cardId: card_id,
       workspaceId: workspace_id,
-      createdAt: created_at
+      createdAt: created_at,
+      updatedAt: updated_at
     `,
     )
-    .eq('card_id', cardId);
-
-  if (error) throw error;
+    .eq('card_id', cardId)
+    .throwOnError();
 
   return data;
 };
 
 export const commentKeys = createQueryKeys('comments', {
   list: (cardId: string) => ({
-    queryKey: ['comments', cardId],
-    queryFn: async () => fetchComments(cardId),
+    queryKey: [cardId],
+    queryFn: () => fetchComments(cardId),
   }),
 });
 

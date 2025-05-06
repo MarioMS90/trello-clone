@@ -7,9 +7,12 @@ import Avatar from '@/components/ui/avatar';
 import TrelloWhiteIcon from '@/components/icons/trello-white';
 import HeaderMenu from '@/components/dashboard/header/header-menu';
 import HeaderSearch from '@/components/dashboard/header/header-search';
+import { useCurrentUser } from '@/lib/user/queries';
 import Popover from '../../ui/popover';
 
-export default function Header({ userId }: { userId: string }) {
+export default function Header() {
+  const { data: user } = useCurrentUser();
+
   return (
     <header className="bg-primary-background z-10 flex h-12 items-center justify-between border-b border-b-white/30 p-2 text-white">
       <nav className="[&>a:hover]:bg-button-hovered-background flex items-center text-sm [&>a]:relative [&>a]:h-[32px] [&>a]:rounded-sm">
@@ -28,7 +31,7 @@ export default function Header({ userId }: { userId: string }) {
       <div className="flex flex-1 items-center justify-end gap-4">
         <HeaderSearch placeholder="Search Trello" />
         <Popover
-          triggerContent={<Avatar userId={userId} />}
+          triggerContent={<Avatar userId={user.id} />}
           triggerClassName="rounded-full [&]:p-1"
           popoverClassName="right-0 left-auto px-0 [&]:w-40">
           <button

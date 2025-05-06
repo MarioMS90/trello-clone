@@ -1,14 +1,16 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createQueryKeys } from '@lukemorales/query-key-factory';
-import { TUser } from '@/types/db';
-import { getClient } from '../supabase/get-client';
-import { useWorkspaces } from '../workspace/queries';
-import { useAuthUser } from '../auth/queries';
+import { TRole, TUser, TUserRole } from '@/types/db';
+import { useMemo } from 'react';
+import { getAuthUser, getClient } from '../supabase/utils';
 
-export const fetchUsers = async (workspaceIds: string[]) => {
+// This is an example of a subquery-like operation:
+// fetch all roles associated with these workspaces.
+export const fetchUsers = async () => {
   const supabase = await getClient();
+  const user = await getAuthUser();
 
-  const { data, error } = await supabase
+  const { data } = await supabase
     .from('users')
     .select(
       `
@@ -17,20 +19,25 @@ export const fetchUsers = async (workspaceIds: string[]) => {
       email,
       createdAt: created_at,
       updatedAt: updated_at,
-      user_workspaces!inner()
+      workspaces!inner(users!inner())
     `,
     )
-    .in('user_workspaces.workspace_id', workspaceIds);
-
-  if (error) throw error;
+    .eq('workspaces.users.id', user.id)
+    .throwOnError();
 
   return data;
 };
 
-export const fetchUser = async (userId: string) => {
+export const fetchUser = async ({
+  eqColumn,
+  eqValue,
+}: {
+  eqColumn: keyof TUser;
+  eqValue: string;
+}) => {
   const supabase = await getClient();
 
-  const { data, error } = await supabase
+  return supabase
     .from('users')
     .select(
       `
@@ -41,50 +48,102 @@ export const fetchUser = async (userId: string) => {
       updatedAt: updated_at
     `,
     )
-    .eq('id', userId)
+    .eq(eqColumn, eqValue)
     .single();
+};
 
-  if (error) throw error;
+const fetchRoles = async () => {
+  const supabase = await getClient();
+  const user = await getAuthUser();
+
+  const { data } = await supabase
+    .from('roles')
+    .select(
+      `
+      id,
+      userId: user_id,
+      workspaceId: workspace_id,
+      role,
+      createdAt: created_at,
+      updatedAt: updated_at,
+      workspaces!inner(users!inner())
+    `,
+    )
+    .eq('workspaces.users.id', user.id)
+    .throwOnError();
 
   return data;
 };
 
 export const userKeys = createQueryKeys('users', {
-  list: (workspaceIds: string[]) => ({
-    queryKey: [workspaceIds],
-    queryFn: async () => fetchUsers(workspaceIds),
-  }),
-  detail: (userId: string) => ({
-    queryKey: [userId],
-    queryFn: async () => fetchUser(userId),
-  }),
+  list: {
+    queryKey: null,
+    queryFn: () => fetchUsers(),
+  },
+  current: {
+    queryKey: null,
+    queryFn: async () => {
+      const user = await getAuthUser();
+      const { data, error } = await fetchUser({
+        eqColumn: 'id',
+        eqValue: user.id,
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      return data;
+    },
+  },
 });
 
-const useUsersQuery = <TData = TUser[]>(select?: (data: TUser[]) => TData) => {
-  const { data: workspaces } = useWorkspaces();
+export const rolesKeys = createQueryKeys('roles', {
+  list: {
+    queryKey: null,
+    queryFn: () => fetchRoles(),
+  },
+});
 
-  return useSuspenseQuery({
-    ...userKeys.list(workspaces.map(workspace => workspace.id)),
+export const useCurrentUser = () => useSuspenseQuery({ ...userKeys.current, staleTime: 0 });
+
+const useUsersQuery = <TData = TUser[]>(select?: (data: TUser[]) => TData) =>
+  useSuspenseQuery({
+    ...userKeys.list,
     select,
   });
-};
-
-export const useCurrentUser = () => {
-  const { data: user } = useAuthUser();
-
-  return useSuspenseQuery({ ...userKeys.detail(user.id), staleTime: 0 });
-};
-
-export const useUsers = (userIds: string[]) =>
-  useUsersQuery(users =>
-    userIds.map(userId => {
-      const index = users.findIndex(user => user.id === userId);
-      return users[index];
-    }),
-  );
 
 export const useUser = (userId: string) =>
   useUsersQuery(users => {
     const index = users.findIndex(user => user.id === userId);
     return users[index];
   });
+
+const useRolesQuery = <TData = TRole[]>(select?: (data: TRole[]) => TData) =>
+  useSuspenseQuery({
+    ...rolesKeys.list,
+    select,
+  });
+
+export const useRoles = (workspaceId: string) => {
+  const { data: roles } = useRolesQuery(_roles =>
+    _roles.filter(role => role.workspaceId === workspaceId),
+  );
+  const rolesMap = useMemo(() => new Map(roles.map(role => [role.userId, role])), [roles]);
+  const { data: users } = useUsersQuery(_users => _users.filter(user => rolesMap.has(user.id)));
+
+  return useMemo(
+    () =>
+      users
+        .reduce<TUserRole[]>((_users, user) => {
+          const role = rolesMap.get(user.id);
+          if (!role) {
+            return _users;
+          }
+
+          return [..._users, { ...user, roleId: role.id, role: role.role }];
+        }, [])
+        .toSorted((a, b) => (a.role === 'admin' ? 0 : 1) - (b.role === 'admin' ? 0 : 1)),
+    [users, rolesMap],
+  );
+};

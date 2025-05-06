@@ -2,12 +2,12 @@ import { createQueryKeys } from '@lukemorales/query-key-factory';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { TCardWithComments } from '@/types/db';
 import { useCallback } from 'react';
-import { getClient } from '../supabase/get-client';
+import { getClient } from '../supabase/utils';
 
 const fetchCards = async (boardId: string) => {
   const supabase = await getClient();
 
-  const { data, error } = await supabase
+  const { data } = await supabase
     .from('cards')
     .select(
       `
@@ -25,9 +25,8 @@ const fetchCards = async (boardId: string) => {
       lists!inner()
     `,
     )
-    .eq('lists.board_id', boardId);
-
-  if (error) throw error;
+    .eq('lists.board_id', boardId)
+    .throwOnError();
 
   return data?.map(card => ({ ...card, commentCount: card.comments[0].count, comment: undefined }));
 };
@@ -35,7 +34,7 @@ const fetchCards = async (boardId: string) => {
 export const fetchCard = async (cardId: string) => {
   const supabase = await getClient();
 
-  const { data, error } = await supabase
+  const { data } = await supabase
     .from('cards')
     .select(
       `
@@ -50,21 +49,20 @@ export const fetchCard = async (cardId: string) => {
     `,
     )
     .eq('id', cardId)
-    .maybeSingle();
-
-  if (error) throw error;
+    .maybeSingle()
+    .throwOnError();
 
   return data;
 };
 
 export const cardKeys = createQueryKeys('cards', {
   list: (boardId: string) => ({
-    queryKey: ['cards', boardId],
-    queryFn: async () => fetchCards(boardId),
+    queryKey: [boardId],
+    queryFn: () => fetchCards(boardId),
   }),
   detail: (cardId: string) => ({
     queryKey: [cardId],
-    queryFn: async () => fetchCard(cardId),
+    queryFn: () => fetchCard(cardId),
   }),
 });
 

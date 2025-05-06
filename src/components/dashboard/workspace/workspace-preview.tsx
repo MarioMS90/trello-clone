@@ -3,59 +3,23 @@
 import Link from 'next/link';
 import { memo, useState } from 'react';
 import EditableText from '@/components/ui/editable-text';
-import { useBoards } from '@/lib/board/queries';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { TWorkspace } from '@/types/db';
-import invariant from 'tiny-invariant';
-import { deleteWorkspace, updateWorkspace } from '@/lib/workspace/actions';
 import SettingsIcon from '@/components/icons/settings';
-import { workspaceKeys } from '@/lib/workspace/queries';
 import WorkspaceBadge from '@/components/ui/workspace-logo';
 import BoardsIcon from '@/components/icons/boards';
 import UserIcon from '@/components/icons/user';
-import { useCurrentUser } from '@/lib/user/queries';
+import { useWorkspaceMutation } from '@/hooks/useWorkspaceMutation';
 import Popover from '../../ui/popover';
-import { CreateBoard } from '../board/create-board';
-import { BoardPreview } from '../board/board-preview';
+import { Boards } from '../board/boards';
 
 export const WorkspacePreview = memo(function WorkspacePreview({
   workspace,
 }: {
   workspace: TWorkspace;
 }) {
-  const queryClient = useQueryClient();
-  const { data: user } = useCurrentUser();
-  const { data: boards } = useBoards(workspace.id);
   const [isEditingName, setIsEditingName] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const { queryKey } = workspaceKeys.list(user.id);
-
-  const { mutate: removeWorkspace } = useMutation({
-    mutationFn: async (id: string) => deleteWorkspace(id),
-    onSuccess: async ({ data }) => {
-      invariant(data);
-      return queryClient.setQueryData(queryKey, (old: TWorkspace[]) =>
-        old.filter(_workspace => _workspace.id !== data.id),
-      );
-    },
-    onError: () => {
-      alert('An error occurred while deleting the element');
-    },
-  });
-
-  const updateWorkspaceName = useMutation({
-    mutationFn: async (variables: { id: string; name: string }) => updateWorkspace(variables),
-
-    onSuccess: async ({ data }) => {
-      invariant(data);
-      return queryClient.setQueryData(queryKey, (old: TWorkspace[]) =>
-        old.map(_workspace => (_workspace.id === data.id ? data : _workspace)),
-      );
-    },
-    onError: () => {
-      alert('An error occurred while updating the element');
-    },
-  });
+  const { updateWorkspaceName, removeWorkspace } = useWorkspaceMutation();
 
   const name = updateWorkspaceName.isPending ? updateWorkspaceName.variables.name : workspace.name;
 
@@ -105,7 +69,7 @@ export const WorkspacePreview = memo(function WorkspacePreview({
                   <button
                     className="cursor-pointer"
                     type="button"
-                    onClick={() => removeWorkspace(workspace.id)}>
+                    onClick={() => removeWorkspace.mutate(workspace.id)}>
                     Delete workspace
                   </button>
                 </li>
@@ -128,17 +92,7 @@ export const WorkspacePreview = memo(function WorkspacePreview({
           </li>
         </ul>
       </div>
-      <ul className="mt-6 flex flex-wrap gap-4">
-        {boards.map(board => (
-          <BoardPreview board={board} key={board.id} />
-        ))}
-        <li>
-          <CreateBoard
-            popoverClassName="[&]:center-y [&]:left-[calc(100%+10px)]"
-            workspaceId={workspace.id}
-          />
-        </li>
-      </ul>
+      <Boards workspaceId={workspace.id} />
     </li>
   );
 });

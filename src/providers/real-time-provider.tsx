@@ -26,7 +26,7 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
 
   const handleSubscription = useCallback(
     async (entity: TEntityName) => {
-      // queryClient.refetchQueries({ queryKey: [entity] });
+      queryClient.refetchQueries({ queryKey: [entity] });
     },
     [queryClient],
   );
@@ -52,7 +52,7 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
   const initialEntities: TEntityName[] = [
     'users',
     'workspaces',
-    'user_workspaces',
+    'roles',
     'boards',
     'starred_boards',
   ];

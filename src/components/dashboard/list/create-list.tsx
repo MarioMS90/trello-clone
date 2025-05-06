@@ -23,7 +23,7 @@ export function CreateList({ boardId }: { boardId: string }) {
 
   const { queryKey } = listKeys.list(boardId);
   const { mutate: addList } = useMutation({
-    mutationFn: async ({ name, rank }: { name: string; rank: string }) =>
+    mutationFn: ({ name, rank }: { name: string; rank: string }) =>
       createList({ boardId, name, rank }),
     onMutate: async ({ name, rank }: { name: string; rank: string }) => {
       await queryClient.cancelQueries({ queryKey });

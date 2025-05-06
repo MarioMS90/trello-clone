@@ -3,26 +3,24 @@
 import { useBoard } from '@/lib/board/queries';
 import { useBoardId } from '@/hooks/useBoardId';
 import EditableText from '@/components/ui/editable-text';
-import { useBoardMutations } from '@/hooks/useBoardMutation';
+import { useBoardMutation } from '@/hooks/useBoardMutation';
 import { useState } from 'react';
 import Popover from '@/components/ui/popover';
 import DotsIcon from '@/components/icons/dots';
 import { useWorkspaceId } from '@/hooks/useWorkspaceId';
-import { useUserWorkspaces } from '@/lib/workspace/queries';
 import Avatar from '@/components/ui/avatar';
-import { useUsers } from '@/lib/user/queries';
+import { useRoles } from '@/lib/user/queries';
 import { StarToggleBoard } from './star-toggle-board';
 
 export default function BoardHeader() {
   const workspaceId = useWorkspaceId();
   const boardId = useBoardId();
   const { data: board } = useBoard(boardId);
-  const { data: userWorkspaces } = useUserWorkspaces(workspaceId);
-  const { data: users } = useUsers(userWorkspaces.map(({ userId }) => userId));
+  const roles = useRoles(workspaceId);
 
   const [isEditingName, setIsEditingName] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const { updateBoardName, removeBoard } = useBoardMutations();
+  const { updateBoardName, removeBoard } = useBoardMutation();
 
   if (!board) {
     return null;
@@ -54,10 +52,13 @@ export default function BoardHeader() {
 
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-1">
-          {users.map(({ id, name, email }) => (
-            <div key={id} title={`${name} (${email})`}>
-              <Avatar className="size-7 cursor-default" userId={id} />
-            </div>
+          {roles.map(({ id, name, role }) => (
+            <Avatar
+              key={id}
+              className="size-7 cursor-default"
+              userId={id}
+              title={`${name} (${role})`}
+            />
           ))}
         </div>
         <Popover

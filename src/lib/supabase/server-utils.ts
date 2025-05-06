@@ -3,7 +3,7 @@
 import { TEntity, TEntityName } from '@/types/db';
 import { TablesInsert, TablesUpdate } from '@/types/database-types';
 import { camelizeKeys } from '../utils/utils';
-import { getClient } from './get-client';
+import { getClient } from './utils';
 
 export async function insertEntity<TableName extends TEntityName>({
   tableName,
@@ -59,7 +59,10 @@ export async function deleteEntity<TableName extends TEntityName>({
 }) {
   const supabase = await getClient();
 
-  const { error } = await supabase.from(tableName).delete().eq('id', entityId);
+  const { error } = await supabase
+    .from(tableName as TEntityName)
+    .delete()
+    .eq('id', entityId);
 
   if (error) {
     throw error;

@@ -180,6 +180,48 @@ export type Database = {
           },
         ];
       };
+      roles: {
+        Row: {
+          created_at: string;
+          id: string;
+          role: Database['public']['Enums']['role'];
+          updated_at: string;
+          user_id: string;
+          workspace_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          role?: Database['public']['Enums']['role'];
+          updated_at?: string;
+          user_id: string;
+          workspace_id: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          role?: Database['public']['Enums']['role'];
+          updated_at?: string;
+          user_id?: string;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'roles_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'roles_workspace_id_fkey';
+            columns: ['workspace_id'];
+            isOneToOne: false;
+            referencedRelation: 'workspaces';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       starred_boards: {
         Row: {
           board_id: string;
@@ -225,48 +267,6 @@ export type Database = {
             columns: ['user_id'];
             isOneToOne: false;
             referencedRelation: 'users';
-            referencedColumns: ['id'];
-          },
-        ];
-      };
-      user_workspaces: {
-        Row: {
-          created_at: string;
-          id: string;
-          role: Database['public']['Enums']['role'];
-          updated_at: string;
-          user_id: string;
-          workspace_id: string;
-        };
-        Insert: {
-          created_at?: string;
-          id?: string;
-          role?: Database['public']['Enums']['role'];
-          updated_at?: string;
-          user_id: string;
-          workspace_id: string;
-        };
-        Update: {
-          created_at?: string;
-          id?: string;
-          role?: Database['public']['Enums']['role'];
-          updated_at?: string;
-          user_id?: string;
-          workspace_id?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: 'user_workspace_user_id_fkey';
-            columns: ['user_id'];
-            isOneToOne: false;
-            referencedRelation: 'users';
-            referencedColumns: ['id'];
-          },
-          {
-            foreignKeyName: 'user_workspace_workspace_id_fkey';
-            columns: ['workspace_id'];
-            isOneToOne: false;
-            referencedRelation: 'workspaces';
             referencedColumns: ['id'];
           },
         ];
@@ -344,6 +344,7 @@ export type Database = {
     Enums: {
       kind_search: 'workspace' | 'board' | 'card';
       role: 'admin' | 'member';
+      visibility: 'private' | 'public';
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -457,6 +458,7 @@ export const Constants = {
     Enums: {
       kind_search: ['workspace', 'board', 'card'],
       role: ['admin', 'member'],
+      visibility: ['private', 'public'],
     },
   },
 } as const;

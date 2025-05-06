@@ -4,7 +4,15 @@ import { useUser } from '@/lib/user/queries';
 import { cn } from '@/lib/utils/utils';
 import uniqolor from 'uniqolor';
 
-export default function Avatar({ userId, className }: { userId: string; className?: string }) {
+export default function Avatar({
+  userId,
+  className,
+  title,
+}: {
+  userId: string;
+  className?: string;
+  title?: string;
+}) {
   const { data: user } = useUser(userId);
   const { color: bgColor } = uniqolor(user.id);
 
@@ -14,6 +22,7 @@ export default function Avatar({ userId, className }: { userId: string; classNam
         'bg-primary flex size-6 cursor-pointer items-center justify-center rounded-full text-xs text-white',
         className,
       )}
+      title={title ?? `${user.name} (${user.email})`}
       style={{ backgroundColor: bgColor }}>
       {user.name[0].toUpperCase()}
     </div>

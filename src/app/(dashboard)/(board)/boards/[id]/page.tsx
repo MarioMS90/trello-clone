@@ -9,7 +9,6 @@ import { cardKeys } from '@/lib/card/queries';
 import { boardKeys } from '@/lib/board/queries';
 import { notFound } from 'next/navigation';
 import BoardHeader from '@/components/dashboard/board/board-header';
-import { authKeys } from '@/lib/auth/queries';
 
 export const metadata: Metadata = {
   title: 'Board',
@@ -18,8 +17,7 @@ export const metadata: Metadata = {
 export default async function BoardPage({ params }: { params: Promise<{ id: string }> }) {
   const { id: boardId } = await params;
   const queryClient = getQueryClient();
-  const user = await queryClient.fetchQuery({ ...authKeys.user(), staleTime: 0 });
-  const boards = await queryClient.fetchQuery(boardKeys.list(user.id));
+  const boards = await queryClient.fetchQuery(boardKeys.list);
   const board = boards.find(_board => _board.id === boardId);
   if (!board) {
     notFound();
@@ -30,7 +28,7 @@ export default async function BoardPage({ params }: { params: Promise<{ id: stri
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <Suspense fallback={<>Skeleton board</>}>
+      <Suspense fallback={null}>
         <BoardHeader />
       </Suspense>
       <Suspense fallback={<ListsSkeleton />}>

@@ -7,7 +7,7 @@ import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/clo
 import { getReorderDestinationIndex } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index';
 import { autoScrollForElements } from '@atlaskit/pragmatic-drag-and-drop-auto-scroll/element';
 import { bind, bindAll } from 'bind-event-listener';
-import { isCardData, isListData, TCardData, TListData } from '@/types/drag-types';
+import { isCardData, isListData, TCardData, TListData } from '@/types/board-types';
 import { TCardWithComments, TList } from '@/types/db';
 import { useCallback, useEffect, useRef } from 'react';
 import { List } from '@/components/dashboard/list/list';
@@ -43,7 +43,7 @@ export default function Board({ boardId }: { boardId: string }) {
 
   const { queryKey: listsKey } = listKeys.list(boardId);
   const { mutate: moveList } = useMutation({
-    mutationFn: async ({ listId, rank }: { listId: string; rank: string }) =>
+    mutationFn: ({ listId, rank }: { listId: string; rank: string }) =>
       updateList({ id: listId, rank }),
     onMutate: async ({ listId, rank }: { listId: string; rank: string }) => {
       await queryClient.cancelQueries({ queryKey: listsKey });
@@ -76,15 +76,8 @@ export default function Board({ boardId }: { boardId: string }) {
 
   const { queryKey: cardsKey } = cardKeys.list(boardId);
   const { mutate: moveCard } = useMutation({
-    mutationFn: async ({
-      cardId,
-      rank,
-      listId,
-    }: {
-      cardId: string;
-      rank: string;
-      listId: string;
-    }) => updateCard({ id: cardId, rank, list_id: listId }),
+    mutationFn: ({ cardId, rank, listId }: { cardId: string; rank: string; listId: string }) =>
+      updateCard({ id: cardId, rank, list_id: listId }),
     onMutate: async ({
       cardId,
       rank,

@@ -12,9 +12,7 @@ export default function Card({ cardId }: { cardId: string }) {
   if (!card) {
     notFound();
   }
-
   const { data: list } = useList(card.listId);
-
   const clickAwayRef = useClickAway<HTMLDivElement>(event => {
     if (!(event instanceof MouseEvent)) {
       return;

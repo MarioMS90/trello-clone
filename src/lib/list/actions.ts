@@ -20,7 +20,7 @@ export async function createList({
     rank,
   });
   if (!validatedFields.success) {
-    throw new Error('Failed to create list.');
+    throw new Error('Missing fields. Failed to create list.');
   }
 
   const list = await insertEntity({

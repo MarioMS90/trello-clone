@@ -13,7 +13,7 @@ export default async function CardPage({ params }: { params: Promise<{ cardId: s
 
   return (
     <>
-      <Suspense fallback={<>Skeleton board</>}>
+      <Suspense fallback={null}>
         <BoardHeader />
       </Suspense>
       <Suspense fallback={<CardSkeleton />}>

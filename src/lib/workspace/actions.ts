@@ -4,12 +4,12 @@ import {
   TMutation,
   TMutationDelete,
   TMutationWorkspaceInsert,
-  TUserWorkspace,
+  TRole,
   TWorkspace,
 } from '@/types/db';
 import { CreateWorkspaceSchema, UpdateWorkspaceSchema } from '@/schemas/workspace-schemas';
 import { TablesInsert, TablesUpdate } from '@/types/database-types';
-import { getClient } from '../supabase/get-client';
+import { getClient } from '../supabase/utils';
 import { deleteEntity, updateEntity } from '../supabase/server-utils';
 
 export async function createWorkspace(
@@ -19,10 +19,9 @@ export async function createWorkspace(
     name: workspaceData.name,
   });
   if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Failed to create workspace.',
-    };
+    if (!validatedFields.success) {
+      throw new Error('Missing fields. Failed to create workspace.');
+    }
   }
 
   const supabase = await getClient();
@@ -37,10 +36,10 @@ export async function createWorkspace(
 
   const result = data as {
     workspace: TWorkspace;
-    user_workspace: TUserWorkspace;
+    role: TRole;
   };
 
-  return { data: { workspace: result.workspace, userWorkspace: result.user_workspace } };
+  return { data: { workspace: result.workspace, role: result.role } };
 }
 
 export async function updateWorkspace(

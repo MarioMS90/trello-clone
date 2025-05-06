@@ -8,7 +8,6 @@ import { boardKeys } from '@/lib/board/queries';
 import invariant from 'tiny-invariant';
 import { useRouter } from 'next/navigation';
 import CloseIcon from '@/components/icons/close';
-import { useCurrentUser } from '@/lib/user/queries';
 import Popover from '../../ui/popover';
 
 export function CreateBoard({
@@ -30,21 +29,15 @@ export function CreateBoard({
   const queryClient = useQueryClient();
   const [isValidForm, setIsValidForm] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const { data: user } = useCurrentUser();
-  const { queryKey } = boardKeys.list(user.id);
+  const { queryKey } = boardKeys.list;
 
   const {
     mutate: createBoardMutation,
     isPending,
-    data: result,
+    isError,
+    error,
   } = useMutation({
-    mutationFn: async ({
-      name,
-      selectedWorkspaceId,
-    }: {
-      name: string;
-      selectedWorkspaceId?: string;
-    }) => {
+    mutationFn: ({ name, selectedWorkspaceId }: { name: string; selectedWorkspaceId?: string }) => {
       const targetWorkspaceId = workspaceId ?? selectedWorkspaceId;
       if (!targetWorkspaceId) {
         throw new Error('No workspace selected');
@@ -52,22 +45,16 @@ export function CreateBoard({
 
       return createBoard({ name, workspace_id: targetWorkspaceId });
     },
-    onSuccess: async ({ data, errors }) => {
+    onSuccess: ({ data }) => {
       invariant(data);
 
       if (redirectToNewBoard) {
         router.push(`/boards/${data.id}`);
       }
 
-      if (!errors) {
-        setIsValidForm(false);
-        setIsPopoverOpen(false);
-      }
-
+      setIsValidForm(false);
+      setIsPopoverOpen(false);
       return queryClient.setQueryData(queryKey, (old: TBoard[]) => [...old, { ...data }]);
-    },
-    onError: () => {
-      alert('An error occurred while creating the element');
     },
   });
 
@@ -134,7 +121,7 @@ export function CreateBoard({
                 type="text"
               />
             </label>
-            {result?.errors?.name && <p className="text-xs text-red-500">{result.errors.name}</p>}
+            {isError && <p className="text-xs text-red-500">{error.message}</p>}
             <button
               className="bg-secondary mt-3 w-full cursor-pointer rounded-sm px-3 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400"
               type="submit"

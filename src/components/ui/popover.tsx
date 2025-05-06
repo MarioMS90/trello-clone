@@ -5,9 +5,6 @@ import { cn } from '@/lib/utils/utils';
 import {
   useFloating,
   autoUpdate,
-  offset,
-  flip,
-  shift,
   useClick,
   useRole,
   useInteractions,
@@ -41,7 +38,6 @@ export default function Popover({
         onOpenChange(openState);
       }
     },
-    middleware: [offset(10), flip(), shift()],
     whileElementsMounted: autoUpdate,
     placement: 'bottom-start',
   });

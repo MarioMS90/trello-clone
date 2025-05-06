@@ -1,28 +1,26 @@
-import { TUserWorkspace } from '@/types/db';
+import { TRole } from '@/types/db';
 import { insertQueryData, updateQueryData, deleteQueryData } from '@/lib/react-query/utils';
 import { QueryClient } from '@tanstack/react-query';
-import { userWorkspaceKeys } from '@/lib/workspace/queries';
+import { rolesKeys } from '@/lib/user/queries';
 import { CacheHandlers } from '../cache-types';
 
-export default function userWorkspaceCacheController(
-  queryClient: QueryClient,
-): CacheHandlers<TUserWorkspace> {
-  const defQueryKey = userWorkspaceKeys._def;
+export default function roleCacheController(queryClient: QueryClient): CacheHandlers<TRole> {
+  const defQueryKey = rolesKeys._def;
 
   return {
-    handleInsert: userWorkspace => {
+    handleInsert: role => {
       insertQueryData({
         queryClient,
         defQueryKey,
-        entity: userWorkspace,
+        entity: role,
       });
     },
 
-    handleUpdate: userWorkspace => {
+    handleUpdate: role => {
       updateQueryData({
         queryClient,
         defQueryKey,
-        entity: userWorkspace,
+        entity: role,
       });
     },
 

@@ -17,7 +17,7 @@ import {
   extractClosestEdge,
 } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
 import { isSafari } from '@/lib/utils/is-safari';
-import { isCardData, TCardData } from '@/types/drag-types';
+import { isCardData, TCardData } from '@/types/board-types';
 import { createPortal } from 'react-dom';
 import { cn } from '@/lib/utils/utils';
 import { isShallowEqual } from '@/lib/utils/is-shallow-equal';
@@ -94,8 +94,8 @@ const CardDisplay = memo(function CardDisplay({
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   const { mutate: removeCard } = useMutation({
-    mutationFn: async (id: string) => deleteCard(id),
-    onSuccess: async ({ data }) => {
+    mutationFn: (id: string) => deleteCard(id),
+    onSuccess: ({ data }) => {
       invariant(data);
 
       queryClient.removeQueries({ queryKey: cardKeys.detail(card.id).queryKey, exact: true });
@@ -110,8 +110,8 @@ const CardDisplay = memo(function CardDisplay({
   });
 
   const updateCardName = useMutation({
-    mutationFn: async (variables: { id: string; name: string }) => updateCard(variables),
-    onSuccess: async ({ data }) => {
+    mutationFn: (variables: { id: string; name: string }) => updateCard(variables),
+    onSuccess: ({ data }) => {
       invariant(data);
 
       queryClient.setQueryData(cardKeys.detail(data.id).queryKey, data);

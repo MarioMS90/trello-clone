@@ -23,7 +23,7 @@ export function CreateCard({ listId, onCancel }: { listId: string; onCancel: () 
 
   const { queryKey } = cardKeys.list(boardId);
   const { mutate: addCard } = useMutation({
-    mutationFn: async ({ name, rank }: { name: string; rank: string }) =>
+    mutationFn: ({ name, rank }: { name: string; rank: string }) =>
       createCard({ listId, name, rank }),
     onMutate: async ({ name, rank }: { name: string; rank: string }) => {
       await queryClient.cancelQueries({ queryKey });
@@ -44,7 +44,7 @@ export function CreateCard({ listId, onCancel }: { listId: string; onCancel: () 
 
       return { optimisticCard };
     },
-    onSuccess: async ({ data }, _variables, context) => {
+    onSuccess: ({ data }, _variables, context) => {
       invariant(data);
       queryClient.setQueryData(queryKey, (old: TCardWithComments[]) =>
         old.map(card => (card.id === context.optimisticCard.id ? { ...card, ...data } : card)),
