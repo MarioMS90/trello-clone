@@ -51,13 +51,13 @@ export default function Members({ workspaceId }: { workspaceId: string }) {
         </div>
         <CreateMember workspaceId={workspaceId} />
       </section>
-      <section className="border-t-1 border-t-white/20 pt-8">
+      <section className="border-t-1 border-t-white/20 pt-6">
         <h2 className="font-bold">Workspace members ({roles.length})</h2>
         <p>
           Workspace members can view and join all Workspace visible boards and create new boards in
           the Workspace.
         </p>
-        <ul className="pt-4">
+        <ul className="pt-6">
           {roles.map(role => (
             <Member role={role} key={role.roleId} />
           ))}

@@ -5,6 +5,9 @@ import { cn } from '@/lib/utils/utils';
 import {
   useFloating,
   autoUpdate,
+  offset,
+  flip,
+  shift,
   useClick,
   useRole,
   useInteractions,
@@ -38,6 +41,13 @@ export default function Popover({
         onOpenChange(openState);
       }
     },
+    middleware: [
+      offset(0),
+      flip({
+        padding: -80,
+      }),
+      shift(),
+    ],
     whileElementsMounted: autoUpdate,
     placement: 'bottom-start',
   });
@@ -67,7 +77,7 @@ export default function Popover({
           <FloatingFocusManager context={context} modal={false}>
             <div
               className={cn(
-                'popover text-primary z-20 flex w-72 flex-col rounded-lg bg-white p-3 shadow-lg outline-hidden',
+                'popover text-primary z-20 flex w-72 flex-col rounded-md bg-white p-3 shadow-lg outline-hidden',
                 popoverClassName,
               )}
               style={floatingStyles}

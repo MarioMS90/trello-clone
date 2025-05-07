@@ -1,16 +1,14 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-primary: var(--color-primary);
-  --color-secondary: var(--color-secondary);
-  --color-main-background: var(--main-background);
-  --color-secondary-background: var(--secondary-background);
-  --color-primary-background: var(--primary-background);
-  --color-button-hovered-background: var(--button-hovered-background);
-  --color-button-selected-background: var(--button-selected-background);
-  --color-primary-border: var(--primary-border);
-
-  --shadow-custom-light: 1px 0px 0px 0px hsl(0deg 0% 100% / 14%);
+  --color-primary: #172b4d;
+  --color-secondary: #0c66e4;
+  --color-main-background: #3fa495;
+  --color-primary-background: #14553a;
+  --color-secondary-background: #196a48e6;
+  --color-button-hovered-background: #ffffff20;
+  --color-button-selected-background: #ffffff3c;
+  --color-primary-border: #388bff;
 
   @keyframes shimmer {
     100% {
@@ -19,30 +17,12 @@
   }
 }
 
-/*
-  The default border color has changed to `currentcolor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
-@layer base {
-  *,
-  ::after,
-  ::before,
-  ::backdrop,
-  ::file-selector-button {
-    border-color: var(--color-gray-200, currentcolor);
-  }
-}
-
 @utility main-container {
-  @apply px-4 pb-20 pt-4;
+  @apply px-4 pt-4 pb-20;
 }
 
 @utility center-xy {
-  @apply absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform;
+  @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform;
 }
 
 @utility center-x {
@@ -73,24 +53,13 @@
 }
 
 @utility shadow-transition-effect {
-  box-shadow: inset 0 0 0 2px var(--primary-border);
+  box-shadow: inset 0 0 0 2px var(--color-primary-border);
 }
 
 @utility card-shadow {
   box-shadow:
     0px 1px 1px #091e4240,
     0px 0px 1px #091e424f;
-}
-
-:root {
-  --color-primary: #172b4d;
-  --color-secondary: #0c66e4;
-  --main-background: #3fa495;
-  --primary-background: #14553a;
-  --secondary-background: #196a48e6;
-  --button-hovered-background: #ffffff20;
-  --button-selected-background: #ffffff3c;
-  --primary-border: #388bff;
 }
 
 body {

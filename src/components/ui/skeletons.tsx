@@ -1,9 +1,10 @@
 import AppsIcon from '../icons/apps';
 import TrelloWhiteIcon from '../icons/trello-white';
+import Loading from './loading';
 
 // Loading animation
 const shimmer =
-  'relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-linear-to-r before:from-transparent before:via-gray-100before:to-transparent';
+  'relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-linear-to-r before:from-transparent before:via-gray-200 before:to-transparent';
 
 export function HeaderSkeleton() {
   return (
@@ -78,9 +79,14 @@ export function ListsSkeleton() {
 
 export function MembersSkeleton() {
   return (
-    <div className="scrollbar-stable fixed top-0 left-0 z-50 h-dvh w-dvw bg-black/75">
-      <div className="center-xy fixed w-auto rounded-xl  bg-neutral-200 p-4 md:w-[768px]">
-        <div>Members Skeleton</div>
+    <div className="mx-auto max-w-[1250px] px-26">
+      <div className="mx-auto flex h-14 w-[850px] items-center justify-between">
+        <div className={`${shimmer} mx-auto h-4 w-[150px] rounded-sm bg-white`}></div>
+        <div className={`${shimmer} mx-auto h-8 w-[250px] rounded-sm bg-white`}></div>
+      </div>
+
+      <div className="flex flex-1 items-center justify-center border-t-1 border-t-white/20 pt-6">
+        <Loading width="32px" height="32px" />
       </div>
     </div>
   );
@@ -89,8 +95,8 @@ export function MembersSkeleton() {
 export function CardSkeleton() {
   return (
     <div className="scrollbar-stable fixed top-0 left-0 z-50 h-dvh w-dvw bg-black/75">
-      <div className="center-xy fixed w-auto rounded-xl  bg-neutral-200 p-4 md:w-[768px]">
-        <div>Card Skeleton</div>
+      <div className="center-xy fixed flex h-32 w-auto items-center justify-center rounded-xl bg-neutral-200 p-4 md:w-[768px]">
+        <Loading width="32px" height="32px" />
       </div>
     </div>
   );
