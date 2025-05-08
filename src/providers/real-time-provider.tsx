@@ -63,6 +63,7 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
   const contextValue: TRealTimeContextValue = useMemo(
     () => ({
       registerChannel,
+      test: 5,
     }),
     [registerChannel],
   );

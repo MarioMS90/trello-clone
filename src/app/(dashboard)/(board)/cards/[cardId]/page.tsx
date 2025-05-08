@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
 import { Suspense } from 'react';
-import CardPrefetcher from '@/components/dashboard/card/card-prefetcher';
 import { CardSkeleton } from '@/components/ui/skeletons';
 import BoardHeader from '@/components/dashboard/board/board-header';
+import Card from '@/components/dashboard/card/card';
 
 export const metadata: Metadata = {
   title: 'Card',
@@ -17,7 +17,7 @@ export default async function CardPage({ params }: { params: Promise<{ cardId: s
         <BoardHeader />
       </Suspense>
       <Suspense fallback={<CardSkeleton />}>
-        <CardPrefetcher cardId={cardId} />
+        <Card cardId={cardId} />
       </Suspense>
     </>
   );

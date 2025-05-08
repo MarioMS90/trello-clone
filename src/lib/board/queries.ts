@@ -1,7 +1,7 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { TBoard, TStarredBoard } from '@/types/db';
 import { createQueryKeys } from '@lukemorales/query-key-factory';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { getAuthUser, getClient } from '../supabase/utils';
 
 const fetchBoards = async () => {
@@ -71,7 +71,7 @@ const useBoardsQuery = <TData = TBoard[]>(select?: (data: TBoard[]) => TData) =>
     ...boardKeys.list,
     select,
   });
-
+// .toSorted((a, b) => (a.role === 'admin' ? 0 : 1) - (b.role === 'admin' ? 0 : 1))
 export const useBoards = (workspaceId: string) =>
   useBoardsQuery(boards => boards.filter(board => board.workspaceId === workspaceId));
 
@@ -96,7 +96,12 @@ export const useStarredBoards = () => {
     [starredBoards],
   );
 
-  return useBoardsQuery(boards => boards.filter(board => starredIds.has(board.id)));
+  return useBoardsQuery(
+    useCallback(
+      (boards: TBoard[]) => boards.filter(board => starredIds.has(board.id)),
+      [starredIds],
+    ),
+  );
 };
 
 export const useStarredBoardId = (boardId: string) =>

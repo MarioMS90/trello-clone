@@ -3,7 +3,7 @@ import { TWorkspace } from '@/types/db';
 import { createQueryKeys } from '@lukemorales/query-key-factory';
 import { getAuthUser, getClient } from '../supabase/utils';
 
-const fetchWorkspaces = async () => {
+export const fetchWorkspaces = async () => {
   const supabase = await getClient();
   const user = await getAuthUser();
 

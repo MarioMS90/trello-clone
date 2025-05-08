@@ -17,17 +17,22 @@ import { blockBoardPanningAttr } from '@/constants/constants';
 import { listKeys, useLists } from '@/lib/list/queries';
 import { cardKeys, useCardsGroupedByList } from '@/lib/card/queries';
 import { useRealTimeContext } from '@/providers/real-time-provider';
-// import { useBoard } from '@/lib/board/queries';
+import { useBoard } from '@/lib/board/queries';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateList } from '@/lib/list/actions';
 import { updateCard } from '@/lib/card/actions';
+import { notFound } from 'next/navigation';
 import { CreateList } from '../list/create-list';
 
 export default function Board({ boardId }: { boardId: string }) {
   const queryClient = useQueryClient();
-  // const { data: board } = useBoard(boardId);
+  const { data: board } = useBoard(boardId);
   const { registerChannel } = useRealTimeContext();
   const scrollableRef = useRef<HTMLUListElement | null>(null);
+
+  if (!board) {
+    notFound();
+  }
 
   useEffect(() => {
     registerChannel('lists');

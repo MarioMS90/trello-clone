@@ -31,7 +31,7 @@ export const SidebarBoard = memo(function SidebarBoard({ board }: { board: TBoar
       )}
       key={board.id}>
       <EditableText
-        className="[&>input]:my-0.5 [&>input]:mr-[74px] [&>input]:ml-1.5 [&>input]:w-full [&>input]:font-semibold [&>input:focus]:shadow-none [&>span]:p-0"
+        className="[&>input]:my-0.5 [&>input]:mr-[74px] [&>input]:ml-1.5 [&>input]:w-full [&>input]:font-semibold [&>input:focus]:shadow-none [&>span]:block [&>span]:p-0"
         defaultText={name}
         onEdit={text => {
           updateBoardName.mutate({ id: board.id, name: text });

@@ -140,7 +140,7 @@ const CardDisplay = memo(function CardDisplay({
         <button
           type="button"
           className={cn(
-            'card-shadow hover:shadow-transition-effect group cursor-pointer rounded-lg bg-white p-4 py-2.5',
+            'card-shadow hover:shadow-transition-effect cursor-pointer rounded-lg bg-white p-4 py-2.5',
             innerStyles[state.type],
           )}
           style={

@@ -1,17 +1,39 @@
 import { redirect } from 'next/navigation';
-import { createClient } from './client';
+import { CookieOptions } from '@supabase/ssr';
+import { sessionTokens } from '@/providers/react-query-provider';
+import createClient from './client';
 
 const isServer = typeof window === 'undefined';
+let cookieStore: {
+  name: string;
+  value: string;
+  options: CookieOptions;
+}[] = [];
 
 export async function getClient() {
   if (isServer) {
-    return (await import('./server')).createClient();
+    const supabase = createClient({
+      getAll() {
+        return cookieStore;
+      },
+      setAll(cookiesToSet) {
+        cookieStore = cookiesToSet;
+      },
+    });
+
+    await supabase.auth.setSession({
+      access_token: sessionTokens.accessToken,
+      refresh_token: sessionTokens.refreshToken,
+    });
+
+    return supabase;
   }
 
-  return createClient();
+  const supabase = createClient();
+  return supabase;
 }
 
-export const getAuthUser = async () => {
+export async function getAuthUser() {
   const supabase = await getClient();
 
   const {
@@ -23,4 +45,4 @@ export const getAuthUser = async () => {
   }
 
   return user;
-};
+}
