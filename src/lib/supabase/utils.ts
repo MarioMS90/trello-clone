@@ -1,23 +1,33 @@
+'use client';
+
 import { redirect } from 'next/navigation';
-import { CookieOptions } from '@supabase/ssr';
-import { sessionTokens } from '@/providers/react-query-provider';
 import createClient from './client';
 
-const isServer = typeof window === 'undefined';
-let cookieStore: {
-  name: string;
-  value: string;
-  options: CookieOptions;
-}[] = [];
+type TSession = {
+  accessToken: string;
+  refreshToken: string;
+};
+
+export const sessionTokens: TSession = {
+  accessToken: '',
+  refreshToken: '',
+};
 
 export async function getClient() {
+  const isServer = typeof window === 'undefined';
+
   if (isServer) {
+    const cookieStore: {
+      name: string;
+      value: string;
+    }[] = [];
+
     const supabase = createClient({
       getAll() {
         return cookieStore;
       },
       setAll(cookiesToSet) {
-        cookieStore = cookiesToSet;
+        cookiesToSet.forEach(({ name, value }) => cookieStore.push({ name, value }));
       },
     });
 
@@ -31,6 +41,13 @@ export async function getClient() {
 
   const supabase = createClient();
   return supabase;
+}
+
+export function UpdateSessionTokens({ currentSession }: { currentSession: TSession }) {
+  sessionTokens.accessToken = currentSession.accessToken;
+  sessionTokens.refreshToken = currentSession.refreshToken;
+
+  return null;
 }
 
 export async function getAuthUser() {

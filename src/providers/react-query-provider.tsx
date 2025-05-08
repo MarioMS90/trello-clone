@@ -26,27 +26,8 @@ function getQueryClient() {
   return browserQueryClient;
 }
 
-type TSession = {
-  accessToken: string;
-  refreshToken: string;
-};
-
-export const sessionTokens: TSession = {
-  accessToken: '',
-  refreshToken: '',
-};
-
-export default function ReactQueryProvider({
-  children,
-  currentSession,
-}: {
-  children: React.ReactNode;
-  currentSession: TSession;
-}) {
+export default function ReactQueryProvider({ children }: { children: React.ReactNode }) {
   const queryClient = getQueryClient();
-
-  sessionTokens.accessToken = currentSession.accessToken;
-  sessionTokens.refreshToken = currentSession.refreshToken;
 
   return (
     <QueryClientProvider client={queryClient}>

@@ -3,7 +3,7 @@
 import { TEntity, TEntityName } from '@/types/db';
 import { TablesInsert, TablesUpdate } from '@/types/database-types';
 import { camelizeKeys } from '../utils/utils';
-import { getClient } from './utils';
+import { createClient } from './server';
 
 export async function insertEntity<TableName extends TEntityName>({
   tableName,
@@ -12,7 +12,7 @@ export async function insertEntity<TableName extends TEntityName>({
   tableName: TableName;
   entityData: TablesInsert<TableName>;
 }): Promise<TEntity<TableName>> {
-  const supabase = await getClient();
+  const supabase = await createClient();
 
   const { data, error } = await supabase
     .from(tableName as TEntityName)
@@ -34,7 +34,7 @@ export async function updateEntity<TableName extends TEntityName>({
   tableName: TableName;
   entityData: TablesUpdate<TableName> & { id: string };
 }): Promise<TEntity<TableName>> {
-  const supabase = await getClient();
+  const supabase = await createClient();
 
   const { data, error } = await supabase
     .from(tableName as TEntityName)
@@ -57,7 +57,7 @@ export async function deleteEntity<TableName extends TEntityName>({
   tableName: TableName;
   entityId: string;
 }) {
-  const supabase = await getClient();
+  const supabase = await createClient();
 
   const { error } = await supabase
     .from(tableName as TEntityName)

@@ -2,7 +2,7 @@
 
 import { redirect } from 'next/navigation';
 import { SignInUser, SignUpUser } from '@/schemas/auth-schemas';
-import { getClient } from '../supabase/utils';
+import { createClient } from '../supabase/server';
 
 export type TSignInState = {
   error: boolean;
@@ -33,7 +33,7 @@ export async function signIn(_: TSignInState, formData: FormData): Promise<TSign
     };
   }
 
-  const supabase = await getClient();
+  const supabase = await createClient();
 
   const data = {
     email: validatedFields.data.email,
@@ -66,7 +66,7 @@ export async function signUp(_: TSignUpState, formData: FormData): Promise<TSign
     };
   }
 
-  const supabase = await getClient();
+  const supabase = await createClient();
 
   const data = {
     email: validatedFields.data.email,
@@ -93,7 +93,7 @@ export async function signUp(_: TSignUpState, formData: FormData): Promise<TSign
 }
 
 export const signOut = async () => {
-  const supabase = await getClient();
+  const supabase = await createClient();
   await supabase.auth.signOut();
   return redirect('/sign-in');
 };

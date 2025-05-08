@@ -9,8 +9,8 @@ import {
 } from '@/types/db';
 import { CreateWorkspaceSchema, UpdateWorkspaceSchema } from '@/schemas/workspace-schemas';
 import { TablesInsert, TablesUpdate } from '@/types/database-types';
-import { getClient } from '../supabase/utils';
 import { deleteEntity, updateEntity } from '../supabase/server-utils';
+import { createClient } from '../supabase/server';
 
 export async function createWorkspace(
   workspaceData: TablesInsert<'workspaces'>,
@@ -24,7 +24,7 @@ export async function createWorkspace(
     }
   }
 
-  const supabase = await getClient();
+  const supabase = await createClient();
 
   const { data, error } = await supabase.rpc('create_workspace_with_admin_access', {
     workspace_name: validatedFields.data.name,

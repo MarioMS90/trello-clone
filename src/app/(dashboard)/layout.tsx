@@ -1,29 +1,19 @@
 import Header from '@/components/dashboard/header/header';
 import { HeaderSkeleton, SidebarSkeleton } from '@/components/ui/skeletons';
-import { createClient } from '@/lib/supabase/server';
 import ReactQueryProvider from '@/providers/react-query-provider';
 import { Suspense } from 'react';
-import { notFound } from 'next/navigation';
 import { Sidebar } from '@/components/dashboard/sidebar/sidebar';
 import { RealTimeProvider } from '@/providers/real-time-provider';
+import UpdateSession from '@/lib/supabase/update-session';
 
-export default async function DashboardLayout({
+export default function DashboardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const supabase = await createClient();
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  if (!session) {
-    return notFound();
-  }
-
   return (
-    <ReactQueryProvider
-      currentSession={{ accessToken: session.access_token, refreshToken: session.refresh_token }}>
+    <ReactQueryProvider>
+      <UpdateSession />
       <RealTimeProvider>
         <div className="flex h-dvh flex-col">
           <Suspense fallback={<HeaderSkeleton />}>

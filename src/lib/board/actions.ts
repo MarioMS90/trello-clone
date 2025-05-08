@@ -3,8 +3,9 @@
 import { TBoard, TMutation, TMutationDelete, TStarredBoard } from '@/types/db';
 import { CreateBoardSchema, UpdateBoardSchema } from '@/schemas/workspace-schemas';
 import { TablesInsert, TablesUpdate } from '@/types/database-types';
+import invariant from 'tiny-invariant';
 import { deleteEntity, insertEntity, updateEntity } from '../supabase/server-utils';
-import { getAuthUser } from '../supabase/utils';
+import { createClient } from '../supabase/server';
 
 export async function createBoard(boardData: TablesInsert<'boards'>): Promise<TMutation<TBoard>> {
   const validatedFields = CreateBoardSchema.safeParse({
@@ -46,7 +47,13 @@ export async function deleteBoard(boardId: string): Promise<TMutationDelete> {
 }
 
 export async function createStarredBoard(boardId: string): Promise<TMutation<TStarredBoard>> {
-  const user = await getAuthUser();
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  invariant(user);
+
   const starredBoard = await insertEntity({
     tableName: 'starred_boards',
     entityData: { user_id: user.id, board_id: boardId },

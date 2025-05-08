@@ -1,3 +1,5 @@
+'use client';
+
 import { Database } from '@/types/database-types';
 import { CookieMethodsBrowser, createBrowserClient } from '@supabase/ssr';
 
