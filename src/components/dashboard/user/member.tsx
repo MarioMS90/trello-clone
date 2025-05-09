@@ -1,14 +1,14 @@
 'use client';
 
-import { rolesKeys } from '@/lib/user/queries';
+import { membersKeys } from '@/lib/user/queries';
 import Avatar from '@/components/ui/avatar';
 import CloseIcon from '@/components/icons/close';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import invariant from 'tiny-invariant';
 import { deleteMember } from '@/lib/user/actions';
-import { TRole, TUserRole } from '@/types/db';
+import { TMember, TUserMember } from '@/types/db';
 
-export default function Member({ role }: { role: TUserRole }) {
+export default function Member({ member }: { member: TUserMember }) {
   const queryClient = useQueryClient();
 
   const removeMember = useMutation({
@@ -16,8 +16,8 @@ export default function Member({ role }: { role: TUserRole }) {
     onSuccess: ({ data }) => {
       invariant(data);
 
-      return queryClient.setQueryData(rolesKeys.list.queryKey, (old: TRole[]) =>
-        old.filter(_role => _role.id !== data.id),
+      return queryClient.setQueryData(membersKeys.list.queryKey, (old: TMember[]) =>
+        old.filter(_member => _member.id !== data.id),
       );
     },
     onError: () => {
@@ -30,21 +30,21 @@ export default function Member({ role }: { role: TUserRole }) {
       <div className="flex items-center gap-4">
         <Avatar
           className="size-8 cursor-default"
-          userId={role.id}
-          title={`${role.name} (${role.role})`}
+          userId={member.id}
+          title={`${member.name} (${member.role})`}
         />
         <div>
-          <h2 className="font-semibold">{role.name}</h2>
+          <h2 className="font-semibold">{member.name}</h2>
           <p className="text-sm font-light">
-            {role.email} ({role.role})
+            {member.email} ({member.role})
           </p>
         </div>
       </div>
-      {role.role !== 'admin' && (
+      {member.role !== 'admin' && (
         <button
           className="text-primary flex cursor-pointer items-center justify-center gap-2 rounded-sm bg-gray-300 px-3 py-2 text-sm hover:bg-gray-300 hover:opacity-90"
           type="button"
-          onClick={() => removeMember.mutate(role.roleId)}>
+          onClick={() => removeMember.mutate(member.roleId)}>
           <CloseIcon width={16} height={16} />
           Remove
         </button>

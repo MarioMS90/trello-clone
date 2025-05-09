@@ -180,7 +180,7 @@ export type Database = {
           },
         ];
       };
-      roles: {
+      members: {
         Row: {
           created_at: string;
           id: string;
@@ -207,14 +207,14 @@ export type Database = {
         };
         Relationships: [
           {
-            foreignKeyName: 'roles_user_id_fkey';
+            foreignKeyName: 'members_user_id_fkey';
             columns: ['user_id'];
             isOneToOne: false;
             referencedRelation: 'users';
             referencedColumns: ['id'];
           },
           {
-            foreignKeyName: 'roles_workspace_id_fkey';
+            foreignKeyName: 'members_workspace_id_fkey';
             columns: ['workspace_id'];
             isOneToOne: false;
             referencedRelation: 'workspaces';

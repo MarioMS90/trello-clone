@@ -9,14 +9,14 @@ import Popover from '@/components/ui/popover';
 import DotsIcon from '@/components/icons/dots';
 import { useWorkspaceId } from '@/hooks/useWorkspaceId';
 import Avatar from '@/components/ui/avatar';
-import { useRoles } from '@/lib/user/queries';
+import { useMembers } from '@/lib/user/queries';
 import { StarToggleBoard } from './star-toggle-board';
 
 export default function BoardHeader() {
   const workspaceId = useWorkspaceId();
   const boardId = useBoardId();
   const { data: board } = useBoard(boardId);
-  const roles = useRoles(workspaceId);
+  const members = useMembers(workspaceId);
 
   const [isEditingName, setIsEditingName] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -52,7 +52,7 @@ export default function BoardHeader() {
 
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-1">
-          {roles.map(({ id, name, role }) => (
+          {members.map(({ id, name, role }) => (
             <Avatar
               key={id}
               className="size-7 cursor-default"

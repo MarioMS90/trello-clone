@@ -1,26 +1,26 @@
-import { TRole } from '@/types/db';
+import { TMember } from '@/types/db';
 import { insertQueryData, updateQueryData, deleteQueryData } from '@/lib/react-query/utils';
 import { QueryClient } from '@tanstack/react-query';
-import { rolesKeys } from '@/lib/user/queries';
+import { membersKeys } from '@/lib/user/queries';
 import { CacheHandlers } from '../cache-types';
 
-export default function roleCacheController(queryClient: QueryClient): CacheHandlers<TRole> {
-  const defQueryKey = rolesKeys._def;
+export default function memberCacheController(queryClient: QueryClient): CacheHandlers<TMember> {
+  const defQueryKey = membersKeys._def;
 
   return {
-    handleInsert: role => {
+    handleInsert: member => {
       insertQueryData({
         queryClient,
         defQueryKey,
-        entity: role,
+        entity: member,
       });
     },
 
-    handleUpdate: role => {
+    handleUpdate: member => {
       updateQueryData({
         queryClient,
         defQueryKey,
-        entity: role,
+        entity: member,
       });
     },
 

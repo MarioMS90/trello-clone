@@ -6,7 +6,7 @@ import {
   TList,
   TStarredBoard,
   TUser,
-  TRole,
+  TMember,
   TWorkspace,
 } from '@/types/db';
 import { QueryClient } from '@tanstack/react-query';
@@ -22,14 +22,14 @@ import starredBoardCacheController from './cache-controllers/starred-board-cache
 import listCacheController from './cache-controllers/list-cache-controller';
 import cardCacheController from './cache-controllers/card-cache-controller';
 import commentCacheController from './cache-controllers/comment-cache-controller';
-import roleCacheController from './cache-controllers/role-cache-controller';
+import memberCacheController from './cache-controllers/member-cache-controller';
 import { camelizeKeys } from '../utils/utils';
 import { CacheHandlers } from './cache-types';
 
 type EntityTypes = {
   users: TUser;
   workspaces: TWorkspace;
-  roles: TRole;
+  members: TMember;
   boards: TBoard;
   starred_boards: TStarredBoard;
   lists: TList;
@@ -40,7 +40,7 @@ type EntityTypes = {
 const controllers = {
   users: userCacheController,
   workspaces: workspaceCacheController,
-  roles: roleCacheController,
+  members: memberCacheController,
   boards: boardCacheController,
   starred_boards: starredBoardCacheController,
   lists: listCacheController,

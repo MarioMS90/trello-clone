@@ -9,9 +9,9 @@ export type TEntity<T extends TEntityName> = CamelCasedProperties<Tables<T>>;
 
 export type TUser = TEntity<'users'>;
 
-export type TRole = TEntity<'roles'>;
+export type TMember = TEntity<'members'>;
 
-export type TUserRole = TUser & { roleId: string; role: TRoleEnum };
+export type TUserMember = TUser & { roleId: string; role: TRoleEnum };
 
 export type TWorkspace = TEntity<'workspaces'>;
 
@@ -32,11 +32,11 @@ export type TComment = TEntity<'comments'>;
 export type TRoleEnum = TPublicSchema['Enums']['role'];
 
 export type TMutationWorkspaceInsert = {
-  data?: { workspace: TWorkspace; role: TRole };
+  data?: { workspace: TWorkspace; role: TMember };
 };
 
 export type TMutationMemberInsert = {
-  data?: { user: TUser; role: TRole };
+  data?: { user: TUser; member: TMember };
 };
 
 export type TMutation<Entity extends TEntity<TEntityName>> = {

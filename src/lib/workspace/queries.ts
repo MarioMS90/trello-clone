@@ -1,7 +1,7 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { TWorkspace } from '@/types/db';
 import { createQueryKeys } from '@lukemorales/query-key-factory';
-import { getAuthUser, getClient } from '../supabase/utils';
+import { getAuthUser, getClient } from '../supabase/client';
 
 export const fetchWorkspaces = async () => {
   const supabase = await getClient();

@@ -6,9 +6,9 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createWorkspace } from '@/lib/workspace/actions';
 import invariant from 'tiny-invariant';
 import { workspaceKeys } from '@/lib/workspace/queries';
-import { TRole, TWorkspace } from '@/types/db';
+import { TMember, TWorkspace } from '@/types/db';
 import CloseIcon from '@/components/icons/close';
-import { rolesKeys } from '@/lib/user/queries';
+import { membersKeys } from '@/lib/user/queries';
 
 export function CreateWorkspace() {
   const queryClient = useQueryClient();
@@ -29,7 +29,7 @@ export function CreateWorkspace() {
       setIsValidForm(false);
       setIsPopoverOpen(false);
       queryClient.setQueryData(queryKey, (old: TWorkspace[]) => [...old, { ...data.workspace }]);
-      return queryClient.setQueryData(rolesKeys.list.queryKey, (old: TRole[]) => {
+      return queryClient.setQueryData(membersKeys.list.queryKey, (old: TMember[]) => {
         if (!old) {
           return undefined;
         }

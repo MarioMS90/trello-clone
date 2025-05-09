@@ -1,6 +1,6 @@
 import { createQueryKeys } from '@lukemorales/query-key-factory';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { getClient } from '../supabase/utils';
+import { getClient } from '../supabase/client';
 
 const fetchComments = async (cardId: string) => {
   const supabase = await getClient();

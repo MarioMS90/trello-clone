@@ -1,7 +1,7 @@
 'use client';
 
 import { useWorkspace } from '@/lib/workspace/queries';
-import { useRoles } from '@/lib/user/queries';
+import { useMembers } from '@/lib/user/queries';
 import WorkspaceBadge from '@/components/ui/workspace-logo';
 import EditableText from '@/components/ui/editable-text';
 import { useState } from 'react';
@@ -13,7 +13,7 @@ import CreateMember from '../user/create-member';
 
 export default function Members({ workspaceId }: { workspaceId: string }) {
   const { data: workspace } = useWorkspace(workspaceId);
-  const roles = useRoles(workspaceId);
+  const members = useMembers(workspaceId);
   const [isEditing, setIsEditing] = useState(false);
   const { updateWorkspaceName } = useWorkspaceMutation();
 
@@ -52,14 +52,14 @@ export default function Members({ workspaceId }: { workspaceId: string }) {
         <CreateMember workspaceId={workspaceId} />
       </section>
       <section className="border-t-1 border-t-white/20 pt-6">
-        <h2 className="font-bold">Workspace members ({roles.length})</h2>
+        <h2 className="font-bold">Workspace members ({members.length})</h2>
         <p>
           Workspace members can view and join all Workspace visible boards and create new boards in
           the Workspace.
         </p>
         <ul className="pt-6">
-          {roles.map(role => (
-            <Member role={role} key={role.roleId} />
+          {members.map(member => (
+            <Member member={member} key={member.roleId} />
           ))}
         </ul>
       </section>

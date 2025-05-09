@@ -2,7 +2,7 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { TBoard, TStarredBoard } from '@/types/db';
 import { createQueryKeys } from '@lukemorales/query-key-factory';
 import { useCallback, useMemo } from 'react';
-import { getAuthUser, getClient } from '../supabase/utils';
+import { getAuthUser, getClient } from '../supabase/client';
 
 const fetchBoards = async () => {
   const supabase = await getClient();
@@ -71,7 +71,7 @@ const useBoardsQuery = <TData = TBoard[]>(select?: (data: TBoard[]) => TData) =>
     ...boardKeys.list,
     select,
   });
-// .toSorted((a, b) => (a.role === 'admin' ? 0 : 1) - (b.role === 'admin' ? 0 : 1))
+// .toSorted((a, b) => (a.member === 'admin' ? 0 : 1) - (b.member === 'admin' ? 0 : 1))
 export const useBoards = (workspaceId: string) =>
   useBoardsQuery(boards => boards.filter(board => board.workspaceId === workspaceId));
 

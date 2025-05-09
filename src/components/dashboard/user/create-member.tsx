@@ -1,10 +1,10 @@
 'use client';
 
-import { rolesKeys, userKeys } from '@/lib/user/queries';
+import { membersKeys, userKeys } from '@/lib/user/queries';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import invariant from 'tiny-invariant';
 import { createMember } from '@/lib/user/actions';
-import { TRole, TUser } from '@/types/db';
+import { TMember, TUser } from '@/types/db';
 import AddUserIcon from '@/components/icons/add-user';
 import { useClickAway } from '@uidotdev/usehooks';
 import { useState } from 'react';
@@ -33,9 +33,9 @@ export default function CreateMember({ workspaceId }: { workspaceId: string }) {
 
       setIsOpen(false);
       queryClient.setQueryData(userKeys.list.queryKey, (old: TUser[]) => [...old, data.user]);
-      return queryClient.setQueryData(rolesKeys.list.queryKey, (old: TRole[]) => [
+      return queryClient.setQueryData(membersKeys.list.queryKey, (old: TMember[]) => [
         ...old,
-        data.role,
+        data.member,
       ]);
     },
   });

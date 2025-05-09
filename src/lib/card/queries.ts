@@ -2,7 +2,7 @@ import { createQueryKeys } from '@lukemorales/query-key-factory';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { TCardWithComments } from '@/types/db';
 import { useCallback } from 'react';
-import { getClient } from '../supabase/utils';
+import { getClient } from '../supabase/client';
 
 const fetchCards = async (boardId: string) => {
   const supabase = await getClient();

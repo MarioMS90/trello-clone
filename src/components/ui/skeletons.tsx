@@ -21,7 +21,6 @@ export function HeaderSkeleton() {
           </div>
         </div>
       </div>
-
       <div
         className={`${shimmer} bg-primary flex size-6 cursor-pointer items-center justify-center rounded-full text-xs text-white`}></div>
     </div>
@@ -30,7 +29,7 @@ export function HeaderSkeleton() {
 
 export function SidebarSkeleton() {
   return (
-    <nav className="bg-secondary-background border-r-white/30text-white w-[260px] border-r">
+    <nav className="bg-secondary-background w-[260px] border-r border-r-white/30 text-white">
       <div className="border-b border-b-white/20 p-4">
         <div className="flex items-center gap-2">
           <div className={`${shimmer} h-8 w-8 rounded-sm bg-white`} />
@@ -84,9 +83,8 @@ export function MembersSkeleton() {
         <div className={`${shimmer} mx-auto h-4 w-[150px] rounded-sm bg-white`}></div>
         <div className={`${shimmer} mx-auto h-8 w-[250px] rounded-sm bg-white`}></div>
       </div>
-
-      <div className="flex flex-1 items-center justify-center border-t-1 border-t-white/20 pt-6">
-        <Loading width="32px" height="32px" />
+      <div className="mt-4 flex flex-1 items-center justify-center">
+        <Loading />
       </div>
     </div>
   );

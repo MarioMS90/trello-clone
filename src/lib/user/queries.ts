@@ -1,11 +1,11 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createQueryKeys } from '@lukemorales/query-key-factory';
-import { TRole, TUser, TUserRole } from '@/types/db';
+import { TMember, TUser, TUserMember } from '@/types/db';
 import { useMemo } from 'react';
-import { getAuthUser, getClient } from '../supabase/utils';
+import { getAuthUser, getClient } from '../supabase/client';
 
 // This is an example of a subquery-like operation:
-// fetch all roles associated with these workspaces.
+// fetch all members associated with these workspaces.
 export const fetchUsers = async () => {
   const supabase = await getClient();
   const user = await getAuthUser();
@@ -57,7 +57,7 @@ const fetchRoles = async () => {
   const user = await getAuthUser();
 
   const { data } = await supabase
-    .from('roles')
+    .from('members')
     .select(
       `
       id,
@@ -98,7 +98,7 @@ export const userKeys = createQueryKeys('users', {
   },
 });
 
-export const rolesKeys = createQueryKeys('roles', {
+export const membersKeys = createQueryKeys('members', {
   list: {
     queryKey: null,
     queryFn: () => fetchRoles(),
@@ -119,31 +119,34 @@ export const useUser = (userId: string) =>
     return users[index];
   });
 
-const useRolesQuery = <TData = TRole[]>(select?: (data: TRole[]) => TData) =>
+const useMembersQuery = <TData = TMember[]>(select?: (data: TMember[]) => TData) =>
   useSuspenseQuery({
-    ...rolesKeys.list,
+    ...membersKeys.list,
     select,
   });
 
-export const useRoles = (workspaceId: string) => {
-  const { data: roles } = useRolesQuery(_roles =>
-    _roles.filter(role => role.workspaceId === workspaceId),
+export const useMembers = (workspaceId: string) => {
+  const { data: members } = useMembersQuery(_members =>
+    _members.filter(member => member.workspaceId === workspaceId),
   );
-  const rolesMap = useMemo(() => new Map(roles.map(role => [role.userId, role])), [roles]);
-  const { data: users } = useUsersQuery(_users => _users.filter(user => rolesMap.has(user.id)));
+  const membersMap = useMemo(
+    () => new Map(members.map(member => [member.userId, member])),
+    [members],
+  );
+  const { data: users } = useUsersQuery(_users => _users.filter(user => membersMap.has(user.id)));
 
   return useMemo(
     () =>
       users
-        .reduce<TUserRole[]>((_users, user) => {
-          const role = rolesMap.get(user.id);
-          if (!role) {
+        .reduce<TUserMember[]>((_users, user) => {
+          const member = membersMap.get(user.id);
+          if (!member) {
             return _users;
           }
 
-          return [..._users, { ...user, roleId: role.id, role: role.role }];
+          return [..._users, { ...user, roleId: member.id, role: member?.role }];
         }, [])
         .toSorted((a, b) => (a.role === 'admin' ? 0 : 1) - (b.role === 'admin' ? 0 : 1)),
-    [users, rolesMap],
+    [users, membersMap],
   );
 };

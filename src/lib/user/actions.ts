@@ -15,16 +15,16 @@ export async function createMember(
     throw new Error('User not found');
   }
 
-  const role = await insertEntity({
-    tableName: 'roles',
+  const member = await insertEntity({
+    tableName: 'members',
     entityData: { user_id: user.id, workspace_id: workspaceId, role: 'member' },
   });
 
-  return { data: { user, role } };
+  return { data: { user, member } };
 }
 
 export async function deleteMember(roleId: string): Promise<TMutationDelete> {
-  const id = await deleteEntity({ tableName: 'roles', entityId: roleId });
+  const id = await deleteEntity({ tableName: 'members', entityId: roleId });
 
   return { data: { id } };
 }

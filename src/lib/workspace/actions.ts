@@ -4,7 +4,7 @@ import {
   TMutation,
   TMutationDelete,
   TMutationWorkspaceInsert,
-  TRole,
+  TMember,
   TWorkspace,
 } from '@/types/db';
 import { CreateWorkspaceSchema, UpdateWorkspaceSchema } from '@/schemas/workspace-schemas';
@@ -36,7 +36,7 @@ export async function createWorkspace(
 
   const result = data as {
     workspace: TWorkspace;
-    role: TRole;
+    role: TMember;
   };
 
   return { data: { workspace: result.workspace, role: result.role } };

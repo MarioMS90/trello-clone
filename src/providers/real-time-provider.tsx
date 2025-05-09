@@ -52,7 +52,7 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
   const initialEntities: TEntityName[] = [
     'users',
     'workspaces',
-    'roles',
+    'members',
     'boards',
     'starred_boards',
   ];

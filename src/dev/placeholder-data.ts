@@ -19,7 +19,7 @@ const workspaces: Omit<Tables<'workspaces'>, 'updated_at'>[] = [
   },
 ];
 
-const roles: Omit<Tables<'roles'>, 'id' | 'created_at' | 'updated_at'>[] = [
+const members: Omit<Tables<'members'>, 'id' | 'created_at' | 'updated_at'>[] = [
   {
     user_id: 'b5f2b58b-d973-4102-98bb-26543067da41',
     workspace_id: workspaces[0].id,
@@ -180,4 +180,4 @@ const comments: Omit<Tables<'comments'>, 'created_at' | 'id' | 'workspace_id' | 
   },
 ];
 
-export { workspaces, roles, boards, lists, cards, comments, starredBoards };
+export { workspaces, members, boards, lists, cards, comments, starredBoards };
