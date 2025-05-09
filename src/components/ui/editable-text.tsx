@@ -57,7 +57,7 @@ export default function EditableText({
   const commonAttributes: InputHTMLAttributes<HTMLInputElement> &
     TextareaHTMLAttributes<HTMLTextAreaElement> = {
     className: cn(
-      'shadow-transition field-sizing-content pointer-events-none focus:shadow-transition-effect absolute inset-0 z-1 grow resize-none overflow-hidden rounded-md bg-gray-200 px-2 py-1.5 text-primary opacity-0 outline-hidden focus:bg-white',
+      'shadow-transition pointer-events-none focus:shadow-transition-effect absolute inset-0 z-1 grow resize-none overflow-hidden rounded-md bg-gray-200 px-2 py-1.5 text-primary opacity-0 outline-hidden focus:bg-white',
       { 'static opacity-100 pointer-events-auto': isEditing },
     ),
     defaultValue: defaultText,

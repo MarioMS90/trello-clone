@@ -32,7 +32,7 @@ export default function Members({ workspaceId }: { workspaceId: string }) {
           <WorkspaceBadge className="size-14 text-3xl" workspaceId={workspaceId} />
 
           <EditableText
-            className="[&>input]:text-xl [&>input]:font-bold [&>input:focus]:shadow-none"
+            className="[&>input]:text-xl [&>input]:font-semibold [&>input:focus]:shadow-none"
             defaultText={workspaceName}
             onEdit={text => {
               updateWorkspaceName.mutate({ id: workspace.id, name: text });

@@ -43,7 +43,7 @@ export const fetchList = async (listId: string) => {
     `,
     )
     .eq('id', listId)
-    .single()
+    .maybeSingle()
     .throwOnError();
 
   return data;

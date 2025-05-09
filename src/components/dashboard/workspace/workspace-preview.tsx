@@ -32,7 +32,7 @@ export const WorkspacePreview = memo(function WorkspacePreview({
         <div className="flex items-center gap-3">
           <WorkspaceBadge workspaceId={workspace.id} />
           <EditableText
-            className="text-base font-bold text-white [&>input]:rounded-lg [&>input:focus]:shadow-none"
+            className="text-base font-bold text-white [&>input]:field-sizing-content [&>input]:rounded-lg [&>input:focus]:shadow-none"
             defaultText={name}
             onEdit={text => updateWorkspaceName.mutate({ id: workspace.id, name: text })}
             editing={isEditingName}
