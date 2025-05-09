@@ -71,15 +71,6 @@ const useBoardsQuery = <TData = TBoard[]>(select?: (data: TBoard[]) => TData) =>
     ...boardKeys.list,
     select,
   });
-// .toSorted((a, b) => (a.member === 'admin' ? 0 : 1) - (b.member === 'admin' ? 0 : 1))
-export const useBoards = (workspaceId: string) =>
-  useBoardsQuery(boards => boards.filter(board => board.workspaceId === workspaceId));
-
-export const useBoard = (boardId: string) =>
-  useBoardsQuery(boards => {
-    const index = boards.findIndex(board => board.id === boardId);
-    return boards[index];
-  });
 
 export const useStarredBoardsQuery = <TData = TStarredBoard[]>(
   select?: (data: TStarredBoard[]) => TData,
@@ -87,6 +78,30 @@ export const useStarredBoardsQuery = <TData = TStarredBoard[]>(
   useSuspenseQuery({
     ...starredBoardKeys.list,
     select,
+  });
+
+export const useBoards = (workspaceId: string) => {
+  const { data: starredBoards } = useStarredBoardsQuery();
+  const starredIds = useMemo(
+    () => new Set(starredBoards.map(starred => starred.boardId)),
+    [starredBoards],
+  );
+
+  return useBoardsQuery(
+    useCallback(
+      (boards: TBoard[]) =>
+        boards
+          .filter(board => board.workspaceId === workspaceId)
+          .toSorted((a, b) => (starredIds.has(a.id) ? 0 : 1) - (starredIds.has(b.id) ? 0 : 1)),
+      [workspaceId, starredIds],
+    ),
+  );
+};
+
+export const useBoard = (boardId: string) =>
+  useBoardsQuery(boards => {
+    const index = boards.findIndex(board => board.id === boardId);
+    return boards[index];
   });
 
 export const useStarredBoards = () => {

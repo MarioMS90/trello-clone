@@ -2,6 +2,7 @@ import { createQueryKeys } from '@lukemorales/query-key-factory';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { TCardWithComments } from '@/types/db';
 import { useCallback } from 'react';
+import { useBoardId } from '@/hooks/useBoardId';
 import { getClient } from '../supabase/client';
 
 const fetchCards = async (boardId: string) => {
@@ -67,17 +68,17 @@ export const cardKeys = createQueryKeys('cards', {
 });
 
 export const useCardsQuery = <TData = TCardWithComments[]>(
-  boardId: string,
   select?: (data: TCardWithComments[]) => TData,
-) =>
-  useSuspenseQuery({
+) => {
+  const boardId = useBoardId();
+  return useSuspenseQuery({
     ...cardKeys.list(boardId),
     select,
   });
+};
 
-export const useCardsGroupedByList = (boardId: string, listIds: string[]) =>
+export const useCardsGroupedByList = (listIds: string[]) =>
   useCardsQuery(
-    boardId,
     useCallback(
       (cards: TCardWithComments[]) =>
         Object.fromEntries(
@@ -92,9 +93,15 @@ export const useCardsGroupedByList = (boardId: string, listIds: string[]) =>
     ),
   );
 
-export const useCards = (boardId: string, listId: string) =>
-  useCardsQuery(boardId, (cards: TCardWithComments[]) =>
-    cards.filter(card => card.listId === listId).toSorted((a, b) => a.rank.localeCompare(b.rank)),
+export const useCards = (listId: string) =>
+  useCardsQuery(
+    useCallback(
+      (cards: TCardWithComments[]) =>
+        cards
+          .filter(card => card.listId === listId)
+          .toSorted((a, b) => a.rank.localeCompare(b.rank)),
+      [listId],
+    ),
   );
 
 export const useCard = (cardId: string) => useSuspenseQuery(cardKeys.detail(cardId));

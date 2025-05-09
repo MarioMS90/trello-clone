@@ -52,7 +52,7 @@ export const fetchUser = async ({
     .single();
 };
 
-const fetchRoles = async () => {
+const fetchMembers = async () => {
   const supabase = await getClient();
   const user = await getAuthUser();
 
@@ -101,11 +101,9 @@ export const userKeys = createQueryKeys('users', {
 export const membersKeys = createQueryKeys('members', {
   list: {
     queryKey: null,
-    queryFn: () => fetchRoles(),
+    queryFn: () => fetchMembers(),
   },
 });
-
-export const useCurrentUser = () => useSuspenseQuery({ ...userKeys.current, staleTime: 0 });
 
 const useUsersQuery = <TData = TUser[]>(select?: (data: TUser[]) => TData) =>
   useSuspenseQuery({
@@ -113,17 +111,13 @@ const useUsersQuery = <TData = TUser[]>(select?: (data: TUser[]) => TData) =>
     select,
   });
 
-export const useUser = (userId: string) =>
-  useUsersQuery(users => {
-    const index = users.findIndex(user => user.id === userId);
-    return users[index];
-  });
-
 const useMembersQuery = <TData = TMember[]>(select?: (data: TMember[]) => TData) =>
   useSuspenseQuery({
     ...membersKeys.list,
     select,
   });
+
+export const useCurrentUser = () => useSuspenseQuery({ ...userKeys.current, staleTime: 0 });
 
 export const useMembers = (workspaceId: string) => {
   const { data: members } = useMembersQuery(_members =>
@@ -149,4 +143,18 @@ export const useMembers = (workspaceId: string) => {
         .toSorted((a, b) => (a.role === 'admin' ? 0 : 1) - (b.role === 'admin' ? 0 : 1)),
     [users, membersMap],
   );
+};
+
+export const useMember = (userId: string) => {
+  const { data: member } = useMembersQuery(members => {
+    const index = members.findIndex(_member => _member.userId === userId);
+    return members[index];
+  });
+
+  const { data: user } = useUsersQuery(users => {
+    const index = users.findIndex(_user => _user.id === userId);
+    return users[index];
+  });
+
+  return { ...user, roleId: member.id, role: member?.role };
 };

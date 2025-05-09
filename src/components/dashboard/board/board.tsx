@@ -41,10 +41,7 @@ export default function Board({ boardId }: { boardId: string }) {
   }, [registerChannel]);
 
   const { data: lists } = useLists(boardId);
-  const { data: cards } = useCardsGroupedByList(
-    boardId,
-    lists.map(list => list.id),
-  );
+  const { data: cards } = useCardsGroupedByList(lists.map(list => list.id));
 
   const { queryKey: listsKey } = listKeys.list(boardId);
   const { mutate: moveList } = useMutation({

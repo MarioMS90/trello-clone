@@ -248,7 +248,7 @@ const ListDisplay = memo(function ListDisplay({
 });
 
 export const List = memo(function List({ list }: { list: TList }) {
-  const { data: cards } = useCards(list.boardId, list.id);
+  const { data: cards } = useCards(list.id);
   const [state, setState] = useState<TListState>(idle);
   const outerFullHeightRef = useRef<HTMLLIElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);

@@ -14,7 +14,7 @@ import { TCardWithComments } from '@/types/db';
 export function CreateCard({ listId, onCancel }: { listId: string; onCancel: () => void }) {
   const queryClient = useQueryClient();
   const boardId = useBoardId();
-  const { data: cards } = useCards(boardId, listId);
+  const { data: cards } = useCards(listId);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const clickAwayRef = useClickAway<HTMLLIElement>(() => {
