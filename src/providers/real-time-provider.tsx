@@ -26,7 +26,7 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
 
   const handleSubscription = useCallback(
     async (entity: TEntityName) => {
-      queryClient.refetchQueries({ queryKey: [entity] });
+      // queryClient.refetchQueries({ queryKey: [entity] });
     },
     [queryClient],
   );

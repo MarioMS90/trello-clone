@@ -3,23 +3,7 @@
 import invariant from 'tiny-invariant';
 import { Database } from '@/types/database-types';
 import { CookieMethodsBrowser, createBrowserClient } from '@supabase/ssr';
-
-type TSession = {
-  accessToken: string;
-  refreshToken: string;
-};
-
-const sessionTokens: TSession = {
-  accessToken: '',
-  refreshToken: '',
-};
-
-export function UpdateSessionTokens({ currentSession }: { currentSession: TSession }) {
-  sessionTokens.accessToken = currentSession.accessToken;
-  sessionTokens.refreshToken = currentSession.refreshToken;
-
-  return null;
-}
+import { sessionCookies } from '@/lib/supabase/session-updater';
 
 export function createClient(cookies?: CookieMethodsBrowser) {
   return createBrowserClient<Database>(
@@ -35,23 +19,16 @@ export async function getClient() {
   const isServer = typeof window === 'undefined';
 
   if (isServer) {
-    const cookieStore: {
-      name: string;
-      value: string;
-    }[] = [];
-
     const supabase = createClient({
       getAll() {
-        return cookieStore;
+        return Array.from(sessionCookies, ([name, value]) => ({
+          name,
+          value,
+        }));
       },
       setAll(cookiesToSet) {
-        cookiesToSet.forEach(({ name, value }) => cookieStore.push({ name, value }));
+        cookiesToSet.forEach(({ name, value }) => sessionCookies.set(name, value));
       },
-    });
-
-    await supabase.auth.setSession({
-      access_token: sessionTokens.accessToken,
-      refresh_token: sessionTokens.refreshToken,
     });
 
     return supabase;
