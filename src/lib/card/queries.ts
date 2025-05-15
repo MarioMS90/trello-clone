@@ -2,7 +2,7 @@ import { createQueryKeys } from '@lukemorales/query-key-factory';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { TCardWithComments } from '@/types/db';
 import { useCallback } from 'react';
-import { getClient } from '../supabase/client';
+import { getClient } from '../supabase/utils';
 
 const fetchCards = async (boardId: string) => {
   const supabase = await getClient();
@@ -22,7 +22,7 @@ const fetchCards = async (boardId: string) => {
       comments(
         count
       ),
-      lists!inner()
+      ...lists!inner(boardId: board_id)
     `,
     )
     .eq('lists.board_id', boardId)
@@ -45,7 +45,8 @@ export const fetchCard = async (cardId: string) => {
       listId: list_id,
       workspaceId: workspace_id,
       createdAt: created_at,
-      updatedAt: updated_at
+      updatedAt: updated_at,
+      ...lists!inner(boardId: board_id)
     `,
     )
     .eq('id', cardId)

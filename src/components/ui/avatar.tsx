@@ -1,19 +1,18 @@
 'use client';
 
-import { useMember } from '@/lib/user/queries';
 import { cn } from '@/lib/utils/utils';
+import { TUser } from '@/types/db';
 import uniqolor from 'uniqolor';
 
 export default function Avatar({
-  userId,
+  user,
   className,
   title,
 }: {
-  userId: string;
+  user: TUser;
   className?: string;
   title?: string;
 }) {
-  const user = useMember(userId);
   const { color: bgColor } = uniqolor(user.id);
 
   return (

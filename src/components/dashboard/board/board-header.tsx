@@ -1,20 +1,18 @@
 'use client';
 
 import { useBoard } from '@/lib/board/queries';
-import { useBoardId } from '@/hooks/useBoardId';
 import EditableText from '@/components/ui/editable-text';
 import { useBoardMutation } from '@/hooks/useBoardMutation';
 import { useState } from 'react';
 import Popover from '@/components/ui/popover';
 import DotsIcon from '@/components/icons/dots';
-import { useWorkspaceId } from '@/hooks/useWorkspaceId';
 import Avatar from '@/components/ui/avatar';
 import { useMembers } from '@/lib/user/queries';
+import { useSharedStore } from '@/stores/shared-store';
 import { StarToggleBoard } from './star-toggle-board';
 
 export default function BoardHeader() {
-  const workspaceId = useWorkspaceId();
-  const boardId = useBoardId();
+  const { workspaceId, boardId } = useSharedStore(state => state);
   const { data: board } = useBoard(boardId);
   const members = useMembers(workspaceId);
 
@@ -23,7 +21,7 @@ export default function BoardHeader() {
   const { updateBoardName, removeBoard } = useBoardMutation();
 
   if (!board) {
-    return null;
+    return <div></div>;
   }
 
   const boardName = updateBoardName.isPending ? updateBoardName.variables.name : board.name;
@@ -52,12 +50,12 @@ export default function BoardHeader() {
 
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-1">
-          {members.map(({ id, name, role }) => (
+          {members.map(member => (
             <Avatar
-              key={id}
+              key={member.id}
               className="size-7 cursor-default"
-              userId={id}
-              title={`${name} (${role})`}
+              user={member}
+              title={`${member.name} (${member.role})`}
             />
           ))}
         </div>

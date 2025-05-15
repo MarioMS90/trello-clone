@@ -2,7 +2,7 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { createQueryKeys } from '@lukemorales/query-key-factory';
 import { TMember, TUser, TUserMember } from '@/types/db';
 import { useMemo } from 'react';
-import { getAuthUser, getClient } from '../supabase/client';
+import { getAuthUser, getClient } from '../supabase/utils';
 
 // This is an example of a subquery-like operation:
 // fetch all members associated with these workspaces.

@@ -4,16 +4,16 @@ import Link from 'next/link';
 import { memo, useState } from 'react';
 import { cn } from '@/lib/utils/utils';
 import EditableText from '@/components/ui/editable-text';
-import { useBoardId } from '@/hooks/useBoardId';
 import { useStarredBoardId } from '@/lib/board/queries';
 import { TBoard } from '@/types/db';
 import { useBoardMutation } from '@/hooks/useBoardMutation';
+import { useSharedStore } from '@/stores/shared-store';
 import { StarToggleBoard } from '../board/star-toggle-board';
 import DotsIcon from '../../icons/dots';
 import Popover from '../../ui/popover';
 
 export const SidebarBoard = memo(function SidebarBoard({ board }: { board: TBoard }) {
-  const currentBoardId = useBoardId();
+  const currentBoardId = useSharedStore(state => state.boardId);
   const { data: isStarred } = useStarredBoardId(board.id);
   const [isEditingName, setIsEditingName] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);

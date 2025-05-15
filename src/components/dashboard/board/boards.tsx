@@ -3,17 +3,24 @@
 import { notFound } from 'next/navigation';
 import { useBoards, useStarredBoards } from '@/lib/board/queries';
 import { useWorkspace } from '@/lib/workspace/queries';
+import { useSharedStore } from '@/stores/shared-store';
+import { useEffect } from 'react';
 import StarIcon from '../../icons/star';
 import { CreateBoard } from './create-board';
 import { BoardPreview } from './board-preview';
 
 export function Boards({ workspaceId }: { workspaceId: string }) {
+  const { setWorkspaceId } = useSharedStore(state => state);
   const { data: workspace } = useWorkspace(workspaceId);
   const { data: boards } = useBoards(workspaceId);
 
   if (!workspace) {
     notFound();
   }
+
+  useEffect(() => {
+    setWorkspaceId(workspaceId);
+  }, [setWorkspaceId, workspaceId]);
 
   return (
     <ul className="mt-4 flex flex-wrap gap-4">

@@ -1,16 +1,15 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import invariant from 'tiny-invariant';
-import { boardKeys, starredBoardKeys } from '@/lib/board/queries';
+import { boardKeys, starredBoardKeys, useBoard } from '@/lib/board/queries';
 import { TBoard, TStarredBoard } from '@/types/db';
 import { deleteBoard, updateBoard } from '@/lib/board/actions';
-import { useBoardId } from './useBoardId';
-import { useWorkspaceId } from './useWorkspaceId';
+import { useSharedStore } from '@/stores/shared-store';
 
 export const useBoardMutation = () => {
   const queryClient = useQueryClient();
-  const currentBoardId = useBoardId();
-  const workspaceId = useWorkspaceId();
+  const { boardId } = useSharedStore(state => state);
+  const { data: board } = useBoard(boardId);
   const router = useRouter();
 
   const updateBoardName = useMutation({
@@ -33,8 +32,8 @@ export const useBoardMutation = () => {
     onSuccess: ({ data }) => {
       invariant(data);
 
-      if (data.id === currentBoardId) {
-        router.replace(`/workspaces/${workspaceId}`);
+      if (data.id === boardId) {
+        router.replace(`/workspaces/${board.id}`);
       }
 
       queryClient.setQueryData(starredBoardKeys.list.queryKey, (old: TStarredBoard[]) =>

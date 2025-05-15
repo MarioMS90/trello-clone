@@ -28,7 +28,6 @@ import Popover from '@/components/ui/popover';
 import PencilIcon from '@/components/icons/pencil';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { cardKeys } from '@/lib/card/queries';
-import { useBoardId } from '@/hooks/useBoardId';
 import { deleteCard, updateCard } from '@/lib/card/actions';
 import { blockCardDraggingAttr } from '@/constants/constants';
 import { useRouter } from 'next/navigation';
@@ -86,9 +85,6 @@ const CardDisplay = memo(function CardDisplay({
   innerRef?: RefObject<HTMLButtonElement | null>;
 }) {
   const queryClient = useQueryClient();
-  const boardId = useBoardId();
-  invariant(boardId);
-
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -100,8 +96,9 @@ const CardDisplay = memo(function CardDisplay({
 
       queryClient.removeQueries({ queryKey: cardKeys.detail(card.id).queryKey, exact: true });
       queryClient.removeQueries({ queryKey: commentKeys.list(card.id).queryKey, exact: true });
-      return queryClient.setQueryData(cardKeys.list(boardId).queryKey, (old: TCardWithComments[]) =>
-        old.filter(_card => _card.id !== data.id),
+      return queryClient.setQueryData(
+        cardKeys.list(card.boardId).queryKey,
+        (old: TCardWithComments[]) => old.filter(_card => _card.id !== data.id),
       );
     },
     onError: () => {
@@ -115,8 +112,9 @@ const CardDisplay = memo(function CardDisplay({
       invariant(data);
 
       queryClient.setQueryData(cardKeys.detail(data.id).queryKey, data);
-      return queryClient.setQueryData(cardKeys.list(boardId).queryKey, (old: TCardWithComments[]) =>
-        old.map(_card => (_card.id === data.id ? data : _card)),
+      return queryClient.setQueryData(
+        cardKeys.list(card.boardId).queryKey,
+        (old: TCardWithComments[]) => old.map(_card => (_card.id === data.id ? data : _card)),
       );
     },
     onError: () => {

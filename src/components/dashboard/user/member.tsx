@@ -30,7 +30,7 @@ export default function Member({ member }: { member: TUserMember }) {
       <div className="flex items-center gap-4">
         <Avatar
           className="size-8 cursor-default"
-          userId={member.id}
+          user={member}
           title={`${member.name} (${member.role})`}
         />
         <div>

@@ -21,7 +21,7 @@ export type TStarredBoard = TEntity<'starred_boards'>;
 
 export type TList = TEntity<'lists'>;
 
-export type TCard = TEntity<'cards'>;
+export type TCard = TEntity<'cards'> & { boardId: string };
 
 export type TCardWithComments = TCard & {
   commentCount: number;

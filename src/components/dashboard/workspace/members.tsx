@@ -4,14 +4,16 @@ import { useWorkspace } from '@/lib/workspace/queries';
 import { useMembers } from '@/lib/user/queries';
 import WorkspaceBadge from '@/components/ui/workspace-logo';
 import EditableText from '@/components/ui/editable-text';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useWorkspaceMutation } from '@/hooks/useWorkspaceMutation';
 import PencilIcon from '@/components/icons/pencil';
 import { notFound } from 'next/navigation';
+import { useSharedStore } from '@/stores/shared-store';
 import Member from '../user/member';
 import CreateMember from '../user/create-member';
 
 export default function Members({ workspaceId }: { workspaceId: string }) {
+  const { setWorkspaceId } = useSharedStore(state => state);
   const { data: workspace } = useWorkspace(workspaceId);
   const members = useMembers(workspaceId);
   const [isEditing, setIsEditing] = useState(false);
@@ -20,6 +22,10 @@ export default function Members({ workspaceId }: { workspaceId: string }) {
   if (!workspace) {
     notFound();
   }
+
+  useEffect(() => {
+    setWorkspaceId(workspaceId);
+  }, [setWorkspaceId, workspaceId]);
 
   const workspaceName = updateWorkspaceName.isPending
     ? updateWorkspaceName.variables.name

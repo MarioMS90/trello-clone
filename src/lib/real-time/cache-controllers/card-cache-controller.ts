@@ -1,4 +1,4 @@
-import { TCard } from '@/types/db';
+import { TCard, TList } from '@/types/db';
 import { cardKeys } from '@/lib/card/queries';
 import { insertQueryData, updateQueryData, deleteQueryData } from '@/lib/react-query/utils';
 import { QueryClient } from '@tanstack/react-query';
@@ -9,10 +9,17 @@ export default function cardCacheController(queryClient: QueryClient): CacheHand
 
   return {
     handleInsert: card => {
+      const queriesData = queryClient.getQueriesData<TList[]>({
+        queryKey: ['lists'],
+      });
+      const list = queriesData
+        .flatMap(([_, lists = []]) => lists)
+        .find(_list => _list.id === card.listId);
+
       insertQueryData({
         queryClient,
         defQueryKey,
-        entity: { ...card, commentCount: 0 },
+        entity: { ...card, commentCount: 0, boardId: list?.boardId },
       });
     },
 

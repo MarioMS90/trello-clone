@@ -8,12 +8,12 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createCard } from '@/lib/card/actions';
 import { useClickAway } from '@uidotdev/usehooks';
 import { cardKeys, useCards } from '@/lib/card/queries';
-import { useBoardId } from '@/hooks/useBoardId';
 import { TCardWithComments } from '@/types/db';
+import { useSharedStore } from '@/stores/shared-store';
 
 export function CreateCard({ listId, onCancel }: { listId: string; onCancel: () => void }) {
   const queryClient = useQueryClient();
-  const boardId = useBoardId();
+  const { boardId } = useSharedStore(state => state);
   const { data: cards } = useCards(boardId, listId);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -33,6 +33,7 @@ export function CreateCard({ listId, onCancel }: { listId: string; onCancel: () 
         name,
         rank,
         listId,
+        boardId,
         commentCount: 0,
         description: '',
         createdAt: '',

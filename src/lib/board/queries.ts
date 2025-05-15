@@ -2,7 +2,7 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { TBoard, TStarredBoard } from '@/types/db';
 import { createQueryKeys } from '@lukemorales/query-key-factory';
 import { useCallback, useMemo } from 'react';
-import { getAuthUser, getClient } from '../supabase/client';
+import { getAuthUser, getClient } from '../supabase/utils';
 
 const fetchBoards = async () => {
   const supabase = await getClient();

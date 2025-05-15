@@ -31,7 +31,7 @@ export default function Header() {
       <div className="flex flex-1 items-center justify-end gap-4">
         <HeaderSearch placeholder="Search Trello" />
         <Popover
-          triggerContent={<Avatar userId={user.id} />}
+          triggerContent={<Avatar user={user} />}
           triggerClassName="rounded-full [&]:p-1"
           popoverClassName="right-0 left-auto px-0 [&]:w-40">
           <button

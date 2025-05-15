@@ -4,17 +4,25 @@ import CloseIcon from '@/components/icons/close';
 import EditableText from '@/components/ui/editable-text';
 import { useCard } from '@/lib/card/queries';
 import { useList } from '@/lib/list/queries';
+import { useSharedStore } from '@/stores/shared-store';
 import { useClickAway } from '@uidotdev/usehooks';
-import Link from 'next/link';
 import { notFound, useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import invariant from 'tiny-invariant';
 
 export default function Card({ cardId }: { cardId: string }) {
+  const { setIdentifiersByCard } = useSharedStore(state => state);
   const router = useRouter();
   const { data: card } = useCard(cardId);
+
   if (!card) {
     notFound();
   }
+
+  useEffect(() => {
+    setIdentifiersByCard(card);
+  }, [setIdentifiersByCard, card]);
+
   const { data: list } = useList(card.listId);
   invariant(list);
 
@@ -37,7 +45,7 @@ export default function Card({ cardId }: { cardId: string }) {
   return (
     <div className="scrollbar-stable text-primary fixed top-0 left-0 z-50 h-dvh w-dvw bg-black/75">
       <div
-        className="center-xy fixed flex w-auto flex-col rounded-xl bg-neutral-200 px-5 py-4 md:w-[768px]"
+        className="center-x fixed top-12 flex w-auto flex-col rounded-xl bg-neutral-200 px-5 py-4 md:w-[768px]"
         ref={clickAwayRef}>
         <EditableText
           className="mr-[74px] [&>textarea]:text-xl [&>textarea]:font-semibold"

@@ -22,10 +22,12 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateList } from '@/lib/list/actions';
 import { updateCard } from '@/lib/card/actions';
 import { notFound } from 'next/navigation';
+import { useSharedStore } from '@/stores/shared-store';
 import { CreateList } from '../list/create-list';
 
 export default function Board({ boardId }: { boardId: string }) {
   const queryClient = useQueryClient();
+  const { setIdentifiersByBoard } = useSharedStore(state => state);
   const { data: board } = useBoard(boardId);
   const { registerChannel } = useRealTimeContext();
   const scrollableRef = useRef<HTMLUListElement | null>(null);
@@ -33,6 +35,10 @@ export default function Board({ boardId }: { boardId: string }) {
   if (!board) {
     notFound();
   }
+
+  useEffect(() => {
+    setIdentifiersByBoard(board);
+  }, [setIdentifiersByBoard, board]);
 
   useEffect(() => {
     registerChannel('lists');

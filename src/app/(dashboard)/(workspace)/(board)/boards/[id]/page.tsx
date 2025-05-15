@@ -2,7 +2,10 @@ import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { ListsSkeleton } from '@/components/ui/skeletons';
 import Board from '@/components/dashboard/board/board';
-import BoardHeader from '@/components/dashboard/board/board-header';
+import getQueryClient from '@/lib/react-query/get-query-client';
+import { listKeys } from '@/lib/list/queries';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import { cardKeys } from '@/lib/card/queries';
 
 export const metadata: Metadata = {
   title: 'Board',
@@ -10,15 +13,16 @@ export const metadata: Metadata = {
 
 export default async function BoardPage({ params }: { params: Promise<{ id: string }> }) {
   const { id: boardId } = await params;
+  const queryClient = getQueryClient();
+
+  queryClient.prefetchQuery(listKeys.list(boardId));
+  queryClient.prefetchQuery(cardKeys.list(boardId));
 
   return (
-    <>
-      <Suspense fallback={null}>
-        <BoardHeader />
-      </Suspense>
+    <HydrationBoundary state={dehydrate(queryClient)}>
       <Suspense fallback={<ListsSkeleton />}>
         <Board boardId={boardId} />
       </Suspense>
-    </>
+    </HydrationBoundary>
   );
 }

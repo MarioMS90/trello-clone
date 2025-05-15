@@ -9,14 +9,17 @@ import WorkspaceBadge from '@/components/ui/workspace-logo';
 import BoardsIcon from '@/components/icons/boards';
 import UserIcon from '@/components/icons/user';
 import { useWorkspaceMutation } from '@/hooks/useWorkspaceMutation';
+import { useBoards } from '@/lib/board/queries';
 import Popover from '../../ui/popover';
-import { Boards } from '../board/boards';
+import { BoardPreview } from '../board/board-preview';
+import { CreateBoard } from '../board/create-board';
 
 export const WorkspacePreview = memo(function WorkspacePreview({
   workspace,
 }: {
   workspace: TWorkspace;
 }) {
+  const { data: boards } = useBoards(workspace.id);
   const [isEditingName, setIsEditingName] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const { updateWorkspaceName, removeWorkspace } = useWorkspaceMutation();
@@ -92,7 +95,17 @@ export const WorkspacePreview = memo(function WorkspacePreview({
           </li>
         </ul>
       </div>
-      <Boards workspaceId={workspace.id} />
+      <ul className="mt-4 flex flex-wrap gap-4">
+        {boards.map(board => (
+          <BoardPreview board={board} key={board.id} />
+        ))}
+        <li>
+          <CreateBoard
+            popoverClassName="[&]:center-y [&]:left-[calc(100%+10px)]"
+            workspaceId={workspace.id}
+          />
+        </li>
+      </ul>
     </li>
   );
 });

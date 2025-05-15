@@ -93,7 +93,7 @@ export function MembersSkeleton() {
 export function CardSkeleton() {
   return (
     <div className="scrollbar-stable fixed top-0 left-0 z-50 h-dvh w-dvw bg-black/75">
-      <div className="center-xy fixed flex h-32 w-auto items-center justify-center rounded-xl bg-neutral-200 p-4 md:w-[768px]">
+      <div className="center-x fixed top-12 flex h-32 w-auto items-center justify-center rounded-xl bg-neutral-200 p-4 md:w-[768px]">
         <Loading width="32px" height="32px" />
       </div>
     </div>
