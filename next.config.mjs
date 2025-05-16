@@ -7,14 +7,13 @@ const nextConfig = {
   // },
   eslint: {
     // Warning: This allows production builds to successfully
-    // complete even if your project has ESLint errors.
+    // complete even if the project has ESLint errors.
     ignoreDuringBuilds: true,
   },
   experimental: {
     staleTimes: {
       // Max value possible
       dynamic: 4294967295,
-      useCache: true,
     },
   },
   reactStrictMode: false,

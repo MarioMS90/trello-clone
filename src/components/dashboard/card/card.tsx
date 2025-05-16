@@ -3,14 +3,18 @@
 import CloseIcon from '@/components/icons/close';
 import EditableText from '@/components/ui/editable-text';
 import { useCard } from '@/lib/card/queries';
-import { useList } from '@/lib/list/queries';
+import { listKeys } from '@/lib/list/queries';
 import { useSharedStore } from '@/stores/shared-store';
+import { useQueryClient } from '@tanstack/react-query';
 import { useClickAway } from '@uidotdev/usehooks';
 import { notFound, useRouter } from 'next/navigation';
-import { useEffect } from 'react';
-import invariant from 'tiny-invariant';
+import { Suspense, useEffect } from 'react';
+import dynamic from 'next/dynamic';
+
+const ListSelector = dynamic(() => import('./list-selector'), { ssr: false });
 
 export default function Card({ cardId }: { cardId: string }) {
+  const queryClient = useQueryClient();
   const { setIdentifiers } = useSharedStore(state => state);
   const router = useRouter();
   const { data: card } = useCard(cardId);
@@ -21,14 +25,9 @@ export default function Card({ cardId }: { cardId: string }) {
 
   useEffect(() => {
     setIdentifiers({ workspaceId: card.workspaceId as string, boardId: card.boardId });
-
-    return () => {
-      setIdentifiers({ workspaceId: '', boardId: '' });
-    };
   }, [setIdentifiers, card]);
 
-  const { data: list } = useList(card.listId);
-  invariant(list);
+  queryClient.prefetchQuery(listKeys.detail(card.listId));
 
   const clickAwayRef = useClickAway<HTMLDivElement>(event => {
     if (!(event instanceof MouseEvent)) {
@@ -43,7 +42,7 @@ export default function Card({ cardId }: { cardId: string }) {
   });
 
   const closeCard = () => {
-    router.push(`/boards/${list.boardId}`);
+    router.push(`/boards/${card.boardId}`);
   };
 
   return (
@@ -62,7 +61,9 @@ export default function Card({ cardId }: { cardId: string }) {
           <h2 className="text-xl font-semibold">{card.name}</h2>
         </EditableText>
         <div className="flex flex-col space-y-6 px-2">
-          <span className="text-sm">in list {list.name}</span>
+          <Suspense fallback={null}>
+            <ListSelector card={card} />
+          </Suspense>
           <div className="flex flex-col gap-2">
             <div className="flex items-center justify-between">
               <h3 className="text-md font-semibold">Description</h3>
