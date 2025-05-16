@@ -21,7 +21,7 @@ export default function BoardHeader() {
   const { updateBoardName, removeBoard } = useBoardMutation();
 
   if (!board) {
-    return <div></div>;
+    return null;
   }
 
   const boardName = updateBoardName.isPending ? updateBoardName.variables.name : board.name;

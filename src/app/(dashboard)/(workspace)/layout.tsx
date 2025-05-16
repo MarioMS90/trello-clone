@@ -11,7 +11,6 @@ export default async function WorkspaceLayout({
   children: React.ReactNode;
 }>) {
   const queryClient = getQueryClient();
-
   queryClient.prefetchQuery(userKeys.list);
   queryClient.prefetchQuery(membersKeys.list);
 

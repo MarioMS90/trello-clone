@@ -27,7 +27,7 @@ import { CreateList } from '../list/create-list';
 
 export default function Board({ boardId }: { boardId: string }) {
   const queryClient = useQueryClient();
-  const { setIdentifiersByBoard } = useSharedStore(state => state);
+  const { setIdentifiers } = useSharedStore(state => state);
   const { data: board } = useBoard(boardId);
   const { registerChannel } = useRealTimeContext();
   const scrollableRef = useRef<HTMLUListElement | null>(null);
@@ -37,8 +37,12 @@ export default function Board({ boardId }: { boardId: string }) {
   }
 
   useEffect(() => {
-    setIdentifiersByBoard(board);
-  }, [setIdentifiersByBoard, board]);
+    setIdentifiers({ workspaceId: board.workspaceId, boardId: board.id });
+
+    return () => {
+      setIdentifiers({ workspaceId: '', boardId: '' });
+    };
+  }, [setIdentifiers, board]);
 
   useEffect(() => {
     registerChannel('lists');

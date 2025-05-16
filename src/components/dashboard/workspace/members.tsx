@@ -13,7 +13,7 @@ import Member from '../user/member';
 import CreateMember from '../user/create-member';
 
 export default function Members({ workspaceId }: { workspaceId: string }) {
-  const { setWorkspaceId } = useSharedStore(state => state);
+  const { setIdentifiers } = useSharedStore(state => state);
   const { data: workspace } = useWorkspace(workspaceId);
   const members = useMembers(workspaceId);
   const [isEditing, setIsEditing] = useState(false);
@@ -24,8 +24,12 @@ export default function Members({ workspaceId }: { workspaceId: string }) {
   }
 
   useEffect(() => {
-    setWorkspaceId(workspaceId);
-  }, [setWorkspaceId, workspaceId]);
+    setIdentifiers({ workspaceId });
+
+    return () => {
+      setIdentifiers({ workspaceId: '' });
+    };
+  }, [setIdentifiers, workspaceId]);
 
   const workspaceName = updateWorkspaceName.isPending
     ? updateWorkspaceName.variables.name

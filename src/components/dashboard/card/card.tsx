@@ -11,7 +11,7 @@ import { useEffect } from 'react';
 import invariant from 'tiny-invariant';
 
 export default function Card({ cardId }: { cardId: string }) {
-  const { setIdentifiersByCard } = useSharedStore(state => state);
+  const { setIdentifiers } = useSharedStore(state => state);
   const router = useRouter();
   const { data: card } = useCard(cardId);
 
@@ -20,8 +20,12 @@ export default function Card({ cardId }: { cardId: string }) {
   }
 
   useEffect(() => {
-    setIdentifiersByCard(card);
-  }, [setIdentifiersByCard, card]);
+    setIdentifiers({ workspaceId: card.workspaceId as string, boardId: card.boardId });
+
+    return () => {
+      setIdentifiers({ workspaceId: '', boardId: '' });
+    };
+  }, [setIdentifiers, card]);
 
   const { data: list } = useList(card.listId);
   invariant(list);

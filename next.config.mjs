@@ -14,6 +14,7 @@ const nextConfig = {
     staleTimes: {
       // Max value possible
       dynamic: 4294967295,
+      useCache: true,
     },
   },
   reactStrictMode: false,

@@ -10,7 +10,7 @@ import { CreateBoard } from './create-board';
 import { BoardPreview } from './board-preview';
 
 export function Boards({ workspaceId }: { workspaceId: string }) {
-  const { setWorkspaceId } = useSharedStore(state => state);
+  const { setIdentifiers } = useSharedStore(state => state);
   const { data: workspace } = useWorkspace(workspaceId);
   const { data: boards } = useBoards(workspaceId);
 
@@ -19,8 +19,12 @@ export function Boards({ workspaceId }: { workspaceId: string }) {
   }
 
   useEffect(() => {
-    setWorkspaceId(workspaceId);
-  }, [setWorkspaceId, workspaceId]);
+    setIdentifiers({ workspaceId });
+
+    return () => {
+      setIdentifiers({ workspaceId: '', boardId: '' });
+    };
+  }, [setIdentifiers, workspaceId]);
 
   return (
     <ul className="mt-4 flex flex-wrap gap-4">

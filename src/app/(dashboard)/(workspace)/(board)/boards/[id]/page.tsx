@@ -14,7 +14,6 @@ export const metadata: Metadata = {
 export default async function BoardPage({ params }: { params: Promise<{ id: string }> }) {
   const { id: boardId } = await params;
   const queryClient = getQueryClient();
-
   queryClient.prefetchQuery(listKeys.list(boardId));
   queryClient.prefetchQuery(cardKeys.list(boardId));
 

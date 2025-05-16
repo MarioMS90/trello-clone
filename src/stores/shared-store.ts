@@ -1,4 +1,3 @@
-import { TBoard, TCard } from '@/types/db';
 import { create } from 'zustand';
 import { combine } from 'zustand/middleware';
 import { useShallow } from 'zustand/react/shallow';
@@ -6,9 +5,7 @@ import { useShallow } from 'zustand/react/shallow';
 export interface SharedStore {
   workspaceId: string;
   boardId: string;
-  setWorkspaceId: (workspaceId: string) => void;
-  setIdentifiersByBoard: (board: TBoard) => void;
-  setIdentifiersByCard: (card: TCard) => void;
+  setIdentifiers: (identifiers: { workspaceId?: string; boardId?: string }) => void;
 }
 
 const sharedStore = create<SharedStore>()(
@@ -18,11 +15,8 @@ const sharedStore = create<SharedStore>()(
       boardId: '',
     },
     set => ({
-      setWorkspaceId: (workspaceId: string) => set({ workspaceId }),
-      setIdentifiersByBoard: (board: TBoard) =>
-        set({ workspaceId: board.workspaceId, boardId: board.id }),
-      setIdentifiersByCard: (card: TCard) =>
-        set({ workspaceId: card?.workspaceId as string, boardId: card.boardId }),
+      setIdentifiers: (identifiers: { workspaceId?: string; boardId?: string }) =>
+        set((state: SharedStore) => ({ ...state, ...identifiers })),
     }),
   ),
 );

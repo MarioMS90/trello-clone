@@ -15,7 +15,6 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }>) {
   const queryClient = getQueryClient();
-
   queryClient.prefetchQuery(userKeys.current);
   queryClient.prefetchQuery(workspaceKeys.list);
   queryClient.prefetchQuery(boardKeys.list);
