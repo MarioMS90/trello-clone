@@ -4,11 +4,11 @@ import invariant from 'tiny-invariant';
 import { boardKeys, starredBoardKeys, useBoard } from '@/lib/board/queries';
 import { TBoard, TStarredBoard } from '@/types/db';
 import { deleteBoard, updateBoard } from '@/lib/board/actions';
-import { useSharedStore } from '@/stores/shared-store';
+import { useBoardId } from './useBoardId';
 
 export const useBoardMutation = () => {
   const queryClient = useQueryClient();
-  const { boardId } = useSharedStore(state => state);
+  const boardId = useBoardId();
   const { data: board } = useBoard(boardId);
   const router = useRouter();
 

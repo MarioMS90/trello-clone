@@ -3,7 +3,7 @@
 import { TEntity, TEntityName } from '@/types/db';
 import { TablesInsert, TablesUpdate } from '@/types/database-types';
 import { camelizeKeys } from '../utils/utils';
-import { createClient } from './server';
+import createClient from './server';
 
 export async function insertEntity<TableName extends TEntityName>({
   tableName,

@@ -8,13 +8,13 @@ import { useState } from 'react';
 import { cn } from '@/lib/utils/utils';
 import { useWorkspace } from '@/lib/workspace/queries';
 import { useBoards } from '@/lib/board/queries';
-import { useSharedStore } from '@/stores/shared-store';
 import { SidebarSkeleton } from '@/components/ui/skeletons';
+import { useWorkspaceId } from '@/hooks/useWorkspaceId';
 import { CreateBoard } from '../board/create-board';
 import { SidebarBoard } from './sidebar-board';
 
-export function WorkspaceSidebar() {
-  const { workspaceId } = useSharedStore(state => state);
+export default function WorkspaceSidebar() {
+  const workspaceId = useWorkspaceId();
   const { data: workspace } = useWorkspace(workspaceId);
   const { data: boards } = useBoards(workspaceId);
   const [sidebarExpanded, setSidebarExpanded] = useState(true);

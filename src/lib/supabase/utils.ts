@@ -1,10 +1,10 @@
 import invariant from 'tiny-invariant';
-import { createClient } from './client';
+import createClient from './client';
 
 export async function getClient() {
   const isServer = typeof window === 'undefined';
   if (isServer) {
-    return (await import('./server')).createClient();
+    return (await import('./server')).default();
   }
 
   return createClient();

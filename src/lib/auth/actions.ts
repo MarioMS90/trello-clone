@@ -2,7 +2,7 @@
 
 import { redirect } from 'next/navigation';
 import { SignInUser, SignUpUser } from '@/schemas/auth-schemas';
-import { createClient } from '../supabase/server';
+import createClient from '../supabase/server';
 
 export type TSignInState = {
   error: boolean;

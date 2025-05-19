@@ -8,12 +8,12 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createCard } from '@/lib/card/actions';
 import { useClickAway } from '@uidotdev/usehooks';
 import { cardKeys, useCards } from '@/lib/card/queries';
-import { TCardWithComments } from '@/types/db';
-import { useSharedStore } from '@/stores/shared-store';
+import { TCard } from '@/types/db';
+import { useBoardId } from '@/hooks/useBoardId';
 
 export function CreateCard({ listId, onCancel }: { listId: string; onCancel: () => void }) {
   const queryClient = useQueryClient();
-  const { boardId } = useSharedStore(state => state);
+  const boardId = useBoardId();
   const { data: cards } = useCards(boardId, listId);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -28,7 +28,7 @@ export function CreateCard({ listId, onCancel }: { listId: string; onCancel: () 
     onMutate: async ({ name, rank }: { name: string; rank: string }) => {
       await queryClient.cancelQueries({ queryKey });
 
-      const optimisticCard: TCardWithComments = {
+      const optimisticCard: TCard = {
         id: crypto.randomUUID(),
         name,
         rank,
@@ -41,19 +41,19 @@ export function CreateCard({ listId, onCancel }: { listId: string; onCancel: () 
         workspaceId: '',
       };
 
-      queryClient.setQueryData(queryKey, (old: TCardWithComments[]) => [...old, optimisticCard]);
+      queryClient.setQueryData(queryKey, (old: TCard[]) => [...old, optimisticCard]);
 
       return { optimisticCard };
     },
     onSuccess: ({ data }, _variables, context) => {
       invariant(data);
-      queryClient.setQueryData(queryKey, (old: TCardWithComments[]) =>
+      queryClient.setQueryData(queryKey, (old: TCard[]) =>
         old.map(card => (card.id === context.optimisticCard.id ? { ...card, ...data } : card)),
       );
     },
     onError: (_error, _variables, context) => {
       invariant(context);
-      queryClient.setQueryData(queryKey, (old: TCardWithComments[]) =>
+      queryClient.setQueryData(queryKey, (old: TCard[]) =>
         old.filter(card => card.id !== context.optimisticCard.id),
       );
 

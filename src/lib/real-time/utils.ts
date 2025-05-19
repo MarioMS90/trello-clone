@@ -1,7 +1,7 @@
 import { TEntityName } from '@/types/db';
 import { Tables } from '@/types/database-types';
 import { RealtimePostgresChangesPayload } from '@supabase/supabase-js';
-import { createClient } from '../supabase/client';
+import createClient from '../supabase/client';
 
 export function getChannels() {
   const supabase = createClient();

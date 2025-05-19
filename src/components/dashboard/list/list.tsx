@@ -1,6 +1,6 @@
 'use client';
 
-import { TCardWithComments, TList } from '@/types/db';
+import { TCard, TList } from '@/types/db';
 import DotsIcon from '@/components/icons/dots';
 import PlusIcon from '@/components/icons/plus';
 import { memo, RefObject, useEffect, useRef, useState } from 'react';
@@ -89,7 +89,7 @@ const ListDisplay = memo(function ListDisplay({
   scrollableRef,
 }: {
   list: TList;
-  cards: TCardWithComments[];
+  cards: TCard[];
   state: TListState;
   outerFullHeightRef?: RefObject<HTMLLIElement | null>;
   innerRef?: RefObject<HTMLDivElement | null>;
@@ -107,7 +107,7 @@ const ListDisplay = memo(function ListDisplay({
       invariant(data);
 
       queryClient.removeQueries({ queryKey: listKeys.detail(list.id).queryKey, exact: true });
-      queryClient.setQueryData(cardKeys.list(list.boardId).queryKey, (old: TCardWithComments[]) =>
+      queryClient.setQueryData(cardKeys.list(list.boardId).queryKey, (old: TCard[]) =>
         old.filter(_card => _card.listId !== data.id),
       );
       return queryClient.setQueryData(listKeys.list(list.boardId).queryKey, (old: TList[]) =>

@@ -1,7 +1,7 @@
 'use client';
 
 import { memo, RefObject, useEffect, useRef, useState } from 'react';
-import { TCardWithComments } from '@/types/db';
+import { TCard } from '@/types/db';
 import invariant from 'tiny-invariant';
 import {
   draggable,
@@ -32,6 +32,7 @@ import { deleteCard, updateCard } from '@/lib/card/actions';
 import { blockCardDraggingAttr } from '@/constants/constants';
 import { useRouter } from 'next/navigation';
 import { commentKeys } from '@/lib/comment/queries';
+import { useBoardId } from '@/hooks/useBoardId';
 
 type TCardState =
   | { type: 'idle' }
@@ -79,12 +80,13 @@ const CardDisplay = memo(function CardDisplay({
   outerRef,
   innerRef,
 }: {
-  card: TCardWithComments;
+  card: TCard;
   state: TCardState;
   outerRef?: RefObject<HTMLLIElement | null>;
   innerRef?: RefObject<HTMLButtonElement | null>;
 }) {
   const queryClient = useQueryClient();
+  const boardId = useBoardId();
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -96,9 +98,8 @@ const CardDisplay = memo(function CardDisplay({
 
       queryClient.removeQueries({ queryKey: cardKeys.detail(card.id).queryKey, exact: true });
       queryClient.removeQueries({ queryKey: commentKeys.list(card.id).queryKey, exact: true });
-      return queryClient.setQueryData(
-        cardKeys.list(card.boardId).queryKey,
-        (old: TCardWithComments[]) => old.filter(_card => _card.id !== data.id),
+      return queryClient.setQueryData(cardKeys.list(boardId).queryKey, (old: TCard[]) =>
+        old.filter(_card => _card.id !== data.id),
       );
     },
     onError: () => {
@@ -112,9 +113,8 @@ const CardDisplay = memo(function CardDisplay({
       invariant(data);
 
       queryClient.setQueryData(cardKeys.detail(data.id).queryKey, data);
-      return queryClient.setQueryData(
-        cardKeys.list(card.boardId).queryKey,
-        (old: TCardWithComments[]) => old.map(_card => (_card.id === data.id ? data : _card)),
+      return queryClient.setQueryData(cardKeys.list(boardId).queryKey, (old: TCard[]) =>
+        old.map(_card => (_card.id === data.id ? data : _card)),
       );
     },
     onError: () => {
@@ -225,7 +225,7 @@ const CardDisplay = memo(function CardDisplay({
   );
 });
 
-export const CardPreview = memo(function CardPreview({ card }: { card: TCardWithComments }) {
+export const CardPreview = memo(function CardPreview({ card }: { card: TCard }) {
   const [state, setState] = useState<TCardState>(idle);
   const outerRef = useRef<HTMLLIElement>(null);
   const innerRef = useRef<HTMLButtonElement>(null);

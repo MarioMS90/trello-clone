@@ -16,13 +16,10 @@ export default function commentCacheController(queryClient: QueryClient): CacheH
         entity: comment,
       });
 
-      // Supabase realtime doesn't provide calculated fields that
-      // don't belong to the entity, so we need to update the
-      // card's comment count manually.
-      const queriesData = queryClient.getQueriesData<TCard[]>({
-        queryKey: ['cards'],
+      const data = queryClient.getQueriesData<TCard[]>({
+        queryKey: cardKeys._def,
       });
-      const card = queriesData
+      const card = data
         .flatMap(([_, cards = []]) => cards)
         .find(_card => _card.id === comment.cardId);
 
@@ -33,7 +30,7 @@ export default function commentCacheController(queryClient: QueryClient): CacheH
       updateQueryData({
         queryClient,
         defQueryKey: cardKeys._def,
-        entity: card,
+        entity: { ...card, commentCount: card.commentCount + 1 },
       });
     },
 

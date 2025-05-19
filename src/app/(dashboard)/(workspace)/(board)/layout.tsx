@@ -1,5 +1,4 @@
-import BoardHeader from '@/components/dashboard/board/board-header';
-import { Suspense } from 'react';
+import DynamicBoardHeader from '@/components/dashboard/board/dynamic-board-header';
 
 export default function BoardLayout({
   children,
@@ -10,9 +9,7 @@ export default function BoardLayout({
 }>) {
   return (
     <>
-      <Suspense fallback={null}>
-        <BoardHeader />
-      </Suspense>
+      <DynamicBoardHeader />
       {children}
       {card}
     </>

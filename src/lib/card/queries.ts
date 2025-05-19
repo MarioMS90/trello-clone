@@ -1,8 +1,9 @@
 import { createQueryKeys } from '@lukemorales/query-key-factory';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { TCardWithComments } from '@/types/db';
+import { TCard } from '@/types/db';
 import { useCallback } from 'react';
 import { getClient } from '../supabase/utils';
+import getQueryClient from '../react-query/get-query-client';
 
 const fetchCards = async (boardId: string) => {
   const supabase = await getClient();
@@ -22,13 +23,13 @@ const fetchCards = async (boardId: string) => {
       comments(
         count
       ),
-      ...lists!inner(boardId: board_id)
+      ...lists!inner(boardId: board_id, listName: name)
     `,
     )
     .eq('lists.board_id', boardId)
     .throwOnError();
 
-  return data?.map(card => ({ ...card, commentCount: card.comments[0].count, comment: undefined }));
+  return data?.map(card => ({ ...card, commentCount: card.comments[0].count }));
 };
 
 export const fetchCard = async (cardId: string) => {
@@ -46,14 +47,17 @@ export const fetchCard = async (cardId: string) => {
       workspaceId: workspace_id,
       createdAt: created_at,
       updatedAt: updated_at,
-      ...lists!inner(boardId: board_id)
+      comments(
+        count
+      ),
+      ...lists!inner(boardId: board_id, listName: name)
     `,
     )
     .eq('id', cardId)
     .maybeSingle()
     .throwOnError();
 
-  return data;
+  return { ...data, commentCount: data?.comments[0].count };
 };
 
 export const cardKeys = createQueryKeys('cards', {
@@ -67,9 +71,9 @@ export const cardKeys = createQueryKeys('cards', {
   }),
 });
 
-export const useCardsQuery = <TData = TCardWithComments[]>(
+export const useCardsQuery = <TData = TCard[]>(
   boardId: string,
-  select?: (data: TCardWithComments[]) => TData,
+  select?: (data: TCard[]) => TData,
 ) =>
   useSuspenseQuery({
     ...cardKeys.list(boardId),
@@ -80,7 +84,7 @@ export const useCardsGroupedByList = (boardId: string, listIds: string[]) =>
   useCardsQuery(
     boardId,
     useCallback(
-      (cards: TCardWithComments[]) =>
+      (cards: TCard[]) =>
         Object.fromEntries(
           listIds.map(listId => [
             listId,
@@ -97,7 +101,7 @@ export const useCards = (boardId: string, listId: string) =>
   useCardsQuery(
     boardId,
     useCallback(
-      (cards: TCardWithComments[]) =>
+      (cards: TCard[]) =>
         cards
           .filter(card => card.listId === listId)
           .toSorted((a, b) => a.rank.localeCompare(b.rank)),
@@ -105,4 +109,19 @@ export const useCards = (boardId: string, listId: string) =>
     ),
   );
 
-export const useCard = (cardId: string) => useSuspenseQuery(cardKeys.detail(cardId));
+export const useCard = (cardId: string) => {
+  const queryClient = getQueryClient();
+
+  return useSuspenseQuery({
+    queryKey: cardKeys.detail(cardId).queryKey,
+    queryFn: async () => (cardId ? fetchCard(cardId) : null),
+    initialData: () => {
+      const data = queryClient.getQueriesData<TCard[]>({
+        queryKey: cardKeys.list._def,
+      });
+      const card = data?.flatMap(([_, cards = []]) => cards).find(_card => _card.id === cardId);
+
+      return card;
+    },
+  });
+};

@@ -8,11 +8,13 @@ import Popover from '@/components/ui/popover';
 import DotsIcon from '@/components/icons/dots';
 import Avatar from '@/components/ui/avatar';
 import { useMembers } from '@/lib/user/queries';
-import { useSharedStore } from '@/stores/shared-store';
+import { useWorkspaceId } from '@/hooks/useWorkspaceId';
+import { useBoardId } from '@/hooks/useBoardId';
 import { StarToggleBoard } from './star-toggle-board';
 
 export default function BoardHeader() {
-  const { workspaceId, boardId } = useSharedStore(state => state);
+  const workspaceId = useWorkspaceId();
+  const boardId = useBoardId();
   const { data: board } = useBoard(boardId);
   const members = useMembers(workspaceId);
 

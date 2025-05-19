@@ -5,7 +5,7 @@ import { CreateBoardSchema, UpdateBoardSchema } from '@/schemas/workspace-schema
 import { TablesInsert, TablesUpdate } from '@/types/database-types';
 import invariant from 'tiny-invariant';
 import { deleteEntity, insertEntity, updateEntity } from '../supabase/server-utils';
-import { createClient } from '../supabase/server';
+import createClient from '../supabase/server';
 
 export async function createBoard(boardData: TablesInsert<'boards'>): Promise<TMutation<TBoard>> {
   const validatedFields = CreateBoardSchema.safeParse({

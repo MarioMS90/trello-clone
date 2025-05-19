@@ -8,7 +8,7 @@ import { getReorderDestinationIndex } from '@atlaskit/pragmatic-drag-and-drop-hi
 import { autoScrollForElements } from '@atlaskit/pragmatic-drag-and-drop-auto-scroll/element';
 import { bind, bindAll } from 'bind-event-listener';
 import { isCardData, isListData, TCardData, TListData } from '@/types/board-types';
-import { TCardWithComments, TList } from '@/types/db';
+import { TCard, TList } from '@/types/db';
 import { useCallback, useEffect, useRef } from 'react';
 import { List } from '@/components/dashboard/list/list';
 import { generateRank } from '@/lib/utils/utils';
@@ -22,12 +22,10 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateList } from '@/lib/list/actions';
 import { updateCard } from '@/lib/card/actions';
 import { notFound } from 'next/navigation';
-import { useSharedStore } from '@/stores/shared-store';
 import { CreateList } from '../list/create-list';
 
 export default function Board({ boardId }: { boardId: string }) {
   const queryClient = useQueryClient();
-  const { setIdentifiers } = useSharedStore(state => state);
   const { data: board } = useBoard(boardId);
   const { registerChannel } = useRealTimeContext();
   const scrollableRef = useRef<HTMLUListElement | null>(null);
@@ -35,14 +33,6 @@ export default function Board({ boardId }: { boardId: string }) {
   if (!board) {
     notFound();
   }
-
-  useEffect(() => {
-    setIdentifiers({ workspaceId: board.workspaceId, boardId: board.id });
-
-    return () => {
-      setIdentifiers({ workspaceId: '', boardId: '' });
-    };
-  }, [setIdentifiers, board]);
 
   useEffect(() => {
     registerChannel('lists');
@@ -104,11 +94,11 @@ export default function Board({ boardId }: { boardId: string }) {
     }) => {
       await queryClient.cancelQueries({ queryKey: cardsKey });
 
-      const previous = queryClient.getQueryData<TCardWithComments[]>(cardsKey);
+      const previous = queryClient.getQueryData<TCard[]>(cardsKey);
       const previousCard = previous?.find(card => card.id === cardId);
       invariant(previousCard);
 
-      queryClient.setQueryData(cardsKey, (old: TCardWithComments[]) =>
+      queryClient.setQueryData(cardsKey, (old: TCard[]) =>
         old.map(card => (card.id === cardId ? { ...card, rank, listId } : card)),
       );
 
@@ -116,13 +106,13 @@ export default function Board({ boardId }: { boardId: string }) {
     },
     onSuccess: async ({ data }) => {
       invariant(data);
-      queryClient.setQueryData(cardsKey, (old: TCardWithComments[]) =>
+      queryClient.setQueryData(cardsKey, (old: TCard[]) =>
         old.map(card => (card.id === data.id ? { ...card, ...data } : card)),
       );
     },
     onError: (_error, _variables, context) => {
       invariant(context);
-      queryClient.setQueryData(cardsKey, (old: TCardWithComments[]) =>
+      queryClient.setQueryData(cardsKey, (old: TCard[]) =>
         old.map(card => (card.id === context.previousCard.id ? context.previousCard : card)),
       );
 
