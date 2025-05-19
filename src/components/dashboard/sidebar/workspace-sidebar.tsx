@@ -8,10 +8,10 @@ import { useState } from 'react';
 import { cn } from '@/lib/utils/utils';
 import { useWorkspace } from '@/lib/workspace/queries';
 import { useBoards } from '@/lib/board/queries';
-import { SidebarSkeleton } from '@/components/ui/skeletons';
 import { useWorkspaceId } from '@/hooks/useWorkspaceId';
 import { CreateBoard } from '../board/create-board';
 import { SidebarBoard } from './sidebar-board';
+import { Sidebar } from './sidebar';
 
 export default function WorkspaceSidebar() {
   const workspaceId = useWorkspaceId();
@@ -20,7 +20,7 @@ export default function WorkspaceSidebar() {
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
 
   if (!workspace) {
-    return <SidebarSkeleton />;
+    return <Sidebar />;
   }
 
   return (

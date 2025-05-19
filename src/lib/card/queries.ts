@@ -57,6 +57,10 @@ export const fetchCard = async (cardId: string) => {
     .maybeSingle()
     .throwOnError();
 
+  if (!data) {
+    return null;
+  }
+
   return { ...data, commentCount: data?.comments[0].count };
 };
 

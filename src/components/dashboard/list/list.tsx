@@ -106,7 +106,6 @@ const ListDisplay = memo(function ListDisplay({
     onSuccess: ({ data }) => {
       invariant(data);
 
-      queryClient.removeQueries({ queryKey: listKeys.detail(list.id).queryKey, exact: true });
       queryClient.setQueryData(cardKeys.list(list.boardId).queryKey, (old: TCard[]) =>
         old.filter(_card => _card.listId !== data.id),
       );
@@ -124,7 +123,6 @@ const ListDisplay = memo(function ListDisplay({
     onSuccess: ({ data }) => {
       invariant(data);
 
-      queryClient.setQueryData(listKeys.detail(data.id).queryKey, data);
       return queryClient.setQueryData(listKeys.list(list.boardId).queryKey, (old: TList[]) =>
         old.map(_list => (_list.id === data.id ? data : _list)),
       );

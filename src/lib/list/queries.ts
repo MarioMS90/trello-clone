@@ -26,37 +26,10 @@ const fetchLists = async (boardId: string) => {
   return data;
 };
 
-export const fetchList = async (listId: string) => {
-  const supabase = await getClient();
-
-  const { data } = await supabase
-    .from('lists')
-    .select(
-      ` 
-      id,
-      name,
-      rank,
-      boardId: board_id,
-      workspaceId: workspace_id,
-      createdAt: created_at,
-      updatedAt: updated_at
-    `,
-    )
-    .eq('id', listId)
-    .maybeSingle()
-    .throwOnError();
-
-  return data;
-};
-
 export const listKeys = createQueryKeys('lists', {
   list: (boardId: string) => ({
     queryKey: [boardId],
     queryFn: () => fetchLists(boardId),
-  }),
-  detail: (listId: string) => ({
-    queryKey: [listId],
-    queryFn: () => fetchList(listId),
   }),
 });
 
@@ -68,5 +41,3 @@ export const useLists = (boardId: string) =>
       [],
     ),
   });
-
-export const useList = (listId: string) => useSuspenseQuery(listKeys.detail(listId));
