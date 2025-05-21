@@ -4,7 +4,7 @@ import { BoardsSkeleton } from '@/components/ui/skeletons';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Board',
+  title: 'Boards',
 };
 
 export default async function BoardsPage({ params }: { params: Promise<{ id: string }> }) {

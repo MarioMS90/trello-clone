@@ -4,8 +4,13 @@ import { StarredBoards } from '@/components/dashboard/board/boards';
 import { CreateWorkspace } from '@/components/dashboard/workspace/create-workspace';
 import Workspaces from '@/components/dashboard/workspace/workspaces';
 import { Sidebar } from '@/components/dashboard/sidebar/sidebar';
+import { Metadata } from 'next';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'Workspaces',
+};
 
 export default function WorkspacesPage() {
   return (
