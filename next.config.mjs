@@ -6,8 +6,8 @@ const nextConfig = {
   //   },
   // },
   eslint: {
-    // Warning: This allows production builds to successfully
-    // complete even if the project has ESLint errors.
+    //   // Warning: This allows production builds to successfully
+    //   // complete even if the project has ESLint errors.
     ignoreDuringBuilds: true,
   },
   experimental: {
@@ -16,7 +16,7 @@ const nextConfig = {
       dynamic: 4294967295,
     },
   },
-  reactStrictMode: false,
+  //reactStrictMode: false,
 };
 
 export default nextConfig;

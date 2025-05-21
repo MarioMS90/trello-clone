@@ -9,7 +9,7 @@ import { workspaceKeys } from '@/lib/workspace/queries';
 import { boardKeys, starredBoardKeys } from '@/lib/board/queries';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 
-export default async function DashboardLayout({
+export default function DashboardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

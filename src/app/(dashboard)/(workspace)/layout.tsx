@@ -3,7 +3,7 @@ import getQueryClient from '@/lib/react-query/get-query-client';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import DynamicSidebar from '@/components/dashboard/sidebar/dynamic-sidebar';
 
-export default async function WorkspaceLayout({
+export default function WorkspaceLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

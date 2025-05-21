@@ -78,7 +78,7 @@ const fetchMembers = async () => {
 export const userKeys = createQueryKeys('users', {
   list: {
     queryKey: null,
-    queryFn: () => fetchUsers(),
+    queryFn: fetchUsers,
   },
   current: {
     queryKey: null,
@@ -101,7 +101,7 @@ export const userKeys = createQueryKeys('users', {
 export const membersKeys = createQueryKeys('members', {
   list: {
     queryKey: null,
-    queryFn: () => fetchMembers(),
+    queryFn: fetchMembers,
   },
 });
 

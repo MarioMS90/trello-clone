@@ -4,7 +4,7 @@ import { createQueryKeys } from '@lukemorales/query-key-factory';
 import { useCallback, useMemo } from 'react';
 import { getAuthUser, getClient } from '../supabase/utils';
 
-const fetchBoards = async () => {
+export const fetchBoards = async () => {
   const supabase = await getClient();
   const user = await getAuthUser();
 
@@ -55,14 +55,14 @@ const fetchStarredBoards = async () => {
 export const boardKeys = createQueryKeys('boards', {
   list: {
     queryKey: null,
-    queryFn: () => fetchBoards(),
+    queryFn: fetchBoards,
   },
 });
 
 export const starredBoardKeys = createQueryKeys('starred-boards', {
   list: {
     queryKey: null,
-    queryFn: () => fetchStarredBoards(),
+    queryFn: fetchStarredBoards,
   },
 });
 
