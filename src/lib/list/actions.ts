@@ -1,6 +1,5 @@
 'use server';
 
-import { TList, TMutation, TMutationDelete } from '@/types/db';
 import { CreateListSchema, UpdateListSchema } from '@/schemas/workspace-schemas';
 import { TablesUpdate } from '@/types/database-types';
 import { deleteEntity, insertEntity, updateEntity } from '../supabase/server-utils';
@@ -13,7 +12,7 @@ export async function createList({
   boardId: string;
   name: string;
   rank: string;
-}): Promise<TMutation<TList>> {
+}) {
   const validatedFields = CreateListSchema.safeParse({
     boardId,
     name,
@@ -35,9 +34,7 @@ export async function createList({
   return { data: list };
 }
 
-export async function updateList(
-  listData: TablesUpdate<'lists'> & { id: string },
-): Promise<TMutation<TList>> {
+export async function updateList(listData: TablesUpdate<'lists'> & { id: string }) {
   const validatedFields = UpdateListSchema.safeParse(listData);
 
   if (!validatedFields.success) {
@@ -49,7 +46,7 @@ export async function updateList(
   return { data: list };
 }
 
-export async function deleteList(listId: string): Promise<TMutationDelete> {
+export async function deleteList(listId: string) {
   const id = await deleteEntity({ tableName: 'lists', entityId: listId });
 
   return { data: { id } };

@@ -8,13 +8,13 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createCard } from '@/lib/card/actions';
 import { useClickAway } from '@uidotdev/usehooks';
 import { cardKeys, useCards } from '@/lib/card/queries';
-import { TCard } from '@/types/db';
+import { TCard, TList } from '@/types/db';
 import { useBoardId } from '@/hooks/useBoardId';
 
-export function CreateCard({ listId, onCancel }: { listId: string; onCancel: () => void }) {
+export function CreateCard({ list, onCancel }: { list: TList; onCancel: () => void }) {
   const queryClient = useQueryClient();
   const boardId = useBoardId();
-  const { data: cards } = useCards(boardId, listId);
+  const { data: cards } = useCards(boardId, list.id);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const clickAwayRef = useClickAway<HTMLLIElement>(() => {
@@ -24,18 +24,19 @@ export function CreateCard({ listId, onCancel }: { listId: string; onCancel: () 
   const { queryKey } = cardKeys.list(boardId);
   const { mutate: addCard } = useMutation({
     mutationFn: ({ name, rank }: { name: string; rank: string }) =>
-      createCard({ listId, name, rank }),
+      createCard({ listId: list.id, name, rank }),
     onMutate: async ({ name, rank }: { name: string; rank: string }) => {
       await queryClient.cancelQueries({ queryKey });
 
       const optimisticCard: TCard = {
         id: crypto.randomUUID(),
         name,
-        rank,
-        listId,
-        boardId,
-        commentCount: 0,
         description: '',
+        rank,
+        listId: list.id,
+        listName: list.name,
+        commentCount: 0,
+        boardId,
         createdAt: '',
         updatedAt: '',
         workspaceId: '',

@@ -1,11 +1,7 @@
-import { TMutationDelete, TMutationMemberInsert } from '@/types/db';
 import { deleteEntity, insertEntity } from '../supabase/server-utils';
 import { fetchUser } from './queries';
 
-export async function createMember(
-  email: string,
-  workspaceId: string,
-): Promise<TMutationMemberInsert> {
+export async function createMember(email: string, workspaceId: string) {
   const { data: user, error } = await fetchUser({
     eqColumn: 'email',
     eqValue: email,
@@ -23,7 +19,7 @@ export async function createMember(
   return { data: { user, member } };
 }
 
-export async function deleteMember(roleId: string): Promise<TMutationDelete> {
+export async function deleteMember(roleId: string) {
   const id = await deleteEntity({ tableName: 'members', entityId: roleId });
 
   return { data: { id } };

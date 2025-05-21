@@ -1,6 +1,5 @@
 'use server';
 
-import { TCard, TMutation, TMutationDelete } from '@/types/db';
 import { CreateCardSchema, UpdateCardSchema } from '@/schemas/workspace-schemas';
 import { TablesUpdate } from '@/types/database-types';
 import { deleteEntity, insertEntity, updateEntity } from '../supabase/server-utils';
@@ -13,7 +12,7 @@ export async function createCard({
   listId: string;
   name: string;
   rank: string;
-}): Promise<TMutation<TCard>> {
+}) {
   const validatedFields = CreateCardSchema.safeParse({
     listId,
     name,
@@ -36,9 +35,7 @@ export async function createCard({
   return { data: card };
 }
 
-export async function updateCard(
-  cardData: TablesUpdate<'cards'> & { id: string },
-): Promise<TMutation<TCard>> {
+export async function updateCard(cardData: TablesUpdate<'cards'> & { id: string }) {
   const validatedFields = UpdateCardSchema.safeParse(cardData);
 
   if (!validatedFields.success) {
@@ -50,7 +47,7 @@ export async function updateCard(
   return { data: card };
 }
 
-export async function deleteCard(cardId: string): Promise<TMutationDelete> {
+export async function deleteCard(cardId: string) {
   const id = await deleteEntity({ tableName: 'cards', entityId: cardId });
 
   return { data: { id } };

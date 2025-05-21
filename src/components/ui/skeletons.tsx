@@ -1,4 +1,5 @@
 import AppsIcon from '../icons/apps';
+import DotsIcon from '../icons/dots';
 import TrelloWhiteIcon from '../icons/trello-white';
 import Loading from './loading';
 
@@ -8,7 +9,7 @@ const shimmer =
 
 export function HeaderSkeleton() {
   return (
-    <div className="bg-primary-background flex h-12 items-center justify-between border-b border-b-white/30 p-1.5 text-white">
+    <div className="bg-primary-background flex h-12 items-center justify-between border-b border-b-white/30 p-2 text-white">
       <div className="[&>div:hover]:bg-button-hovered-background flex items-center text-sm [&>div]:relative [&>div]:h-[32px] [&>div]:rounded-sm">
         <div className="w-[32px]">
           <div className="center-xy">
@@ -22,7 +23,7 @@ export function HeaderSkeleton() {
         </div>
       </div>
       <div
-        className={`${shimmer} bg-primary flex size-6 cursor-pointer items-center justify-center rounded-full text-xs text-white`}></div>
+        className={`${shimmer} bg-primary mx-1 flex size-7 cursor-pointer items-center justify-center rounded-full text-xs text-white`}></div>
     </div>
   );
 }
@@ -95,6 +96,27 @@ export function CardSkeleton() {
     <div className="scrollbar-stable fixed top-0 left-0 z-50 h-dvh w-dvw bg-black/75">
       <div className="center-x fixed top-12 flex h-32 w-auto items-center justify-center rounded-xl bg-neutral-200 p-4 md:w-[768px]">
         <Loading width="32px" height="32px" />
+      </div>
+    </div>
+  );
+}
+
+export function BoardHeaderSkeleton() {
+  return (
+    <div className="bg-secondary-background flex h-14 items-center justify-between p-2.5 font-medium">
+      <div className="flex items-center gap-4">
+        <div className={`${shimmer} mx-3 my-1 h-4 w-24 rounded-sm bg-white`} />
+      </div>
+      <div className="flex items-center gap-4">
+        <div className="flex items-center gap-1">
+          <div
+            className={`${shimmer} bg-primary flex size-7 cursor-pointer items-center justify-center rounded-full text-xs text-white`}></div>
+          <div
+            className={`${shimmer} bg-primary flex size-7 cursor-pointer items-center justify-center rounded-full text-xs text-white`}></div>
+        </div>
+        <div className="mx-1">
+          <DotsIcon height={20} />
+        </div>
       </div>
     </div>
   );

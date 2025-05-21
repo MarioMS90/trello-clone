@@ -26,19 +26,3 @@ export type TCard = TEntity<'cards'> & { boardId: string; listName: string; comm
 export type TComment = TEntity<'comments'>;
 
 export type TRoleEnum = TPublicSchema['Enums']['role'];
-
-export type TMutationWorkspaceInsert = {
-  data?: { workspace: TWorkspace; role: TMember };
-};
-
-export type TMutationMemberInsert = {
-  data?: { user: TUser; member: TMember };
-};
-
-export type TMutation<Entity extends TEntity<TEntityName>> = {
-  data?: Entity;
-};
-
-export type TMutationDelete = {
-  data?: { id: string };
-};

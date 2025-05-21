@@ -1,13 +1,12 @@
 'use server';
 
-import { TBoard, TMutation, TMutationDelete, TStarredBoard } from '@/types/db';
 import { CreateBoardSchema, UpdateBoardSchema } from '@/schemas/workspace-schemas';
 import { TablesInsert, TablesUpdate } from '@/types/database-types';
 import invariant from 'tiny-invariant';
 import { deleteEntity, insertEntity, updateEntity } from '../supabase/server-utils';
 import createClient from '../supabase/server';
 
-export async function createBoard(boardData: TablesInsert<'boards'>): Promise<TMutation<TBoard>> {
+export async function createBoard(boardData: TablesInsert<'boards'>) {
   const validatedFields = CreateBoardSchema.safeParse({
     name: boardData.name,
     workspaceId: boardData.workspace_id,
@@ -27,9 +26,7 @@ export async function createBoard(boardData: TablesInsert<'boards'>): Promise<TM
   return { data: board };
 }
 
-export async function updateBoard(
-  boardData: TablesUpdate<'boards'> & { id: string },
-): Promise<TMutation<TBoard>> {
+export async function updateBoard(boardData: TablesUpdate<'boards'> & { id: string }) {
   const validatedFields = UpdateBoardSchema.safeParse(boardData);
   if (!validatedFields.success) {
     throw new Error('Invalid board data');
@@ -40,13 +37,13 @@ export async function updateBoard(
   return { data: board };
 }
 
-export async function deleteBoard(boardId: string): Promise<TMutationDelete> {
+export async function deleteBoard(boardId: string) {
   const id = await deleteEntity({ tableName: 'boards', entityId: boardId });
 
   return { data: { id } };
 }
 
-export async function createStarredBoard(boardId: string): Promise<TMutation<TStarredBoard>> {
+export async function createStarredBoard(boardId: string) {
   const supabase = await createClient();
 
   const {
@@ -62,7 +59,7 @@ export async function createStarredBoard(boardId: string): Promise<TMutation<TSt
   return { data: starredBoard };
 }
 
-export async function deleteStarredBoard(starredBoardId: string): Promise<TMutationDelete> {
+export async function deleteStarredBoard(starredBoardId: string) {
   const id = await deleteEntity({ tableName: 'starred_boards', entityId: starredBoardId });
 
   return { data: { id } };

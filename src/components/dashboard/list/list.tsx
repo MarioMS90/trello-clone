@@ -217,7 +217,7 @@ const ListDisplay = memo(function ListDisplay({
                   <CardPreview card={card} key={card.id} />
                 ))}
                 {isCreatingCard && (
-                  <CreateCard listId={list.id} onCancel={() => setIsCreatingCard(false)} />
+                  <CreateCard list={list} onCancel={() => setIsCreatingCard(false)} />
                 )}
                 {state.type === 'is-card-over' && !state.isOverChildCard ? (
                   <CardShadow dragging={state.dragging} />

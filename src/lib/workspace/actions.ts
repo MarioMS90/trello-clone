@@ -1,20 +1,12 @@
 'use server';
 
-import {
-  TMutation,
-  TMutationDelete,
-  TMutationWorkspaceInsert,
-  TMember,
-  TWorkspace,
-} from '@/types/db';
+import { TMember, TWorkspace } from '@/types/db';
 import { CreateWorkspaceSchema, UpdateWorkspaceSchema } from '@/schemas/workspace-schemas';
 import { TablesInsert, TablesUpdate } from '@/types/database-types';
 import { deleteEntity, updateEntity } from '../supabase/server-utils';
 import createClient from '../supabase/server';
 
-export async function createWorkspace(
-  workspaceData: TablesInsert<'workspaces'>,
-): Promise<TMutationWorkspaceInsert> {
+export async function createWorkspace(workspaceData: TablesInsert<'workspaces'>) {
   const validatedFields = CreateWorkspaceSchema.safeParse({
     name: workspaceData.name,
   });
@@ -42,9 +34,7 @@ export async function createWorkspace(
   return { data: { workspace: result.workspace, role: result.role } };
 }
 
-export async function updateWorkspace(
-  workspaceData: TablesUpdate<'workspaces'> & { id: string },
-): Promise<TMutation<TWorkspace>> {
+export async function updateWorkspace(workspaceData: TablesUpdate<'workspaces'> & { id: string }) {
   const validatedFields = UpdateWorkspaceSchema.safeParse(workspaceData);
   if (!validatedFields.success) {
     throw new Error('Invalid workspace data');
@@ -58,7 +48,7 @@ export async function updateWorkspace(
   return { data: workspace };
 }
 
-export async function deleteWorkspace(workspaceId: string): Promise<TMutationDelete> {
+export async function deleteWorkspace(workspaceId: string) {
   const id = await deleteEntity({ tableName: 'workspaces', entityId: workspaceId });
 
   return { data: { id } };
