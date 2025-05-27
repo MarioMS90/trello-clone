@@ -32,7 +32,7 @@ export default function BoardHeader() {
     <div className="bg-secondary-background flex items-center justify-between p-2.5 font-medium">
       <div className="flex items-center gap-4">
         <EditableText
-          className="inline-block grow-0 [&>button]:p-0 [&>input]:m-0 [&>input]:w-auto [&>input]:rounded-sm [&>input]:px-3 [&>input]:py-1 [&>input]:text-lg [&>input]:font-bold [&>input:focus]:shadow-none"
+          className="inline-block grow-0 [&>button]:p-0 [&>input]:m-0 [&>input]:field-sizing-content [&>input]:w-auto [&>input]:rounded-sm [&>input]:px-3 [&>input]:py-1 [&>input]:text-lg [&>input]:font-bold [&>input:focus]:shadow-none"
           defaultText={boardName}
           onEdit={text => {
             updateBoardName.mutate({ id: board.id, name: text });
