@@ -19,10 +19,8 @@ const generateSearchResult = <T extends SearchResult['kind']>(
   const searchResultRenderers: {
     [K in SearchResult['kind']]: (elem: Extract<SearchResult, { kind: K }>) => JSX.Element;
   } = {
-    // Using <a> instead of <Link> is a temporary workaround to avoid
-    // a Next.js bug when using route interception with route groups.
     card: ({ id, name, board, list }) => (
-      <a className="block hover:bg-gray-200" href={`/cards/${id}`}>
+      <Link className="block hover:bg-gray-200" href={`/cards/${id}`}>
         <div className="flex items-center gap-2 px-4 py-1">
           <CardIcon height={19} />
           <div>
@@ -32,7 +30,7 @@ const generateSearchResult = <T extends SearchResult['kind']>(
             </p>
           </div>
         </div>
-      </a>
+      </Link>
     ),
     board: ({ id, name, workspace }) => (
       <Link className="block hover:bg-gray-200" href={`/boards/${id}`}>

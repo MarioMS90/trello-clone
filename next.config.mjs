@@ -10,12 +10,12 @@ const nextConfig = {
     //   // complete even if the project has ESLint errors.
     ignoreDuringBuilds: true,
   },
-  // experimental: {
-  //   staleTimes: {
-  //     // Max value possible
-  //     dynamic: 4294967295,
-  //   },
-  // },
+  experimental: {
+    staleTimes: {
+      // Max value possible
+      dynamic: 4294967295,
+    },
+  },
   //reactStrictMode: false,
 };
 

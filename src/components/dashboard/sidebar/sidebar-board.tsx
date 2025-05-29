@@ -19,7 +19,7 @@ export const SidebarBoard = memo(function SidebarBoard({ board }: { board: TBoar
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const { modifyBoard, removeBoard } = useBoardMutation();
 
-  const name =
+  const boardName =
     modifyBoard.isPending && modifyBoard.variables.name ? modifyBoard.variables.name : board.name;
 
   return (
@@ -33,7 +33,7 @@ export const SidebarBoard = memo(function SidebarBoard({ board }: { board: TBoar
       key={board.id}>
       <EditableText
         className="[&>input]:my-0.5 [&>input]:mr-[74px] [&>input]:ml-1.5 [&>input]:w-full [&>input:focus]:shadow-none [&>span]:p-0"
-        defaultText={name}
+        defaultText={boardName}
         onEdit={text => {
           modifyBoard.mutate({ id: board.id, name: text });
         }}
@@ -42,7 +42,7 @@ export const SidebarBoard = memo(function SidebarBoard({ board }: { board: TBoar
         <Link
           className="w-full overflow-hidden py-2 pr-[70px] pl-3.5 text-ellipsis text-white"
           href={`/boards/${board.id}`}>
-          {name}
+          {boardName}
         </Link>
       </EditableText>
       <div
