@@ -8,8 +8,8 @@ import { useState } from 'react';
 import { useWorkspaceMutation } from '@/hooks/useWorkspaceMutation';
 import PencilIcon from '@/components/icons/pencil';
 import { notFound } from 'next/navigation';
-import Member from '../user/member';
-import CreateMember from '../user/create-member';
+import Member from './member';
+import AddMember from './add-member';
 
 export default function Members({ workspaceId }: { workspaceId: string }) {
   const { data: workspace } = useWorkspace(workspaceId);
@@ -33,7 +33,7 @@ export default function Members({ workspaceId }: { workspaceId: string }) {
           <WorkspaceBadge className="size-14 text-3xl" workspaceId={workspaceId} />
 
           <EditableText
-            className="[&>input]:text-xl [&>input]:font-semibold [&>input:focus]:shadow-none"
+            className="[&>input]:field-sizing-content [&>input]:text-xl [&>input]:font-semibold [&>input:focus]:shadow-none"
             defaultText={workspaceName}
             onEdit={text => {
               modifyWorkspace.mutate({ id: workspace.id, name: text });
@@ -50,7 +50,7 @@ export default function Members({ workspaceId }: { workspaceId: string }) {
             <PencilIcon width={12} height={12} />
           </button>
         </div>
-        <CreateMember workspaceId={workspaceId} />
+        <AddMember workspaceId={workspaceId} />
       </section>
       <section className="border-t-1 border-t-white/20 pt-6">
         <h2 className="font-bold">Workspace members ({members.length})</h2>

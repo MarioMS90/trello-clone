@@ -32,7 +32,9 @@ export default function CreateMember({ workspaceId }: { workspaceId: string }) {
       invariant(data);
 
       setIsOpen(false);
-      queryClient.setQueryData(userKeys.list.queryKey, (old: TUser[]) => [...old, data.user]);
+      queryClient.setQueryData(userKeys.list.queryKey, (old: TUser[]) =>
+        old.some(({ id }) => id === data.user.id) ? old : [...old, data.user],
+      );
       return queryClient.setQueryData(membersKeys.list.queryKey, (old: TMember[]) => [
         ...old,
         data.member,
