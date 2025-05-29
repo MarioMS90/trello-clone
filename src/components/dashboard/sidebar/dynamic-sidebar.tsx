@@ -8,6 +8,6 @@ const WorkspaceSidebar = dynamic(() => import('./workspace-sidebar'), {
   loading: () => <SidebarSkeleton />,
 });
 
-export default function DynamicSidebar() {
+export default function DynamicWorkspaceSidebar() {
   return <WorkspaceSidebar />;
 }

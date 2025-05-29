@@ -15,15 +15,16 @@ export default function Members({ workspaceId }: { workspaceId: string }) {
   const { data: workspace } = useWorkspace(workspaceId);
   const members = useMembers(workspaceId);
   const [isEditing, setIsEditing] = useState(false);
-  const { updateWorkspaceName } = useWorkspaceMutation();
+  const { modifyWorkspace } = useWorkspaceMutation();
 
   if (!workspace) {
     notFound();
   }
 
-  const workspaceName = updateWorkspaceName.isPending
-    ? updateWorkspaceName.variables.name
-    : workspace.name;
+  const workspaceName =
+    modifyWorkspace.isPending && modifyWorkspace.variables.name
+      ? modifyWorkspace.variables.name
+      : workspace.name;
 
   return (
     <div className="mx-auto max-w-[1250px] px-26">
@@ -35,7 +36,7 @@ export default function Members({ workspaceId }: { workspaceId: string }) {
             className="[&>input]:text-xl [&>input]:font-semibold [&>input:focus]:shadow-none"
             defaultText={workspaceName}
             onEdit={text => {
-              updateWorkspaceName.mutate({ id: workspace.id, name: text });
+              modifyWorkspace.mutate({ id: workspace.id, name: text });
             }}
             editing={isEditing}
             onEditingChange={setIsEditing}>

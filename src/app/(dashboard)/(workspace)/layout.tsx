@@ -1,7 +1,7 @@
 import { membersKeys, userKeys } from '@/lib/user/queries';
 import getQueryClient from '@/lib/react-query/get-query-client';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
-import DynamicSidebar from '@/components/dashboard/sidebar/dynamic-sidebar';
+import DynamicWorkspaceSidebar from '@/components/dashboard/sidebar/dynamic-sidebar';
 
 export default function WorkspaceLayout({
   children,
@@ -14,7 +14,7 @@ export default function WorkspaceLayout({
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <DynamicSidebar />
+      <DynamicWorkspaceSidebar />
       <main className="bg-main-background grow text-white">{children}</main>
     </HydrationBoundary>
   );

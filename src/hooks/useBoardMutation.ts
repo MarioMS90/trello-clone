@@ -3,18 +3,19 @@ import invariant from 'tiny-invariant';
 import { boardKeys, starredBoardKeys } from '@/lib/board/queries';
 import { TBoard, TStarredBoard } from '@/types/db';
 import { deleteBoard, updateBoard } from '@/lib/board/actions';
+import { TablesUpdate } from '@/types/database-types';
 
 export const useBoardMutation = () => {
   const queryClient = useQueryClient();
 
-  const updateBoardName = useMutation({
-    mutationFn: (variables: { id: string; name: string }) => updateBoard(variables),
+  const modifyBoard = useMutation({
+    mutationFn: (variables: TablesUpdate<'boards'> & { id: string }) => updateBoard(variables),
 
     onSuccess: ({ data }) => {
       invariant(data);
 
       return queryClient.setQueryData(boardKeys.list.queryKey, (old: TBoard[]) =>
-        old.map(_board => (_board.id === data.id ? data : _board)),
+        old.map(_board => (_board.id === data.id ? { ..._board, ...data } : _board)),
       );
     },
     onError: () => {
@@ -39,5 +40,5 @@ export const useBoardMutation = () => {
     },
   });
 
-  return { updateBoardName, removeBoard };
+  return { modifyBoard, removeBoard };
 };

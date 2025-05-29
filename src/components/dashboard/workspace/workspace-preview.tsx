@@ -22,9 +22,12 @@ export const WorkspacePreview = memo(function WorkspacePreview({
   const { data: boards } = useBoards(workspace.id);
   const [isEditingName, setIsEditingName] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const { updateWorkspaceName, removeWorkspace } = useWorkspaceMutation();
+  const { modifyWorkspace, removeWorkspace } = useWorkspaceMutation();
 
-  const name = updateWorkspaceName.isPending ? updateWorkspaceName.variables.name : workspace.name;
+  const workspaceName =
+    modifyWorkspace.isPending && modifyWorkspace.variables.name
+      ? modifyWorkspace.variables.name
+      : workspace.name;
 
   const btnClassName =
     'flex items-center gap-1.5 rounded-sm bg-gray-300 px-3 py-1.5 text-primary hover:bg-gray-300/90';
@@ -36,12 +39,12 @@ export const WorkspacePreview = memo(function WorkspacePreview({
           <WorkspaceBadge workspaceId={workspace.id} />
           <EditableText
             className="text-base font-bold text-white [&>input]:field-sizing-content [&>input]:rounded-lg [&>input:focus]:shadow-none"
-            defaultText={name}
-            onEdit={text => updateWorkspaceName.mutate({ id: workspace.id, name: text })}
+            defaultText={workspaceName}
+            onEdit={text => modifyWorkspace.mutate({ id: workspace.id, name: text })}
             editing={isEditingName}
             onEditingChange={setIsEditingName}
             editOnClick>
-            <h3>{name}</h3>
+            <h3>{workspaceName}</h3>
           </EditableText>
         </div>
         <ul className="flex items-center gap-4 text-sm">

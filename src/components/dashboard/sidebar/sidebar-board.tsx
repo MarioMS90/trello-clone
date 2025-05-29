@@ -17,9 +17,10 @@ export const SidebarBoard = memo(function SidebarBoard({ board }: { board: TBoar
   const { data: isStarred } = useStarredBoardId(board.id);
   const [isEditingName, setIsEditingName] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const { updateBoardName, removeBoard } = useBoardMutation();
+  const { modifyBoard, removeBoard } = useBoardMutation();
 
-  const name = updateBoardName.isPending ? updateBoardName.variables.name : board.name;
+  const name =
+    modifyBoard.isPending && modifyBoard.variables.name ? modifyBoard.variables.name : board.name;
 
   return (
     <li
@@ -34,7 +35,7 @@ export const SidebarBoard = memo(function SidebarBoard({ board }: { board: TBoar
         className="[&>input]:my-0.5 [&>input]:mr-[74px] [&>input]:ml-1.5 [&>input]:w-full [&>input:focus]:shadow-none [&>span]:p-0"
         defaultText={name}
         onEdit={text => {
-          updateBoardName.mutate({ id: board.id, name: text });
+          modifyBoard.mutate({ id: board.id, name: text });
         }}
         editing={isEditingName}
         onEditingChange={setIsEditingName}>

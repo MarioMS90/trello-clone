@@ -26,13 +26,9 @@ import CommentIcon from '@/components/icons/comment';
 import EditableText from '@/components/ui/editable-text';
 import Popover from '@/components/ui/popover';
 import PencilIcon from '@/components/icons/pencil';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { cardKeys } from '@/lib/card/queries';
-import { deleteCard, updateCard } from '@/lib/card/actions';
 import { blockCardDraggingAttr } from '@/constants/constants';
 import { useRouter } from 'next/navigation';
-import { commentKeys } from '@/lib/comment/queries';
-import { useBoardId } from '@/hooks/useBoardId';
+import { useCardMutation } from '@/hooks/useCardMutation';
 
 type TCardState =
   | { type: 'idle' }
@@ -85,44 +81,14 @@ const CardDisplay = memo(function CardDisplay({
   outerRef?: RefObject<HTMLLIElement | null>;
   innerRef?: RefObject<HTMLButtonElement | null>;
 }) {
-  const queryClient = useQueryClient();
-  const boardId = useBoardId();
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
-  const { mutate: removeCard } = useMutation({
-    mutationFn: (id: string) => deleteCard(id),
-    onSuccess: ({ data }) => {
-      invariant(data);
+  const { modifyCard, removeCard } = useCardMutation();
 
-      queryClient.removeQueries({ queryKey: cardKeys.detail(card.id).queryKey, exact: true });
-      queryClient.removeQueries({ queryKey: commentKeys.list(card.id).queryKey, exact: true });
-      return queryClient.setQueryData(cardKeys.list(boardId).queryKey, (old: TCard[]) =>
-        old.filter(_card => _card.id !== data.id),
-      );
-    },
-    onError: () => {
-      alert('An error occurred while deleting the element');
-    },
-  });
-
-  const updateCardName = useMutation({
-    mutationFn: (variables: { id: string; name: string }) => updateCard(variables),
-    onSuccess: ({ data }) => {
-      invariant(data);
-
-      queryClient.setQueryData(cardKeys.detail(data.id).queryKey, data);
-      return queryClient.setQueryData(cardKeys.list(boardId).queryKey, (old: TCard[]) =>
-        old.map(_card => (_card.id === data.id ? data : _card)),
-      );
-    },
-    onError: () => {
-      alert('An error occurred while updating the element');
-    },
-  });
-
-  const name = updateCardName.isPending ? updateCardName.variables.name : card.name;
+  const cardName =
+    modifyCard.isPending && modifyCard.variables.name ? modifyCard.variables.name : card.name;
 
   return (
     <>
@@ -155,12 +121,12 @@ const CardDisplay = memo(function CardDisplay({
           onClick={() => !isEditing && router.push(`/cards/${card.id}`, { scroll: false })}>
           <EditableText
             className="[&&>span]:p-0 [&&>textarea]:rounded-[3px] [&&>textarea]:p-0 [&&>textarea]:shadow-none"
-            defaultText={name}
-            onEdit={text => updateCardName.mutate({ id: card.id, name: text })}
+            defaultText={cardName}
+            onEdit={text => modifyCard.mutate({ id: card.id, name: text })}
             autoResize
             editing={isEditing}
             onEditingChange={setIsEditing}>
-            <h2>{name}</h2>
+            <h2>{cardName}</h2>
           </EditableText>
 
           <div className="flex items-center gap-3 has-[span]:py-1">
@@ -208,7 +174,7 @@ const CardDisplay = memo(function CardDisplay({
                   className="cursor-pointer"
                   type="button"
                   onClick={() => {
-                    removeCard(card.id);
+                    removeCard.mutate(card.id);
                     setIsPopoverOpen(false);
                   }}>
                   Delete card

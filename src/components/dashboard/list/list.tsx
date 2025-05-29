@@ -132,7 +132,7 @@ const ListDisplay = memo(function ListDisplay({
     },
   });
 
-  const name = updateListName.isPending ? updateListName.variables.name : list.name;
+  const listName = updateListName.isPending ? updateListName.variables.name : list.name;
 
   return (
     <>
@@ -163,13 +163,13 @@ const ListDisplay = memo(function ListDisplay({
               {...(isEditing && { [blockListDraggingAttr]: true })}>
               <EditableText
                 className="font-semibold [&>button]:px-3 [&>textarea]:px-3"
-                defaultText={name}
+                defaultText={listName}
                 onEdit={text => updateListName.mutate({ id: list.id, name: text })}
                 autoResize
                 editOnClick
                 editing={isEditing}
                 onEditingChange={setIsEditing}>
-                <h3 className="[overflow-wrap:anywhere]">{name}</h3>
+                <h3 className="[overflow-wrap:anywhere]">{listName}</h3>
               </EditableText>
               <Popover
                 triggerContent={

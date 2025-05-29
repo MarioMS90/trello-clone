@@ -3,19 +3,23 @@ import invariant from 'tiny-invariant';
 import { TWorkspace } from '@/types/db';
 import { deleteWorkspace, updateWorkspace } from '@/lib/workspace/actions';
 import { workspaceKeys } from '@/lib/workspace/queries';
+import { TablesUpdate } from '@/types/database-types';
 
 export const useWorkspaceMutation = () => {
   const queryClient = useQueryClient();
 
   const { queryKey } = workspaceKeys.list;
 
-  const updateWorkspaceName = useMutation({
-    mutationFn: (variables: { id: string; name: string }) => updateWorkspace(variables),
+  const modifyWorkspace = useMutation({
+    mutationFn: (variables: TablesUpdate<'workspaces'> & { id: string }) =>
+      updateWorkspace(variables),
 
     onSuccess: ({ data }) => {
       invariant(data);
       return queryClient.setQueryData(queryKey, (old: TWorkspace[]) =>
-        old.map(_workspace => (_workspace.id === data.id ? data : _workspace)),
+        old.map(_workspace =>
+          _workspace.id === data.id ? { ..._workspace, ...data } : _workspace,
+        ),
       );
     },
     onError: () => {
@@ -36,5 +40,5 @@ export const useWorkspaceMutation = () => {
     },
   });
 
-  return { updateWorkspaceName, removeWorkspace };
+  return { modifyWorkspace, removeWorkspace };
 };
