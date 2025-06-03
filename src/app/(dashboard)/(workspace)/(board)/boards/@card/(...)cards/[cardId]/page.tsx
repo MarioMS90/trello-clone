@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { Suspense } from 'react';
-import { CardSkeleton } from '@/components/ui/skeletons';
-import Card from '@/components/dashboard/card/card';
+import { CardSkeleton } from '@/modules/common/components/ui/skeletons';
+import Card from '@/modules/card/components/card';
 
 export const metadata: Metadata = {
   title: 'Card',

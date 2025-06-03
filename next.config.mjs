@@ -16,7 +16,7 @@ const nextConfig = {
       dynamic: 4294967295,
     },
   },
-  //reactStrictMode: false,
+  reactStrictMode: false,
 };
 
 export default nextConfig;

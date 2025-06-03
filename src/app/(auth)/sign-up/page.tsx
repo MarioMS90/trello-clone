@@ -1,4 +1,4 @@
-import SignUpForm from '@/components/auth/sign-up-form';
+import SignUpForm from '@/modules/auth/components/sign-up-form';
 import { Metadata } from 'next';
 import Link from 'next/link';
 
@@ -15,7 +15,7 @@ export default function SignUpPage() {
       <Link
         type="button"
         href="/sign-in"
-        className="my-1 py-2 text-sm font-medium text-secondary hover:underline">
+        className="text-secondary my-1 py-2 text-sm font-medium hover:underline">
         Sign In
       </Link>
     </>

@@ -1,13 +1,13 @@
-import Header from '@/components/dashboard/header/header';
-import { HeaderSkeleton } from '@/components/ui/skeletons';
-import ReactQueryProvider from '@/providers/react-query-provider';
+import { HeaderSkeleton } from '@/modules/common/components/ui/skeletons';
 import { Suspense } from 'react';
-import { RealTimeProvider } from '@/providers/real-time-provider';
-import getQueryClient from '@/lib/react-query/get-query-client';
-import { userKeys } from '@/lib/user/queries';
-import { workspaceKeys } from '@/lib/workspace/queries';
-import { boardKeys, starredBoardKeys } from '@/lib/board/queries';
+import getQueryClient from '@/modules/react-query/get-query-client';
+import { userKeys } from '@/modules/user/lib/queries';
+import { workspaceKeys } from '@/modules/workspace/lib/queries';
+import { boardKeys, starredBoardKeys } from '@/modules/board/lib/queries';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import { RealTimeProvider } from '@/modules/real-time/providers/real-time-provider';
+import ReactQueryProvider from '@/modules/react-query/providers/react-query-provider';
+import Header from '@/modules/header/components/header';
 
 export default function DashboardLayout({
   children,

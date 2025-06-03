@@ -1,10 +1,10 @@
 import { Suspense } from 'react';
-import { BoardsSkeleton } from '@/components/ui/skeletons';
-import { StarredBoards } from '@/components/dashboard/board/boards';
-import { CreateWorkspace } from '@/components/dashboard/workspace/create-workspace';
-import Workspaces from '@/components/dashboard/workspace/workspaces';
-import { Sidebar } from '@/components/dashboard/sidebar/sidebar';
+import { BoardsSkeleton } from '@/modules/common/components/ui/skeletons';
+import { StarredBoards } from '@/modules/board/components/boards';
+import { CreateWorkspace } from '@/modules/workspace/components/create-workspace';
+import Workspaces from '@/modules/workspace/components/workspaces';
 import { Metadata } from 'next';
+import { Sidebar } from '@/modules/sidebar/components/sidebar';
 
 export const dynamic = 'force-dynamic';
 

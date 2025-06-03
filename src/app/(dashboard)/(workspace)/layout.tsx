@@ -1,7 +1,7 @@
-import { membersKeys, userKeys } from '@/lib/user/queries';
-import getQueryClient from '@/lib/react-query/get-query-client';
+import { membersKeys, userKeys } from '@/modules/user/lib/queries';
+import getQueryClient from '@/modules/react-query/get-query-client';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
-import DynamicWorkspaceSidebar from '@/components/dashboard/sidebar/dynamic-sidebar';
+import DynamicWorkspaceSidebar from '@/modules/sidebar/components/dynamic-sidebar';
 
 export default function WorkspaceLayout({
   children,

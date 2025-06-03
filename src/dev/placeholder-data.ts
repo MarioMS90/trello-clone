@@ -1,4 +1,4 @@
-import { Tables } from '@/types/database-types';
+import { Tables } from '@/modules/common/types/database-types';
 import { LexoRank } from 'lexorank';
 
 const workspaces: Omit<Tables<'workspaces'>, 'updated_at'>[] = [

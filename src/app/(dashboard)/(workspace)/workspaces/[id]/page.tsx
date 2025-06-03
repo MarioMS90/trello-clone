@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
-import { Boards } from '@/components/dashboard/board/boards';
-import { BoardsSkeleton } from '@/components/ui/skeletons';
+import { Boards } from '@/modules/board/components/boards';
+import { BoardsSkeleton } from '@/modules/common/components/ui/skeletons';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {

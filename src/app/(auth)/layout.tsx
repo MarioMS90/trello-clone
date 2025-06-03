@@ -1,6 +1,6 @@
 import './login.css';
-import TrelloIcon from '@/components/icons/trello';
-import AtlassianIcon from '@/components/icons/atlassian';
+import TrelloIcon from '@/modules/common/components/icons/trello';
+import AtlassianIcon from '@/modules/common/components/icons/atlassian';
 import Link from 'next/link';
 
 export default function Layout({
@@ -16,7 +16,7 @@ export default function Layout({
         className="flex w-[400px] flex-col rounded-sm bg-white p-7 text-center shadow-md">
         <TrelloIcon height={40} />
         {children}
-        <footer className="mt-4 flex flex-col border-t border-gray-300 pt-6 text-xs [&>*>a]:text-secondary">
+        <footer className="[&>*>a]:text-secondary mt-4 flex flex-col border-t border-gray-300 pt-6 text-xs">
           <AtlassianIcon height={24} />
           <p className="py-2">
             One account for Trello, Jira, Confluence, and <Link href="#">more</Link>.

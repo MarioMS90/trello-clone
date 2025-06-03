@@ -1,6 +1,6 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { workspaces, members, boards, starredBoards, lists, cards } from '@/dev/placeholder-data';
-import { Database } from '@/types/database-types';
+import { Database } from '@/modules/common/types/database-types';
 
 async function seedWorkspaces(supabase: SupabaseClient<Database>) {
   await supabase.from('workspaces').delete().neq('id', '00000000-0000-0000-0000-000000000000');

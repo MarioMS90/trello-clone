@@ -1,10 +1,10 @@
 import { Metadata } from 'next';
 import { Suspense } from 'react';
-import { CardSkeleton } from '@/components/ui/skeletons';
+import { CardSkeleton } from '@/modules/common/components/ui/skeletons';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
-import Card from '@/components/dashboard/card/card';
-import getQueryClient from '@/lib/react-query/get-query-client';
-import { cardKeys } from '@/lib/card/queries';
+import Card from '@/modules/card/components/card';
+import getQueryClient from '@/modules/react-query/get-query-client';
+import { cardKeys } from '@/modules/card/lib/queries';
 
 export const metadata: Metadata = {
   title: 'Card',

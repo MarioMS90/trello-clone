@@ -1,5 +1,5 @@
-import Members from '@/components/dashboard/workspace/members';
-import { MembersSkeleton } from '@/components/ui/skeletons';
+import Members from '@/modules/workspace/components/members';
+import { MembersSkeleton } from '@/modules/common/components/ui/skeletons';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 

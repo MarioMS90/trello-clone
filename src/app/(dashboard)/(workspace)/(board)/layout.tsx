@@ -1,4 +1,4 @@
-import DynamicBoardHeader from '@/components/dashboard/board/dynamic-board-header';
+import DynamicBoardHeader from '@/modules/board/components/dynamic-board-header';
 
 export default function BoardLayout({
   children,
