@@ -4,9 +4,15 @@ import { boardKeys, starredBoardKeys } from '@/lib/board/queries';
 import { TBoard, TStarredBoard } from '@/types/db';
 import { deleteBoard, updateBoard } from '@/lib/board/actions';
 import { TablesUpdate } from '@/types/database-types';
+import { useRouter } from 'next/navigation';
+import { useWorkspaceId } from './useWorkspaceId';
+import { useBoardId } from './useBoardId';
 
 export const useBoardMutation = () => {
   const queryClient = useQueryClient();
+  const boardId = useBoardId();
+  const workspaceId = useWorkspaceId();
+  const router = useRouter();
 
   const modifyBoard = useMutation({
     mutationFn: (variables: TablesUpdate<'boards'> & { id: string }) => updateBoard(variables),
@@ -27,6 +33,11 @@ export const useBoardMutation = () => {
     mutationFn: (id: string) => deleteBoard(id),
     onSuccess: ({ data }) => {
       invariant(data);
+
+      // TODO: Fix this crap
+      if (boardId === data.id) {
+        router.replace(`/workspaces/${workspaceId}`);
+      }
 
       queryClient.setQueryData(starredBoardKeys.list.queryKey, (old: TStarredBoard[]) =>
         old.filter(starredBoard => starredBoard.boardId !== data.id),

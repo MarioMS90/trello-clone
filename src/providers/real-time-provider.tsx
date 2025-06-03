@@ -33,6 +33,7 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
 
   const registerChannel = useCallback(
     (entity: TEntityName) => {
+      return;
       const channels = getChannels();
       if (channels.some(channel => channel.subTopic === `schema-${entity}-changes`)) {
         return;
