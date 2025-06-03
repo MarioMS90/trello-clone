@@ -17,7 +17,7 @@ export default function Card({ cardId }: { cardId: string }) {
   const router = useRouter();
   const { data: cardData } = useCard(cardId);
   const { modifyCard } = useCardMutation();
-  const [isEditingDescription, setIsEditingDescription] = useState(false);
+  const [isEditingDescription, setIsEditingDescription] = useState(true);
 
   if (!cardData) {
     notFound();
@@ -104,16 +104,14 @@ export default function Card({ cardId }: { cardId: string }) {
                   <p className="text-sm whitespace-pre-wrap">{card.description}</p>
                 </EditableText>
                 {isEditingDescription && (
-                  <div>
-                    <button
-                      className="bg-secondary inline cursor-pointer rounded-sm px-3 py-1.5 text-sm font-medium text-white hover:opacity-80"
-                      type="button"
-                      onClick={() => {
-                        setIsEditingDescription(false);
-                      }}>
-                      Save
-                    </button>
-                  </div>
+                  <button
+                    className="bg-secondary cursor-pointer self-start rounded-sm px-3 py-1.5 text-sm font-medium text-white hover:opacity-80"
+                    type="button"
+                    onClick={() => {
+                      setIsEditingDescription(false);
+                    }}>
+                    Save
+                  </button>
                 )}
               </div>
             </div>
