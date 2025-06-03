@@ -21,7 +21,7 @@ export default function cardCacheController(queryClient: QueryClient): CacheHand
       insertQueryData({
         queryClient,
         defQueryKey,
-        entity: { ...card, commentCount: 0, boardId: list?.boardId, listName: list?.name },
+        entity: { ...card, boardId: list?.boardId, listName: list?.name },
       });
     },
 

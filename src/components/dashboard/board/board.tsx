@@ -37,7 +37,6 @@ export default function Board({ boardId }: { boardId: string }) {
   useEffect(() => {
     registerChannel('lists');
     registerChannel('cards');
-    registerChannel('comments');
   }, [registerChannel]);
 
   const { data: lists } = useLists(boardId);

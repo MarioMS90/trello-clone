@@ -83,58 +83,6 @@ export type Database = {
           },
         ];
       };
-      comments: {
-        Row: {
-          card_id: string;
-          content: string;
-          created_at: string;
-          id: string;
-          updated_at: string;
-          user_id: string;
-          workspace_id: string | null;
-        };
-        Insert: {
-          card_id: string;
-          content: string;
-          created_at?: string;
-          id?: string;
-          updated_at?: string;
-          user_id: string;
-          workspace_id?: string | null;
-        };
-        Update: {
-          card_id?: string;
-          content?: string;
-          created_at?: string;
-          id?: string;
-          updated_at?: string;
-          user_id?: string;
-          workspace_id?: string | null;
-        };
-        Relationships: [
-          {
-            foreignKeyName: 'comment_card_id_fkey';
-            columns: ['card_id'];
-            isOneToOne: false;
-            referencedRelation: 'cards';
-            referencedColumns: ['id'];
-          },
-          {
-            foreignKeyName: 'comment_user_id_fkey';
-            columns: ['user_id'];
-            isOneToOne: false;
-            referencedRelation: 'users';
-            referencedColumns: ['id'];
-          },
-          {
-            foreignKeyName: 'comments_workspace_id_fkey';
-            columns: ['workspace_id'];
-            isOneToOne: false;
-            referencedRelation: 'workspaces';
-            referencedColumns: ['id'];
-          },
-        ];
-      };
       lists: {
         Row: {
           board_id: string;
@@ -207,14 +155,14 @@ export type Database = {
         };
         Relationships: [
           {
-            foreignKeyName: 'members_user_id_fkey';
+            foreignKeyName: 'roles_user_id_fkey';
             columns: ['user_id'];
             isOneToOne: false;
             referencedRelation: 'users';
             referencedColumns: ['id'];
           },
           {
-            foreignKeyName: 'members_workspace_id_fkey';
+            foreignKeyName: 'roles_workspace_id_fkey';
             columns: ['workspace_id'];
             isOneToOne: false;
             referencedRelation: 'workspaces';

@@ -21,8 +21,6 @@ export type TStarredBoard = TEntity<'starred_boards'>;
 
 export type TList = TEntity<'lists'>;
 
-export type TCard = TEntity<'cards'> & { boardId: string; listName: string; commentCount: number };
-
-export type TComment = TEntity<'comments'>;
+export type TCard = TEntity<'cards'> & { boardId: string; listName: string };
 
 export type TRoleEnum = TPublicSchema['Enums']['role'];

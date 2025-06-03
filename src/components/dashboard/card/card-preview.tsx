@@ -22,7 +22,6 @@ import { createPortal } from 'react-dom';
 import { cn } from '@/lib/utils/utils';
 import { isShallowEqual } from '@/lib/utils/is-shallow-equal';
 import DescriptionIcon from '@/components/icons/description';
-import CommentIcon from '@/components/icons/comment';
 import EditableText from '@/components/ui/editable-text';
 import Popover from '@/components/ui/popover';
 import PencilIcon from '@/components/icons/pencil';
@@ -133,12 +132,6 @@ const CardDisplay = memo(function CardDisplay({
             {card.description && (
               <span title="This card has a description">
                 <DescriptionIcon width={16} height={16} />
-              </span>
-            )}
-            {card.commentCount > 0 && (
-              <span className="flex items-center gap-1" title="Comments">
-                <CommentIcon width={16} height={16} />
-                <span className="text-xs">{card.commentCount}</span>
               </span>
             )}
           </div>

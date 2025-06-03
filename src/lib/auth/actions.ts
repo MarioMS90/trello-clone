@@ -2,7 +2,12 @@
 
 import { redirect } from 'next/navigation';
 import { SignInUser, SignUpUser } from '@/schemas/auth-schemas';
+import { LexoRank } from 'lexorank';
 import createClient from '../supabase/server';
+import { createBoard } from '../board/actions';
+import { createWorkspace } from '../workspace/actions';
+import { createList } from '../list/actions';
+import { createCard } from '../card/actions';
 
 export type TSignInState = {
   error: boolean;
@@ -52,6 +57,38 @@ export async function signIn(_: TSignInState, formData: FormData): Promise<TSign
   return redirect('/workspaces');
 }
 
+async function createInitialBoard(userName: string) {
+  const workspaceName = `${userName}'s Workspace`;
+  const {
+    data: { workspace },
+  } = await createWorkspace({ name: workspaceName });
+  const { data: board } = await createBoard({
+    name: `My board`,
+    workspace_id: workspace.id,
+  });
+
+  const listNames = ['To do', 'In progress', 'Done'];
+  let rank = LexoRank.middle();
+  const lists = await Promise.all(
+    listNames.map(listName => {
+      rank = rank.genNext();
+
+      return createList({ name: listName, boardId: board.id, rank: rank.format() });
+    }),
+  );
+
+  rank = LexoRank.middle();
+  Promise.all(
+    lists.map(({ data: list }, index) => {
+      rank = rank.genNext();
+
+      return createCard({ name: `Card ${index + 1}`, listId: list.id, rank: rank.format() });
+    }),
+  );
+
+  return board;
+}
+
 export async function signUp(_: TSignUpState, formData: FormData): Promise<TSignUpState> {
   const validatedFields = SignUpUser.safeParse({
     name: formData.get('name'),
@@ -89,7 +126,9 @@ export async function signUp(_: TSignUpState, formData: FormData): Promise<TSign
     };
   }
 
-  return redirect('/workspaces');
+  const board = await createInitialBoard(validatedFields.data.name);
+
+  return redirect(`/boards/${board.id}`);
 }
 
 export const signOut = async () => {

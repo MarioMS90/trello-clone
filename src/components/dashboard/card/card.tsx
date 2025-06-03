@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import CloseIcon from '@/components/icons/close';
 import EditableText from '@/components/ui/editable-text';
 import { useCard } from '@/lib/card/queries';
@@ -8,17 +9,17 @@ import { notFound, useRouter } from 'next/navigation';
 import { useBoardId } from '@/hooks/useBoardId';
 import { useCardMutation } from '@/hooks/useCardMutation';
 import DescriptionIcon from '@/components/icons/description';
-import CommentIcon from '@/components/icons/comment';
 import CardIcon from '@/components/icons/card';
+import { cn } from '@/lib/utils/utils';
 
 export default function Card({ cardId }: { cardId: string }) {
   const boardId = useBoardId();
   const router = useRouter();
-  const { data: card } = useCard(cardId);
-
+  const { data: cardData } = useCard(cardId);
   const { modifyCard } = useCardMutation();
+  const [isEditingDescription, setIsEditingDescription] = useState(false);
 
-  if (!card) {
+  if (!cardData) {
     notFound();
   }
 
@@ -38,8 +39,10 @@ export default function Card({ cardId }: { cardId: string }) {
     router.push(`/boards/${boardId}`);
   };
 
-  const cardName =
-    modifyCard.isPending && modifyCard.variables.name ? modifyCard.variables.name : card.name;
+  const card =
+    modifyCard.isPending && modifyCard.variables
+      ? { ...cardData, ...modifyCard.variables }
+      : cardData;
 
   return (
     <div className="scrollbar-stable text-primary fixed top-0 left-0 z-50 h-dvh w-dvw bg-black/75">
@@ -55,11 +58,11 @@ export default function Card({ cardId }: { cardId: string }) {
               <div className="flex grow flex-col">
                 <EditableText
                   className="mr-[74px] [&>textarea]:text-xl [&>textarea]:font-semibold"
-                  defaultText={cardName}
+                  defaultText={card.name}
                   onEdit={text => modifyCard.mutate({ id: card.id, name: text })}
                   editOnClick
                   autoResize>
-                  <h2 className="text-xl font-semibold">{cardName}</h2>
+                  <h2 className="text-xl font-semibold">{card.name}</h2>
                 </EditableText>
 
                 <span className="px-2 text-sm">in list {card.listName}</span>
@@ -68,27 +71,50 @@ export default function Card({ cardId }: { cardId: string }) {
           </div>
 
           <div className="px-2">
-            <div className="flex gap-3">
-              <DescriptionIcon width={24} height={24} />
+            <div className="flex gap-1.5">
+              <span className="py-1">
+                <DescriptionIcon width={24} height={24} />
+              </span>
               <div className="flex grow flex-col gap-2">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between pl-1.5">
                   <h3 className="text-md font-semibold">Description</h3>
-
-                  <button className="text-secondary text-sm" type="button">
-                    Edit
+                  <button
+                    className={cn(
+                      'text-primary cursor-pointer rounded-sm bg-neutral-300 px-3 py-1.5 text-sm font-medium hover:opacity-80',
+                      {
+                        invisible: isEditingDescription,
+                      },
+                    )}
+                    type="button"
+                    onClick={() => {
+                      setIsEditingDescription(true);
+                    }}>
+                    {card.description ? 'Edit' : 'Add description'}
                   </button>
                 </div>
-                <p className="text-sm">{card.description}</p>
-              </div>
-            </div>
-          </div>
-          <div className="px-2">
-            <div className="flex gap-3">
-              <CommentIcon width={24} height={24} />
-              <div className="flex grow flex-col gap-2">
-                <h3 className="text-md font-semibold">Comments</h3>
-
-                <div>Comments here</div>
+                <EditableText
+                  className="mr-[74px] [&>textarea]:text-sm"
+                  defaultText={card.description}
+                  onEdit={text => modifyCard.mutate({ id: card.id, description: text })}
+                  autoResize
+                  autoSelect={false}
+                  blurOnEnter={false}
+                  editing={isEditingDescription}
+                  onEditingChange={setIsEditingDescription}>
+                  <p className="text-sm whitespace-pre-wrap">{card.description}</p>
+                </EditableText>
+                {isEditingDescription && (
+                  <div>
+                    <button
+                      className="bg-secondary inline cursor-pointer rounded-sm px-3 py-1.5 text-sm font-medium text-white hover:opacity-80"
+                      type="button"
+                      onClick={() => {
+                        setIsEditingDescription(false);
+                      }}>
+                      Save
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>

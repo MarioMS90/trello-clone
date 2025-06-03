@@ -35,7 +35,6 @@ export function CreateCard({ list, onCancel }: { list: TList; onCancel: () => vo
         rank,
         listId: list.id,
         listName: list.name,
-        commentCount: 0,
         boardId,
         createdAt: '',
         updatedAt: '',

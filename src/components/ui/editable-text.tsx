@@ -10,6 +10,8 @@ export default function EditableText({
   defaultText,
   onEdit,
   autoResize,
+  autoSelect = true,
+  blurOnEnter = true,
   editOnClick = false,
   editing = false,
   onEditingChange,
@@ -19,6 +21,8 @@ export default function EditableText({
   defaultText: string;
   onEdit: (newText: string) => void;
   autoResize?: boolean;
+  autoSelect?: boolean;
+  blurOnEnter?: boolean;
   editOnClick?: boolean;
   editing?: boolean;
   onEditingChange?: (editing: boolean) => void;
@@ -33,18 +37,26 @@ export default function EditableText({
     invariant(currentRef);
 
     if (editing) {
-      currentRef.select();
+      currentRef.focus();
+
+      if (autoSelect) {
+        currentRef.select();
+      }
     }
 
     setIsEditing(editing);
-  }, [activeRef, editing]);
+  }, [activeRef, editing, autoSelect]);
 
   const handleEditingChange = (editingState: boolean) => {
     const currentRef = activeRef.current;
     invariant(currentRef);
 
     if (editingState) {
-      currentRef.select();
+      currentRef.focus();
+
+      if (autoSelect) {
+        currentRef.select();
+      }
     }
 
     setIsEditing(editingState);
@@ -62,14 +74,14 @@ export default function EditableText({
     ),
     defaultValue: defaultText,
     onBlur: e => {
-      const newText = e.target.value.trim();
+      const newText = e.target.value;
       if (newText && newText !== defaultText) {
         onEdit(newText);
       }
       handleEditingChange(false);
     },
     onKeyDown: e => {
-      if (e.key === 'Enter') {
+      if (blurOnEnter && e.key === 'Enter') {
         e.currentTarget.blur();
       }
     },

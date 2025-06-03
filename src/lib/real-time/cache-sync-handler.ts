@@ -1,7 +1,6 @@
 import {
   TBoard,
   TCard,
-  TComment,
   TEntityName,
   TList,
   TStarredBoard,
@@ -21,7 +20,6 @@ import workspaceCacheController from './cache-controllers/workspace-cache-contro
 import starredBoardCacheController from './cache-controllers/starred-board-cache-controller';
 import listCacheController from './cache-controllers/list-cache-controller';
 import cardCacheController from './cache-controllers/card-cache-controller';
-import commentCacheController from './cache-controllers/comment-cache-controller';
 import memberCacheController from './cache-controllers/member-cache-controller';
 import { camelizeKeys } from '../utils/utils';
 import { CacheHandlers } from './cache-types';
@@ -34,7 +32,6 @@ type EntityTypes = {
   starred_boards: TStarredBoard;
   lists: TList;
   cards: TCard;
-  comments: TComment;
 };
 
 const controllers = {
@@ -45,7 +42,6 @@ const controllers = {
   starred_boards: starredBoardCacheController,
   lists: listCacheController,
   cards: cardCacheController,
-  comments: commentCacheController,
 } as const satisfies {
   [K in keyof EntityTypes]: (qc: QueryClient) => CacheHandlers<EntityTypes[K]>;
 };

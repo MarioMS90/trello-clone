@@ -20,16 +20,13 @@ const fetchCards = async (boardId: string) => {
       workspaceId: workspace_id,
       createdAt: created_at,
       updatedAt: updated_at,
-      comments(
-        count
-      ),
       ...lists!inner(boardId: board_id, listName: name)
     `,
     )
     .eq('lists.board_id', boardId)
     .throwOnError();
 
-  return data?.map(card => ({ ...card, commentCount: card.comments[0].count }));
+  return data;
 };
 
 export const fetchCard = async (cardId: string) => {
@@ -47,9 +44,6 @@ export const fetchCard = async (cardId: string) => {
       workspaceId: workspace_id,
       createdAt: created_at,
       updatedAt: updated_at,
-      comments(
-        count
-      ),
       ...lists!inner(boardId: board_id, listName: name)
     `,
     )
@@ -61,7 +55,7 @@ export const fetchCard = async (cardId: string) => {
     return null;
   }
 
-  return { ...data, commentCount: data?.comments[0].count };
+  return data;
 };
 
 export const cardKeys = createQueryKeys('cards', {

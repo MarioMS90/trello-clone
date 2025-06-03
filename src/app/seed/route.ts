@@ -1,13 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import {
-  workspaces,
-  members,
-  boards,
-  starredBoards,
-  lists,
-  cards,
-  comments,
-} from '@/dev/placeholder-data';
+import { workspaces, members, boards, starredBoards, lists, cards } from '@/dev/placeholder-data';
 import { Database } from '@/types/database-types';
 
 async function seedWorkspaces(supabase: SupabaseClient<Database>) {
@@ -51,12 +43,6 @@ async function seedCards(supabase: SupabaseClient<Database>) {
   return data;
 }
 
-async function seedComments(supabase: SupabaseClient<Database>) {
-  const { data } = await supabase.from('comments').insert(comments).select().throwOnError();
-
-  return data;
-}
-
 export async function GET() {
   // This user can bypass RLS policies
   const supabase = createClient<Database>(
@@ -71,7 +57,6 @@ export async function GET() {
     await seedStarredBoards(supabase);
     await seedLists(supabase);
     await seedCards(supabase);
-    await seedComments(supabase);
 
     return Response.json({ message: 'Database seeded successfully' });
   } catch (error: any) {

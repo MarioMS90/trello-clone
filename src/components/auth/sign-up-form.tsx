@@ -13,13 +13,13 @@ export default function SignUpForm() {
   const initialState: TSignUpState = { message: null, errors: {} };
   const [state, formAction, isPending] = useActionState(signUp, initialState);
 
-  const TOTAL_POKEMONS = 600;
+  const TOTAL_POKEMONS = 1025;
 
   const generateRandomUser = async () => {
     const randomId = Math.floor(Math.random() * TOTAL_POKEMONS) + 1;
     const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${randomId}`);
     const pokemon = await response.json();
-    const { name } = pokemon;
+    const name = pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1);
 
     setUser({
       name,

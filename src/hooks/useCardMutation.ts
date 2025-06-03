@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import invariant from 'tiny-invariant';
 import { cardKeys } from '@/lib/card/queries';
-import { commentKeys } from '@/lib/comment/queries';
 import { TCard } from '@/types/db';
 import { deleteCard, updateCard } from '@/lib/card/actions';
 import { TablesUpdate } from '@/types/database-types';
@@ -45,7 +44,6 @@ export const useCardMutation = () => {
       invariant(data);
 
       queryClient.removeQueries({ queryKey: cardKeys.detail(data.id).queryKey });
-      queryClient.removeQueries({ queryKey: commentKeys.list(data.id).queryKey });
       return queryClient.setQueryData(cardKeys.list(boardId).queryKey, (old: TCard[]) =>
         old.filter(_card => _card.id !== data.id),
       );
