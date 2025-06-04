@@ -6,8 +6,8 @@ import {
   UpdateWorkspaceSchema,
 } from '@/modules/common/schemas/workspace-schemas';
 import { TablesInsert, TablesUpdate } from '@/modules/common/types/database-types';
-import { deleteEntity, updateEntity } from '@/modules/supabase/server-utils';
-import createClient from '@/modules/supabase/server';
+import { deleteEntity, updateEntity } from '@/modules/common/lib/supabase/server-utils';
+import createClient from '@/modules/common/lib/supabase/server';
 
 export async function createWorkspace(workspaceData: TablesInsert<'workspaces'>) {
   const validatedFields = CreateWorkspaceSchema.safeParse({

@@ -1,10 +1,10 @@
 import invariant from 'tiny-invariant';
-import createClient from '@/modules/supabase/client';
+import createClient from '@/modules/common/lib/supabase/client';
 
 export async function getClient() {
   const isServer = typeof window === 'undefined';
   if (isServer) {
-    return (await import('./server')).default();
+    return (await import('@/modules/common/lib/supabase/server')).default();
   }
 
   return createClient();

@@ -1,8 +1,12 @@
 import { TStarredBoard } from '@/modules/common/types/db';
 import { starredBoardKeys } from '@/modules/board/lib/queries';
-import { insertQueryData, updateQueryData, deleteQueryData } from '@/modules/react-query/utils';
+import {
+  insertQueryData,
+  updateQueryData,
+  deleteQueryData,
+} from '@/modules/common/lib/react-query/utils';
 import { QueryClient } from '@tanstack/react-query';
-import { CacheHandlers } from '@/modules/real-time/types';
+import { CacheHandlers } from '@/modules/common/lib/real-time/types';
 
 export default function starredBoardCacheController(
   queryClient: QueryClient,

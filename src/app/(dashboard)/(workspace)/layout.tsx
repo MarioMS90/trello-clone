@@ -1,5 +1,5 @@
 import { membersKeys, userKeys } from '@/modules/user/lib/queries';
-import getQueryClient from '@/modules/react-query/get-query-client';
+import getQueryClient from '@/modules/common/lib/react-query/get-query-client';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import DynamicWorkspaceSidebar from '@/modules/sidebar/components/dynamic-sidebar';
 

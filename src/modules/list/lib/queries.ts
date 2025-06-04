@@ -2,7 +2,7 @@ import { createQueryKeys } from '@lukemorales/query-key-factory';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useCallback } from 'react';
 import { TList } from '@/modules/common/types/db';
-import { getClient } from '@/modules/supabase/utils';
+import { getClient } from '@/modules/common/lib/supabase/utils';
 
 const fetchLists = async (boardId: string) => {
   const supabase = await getClient();

@@ -16,7 +16,7 @@ import { CleanupFn } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal
 import { blockBoardPanningAttr } from '@/modules/common/constants/constants';
 import { listKeys, useLists } from '@/modules/list/lib/queries';
 import { cardKeys, useCardsGroupedByList } from '@/modules/card/lib/queries';
-import { useRealTimeContext } from '@/modules/real-time/providers/real-time-provider';
+import { useRealTimeContext } from '@/modules/common/lib/real-time/providers/real-time-provider';
 import { useBoard } from '@/modules/board/lib/queries';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateList } from '@/modules/list/lib/actions';

@@ -4,8 +4,8 @@ import { createContext, useCallback, useContext, useEffect, useMemo } from 'reac
 import invariant from 'tiny-invariant';
 import { useQueryClient } from '@tanstack/react-query';
 import { TEntityName } from '@/modules/common/types/db';
-import { getChannels, createChannel } from '@/modules/real-time/utils';
-import cacheSyncHandler from '@/modules/real-time/cache-sync-handler';
+import { getChannels, createChannel } from '@/modules/common/lib/real-time/utils';
+import cacheSyncHandler from '@/modules/common/lib/real-time/cache-sync-handler';
 
 type TRealTimeContextValue = {
   registerChannel: (entity: TEntityName) => void;
@@ -25,7 +25,7 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
   );
 
   const handleSubscription = useCallback(
-    async (entity: TEntityName) => {
+    (entity: TEntityName) => {
       queryClient.refetchQueries({ queryKey: [entity] });
     },
     [queryClient],

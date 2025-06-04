@@ -3,7 +3,7 @@
 import { redirect } from 'next/navigation';
 import { SignInUser, SignUpUser } from '@/modules/auth/schemas/auth-schemas';
 import { LexoRank } from 'lexorank';
-import createClient from '@/modules/supabase/server';
+import createClient from '@/modules/common/lib/supabase/server';
 import { createBoard } from '@/modules/board/lib/actions';
 import { createWorkspace } from '@/modules/workspace/lib/actions';
 import { createList } from '@/modules/list/lib/actions';

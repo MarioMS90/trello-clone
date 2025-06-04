@@ -3,7 +3,7 @@ import { Suspense } from 'react';
 import { CardSkeleton } from '@/modules/common/components/ui/skeletons';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import Card from '@/modules/card/components/card';
-import getQueryClient from '@/modules/react-query/get-query-client';
+import getQueryClient from '@/modules/common/lib/react-query/get-query-client';
 import { cardKeys } from '@/modules/card/lib/queries';
 
 export const metadata: Metadata = {

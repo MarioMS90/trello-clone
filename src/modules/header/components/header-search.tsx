@@ -10,7 +10,7 @@ import NoSearchResultsIcon from '@/modules/common/components/icons/no-search-res
 import SearchIcon from '@/modules/common/components/icons/search';
 import WorkspaceBadge from '@/modules/common/components/ui/workspace-logo';
 import { useClickAway, useDebounce } from '@uidotdev/usehooks';
-import { getClient } from '@/modules/supabase/utils';
+import { getClient } from '@/modules/common/lib/supabase/utils';
 import { SearchResult } from '@/modules/header/types/search-result';
 
 const generateSearchResult = <T extends SearchResult['kind']>(

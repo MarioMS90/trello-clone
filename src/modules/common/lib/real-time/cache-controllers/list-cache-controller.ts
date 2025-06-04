@@ -1,9 +1,13 @@
 import { TCard, TList } from '@/modules/common/types/db';
 import { listKeys } from '@/modules/list/lib/queries';
-import { insertQueryData, updateQueryData, deleteQueryData } from '@/modules/react-query/utils';
+import {
+  insertQueryData,
+  updateQueryData,
+  deleteQueryData,
+} from '@/modules/common/lib/react-query/utils';
 import { QueryClient } from '@tanstack/react-query';
 import { cardKeys } from '@/modules/card/lib/queries';
-import { CacheHandlers } from '@/modules/real-time/types';
+import { CacheHandlers } from '@/modules/common/lib/real-time/types';
 
 export default function listCacheController(queryClient: QueryClient): CacheHandlers<TList> {
   const defQueryKey = listKeys._def;

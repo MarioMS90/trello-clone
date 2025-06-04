@@ -15,14 +15,14 @@ import {
 } from '@supabase/supabase-js';
 import { Tables } from '@/modules/common/types/database-types';
 import { camelizeKeys } from '@/modules/common/utils/utils';
-import boardCacheController from '@/modules/real-time/cache-controllers/board-cache-controller';
-import userCacheController from '@/modules/real-time/cache-controllers/user-cache-controller';
-import workspaceCacheController from '@/modules/real-time/cache-controllers/workspace-cache-controller';
-import starredBoardCacheController from '@/modules/real-time/cache-controllers/starred-board-cache-controller';
-import listCacheController from '@/modules/real-time/cache-controllers/list-cache-controller';
-import cardCacheController from '@/modules/real-time/cache-controllers/card-cache-controller';
-import memberCacheController from '@/modules/real-time/cache-controllers/member-cache-controller';
-import { CacheHandlers } from '@/modules/real-time/types';
+import boardCacheController from '@/modules/common/lib/real-time/cache-controllers/board-cache-controller';
+import userCacheController from '@/modules/common/lib/real-time/cache-controllers/user-cache-controller';
+import workspaceCacheController from '@/modules/common/lib/real-time/cache-controllers/workspace-cache-controller';
+import starredBoardCacheController from '@/modules/common/lib/real-time/cache-controllers/starred-board-cache-controller';
+import listCacheController from '@/modules/common/lib/real-time/cache-controllers/list-cache-controller';
+import cardCacheController from '@/modules/common/lib/real-time/cache-controllers/card-cache-controller';
+import memberCacheController from '@/modules/common/lib/real-time/cache-controllers/member-cache-controller';
+import { CacheHandlers } from '@/modules/common/lib/real-time/types';
 
 type EntityTypes = {
   users: TUser;

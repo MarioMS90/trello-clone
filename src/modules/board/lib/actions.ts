@@ -3,8 +3,12 @@
 import { CreateBoardSchema, UpdateBoardSchema } from '@/modules/common/schemas/workspace-schemas';
 import { TablesInsert, TablesUpdate } from '@/modules/common/types/database-types';
 import invariant from 'tiny-invariant';
-import { deleteEntity, insertEntity, updateEntity } from '@/modules/supabase/server-utils';
-import createClient from '@/modules/supabase/server';
+import {
+  deleteEntity,
+  insertEntity,
+  updateEntity,
+} from '@/modules/common/lib/supabase/server-utils';
+import createClient from '@/modules/common/lib/supabase/server';
 
 export async function createBoard(boardData: TablesInsert<'boards'>) {
   const validatedFields = CreateBoardSchema.safeParse({

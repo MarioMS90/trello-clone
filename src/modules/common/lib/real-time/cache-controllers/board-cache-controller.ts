@@ -1,8 +1,12 @@
 import { boardKeys } from '@/modules/board/lib/queries';
-import { insertQueryData, updateQueryData, deleteQueryData } from '@/modules/react-query/utils';
 import { QueryClient } from '@tanstack/react-query';
 import { TBoard } from '@/modules/common/types/db';
-import { CacheHandlers } from '@/modules/real-time/types';
+import { CacheHandlers } from '@/modules/common/lib/real-time/types';
+import {
+  insertQueryData,
+  updateQueryData,
+  deleteQueryData,
+} from '@/modules/common/lib/react-query/utils';
 
 export default function boardCacheController(queryClient: QueryClient): CacheHandlers<TBoard> {
   const defQueryKey = boardKeys._def;

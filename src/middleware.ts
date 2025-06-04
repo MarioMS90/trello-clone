@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { updateSession } from '@/modules/supabase/middleware';
+import { updateSession } from '@/modules/common/lib/supabase/middleware';
 
 export async function middleware(request: NextRequest) {
   if (request.nextUrl.pathname === '/') {

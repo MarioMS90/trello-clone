@@ -3,7 +3,7 @@
 import { TEntity, TEntityName } from '@/modules/common/types/db';
 import { TablesInsert, TablesUpdate } from '@/modules/common/types/database-types';
 import { camelizeKeys } from '@/modules/common/utils/utils';
-import createClient from '@/modules/supabase/server';
+import createClient from '@/modules/common/lib/supabase/server';
 
 export async function insertEntity<TableName extends TEntityName>({
   tableName,

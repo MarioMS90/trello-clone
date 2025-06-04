@@ -2,8 +2,8 @@ import { createQueryKeys } from '@lukemorales/query-key-factory';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { TCard } from '@/modules/common/types/db';
 import { useCallback } from 'react';
-import getQueryClient from '@/modules/react-query/get-query-client';
-import getClient from '@/modules/supabase/server';
+import getQueryClient from '@/modules/common/lib/react-query/get-query-client';
+import getClient from '@/modules/common/lib/supabase/server';
 
 const fetchCards = async (boardId: string) => {
   const supabase = await getClient();

@@ -2,7 +2,11 @@
 
 import { CreateListSchema, UpdateListSchema } from '@/modules/common/schemas/workspace-schemas';
 import { TablesUpdate } from '@/modules/common/types/database-types';
-import { deleteEntity, insertEntity, updateEntity } from '@/modules/supabase/server-utils';
+import {
+  deleteEntity,
+  insertEntity,
+  updateEntity,
+} from '@/modules/common/lib/supabase/server-utils';
 
 export async function createList({
   boardId,

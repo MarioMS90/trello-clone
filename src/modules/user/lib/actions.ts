@@ -1,4 +1,4 @@
-import { deleteEntity, insertEntity } from '@/modules/supabase/server-utils';
+import { deleteEntity, insertEntity } from '@/modules/common/lib/supabase/server-utils';
 import { fetchUser } from '@/modules/user/lib/queries';
 
 export async function createMember(email: string, workspaceId: string) {
