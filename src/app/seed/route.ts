@@ -44,6 +44,13 @@ async function seedCards(supabase: SupabaseClient<Database>) {
 }
 
 export async function GET() {
+  if (process.env.NODE_ENV !== 'development') {
+    return Response.json(
+      { message: 'Seeding is only allowed in development mode' },
+      { status: 403 },
+    );
+  }
+
   // This user can bypass RLS policies
   const supabase = createClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
