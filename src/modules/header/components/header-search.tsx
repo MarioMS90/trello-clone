@@ -20,7 +20,7 @@ const generateSearchResult = <T extends SearchResult['kind']>(
     [K in SearchResult['kind']]: (elem: Extract<SearchResult, { kind: K }>) => JSX.Element;
   } = {
     card: ({ id, name, board, list }) => (
-      <Link className="block hover:bg-gray-200" href={`/cards/${id}`}>
+      <Link className="block hover:bg-gray-200" href={`/cards/${id}`} scroll={false}>
         <div className="flex items-center gap-2 px-4 py-1">
           <CardIcon height={19} />
           <div>

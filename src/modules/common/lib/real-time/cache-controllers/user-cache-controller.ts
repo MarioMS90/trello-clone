@@ -28,7 +28,7 @@ export default function userCacheController(queryClient: QueryClient): CacheHand
       });
     },
 
-    handleDelete: id => {
+    handleDelete: ({ id }) => {
       deleteQueryData({
         queryClient,
         defQueryKey,

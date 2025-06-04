@@ -33,7 +33,7 @@ export default function listCacheController(queryClient: QueryClient): CacheHand
       });
       const cards = data
         .flatMap(([_, _cards = []]) => _cards)
-        .filter(card => card.listId === list.id);
+        .filter(card => card && card.listId === list.id);
 
       if (!cards) {
         return;
@@ -48,11 +48,11 @@ export default function listCacheController(queryClient: QueryClient): CacheHand
       });
     },
 
-    handleDelete: id => {
+    handleDelete: list => {
       deleteQueryData({
         queryClient,
         defQueryKey,
-        entityId: id,
+        entityId: list.id,
       });
     },
   };

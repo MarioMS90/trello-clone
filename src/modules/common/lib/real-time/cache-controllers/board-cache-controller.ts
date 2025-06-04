@@ -28,11 +28,11 @@ export default function boardCacheController(queryClient: QueryClient): CacheHan
       });
     },
 
-    handleDelete: id => {
+    handleDelete: board => {
       deleteQueryData({
         queryClient,
         defQueryKey,
-        entityId: id,
+        entityId: board.id,
       });
     },
   };

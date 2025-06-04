@@ -45,7 +45,7 @@ export default function Card({ cardId }: { cardId: string }) {
       : cardData;
 
   return (
-    <div className="scrollbar-stable text-primary fixed top-0 left-0 z-50 h-dvh w-dvw bg-black/75">
+    <div className="scrollbar-stable text-primary fixed top-0 left-0 z-50 size-full h-dvh w-dvw  bg-black/75">
       <div
         className="center-x fixed top-12 flex w-auto flex-col rounded-xl bg-neutral-200 px-3 py-4 md:w-[768px]"
         ref={clickAwayRef}>

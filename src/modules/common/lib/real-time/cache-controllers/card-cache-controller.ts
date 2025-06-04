@@ -37,11 +37,11 @@ export default function cardCacheController(queryClient: QueryClient): CacheHand
       });
     },
 
-    handleDelete: id => {
+    handleDelete: card => {
       deleteQueryData({
         queryClient,
         defQueryKey,
-        entityId: id,
+        entityId: card.id,
       });
     },
   };

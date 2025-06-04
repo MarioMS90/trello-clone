@@ -78,7 +78,7 @@ async function createInitialBoard(userName: string) {
   );
 
   rank = LexoRank.middle();
-  Promise.all(
+  await Promise.all(
     lists.map(({ data: list }, index) => {
       rank = rank.genNext();
 

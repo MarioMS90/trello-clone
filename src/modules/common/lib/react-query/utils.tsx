@@ -10,7 +10,7 @@ export function insertQueryData<T extends TEntity<TEntityName>>({
   defQueryKey: QueryKey;
   entity: T;
 }): void {
-  const queriesData = queryClient.getQueriesData<T | T[]>({ queryKey: defQueryKey, exact: false });
+  const queriesData = queryClient.getQueriesData<T | T[]>({ queryKey: defQueryKey });
 
   queriesData.forEach(([queryKey, data]) => {
     if (!data) {
@@ -44,7 +44,7 @@ export function updateQueryData<T extends TEntity<TEntityName>>({
   defQueryKey: QueryKey;
   entity: T;
 }) {
-  const queriesData = queryClient.getQueriesData<T | T[]>({ queryKey: defQueryKey, exact: false });
+  const queriesData = queryClient.getQueriesData<T | T[]>({ queryKey: defQueryKey });
 
   queriesData.forEach(([queryKey, data]) => {
     if (!data) {
@@ -83,9 +83,9 @@ export function deleteQueryData<T extends TEntity<TEntityName>>({
 }: {
   queryClient: QueryClient;
   defQueryKey: QueryKey;
-  entityId: string;
+  entityId: string | undefined;
 }) {
-  const queriesData = queryClient.getQueriesData<T | T[]>({ queryKey: defQueryKey, exact: false });
+  const queriesData = queryClient.getQueriesData<T | T[]>({ queryKey: defQueryKey });
 
   queriesData.forEach(([queryKey, data]) => {
     if (!data) {

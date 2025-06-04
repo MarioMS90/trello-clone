@@ -30,7 +30,7 @@ export default function workspaceCacheController(
       });
     },
 
-    handleDelete: id => {
+    handleDelete: ({ id }) => {
       deleteQueryData({
         queryClient,
         defQueryKey,

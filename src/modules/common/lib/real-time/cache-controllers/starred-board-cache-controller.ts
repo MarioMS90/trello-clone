@@ -30,11 +30,18 @@ export default function starredBoardCacheController(
       });
     },
 
-    handleDelete: id => {
+    handleDelete: starredBoard => {
+      const data = queryClient.getQueriesData<TStarredBoard[]>({
+        queryKey: defQueryKey,
+      });
+      const match = data
+        .flatMap(([_, starredBoards = []]) => starredBoards)
+        .find(_starredBoard => _starredBoard.boardId === starredBoard.boardId);
+
       deleteQueryData({
         queryClient,
         defQueryKey,
-        entityId: id,
+        entityId: match?.id,
       });
     },
   };

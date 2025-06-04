@@ -28,13 +28,13 @@ export function CreateWorkspace() {
 
       setIsValidForm(false);
       setIsPopoverOpen(false);
-      queryClient.setQueryData(queryKey, (old: TWorkspace[]) => [...old, { ...data.workspace }]);
+      queryClient.setQueryData(queryKey, (old: TWorkspace[]) => [...old, data.workspace]);
       return queryClient.setQueryData(membersKeys.list.queryKey, (old: TMember[]) => {
         if (!old) {
           return undefined;
         }
 
-        return [...old, data.role];
+        return [...old, data.member];
       });
     },
   });

@@ -54,7 +54,7 @@ export function CreateBoard({
 
       setIsValidForm(false);
       setIsPopoverOpen(false);
-      return queryClient.setQueryData(queryKey, (old: TBoard[]) => [...old, { ...data }]);
+      return queryClient.setQueryData(queryKey, (old: TBoard[]) => [...old, data]);
     },
   });
 

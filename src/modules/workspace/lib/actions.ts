@@ -31,10 +31,10 @@ export async function createWorkspace(workspaceData: TablesInsert<'workspaces'>)
 
   const result = data as {
     workspace: TWorkspace;
-    role: TMember;
+    member: TMember;
   };
 
-  return { data: { workspace: result.workspace, role: result.role } };
+  return { data: { workspace: result.workspace, member: result.member } };
 }
 
 export async function updateWorkspace(workspaceData: TablesUpdate<'workspaces'> & { id: string }) {

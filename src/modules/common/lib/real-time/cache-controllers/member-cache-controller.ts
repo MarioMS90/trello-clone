@@ -28,11 +28,20 @@ export default function memberCacheController(queryClient: QueryClient): CacheHa
       });
     },
 
-    handleDelete: id => {
+    handleDelete: member => {
+      const data = queryClient.getQueriesData<TMember[]>({
+        queryKey: defQueryKey,
+      });
+      const match = data
+        .flatMap(([_, members = []]) => members)
+        .find(
+          _member => _member.userId === member.userId && _member.workspaceId === member.workspaceId,
+        );
+
       deleteQueryData({
         queryClient,
         defQueryKey,
-        entityId: id,
+        entityId: match?.id,
       });
     },
   };
