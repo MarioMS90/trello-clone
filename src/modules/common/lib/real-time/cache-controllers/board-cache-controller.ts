@@ -13,6 +13,7 @@ export default function boardCacheController(queryClient: QueryClient): CacheHan
 
   return {
     handleInsert: board => {
+      console.log('second data', board);
       insertQueryData({
         queryClient,
         defQueryKey,

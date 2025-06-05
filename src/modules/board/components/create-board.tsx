@@ -54,6 +54,7 @@ export function CreateBoard({
 
       setIsValidForm(false);
       setIsPopoverOpen(false);
+      console.log('first data', data);
       return queryClient.setQueryData(queryKey, (old: TBoard[]) => [...old, data]);
     },
   });
