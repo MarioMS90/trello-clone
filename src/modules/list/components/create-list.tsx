@@ -10,6 +10,7 @@ import { listKeys, useLists } from '@/modules/list/lib/queries';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createList } from '@/modules/list/lib/actions';
 import { TList } from '@/modules/common/types/db';
+import { insertQueryData } from '@/modules/common/lib/react-query/utils';
 
 export function CreateList({ boardId }: { boardId: string }) {
   const queryClient = useQueryClient();
@@ -38,15 +39,26 @@ export function CreateList({ boardId }: { boardId: string }) {
         workspaceId: '',
       };
 
-      queryClient.setQueryData(queryKey, (old: TList[]) => [...old, optimisticList]);
+      insertQueryData({
+        queryClient,
+        queryKey,
+        entity: optimisticList,
+      });
 
       return { optimisticList };
     },
     onSuccess: async ({ data }, _variables, context) => {
       invariant(data);
-      queryClient.setQueryData(queryKey, (old: TList[]) =>
-        old.map(list => (list.id === context.optimisticList.id ? { ...list, ...data } : list)),
-      );
+      queryClient.setQueryData(queryKey, (old: TList[]) => {
+        // It may be that the list has already been created by the real-time controller.
+        if (old.some(list => list.id === data.id)) {
+          return old.filter(list => list.id === context.optimisticList.id);
+        }
+
+        return old.map(list =>
+          list.id === context.optimisticList.id ? { ...list, ...data } : list,
+        );
+      });
     },
     onError: (_error, _variables, context) => {
       invariant(context);

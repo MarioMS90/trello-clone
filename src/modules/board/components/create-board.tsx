@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { createBoard } from '@/modules/board/lib/actions';
-import { TBoard, TWorkspace } from '@/modules/common/types/db';
+import { TWorkspace } from '@/modules/common/types/db';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { boardKeys } from '@/modules/board/lib/queries';
 import invariant from 'tiny-invariant';
