@@ -11,13 +11,13 @@ import { CacheHandlers } from '@/modules/common/lib/real-time/types';
 export default function workspaceCacheController(
   queryClient: QueryClient,
 ): CacheHandlers<TWorkspace> {
-  const defQueryKey = workspaceKeys._def;
+  const queryKey = workspaceKeys._def;
 
   return {
     handleInsert: workspace => {
       insertQueryData({
         queryClient,
-        defQueryKey,
+        queryKey,
         entity: workspace,
       });
     },
@@ -25,7 +25,7 @@ export default function workspaceCacheController(
     handleUpdate: workspace => {
       updateQueryData({
         queryClient,
-        defQueryKey,
+        queryKey,
         entity: workspace,
       });
     },
@@ -33,7 +33,7 @@ export default function workspaceCacheController(
     handleDelete: ({ id }) => {
       deleteQueryData({
         queryClient,
-        defQueryKey,
+        queryKey,
         entityId: id,
       });
     },

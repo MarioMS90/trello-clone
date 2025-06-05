@@ -11,13 +11,13 @@ import { CacheHandlers } from '@/modules/common/lib/real-time/types';
 export default function starredBoardCacheController(
   queryClient: QueryClient,
 ): CacheHandlers<TStarredBoard> {
-  const defQueryKey = starredBoardKeys._def;
+  const queryKey = starredBoardKeys._def;
 
   return {
     handleInsert: starredBoard => {
       insertQueryData({
         queryClient,
-        defQueryKey,
+        queryKey,
         entity: starredBoard,
       });
     },
@@ -25,14 +25,14 @@ export default function starredBoardCacheController(
     handleUpdate: starredBoard => {
       updateQueryData({
         queryClient,
-        defQueryKey,
+        queryKey,
         entity: starredBoard,
       });
     },
 
     handleDelete: starredBoard => {
       const data = queryClient.getQueriesData<TStarredBoard[]>({
-        queryKey: defQueryKey,
+        queryKey: queryKey,
       });
       const match = data
         .flatMap(([_, starredBoards = []]) => starredBoards)
@@ -40,7 +40,7 @@ export default function starredBoardCacheController(
 
       deleteQueryData({
         queryClient,
-        defQueryKey,
+        queryKey,
         entityId: match?.id,
       });
     },

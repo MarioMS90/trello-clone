@@ -10,7 +10,7 @@ import { listKeys } from '@/modules/list/lib/queries';
 import { CacheHandlers } from '@/modules/common/lib/real-time/types';
 
 export default function cardCacheController(queryClient: QueryClient): CacheHandlers<TCard> {
-  const defQueryKey = cardKeys._def;
+  const queryKey = cardKeys._def;
 
   return {
     handleInsert: card => {
@@ -24,7 +24,7 @@ export default function cardCacheController(queryClient: QueryClient): CacheHand
 
       insertQueryData({
         queryClient,
-        defQueryKey,
+        queryKey,
         entity: { ...card, boardId: list?.boardId, listName: list?.name },
       });
     },
@@ -32,7 +32,7 @@ export default function cardCacheController(queryClient: QueryClient): CacheHand
     handleUpdate: card => {
       updateQueryData({
         queryClient,
-        defQueryKey,
+        queryKey,
         entity: card,
       });
     },
@@ -40,7 +40,7 @@ export default function cardCacheController(queryClient: QueryClient): CacheHand
     handleDelete: card => {
       deleteQueryData({
         queryClient,
-        defQueryKey,
+        queryKey,
         entityId: card.id,
       });
     },

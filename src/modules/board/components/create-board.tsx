@@ -9,6 +9,7 @@ import invariant from 'tiny-invariant';
 import { useRouter } from 'next/navigation';
 import CloseIcon from '@/modules/common/components/icons/close';
 import Popover from '@/modules/common/components/ui/popover';
+import { insertQueryData } from '@/modules/common/lib/react-query/utils';
 
 export function CreateBoard({
   workspaceId,
@@ -54,8 +55,11 @@ export function CreateBoard({
 
       setIsValidForm(false);
       setIsPopoverOpen(false);
-      console.log('first data', data);
-      return queryClient.setQueryData(queryKey, (old: TBoard[]) => [...old, data]);
+      insertQueryData({
+        queryClient,
+        queryKey,
+        entity: data,
+      });
     },
   });
 

@@ -3,16 +3,16 @@ import { QueryClient, QueryKey } from '@tanstack/react-query';
 
 export function insertQueryData<T extends TEntity<TEntityName>>({
   queryClient,
-  defQueryKey,
+  queryKey,
   entity,
 }: {
   queryClient: QueryClient;
-  defQueryKey: QueryKey;
+  queryKey: QueryKey;
   entity: T;
 }): void {
-  const queriesData = queryClient.getQueriesData<T | T[]>({ queryKey: defQueryKey });
+  const queriesData = queryClient.getQueriesData<T | T[]>({ queryKey });
 
-  queriesData.forEach(([queryKey, data]) => {
+  queriesData.forEach(([_queryKey, data]) => {
     if (!data) {
       return;
     }
@@ -21,7 +21,7 @@ export function insertQueryData<T extends TEntity<TEntityName>>({
       return;
     }
 
-    queryClient.setQueryData<T[]>(queryKey, old => {
+    queryClient.setQueryData<T[]>(_queryKey, old => {
       if (!old) {
         return undefined;
       }
@@ -37,16 +37,16 @@ export function insertQueryData<T extends TEntity<TEntityName>>({
 
 export function updateQueryData<T extends TEntity<TEntityName>>({
   queryClient,
-  defQueryKey,
+  queryKey,
   entity,
 }: {
   queryClient: QueryClient;
-  defQueryKey: QueryKey;
+  queryKey: QueryKey;
   entity: T;
 }) {
-  const queriesData = queryClient.getQueriesData<T | T[]>({ queryKey: defQueryKey });
+  const queriesData = queryClient.getQueriesData<T | T[]>({ queryKey });
 
-  queriesData.forEach(([queryKey, data]) => {
+  queriesData.forEach(([_queryKey, data]) => {
     if (!data) {
       return;
     }
@@ -56,11 +56,11 @@ export function updateQueryData<T extends TEntity<TEntityName>>({
         return;
       }
 
-      queryClient.setQueryData(queryKey, { ...data, ...entity });
+      queryClient.setQueryData(_queryKey, { ...data, ...entity });
       return;
     }
 
-    queryClient.setQueryData<T[]>(queryKey, old => {
+    queryClient.setQueryData<T[]>(_queryKey, old => {
       if (!old) {
         return undefined;
       }
@@ -78,26 +78,26 @@ export function updateQueryData<T extends TEntity<TEntityName>>({
 
 export function deleteQueryData<T extends TEntity<TEntityName>>({
   queryClient,
-  defQueryKey,
+  queryKey,
   entityId,
 }: {
   queryClient: QueryClient;
-  defQueryKey: QueryKey;
+  queryKey: QueryKey;
   entityId: string | undefined;
 }) {
-  const queriesData = queryClient.getQueriesData<T | T[]>({ queryKey: defQueryKey });
+  const queriesData = queryClient.getQueriesData<T | T[]>({ queryKey });
 
-  queriesData.forEach(([queryKey, data]) => {
+  queriesData.forEach(([_queryKey, data]) => {
     if (!data) {
       return;
     }
 
     if (!Array.isArray(data)) {
-      queryClient.removeQueries({ queryKey, exact: true });
+      queryClient.removeQueries({ queryKey: _queryKey, exact: true });
       return;
     }
 
-    queryClient.setQueryData<T[]>(queryKey, old => {
+    queryClient.setQueryData<T[]>(_queryKey, old => {
       if (!old) {
         return undefined;
       }

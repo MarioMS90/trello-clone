@@ -9,14 +9,13 @@ import {
 } from '@/modules/common/lib/react-query/utils';
 
 export default function boardCacheController(queryClient: QueryClient): CacheHandlers<TBoard> {
-  const defQueryKey = boardKeys._def;
+  const queryKey = boardKeys._def;
 
   return {
     handleInsert: board => {
-      console.log('second data', board);
       insertQueryData({
         queryClient,
-        defQueryKey,
+        queryKey,
         entity: board,
       });
     },
@@ -24,7 +23,7 @@ export default function boardCacheController(queryClient: QueryClient): CacheHan
     handleUpdate: board => {
       updateQueryData({
         queryClient,
-        defQueryKey,
+        queryKey,
         entity: board,
       });
     },
@@ -32,7 +31,7 @@ export default function boardCacheController(queryClient: QueryClient): CacheHan
     handleDelete: board => {
       deleteQueryData({
         queryClient,
-        defQueryKey,
+        queryKey,
         entityId: board.id,
       });
     },

@@ -9,13 +9,13 @@ import { membersKeys } from '@/modules/user/lib/queries';
 import { CacheHandlers } from '@/modules/common/lib/real-time/types';
 
 export default function memberCacheController(queryClient: QueryClient): CacheHandlers<TMember> {
-  const defQueryKey = membersKeys._def;
+  const queryKey = membersKeys._def;
 
   return {
     handleInsert: member => {
       insertQueryData({
         queryClient,
-        defQueryKey,
+        queryKey,
         entity: member,
       });
     },
@@ -23,14 +23,14 @@ export default function memberCacheController(queryClient: QueryClient): CacheHa
     handleUpdate: member => {
       updateQueryData({
         queryClient,
-        defQueryKey,
+        queryKey,
         entity: member,
       });
     },
 
     handleDelete: member => {
       const data = queryClient.getQueriesData<TMember[]>({
-        queryKey: defQueryKey,
+        queryKey: queryKey,
       });
       const match = data
         .flatMap(([_, members = []]) => members)
@@ -40,7 +40,7 @@ export default function memberCacheController(queryClient: QueryClient): CacheHa
 
       deleteQueryData({
         queryClient,
-        defQueryKey,
+        queryKey,
         entityId: match?.id,
       });
     },
