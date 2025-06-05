@@ -6,15 +6,14 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createWorkspace } from '@/modules/workspace/lib/actions';
 import invariant from 'tiny-invariant';
 import { workspaceKeys } from '@/modules/workspace/lib/queries';
-import { TMember, TWorkspace } from '@/modules/common/types/db';
 import CloseIcon from '@/modules/common/components/icons/close';
 import { membersKeys } from '@/modules/user/lib/queries';
+import { insertQueryData } from '@/modules/common/lib/react-query/utils';
 
 export function CreateWorkspace() {
   const queryClient = useQueryClient();
   const [isValidForm, setIsValidForm] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const { queryKey } = workspaceKeys.list;
 
   const {
     mutate: createWorkspaceAction,
@@ -28,13 +27,15 @@ export function CreateWorkspace() {
 
       setIsValidForm(false);
       setIsPopoverOpen(false);
-      queryClient.setQueryData(queryKey, (old: TWorkspace[]) => [...old, data.workspace]);
-      return queryClient.setQueryData(membersKeys.list.queryKey, (old: TMember[]) => {
-        if (!old) {
-          return undefined;
-        }
-
-        return [...old, data.member];
+      insertQueryData({
+        queryClient,
+        queryKey: workspaceKeys.list.queryKey,
+        entity: data.workspace,
+      });
+      insertQueryData({
+        queryClient,
+        queryKey: membersKeys.list.queryKey,
+        entity: data.member,
       });
     },
   });

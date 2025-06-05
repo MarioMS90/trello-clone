@@ -1,13 +1,12 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import invariant from 'tiny-invariant';
-import { TWorkspace } from '@/modules/common/types/db';
 import { deleteWorkspace, updateWorkspace } from '@/modules/workspace/lib/actions';
 import { workspaceKeys } from '@/modules/workspace/lib/queries';
 import { TablesUpdate } from '@/modules/common/types/database-types';
+import { deleteQueryData, updateQueryData } from '@/modules/common/lib/react-query/utils';
 
 export const useWorkspaceMutation = () => {
   const queryClient = useQueryClient();
-
   const { queryKey } = workspaceKeys.list;
 
   const modifyWorkspace = useMutation({
@@ -16,11 +15,11 @@ export const useWorkspaceMutation = () => {
 
     onSuccess: ({ data }) => {
       invariant(data);
-      return queryClient.setQueryData(queryKey, (old: TWorkspace[]) =>
-        old.map(_workspace =>
-          _workspace.id === data.id ? { ..._workspace, ...data } : _workspace,
-        ),
-      );
+      updateQueryData({
+        queryClient,
+        queryKey,
+        entity: data,
+      });
     },
     onError: () => {
       alert('An error occurred while updating the element');
@@ -31,9 +30,11 @@ export const useWorkspaceMutation = () => {
     mutationFn: (id: string) => deleteWorkspace(id),
     onSuccess: ({ data }) => {
       invariant(data);
-      return queryClient.setQueryData(queryKey, (old: TWorkspace[]) =>
-        old.filter(_workspace => _workspace.id !== data.id),
-      );
+      deleteQueryData({
+        queryClient,
+        queryKey,
+        entityId: data.id,
+      });
     },
     onError: () => {
       alert('An error occurred while deleting the element');

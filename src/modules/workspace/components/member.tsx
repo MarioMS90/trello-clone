@@ -6,19 +6,22 @@ import CloseIcon from '@/modules/common/components/icons/close';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import invariant from 'tiny-invariant';
 import { deleteMember } from '@/modules/user/lib/actions';
-import { TMember, TUserMember } from '@/modules/common/types/db';
+import { TUserMember } from '@/modules/common/types/db';
+import { deleteQueryData } from '@/modules/common/lib/react-query/utils';
 
 export default function Member({ member }: { member: TUserMember }) {
   const queryClient = useQueryClient();
+  const { queryKey } = membersKeys.list;
 
   const removeMember = useMutation({
     mutationFn: (roleId: string) => deleteMember(roleId),
     onSuccess: ({ data }) => {
       invariant(data);
-
-      return queryClient.setQueryData(membersKeys.list.queryKey, (old: TMember[]) =>
-        old.filter(_member => _member.id !== data.id),
-      );
+      deleteQueryData({
+        queryClient,
+        queryKey,
+        entityId: data.id,
+      });
     },
     onError: () => {
       alert('An error occurred while deleting the element');

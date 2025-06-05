@@ -23,7 +23,7 @@ import { cn } from '@/modules/common/utils/utils';
 import { blockBoardPanningAttr, blockListDraggingAttr } from '@/modules/common/constants/constants';
 import { createPortal } from 'react-dom';
 import { isShallowEqual } from '@/modules/common/utils/is-shallow-equal';
-import { cardKeys, useCards } from '@/modules/card/lib/queries';
+import { useCards } from '@/modules/card/lib/queries';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteList, updateList } from '@/modules/list/lib/actions';
 import { listKeys } from '@/modules/list/lib/queries';
@@ -33,6 +33,7 @@ import EditableText from '@/modules/common/components/ui/editable-text';
 import Popover from '@/modules/common/components/ui/popover';
 import { CreateCard } from '@/modules/card/components/create-card';
 import { CardPreview, CardShadow } from '@/modules/card/components/card-preview';
+import { deleteQueryData, updateQueryData } from '@/modules/common/lib/react-query/utils';
 
 type TListState =
   | { type: 'idle' }
@@ -100,35 +101,37 @@ const ListDisplay = memo(function ListDisplay({
   const [isEditing, setIsEditing] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [isCreatingCard, setIsCreatingCard] = useState(false);
-
-  const { mutate: removeList } = useMutation({
-    mutationFn: (id: string) => deleteList(id),
-    onSuccess: ({ data }) => {
-      invariant(data);
-
-      queryClient.setQueryData(cardKeys.list(list.boardId).queryKey, (old: TCard[]) =>
-        old.filter(_card => _card.listId !== data.id),
-      );
-      return queryClient.setQueryData(listKeys.list(list.boardId).queryKey, (old: TList[]) =>
-        old.filter(_list => _list.id !== data.id),
-      );
-    },
-    onError: () => {
-      alert('An error occurred while deleting the element');
-    },
-  });
+  const { queryKey } = listKeys.list(list.boardId);
 
   const updateListName = useMutation({
     mutationFn: (variables: { id: string; name: string }) => updateList(variables),
     onSuccess: ({ data }) => {
       invariant(data);
 
-      return queryClient.setQueryData(listKeys.list(list.boardId).queryKey, (old: TList[]) =>
-        old.map(_list => (_list.id === data.id ? data : _list)),
-      );
+      updateQueryData({
+        queryClient,
+        queryKey,
+        entity: data,
+      });
     },
     onError: () => {
       alert('An error occurred while updating the element');
+    },
+  });
+
+  const { mutate: removeList } = useMutation({
+    mutationFn: (id: string) => deleteList(id),
+    onSuccess: ({ data }) => {
+      invariant(data);
+
+      deleteQueryData({
+        queryClient,
+        queryKey,
+        entityId: data.id,
+      });
+    },
+    onError: () => {
+      alert('An error occurred while deleting the element');
     },
   });
 

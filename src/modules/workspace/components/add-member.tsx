@@ -4,11 +4,11 @@ import { membersKeys, userKeys } from '@/modules/user/lib/queries';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import invariant from 'tiny-invariant';
 import { createMember } from '@/modules/user/lib/actions';
-import { TMember, TUser } from '@/modules/common/types/db';
 import AddUserIcon from '@/modules/common/components/icons/add-user';
 import { useClickAway } from '@uidotdev/usehooks';
 import { useState } from 'react';
 import CloseIcon from '@/modules/common/components/icons/close';
+import { insertQueryData } from '@/modules/common/lib/react-query/utils';
 
 export default function CreateMember({ workspaceId }: { workspaceId: string }) {
   const queryClient = useQueryClient();
@@ -30,15 +30,17 @@ export default function CreateMember({ workspaceId }: { workspaceId: string }) {
     mutationFn: (email: string) => createMember(email, workspaceId),
     onSuccess: ({ data }) => {
       invariant(data);
-
       setIsOpen(false);
-      queryClient.setQueryData(userKeys.list.queryKey, (old: TUser[]) =>
-        old.some(({ id }) => id === data.user.id) ? old : [...old, data.user],
-      );
-      return queryClient.setQueryData(membersKeys.list.queryKey, (old: TMember[]) => [
-        ...old,
-        data.member,
-      ]);
+      insertQueryData({
+        queryClient,
+        queryKey: userKeys.list.queryKey,
+        entity: data.user,
+      });
+      insertQueryData({
+        queryClient,
+        queryKey: membersKeys.list.queryKey,
+        entity: data.member,
+      });
     },
   });
 

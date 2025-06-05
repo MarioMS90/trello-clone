@@ -4,11 +4,12 @@ import { createStarredBoard, deleteStarredBoard } from '@/modules/board/lib/acti
 import { memo } from 'react';
 import { starredBoardKeys, useStarredBoardId } from '@/modules/board/lib/queries';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { TBoard, TStarredBoard } from '@/modules/common/types/db';
+import { TBoard } from '@/modules/common/types/db';
 import invariant from 'tiny-invariant';
 import { cn } from '@/modules/common/utils/utils';
 import StarIcon from '@/modules/common/components/icons/star';
 import StarFillIcon from '@/modules/common/components/icons/star-fill';
+import { insertQueryData, deleteQueryData } from '@/modules/common/lib/react-query/utils';
 
 export const StarToggleBoard = memo(function StarToggleBoard({
   className = '',
@@ -25,8 +26,11 @@ export const StarToggleBoard = memo(function StarToggleBoard({
     mutationFn: () => createStarredBoard(board.id),
     onSuccess: ({ data }) => {
       invariant(data);
-
-      return queryClient.setQueryData(queryKey, (old: TStarredBoard[]) => [...old, data]);
+      insertQueryData({
+        queryClient,
+        queryKey,
+        entity: data,
+      });
     },
     onError: () => {
       alert('An error occurred while updating the element');
@@ -37,10 +41,11 @@ export const StarToggleBoard = memo(function StarToggleBoard({
     mutationFn: () => deleteStarredBoard(starredBoardId),
     onSuccess: ({ data }) => {
       invariant(data);
-
-      return queryClient.setQueryData(queryKey, (old: TStarredBoard[]) =>
-        old.filter(_starred => _starred.id !== data.id),
-      );
+      deleteQueryData({
+        queryClient,
+        queryKey,
+        entityId: data.id,
+      });
     },
     onError: () => {
       alert('An error occurred while updating the element');

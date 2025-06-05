@@ -10,7 +10,7 @@ import { listKeys, useLists } from '@/modules/list/lib/queries';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createList } from '@/modules/list/lib/actions';
 import { TList } from '@/modules/common/types/db';
-import { insertQueryData } from '@/modules/common/lib/react-query/utils';
+import { deleteQueryData, insertQueryData } from '@/modules/common/lib/react-query/utils';
 
 export function CreateList({ boardId }: { boardId: string }) {
   const queryClient = useQueryClient();
@@ -62,9 +62,11 @@ export function CreateList({ boardId }: { boardId: string }) {
     },
     onError: (_error, _variables, context) => {
       invariant(context);
-      queryClient.setQueryData(queryKey, (old: TList[]) =>
-        old.filter(list => list.id !== context.optimisticList.id),
-      );
+      deleteQueryData({
+        queryClient,
+        queryKey,
+        entityId: context.optimisticList.id,
+      });
 
       alert('An error occurred while creating the element');
     },

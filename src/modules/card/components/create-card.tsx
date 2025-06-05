@@ -10,6 +10,7 @@ import { useClickAway } from '@uidotdev/usehooks';
 import { cardKeys, useCards } from '@/modules/card/lib/queries';
 import { TCard, TList } from '@/modules/common/types/db';
 import { useBoardId } from '@/modules/board/hooks/useBoardId';
+import { deleteQueryData, insertQueryData } from '@/modules/common/lib/react-query/utils';
 
 export function CreateCard({ list, onCancel }: { list: TList; onCancel: () => void }) {
   const queryClient = useQueryClient();
@@ -41,21 +42,34 @@ export function CreateCard({ list, onCancel }: { list: TList; onCancel: () => vo
         workspaceId: '',
       };
 
-      queryClient.setQueryData(queryKey, (old: TCard[]) => [...old, optimisticCard]);
+      insertQueryData({
+        queryClient,
+        queryKey,
+        entity: optimisticCard,
+      });
 
       return { optimisticCard };
     },
     onSuccess: ({ data }, _variables, context) => {
       invariant(data);
-      queryClient.setQueryData(queryKey, (old: TCard[]) =>
-        old.map(card => (card.id === context.optimisticCard.id ? { ...card, ...data } : card)),
-      );
+      queryClient.setQueryData(queryKey, (old: TCard[]) => {
+        // It may be that the card has already been created by the real-time controller.
+        if (old.some(card => card.id === data.id)) {
+          return old.filter(card => card.id !== context.optimisticCard.id);
+        }
+
+        return old.map(card =>
+          card.id === context.optimisticCard.id ? { ...card, ...data } : card,
+        );
+      });
     },
     onError: (_error, _variables, context) => {
       invariant(context);
-      queryClient.setQueryData(queryKey, (old: TCard[]) =>
-        old.filter(card => card.id !== context.optimisticCard.id),
-      );
+      deleteQueryData({
+        queryClient,
+        queryKey,
+        entityId: context.optimisticCard.id,
+      });
 
       alert('An error occurred while creating the element');
     },
