@@ -9,8 +9,10 @@ import { useCurrentUser } from '@/modules/user/lib/queries';
 import HeaderMenu from '@/modules/header/components/header-menu';
 import HeaderSearch from '@/modules/header/components/header-search';
 import Popover from '@/modules/common/components/ui/popover';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function Header() {
+  const queryClient = useQueryClient();
   const { data: user } = useCurrentUser();
 
   return (
@@ -37,7 +39,10 @@ export default function Header() {
           <button
             className="cursor-pointer px-3 py-2 text-left text-sm hover:bg-gray-200"
             type="button"
-            onClick={async () => signOut()}>
+            onClick={() => {
+              queryClient.clear();
+              signOut();
+            }}>
             Log out
           </button>
         </Popover>

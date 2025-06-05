@@ -1,6 +1,7 @@
 'use client';
 
 import { signUp, TSignUpState } from '@/modules/auth/lib/actions';
+import Loading from '@/modules/common/components/ui/loading';
 import { useState, useActionState } from 'react';
 
 export default function SignUpForm() {
@@ -67,13 +68,15 @@ export default function SignUpForm() {
           ))}
         </div>
         <button
-          className="bg-secondary block w-full cursor-pointer rounded-sm py-2 text-sm font-medium text-white hover:bg-[#0055cc]"
-          type="submit">
-          Sign Up
+          className="bg-secondary relative flex h-9 w-full cursor-pointer items-center justify-center rounded-sm py-2 text-sm font-medium text-white hover:bg-[#0055cc] disabled:opacity-60"
+          type="submit"
+          aria-disabled={isPending}
+          disabled={isPending}>
+          {isPending ? <Loading /> : 'Sign Up'}
         </button>
       </form>
       <button
-        className="bg-primary my-2 block w-full cursor-pointer rounded-sm py-2 text-sm font-medium text-white hover:opacity-90"
+        className="bg-primary my-2 block h-9 w-full cursor-pointer rounded-sm py-2 text-sm font-medium text-white hover:opacity-90"
         type="button"
         onClick={generateRandomUser}
         aria-disabled={isPending}

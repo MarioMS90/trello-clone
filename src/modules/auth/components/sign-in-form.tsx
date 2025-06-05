@@ -1,6 +1,7 @@
 'use client';
 
 import { signIn, TSignInState } from '@/modules/auth/lib/actions';
+import Loading from '@/modules/common/components/ui/loading';
 import { useActionState } from 'react';
 
 export default function SignInForm() {
@@ -24,11 +25,11 @@ export default function SignInForm() {
         {state.error && <p className="mb-2 text-sm text-red-500">{state.message}</p>}
       </div>
       <button
-        className="bg-secondary block w-full cursor-pointer rounded-sm py-2 text-sm font-medium text-white hover:bg-[#0055cc]"
+        className="bg-secondary relative flex h-9 w-full cursor-pointer items-center justify-center rounded-sm py-2 text-sm font-medium text-white hover:bg-[#0055cc] disabled:opacity-60"
         type="submit"
         aria-disabled={isPending}
         disabled={isPending}>
-        Sign In
+        {isPending ? <Loading /> : 'Sign In'}
       </button>
     </form>
   );

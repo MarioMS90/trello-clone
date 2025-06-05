@@ -127,7 +127,6 @@ export async function signUp(_: TSignUpState, formData: FormData): Promise<TSign
   }
 
   const board = await createInitialBoard(validatedFields.data.name);
-
   return redirect(`/boards/${board.id}`);
 }
 
