@@ -52,7 +52,7 @@ export function CreateList({ boardId }: { boardId: string }) {
       queryClient.setQueryData(queryKey, (old: TList[]) => {
         // It may be that the list has already been created by the real-time controller.
         if (old.some(list => list.id === data.id)) {
-          return old.filter(list => list.id === context.optimisticList.id);
+          return old.filter(list => list.id !== context.optimisticList.id);
         }
 
         return old.map(list =>
